@@ -2,21 +2,16 @@ class Person < ActiveRecord::Base
   
   has_many :users
   
-  # validates_presence_of :salutation, :if => :require_validations?
-  validates_presence_of :firstname, :if => :require_validations?
-  validates_presence_of :firstname, :if => :require_name_validations?
-  validates_presence_of :lastname, :if => :require_validations?
-  validates_presence_of :lastname, :if => :require_name_validations?
-  validates_presence_of :email, :if => :require_validations?
-  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, :if => :require_validations?
-  validates_presence_of :address1, :if => :require_address_validations?
-  validates_presence_of :city, :if => :require_address_validations?
-  validates_presence_of :state, :if => :require_address_validations?
-  validates_presence_of :zip, :if => :require_address_validations?
+  validates :firstname, presence: true, if: [ :require_validations?, :require_name_validations? ]
+  validates :lastname,  presence: true, if: [ :require_validations?, :require_name_validations? ]
+  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i}, if: :require_validations?  
+  validates :address1, presence: true, if: :require_address_validations?
+  validates :city, presence: true, if: :require_address_validations?
+  validates :state, presence: true, if: :require_address_validations?
+  validates :zip, presence: true, if: :require_address_validations?
   validate :student_validations, :if => :require_student_validations?
-#  validates_inclusion_of :gender, :in => ['M','F',nil]
 
-  named_scope :non_student, :conditions => { :type => nil }
+  scope :non_student, -> { where(type: nil) }
 
   attr_accessor :require_validations, :require_name_validations, :require_address_validations, :require_student_validations
   

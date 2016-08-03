@@ -19,12 +19,17 @@ module Expo2
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+    config.i18n.enforce_available_locales = false
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
     
-    # Allow for models in subdirectories off /models/
-    config.autoload_paths += Dir[Rails.root.join('app', 'models', '{**}')]
+    # Allow for models or class in subdirectories off models and lib
+    config.autoload_paths += Dir["#{config.root}/app/models/**/"]
+    config.autoload_paths << Rails.root.join('lib')    
+    #config.autoload_paths += Dir["#{config.root}/app/lib/**/"]
+    
+    
     
   end
 end

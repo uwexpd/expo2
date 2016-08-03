@@ -1,6 +1,9 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
-  # belongs_to :person
+  include ActiveModel::ForbiddenAttributesProtection
+  model_stamper
+  
+  belongs_to :person
   has_many :roles, :class_name => "UserUnitRole", :foreign_key => "user_id" do
       def for(unit_id); find(:all, :conditions => { :unit_id => unit_id }); end
   end
@@ -12,7 +15,8 @@ class User < ActiveRecord::Base
   attr_accessor :password
   # attr_accessor :allow_invalid_person
   
-  # TODO: Rails 4.0 has removed attr_accessible and attr_protected feature in favor of Strong Parameters. You can use the Protected Attributes gem for a smooth upgrade path. 
+  # TODO: Rails 4.0 has removed attr_accessible and attr_protected feature in favor of Strong Parameters. 
+  # You can use the Protected Attributes gem for a smooth upgrade path. 
   #attr_accessible :login, :email, :password, :password_confirmation, :identity_url, :person_attributes, :picture, :picture_temp  #, :person_id
   
   validates :login, presence: true
@@ -41,7 +45,27 @@ class User < ActiveRecord::Base
   #   end
   # end
   
+  # Authenticates a user by their login name and unencrypted password.  Returns the user or nil. Note that this method is
+  # case-insensitive, so "Mike" and "mike" will both return the same user object.
+  def self.authenticate(login, password)
+    logger.info "User.authenticate: #{login}, ******"
+    u = find_by_login_and_type(login, nil) # need to get the salt
+    u && u.authenticated?(password) ? u : nil
+  end
   
+  # Encrypts some data with the salt.
+  def self.encrypt(password, salt)
+    Digest::SHA1.hexdigest("--#{salt}--#{password}--")
+  end
+
+  # Encrypts the password with the user salt
+  def encrypt(password)
+    self.class.encrypt(password, salt)
+  end
+
+  def authenticated?(password)  
+    crypted_password == encrypt(password)
+  end
   
   protected
   
@@ -51,7 +75,7 @@ class User < ActiveRecord::Base
       self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
       self.crypted_password = encrypt(password)
     end
-    
+            
     def password_required?
       crypted_password.blank? || !password.blank?
     end

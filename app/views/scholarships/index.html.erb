@@ -1,0 +1,13 @@
+<h2>Scholarships</h2>
+<%= search_form_for @search do |f| %>
+  Keyword: 
+  <%= f.search_field :title_or_description_or_history_or_eligibility_cont %>
+  <br/ >
+  Filters:<br />
+  <%#= f.label : %>
+  
+  <%= f.submit %>
+<% end %>
+<br /><br />
+
+<%= render 'results' %>

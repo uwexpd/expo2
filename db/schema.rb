@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150827223650) do
+ActiveRecord::Schema.define(version: 20160520190543) do
 
   create_table "academic_departments", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -29,6 +29,21 @@ ActiveRecord::Schema.define(version: 20150827223650) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string   "namespace",     limit: 255
+    t.text     "body",          limit: 65535
+    t.string   "resource_id",   limit: 255,   null: false
+    t.string   "resource_type", limit: 255,   null: false
+    t.integer  "author_id",     limit: 4
+    t.string   "author_type",   limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
+  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
+  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "activities", force: :cascade do |t|
     t.datetime "created_at"
@@ -236,6 +251,7 @@ ActiveRecord::Schema.define(version: 20150827223650) do
     t.datetime "award_accepted_at"
     t.text     "special_requests",                       limit: 65535
     t.text     "task_completion_status_cache",           limit: 65535
+    t.integer  "theme_response3",                        limit: 4
   end
 
   add_index "application_for_offerings", ["offering_id"], name: "index_applications_on_offering_id", using: :btree
@@ -259,6 +275,7 @@ ActiveRecord::Schema.define(version: 20150827223650) do
     t.text     "theme_response2",              limit: 65535
     t.boolean  "requests_printed_program"
     t.text     "task_completion_status_cache", limit: 65535
+    t.integer  "theme_response3",              limit: 4
   end
 
   create_table "application_guests", force: :cascade do |t|
@@ -844,6 +861,7 @@ ActiveRecord::Schema.define(version: 20150827223650) do
     t.text     "acceptance_response2",                   limit: 65535
     t.text     "special_requests",                       limit: 65535
     t.text     "task_completion_status_cache",           limit: 65535
+    t.integer  "theme_response3",                        limit: 4
   end
 
   create_table "deleted_application_mentors", force: :cascade do |t|
@@ -2242,6 +2260,7 @@ ActiveRecord::Schema.define(version: 20150827223650) do
     t.boolean  "pipeline_inactive"
     t.string   "reg_id",                                           limit: 255
     t.boolean  "service_learning_risk_date_extention"
+    t.datetime "service_learning_moa_date"
   end
 
   add_index "people", ["email"], name: "index_people_on_email", using: :btree

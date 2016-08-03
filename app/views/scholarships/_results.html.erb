@@ -1,0 +1,18 @@
+<h3>Results</h3>
+
+<table>
+<% if @scholarships.empty? %>
+  <tr><td>There are no data found. Please try another search.</td></tr>
+<% end %>
+
+<% @scholarships.each do |scholarship| %>
+
+	<tr>
+		<td><%= scholarship.title %></td>
+	</tr>
+
+<% end %>
+
+</table>
+
+<%= will_paginate @scholarships %>
