@@ -1,6 +1,12 @@
-### Exp-Online(expo) is a web tool for managing the University of Washington's Center for Experiential Learning and Diversity (EXPD) program.
+## EXPO
+Exp-Online(expo) is a web tool for managing the University of Washington's Center for Experiential Learning and Diversity (EXPD) program. This is transition repository to upgrade ruby on rails version for [EXPO](https://github.com/uwexpd/expo).
 
-### License
+## Current functions
+
+* Integrate with active admin
+* [Scholarships database search](http://expo.uw.edu/scholarships)
+
+## License
 
 Copyright (c) 2016, University of Washington
 All rights reserved.
