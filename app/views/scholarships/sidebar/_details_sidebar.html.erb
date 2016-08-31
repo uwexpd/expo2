@@ -1,0 +1,17 @@
+<div class="scholarship_sidebar">
+	<h5>Award Details</h5>
+	<p><strong>Number of Awards: </strong><%= @scholarship.num_awards %></p>
+	<p><strong>Award Amount: </strong><%= @scholarship.award_amount %></p>
+
+	<h5>Deadlines</h5>
+	<ul>
+		<% @scholarship.scholarship_deadlines.each do |d| %>
+		<li><%= d.deadline.to_s %>: <%= d.title if d.title %></li>
+		<% end %>
+	</ul>
+	
+	<% unless @scholarship.blurb.blank? %>
+		<h5>More Information</h5>
+		<p><p><%= raw @scholarship.blurb %></p>
+	<% end %>
+</div>	

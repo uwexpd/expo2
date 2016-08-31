@@ -1,0 +1,203 @@
+// public pages stylesheet
+
+.top-bar {
+	margin-bottom: 2em;
+}
+
+#content {
+/*    margin-top: 4.25rem;*/
+}
+
+// EXPO Header
+#header {	
+    background: #39275B url(jellyfish.jpg) -410px;
+    height: 49px;
+    text-align: left;
+    padding-top: 1px;
+    position: fixed;
+    width: 100%;
+    top: -1px;
+    z-index: 10;
+    opacity: 0.95;
+    border-bottom: 1px solid #656565;
+	margin-bottom: 1.2em;
+}
+
+#header ul {
+	padding: 0 0 0 20px;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: block;
+    background: #D7C896;
+    height: 10px;
+    border-bottom: 1px solid #323232;
+}
+
+#header ul li.menu-text{
+/*	padding-left: 2.2em;*/
+	color: #fff;	
+    text-decoration: none;
+    text-indent: -9999px;
+    background: url(expo-logo.png) no-repeat 0 3px;
+    width: 75px;
+    height: 50px;
+    display: block;
+    border: none;
+    top: 1px;
+    left: 75px;
+    position: absolute;
+
+}
+
+#header #w-patch {
+	background-image: url(yellow-patch.png);
+	width: 39px;
+	height: 45px;
+	position: fixed;
+	top: -4px;
+	left: 21px;
+	z-index: 100;
+}
+
+.breadcrumbs {
+	padding: 8px 15px;
+    list-style: none;
+    background-color: whitesmoke;
+    border-radius: 4px;
+ 	margin-top: 4rem;
+}
+
+tbody th, tbody td{
+	font-size: 0.9em;
+}
+
+#footer-wrap{
+	padding: 0.9375rem;
+}
+
+#footer{
+	font-size:70%;
+	padding-left: 2.5rem;
+	padding-right: 0.9375rem;
+	margin-top: 2em;
+    border-top: 1px solid #E5E5E5;	
+	background: url(uw-block-logo.gif) no-repeat 0 1.1em;
+    clear: both;
+}
+
+#footer p {
+    border-left: 3px solid #EEEFEF;
+    padding-left: 10px;
+}
+
+#copyright {
+	margin-top:1em;
+}
+
+.dso_statement{
+	font-size:40%;
+	color: #9498A1;
+}
+
+.rails_env {
+	height: 15px;
+	width: 200px;
+	position: fixed;
+	top: 19px;
+	left: 150px;
+	padding: 0;
+	z-index: 1000;
+}
+
+.rails_env span {
+	letter-spacing: 5px;
+	font-size: 11px;
+	background: yellow;
+	font-weight: bold;
+	text-transform: uppercase;
+	padding: 0 8px;
+	margin: 0;
+}
+
+/* Scholarship Database Search Style */
+
+#sidebar select {
+	height: 1.8rem;
+	font-size: 0.75rem;
+	padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+}
+
+.clear_filter {
+	background: #ecf0f1;
+	color: #95a5a6;
+    margin-left: 0.9em;
+}
+
+.clear_filter:hover, .clear_filter:active  {
+    background-color: #FFFFFF;
+	color: #95a5a6;
+	border: solid 1px #c7c7c7;
+    border-color: #c7c7c7;
+    border-top-color: #d3d3d3;
+    border-right-color: #c7c7c7;
+    border-bottom-color: #c2c2c2;
+    border-left-color: #c7c7c7;
+}
+
+.scholarship_filters {
+	border: 1px solid #d3d8dc ;
+	padding: 0.7em;
+}
+
+#filters {
+	margin-top: 0.4em;
+	margin-bottom: 0;
+	background: #4b2e83;
+    color: #FFFFFF; 
+    padding: 8px 15px;
+    font-weight: bold;
+}
+
+.scholarship_detail h3 {
+	color: #4b2e83;
+}
+
+.scholarship_detail h5 {
+	background: #4b2e83;
+    color: #FFFFFF;
+	padding: 0.4rem 1rem;
+	font-weight: bold;
+}
+
+.scholarship_sidebar {
+	margin-top: 6.2rem;
+}
+
+.scholarship_sidebar h5 {
+	background: #4b2e83;
+    color: #FFFFFF;
+	padding: 0.4rem 1rem;
+	font-weight: bold;
+}
+
+#scholarship_search label{
+	font-size: 0.775rem;
+}
+
+.page_info {
+	font-size:1rem;
+	color: gray;
+	padding-left: 0.75rem;
+}
+
+#sidebar .chosen-container {
+	margin-bottom: 1rem;
+}
+
+.close-button{
+	top: 0.2rem;
+}

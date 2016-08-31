@@ -1,13 +1,23 @@
-<h2>Scholarships</h2>
+<% title "Scholarship Database | University of Washington" %>
+
+<h4><%= link_to "UW Office of Merit Scholarships, Fellowships & Awards Scholarships Search", scholarships_path %></h4><br />
+
 <%= search_form_for @search do |f| %>
-  Keyword: 
-  <%= f.search_field :title_or_description_or_history_or_eligibility_cont %>
-  <br/ >
-  Filters:<br />
-  <%#= f.label : %>
-  
-  <%= f.submit %>
+
+<div class="row">
+	<div class="medium-9 columns">
+		<div class="input-group">
+			<span class="input-group-label">Search by Keyword</span>
+			<%= f.search_field :title_or_description_or_history_or_eligibility_cont, :placeholder => "Type keywords", :class => "input-group-field" %>
+			<div class="input-group-button">
+				<%= f.submit 'Search', :class => 'button' %>
+			</div>
+		</div>		
+	</div>
+	<div class="medium-3 columns"></div>
+</div>
+
 <% end %>
-<br /><br />
 
 <%= render 'results' %>
+<% sidebar :filters %>

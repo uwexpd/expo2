@@ -77,6 +77,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    active_skin (0.0.12)
     activerecord-sqlserver-adapter (4.2.12)
       activerecord (~> 4.2.1)
     activerecord-userstamp (3.0.4)
@@ -105,6 +106,7 @@ GEM
     bourbon (4.2.7)
       sass (~> 3.4)
       thor (~> 0.19)
+    breadcrumbs_on_rails (3.0.1)
     builder (3.2.2)
     byebug (9.0.3)
     capistrano (3.5.0)
@@ -116,6 +118,11 @@ GEM
     capistrano-harrow (0.5.1)
     capistrano-passenger (0.2.0)
       capistrano (~> 3.0)
+    chosen-rails (1.5.2)
+      coffee-rails (>= 3.2)
+      railties (>= 3.0)
+      sass-rails (>= 3.2)
+    chunky_png (1.3.6)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.1.x)
@@ -123,15 +130,37 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
+    compass (1.0.3)
+      chunky_png (~> 1.2)
+      compass-core (~> 1.0.2)
+      compass-import-once (~> 1.0.5)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
+      sass (>= 3.3.13, < 3.5)
+    compass-core (1.0.3)
+      multi_json (~> 1.0)
+      sass (>= 3.3.0, < 3.5)
+    compass-import-once (1.0.5)
+      sass (>= 3.2, < 3.5)
+    compass-rails (3.0.2)
+      compass (~> 1.0.0)
+      sass-rails (< 5.1)
+      sprockets (< 4.0)
     composite_primary_keys (8.1.3)
       activerecord (~> 4.2.0)
     concurrent-ruby (1.0.2)
+    daemons (1.2.3)
     debug_inspector (0.0.2)
     erubis (2.7.0)
+    eventmachine (1.2.0.1)
     execjs (2.6.0)
+    ffi (1.9.14)
     formtastic (3.1.4)
       actionpack (>= 3.2.13)
     formtastic_i18n (0.6.0)
+    foundation-icons-sass-rails (3.0.0)
+      railties (>= 3.1.1)
+      sass-rails (>= 3.1.1)
     foundation-rails (6.2.3.0)
       railties (>= 3.1.0)
       sass (>= 3.3.0, < 3.5)
@@ -151,6 +180,9 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
+    jquery-turbolinks (2.1.0)
+      railties (>= 3.1.0)
+      turbolinks
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
     json (1.8.3)
@@ -166,6 +198,7 @@ GEM
     mime-types-data (3.2016.0221)
     mini_portile2 (2.0.0)
     minitest (5.9.0)
+    multi_json (1.12.1)
     mysql2 (0.4.4)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
@@ -187,6 +220,8 @@ GEM
       loofah (~> 2.0)
     rails-observers (0.1.2)
       activemodel (~> 4.0)
+    rails_autolink (1.1.6)
+      rails (> 3.1)
     rake (11.1.2)
     ransack (1.7.0)
       actionpack (>= 3.0)
@@ -194,6 +229,9 @@ GEM
       activesupport (>= 3.0)
       i18n
       polyamorous (~> 1.2)
+    rb-fsevent (0.9.7)
+    rb-inotify (0.9.7)
+      ffi (>= 0.5.0)
     responders (2.2.0)
       railties (>= 4.2.0, < 5.1)
     sass (3.4.22)
@@ -218,6 +256,10 @@ GEM
     sshkit (1.10.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    thin (1.6.4)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0, >= 1.0.4)
+      rack (~> 1.0)
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.4)
@@ -237,11 +279,14 @@ GEM
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
     will_paginate (3.1.0)
+    will_paginate-foundation (6.2.0)
+      will_paginate (>= 3.0.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_skin
   activeadmin!
   activerecord-sqlserver-adapter (~> 4.2.0)
   activerecord-userstamp
@@ -249,24 +294,32 @@ DEPENDENCIES
   annotate
   awesome_print
   bcrypt (~> 3.1.7)
+  breadcrumbs_on_rails
   byebug
   capistrano
   capistrano-passenger
+  chosen-rails
   coffee-rails
+  compass-rails
   composite_primary_keys (>= 8.1.1)
+  foundation-icons-sass-rails
   foundation-rails
   jquery-rails
+  jquery-turbolinks
   mysql2
   rails (= 4.2.6)!
+  rails_autolink
   ransack
   sass-rails
   spring
+  thin
   tiny_tds
   tinymce-rails
   turbolinks
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
   will_paginate
+  will_paginate-foundation
 
 BUNDLED WITH
    1.12.4

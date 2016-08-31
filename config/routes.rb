@@ -12,7 +12,6 @@ Rails.application.routes.draw do
   root 'admin/dashboard#index'
   
   resources :scholarships, only: [:show, :index]
-
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

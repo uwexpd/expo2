@@ -12,7 +12,15 @@
  *
  *= require_tree .
  *= require_self
+ *= require foundation_and_overrides
+
  */
+
+@import "public";
+@import "button_partial";
+@import 'foundation-icons';
+@import 'chosen-compass';
+
 
 
 

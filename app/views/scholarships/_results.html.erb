@@ -1,18 +1,36 @@
-<h3>Results</h3>
+<h4>Results<span class="page_info"><i class="fi-results"></i> <%= page_entries_info @scholarships %></span></h4>
+<%= will_paginate @scholarships, renderer: FoundationPagination::Rails %>
+<table class="hover">
+	<thead>
+		<tr>
+			<th><%= sort_link(@search, :title, default_order: :desc) %></th>
+			<th>Class Standing</th>
+			<th><%= sort_link(@search, :gpa, default_order: :desc) %></th>
+			<th>Deadline</th>
+		</tr>
+	</thead>
+	<tbody>
+	<% if @scholarships.empty? %>
+	  <tr><td>There are no data found. Please try another search.</td></tr>
+	<% end %>
 
-<table>
-<% if @scholarships.empty? %>
-  <tr><td>There are no data found. Please try another search.</td></tr>
-<% end %>
+	<% @scholarships.each do |scholarship| %>
 
-<% @scholarships.each do |scholarship| %>
+		<tr>
+			<td width = "60%"><%= link_to scholarship.title, scholarship_path(scholarship.id) %></td>
+			<td width = "16%" ><%= scholarship.class_standings(", ") %></td>
+			<td width = "8%"><%= scholarship.gpa %></td>
+			<td width = "16%" >
+				<ul>
+					<% scholarship.scholarship_deadlines.each do |d| %>
+					<li><%= d.deadline.to_s %></li>
+					<% end %>
+				</ul>
+			</td>
+		</tr>
 
-	<tr>
-		<td><%= scholarship.title %></td>
-	</tr>
-
-<% end %>
-
+	<% end %>
+	</tbody>
 </table>
 
-<%= will_paginate @scholarships %>
+<%= will_paginate @scholarships, renderer: FoundationPagination::Rails %>

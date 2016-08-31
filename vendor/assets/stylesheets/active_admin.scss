@@ -10,6 +10,11 @@
 // Active Admin's got SASS!
 @import "active_admin/mixins";
 @import "active_admin/base";
+$skinLogo: url("uw_patch_and_wordmark.png") no-repeat 0 0;
+$skinActiveColor: #603CAA;
+/*$skinHeaderBck: #4b2e83;*/
+$panelHeaderBck: #4b2e83;
+@import "active_skin";
 
 // Overriding any non-variable SASS must be done after the fact.
 // For example, to change the default status-tag color:
@@ -17,6 +22,11 @@
 //   .status_tag { background: #6090DB; }
 
 /* Active Admin CSS for Customization */
+
+body.active_admin {
+	padding-bottom: 0px;
+}
+
 body.logged_out h2 {
 	font-size: 1.5em;
 	line-height: 30px;
@@ -47,7 +57,21 @@ body.logged_out #login form input[type=text], body.logged_out #login form input[
 form fieldset.inputs ol li.text div.mce-tinymce {
 	float: left;
 	width:75%;
-	margin-bottom: 25px;
-	
+	margin-bottom: 25px;	
+}
+
+#header h1.site_title {
+	padding-left: 55px;
+	color: #4b2e83;
+	font-weight:bold;
+	font-size: 1.8em;
+	text-indent: 0px;
+}
+
+#footer {
+	position: inherit;
+	padding: 15px 30px;
+    font-size: 0.9em;
+    clear: both;
 }
 

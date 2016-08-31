@@ -29,7 +29,7 @@ module Expo2
     config.autoload_paths << Rails.root.join('lib')    
     #config.autoload_paths += Dir["#{config.root}/app/lib/**/"]
     
-    
+    config.constants = config_for(:constants)
     
   end
 end

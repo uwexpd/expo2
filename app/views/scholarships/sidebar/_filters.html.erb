@@ -1,0 +1,68 @@
+
+<h5 id="filters"><i class="fi-filter"></i> Filters</h5>
+
+<div class="scholarship_filters">
+<%= search_form_for @search do |f| %>
+	<%= f.submit 'Filter', :class => 'button' %>
+	<%= link_to "Clear Filters", scholarships_path, :class => 'button clear_filter' %>
+	
+	<strong>Academic Standing</strong>
+		<label>1st Year Undergraduate</label>
+		<%= f.select :freshman_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.freshman_true), {include_blank: "Any"}  %>
+		<label>2nd Year Undergraduate</label>
+		<%= f.select :sophomore_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.sophomore_true), include_blank: "Any"  %>
+		<label>3rd Year Undergraduate</label>
+		<%= f.select :junior_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.junior_true), include_blank: "Any"  %>
+		<label>4th Year Undergraduate</label>
+		<%= f.select :senior_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.senior_true), include_blank: "Any"  %>
+		<label>5th Year Undergraduate</label>
+		<%= f.select :graduate_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_true), include_blank: "Any"  %>
+		<label>Alumni and/or graduate student</label>
+		<%= f.select :graduate_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_true), include_blank: "Any"  %>
+	
+	<strong>Field(s) of Interest or Study</strong>
+		<%= f.collection_select :scholarship_categories_category_id_in, Category.where(parent_id: 0), :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'}  %>
+		
+	<strong>Citizenship</strong>
+		<label>US Citizen</label>
+		<%= f.select :us_citizen_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.us_citizen_true), include_blank: 'Any'  %>
+		<label>Permanent Resident</label>
+		<%= f.select :permanent_resident_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.permanent_resident_true), include_blank: 'Any'  %>
+		<label>International or Other Visa Status</label>
+		<%= f.select :other_visa_status_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.other_visa_status_true), include_blank: 'Any'  %>
+		<label>Undocumented</label>
+		<%= f.select :hb_1079_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.hb_1079_true), include_blank: 'Any'  %>		
+	<strong>Financial Need</strong>	
+		<label>Requiring financial need</label>
+		<%= f.select :need_based_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.need_based_true), include_blank: 'Any'  %>
+	<strong>Residency</strong>
+		<label>Requiring Washington residency</label>
+		<%= f.select :resident_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.resident_true), include_blank: 'Any'  %>
+	<strong>Additional Identity Categories</strong>
+		<label>Disabilities</label>
+		<%= f.collection_select :scholarship_disabilities_disability_id_in, Disability.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
+		<label>Ethnicities or racial groups</label>
+		<%= f.collection_select :scholarship_ethnicities_ethnicity_id_in, Ethnicity.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
+		<label>Veterans, military service members, and their family members</label>
+		<%= f.select :veteran_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.veteran_true), include_blank: 'Any'  %>
+		<label>Women</label>
+		<%= f.select :female_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.female_true), include_blank: 'Any'  %>
+	<strong>Scholarship Type</strong>
+		<label>Are offered by UW</label>
+		<%= f.select :is_national_false, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.is_national_false), include_blank: 'Any'  %>
+		<label>Support activities
+			<%= f.collection_select :scholarship_types_type_id_in, Type.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
+		</label>
+		<label>Support gap year experiences</label>
+		<%= f.select :gap_year_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.gap_year_true), include_blank: 'Any'  %>
+		<label>Support graduate studies</label>
+		<%= f.select :graduate_school_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_school_true), include_blank: 'Any'  %>
+
+		
+	<br>	
+	<%= f.submit 'Filter', :class => 'button' %>
+	<%= link_to "Clear Filters", scholarships_path, :class => 'button clear_filter' %>
+
+
+<% end %>
+</div>

@@ -1,0 +1,39 @@
+<div class="scholarship_detail">
+<h3><%= @scholarship.title %></h3>
+
+<small>Website: <%= link_to @scholarship.website_name, @scholarship.website_url %></small>
+<br><br>
+
+<h5>Description</h5>
+<p><%= raw @scholarship.description %></p>
+
+<h5>Eligibility</h5>
+	<p><%= raw @scholarship.eligibility %></p>
+	
+	<% unless @scholarship.class_standings.blank? %>
+	<strong>Student Type</strong>
+		<ul>
+			<% @scholarship.class_standings.each do |class_standing| %>
+				<li><%= class_standing %></li>
+			<% end %>
+		</ul>
+	<% end %>
+	
+	<% unless @scholarship.class_standings.blank? %>
+	<strong>Citizen Type</strong>
+		<ul>
+			<% @scholarship.citizen_types.each do |citizen_type| %>
+				<li><%= citizen_type %></li>
+			<% end %>
+		</ul>	
+	<% end %>
+
+<h5>Procedure</h5>
+<p><%= raw @scholarship.procedure %></p>
+
+<h5>Contact Information</h5>
+<p><%= raw @scholarship.contact_info %></p>
+</div>
+
+<% sidebar :details_sidebar %>
+

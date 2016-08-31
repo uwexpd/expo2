@@ -3,15 +3,16 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6', git: "git://github.com/rails/rails.git", branch: '4-2-stable'
 gem 'sass-rails'
-gem 'foundation-rails'
+gem 'coffee-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails'
+gem 'foundation-icons-sass-rails'
+
+gem 'foundation-rails' 
+
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-# Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
@@ -25,6 +26,7 @@ gem 'bcrypt', '~> 3.1.7'
 # Active Admin
 gem 'activeadmin', github: 'activeadmin'
 gem 'ransack' # successor of meta search for rails 4
+gem 'active_skin'
 
 # hardens your app against XSS attack
 #gem 'secure_headers', '>= 2.1.0'
@@ -41,6 +43,15 @@ gem 'mysql2'
 gem 'activerecord-userstamp'
 gem 'tinymce-rails'
 gem 'will_paginate'
+gem 'will_paginate-foundation'
+gem 'rails_autolink'
+
+# for chosen
+gem 'compass-rails'
+gem 'chosen-rails'
+gem 'jquery-turbolinks'
+
+gem 'breadcrumbs_on_rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -57,7 +68,7 @@ group :development do
 end
 
 group :development do 
-  #gem 'thin', :require => false
+  gem 'thin', :require => false
 end  
 
 group :test do

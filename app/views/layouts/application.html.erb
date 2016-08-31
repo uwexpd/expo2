@@ -1,14 +1,60 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Expo2</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<%= yield %>
+    <title><%= content_for?(:title) ? yield(:title) : "Untitled" %></title>
 
-</body>
+    <%= stylesheet_link_tag    "application" %>
+    <%= javascript_include_tag "application", 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+    <%= favicon_link_tag 'favicon.ico' %>
+  </head>
+
+  <body>
+	<%= content_tag(:div,  content_tag(:span, "#{Rails.env}"), :class => 'rails_env', :id => Rails.env) if Rails.env != 'production' %>
+	<%= render 'shared/navigation' %>
+	
+	<div class="column row">
+		<ul class="breadcrumbs">
+			 <%= render_breadcrumbs :tag => :li, :separator => "" %>
+		</ul>		
+	</div>
+	
+	<div class="column row">
+	  <% flash.each do |name, message| %>
+	    <% if message.is_a?(String) %>
+	      <%= content_tag :div, class: "#{name} callout small", :data => { :closable => '' } do %>
+	         <%= message %>
+			 <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+			    <span aria-hidden="true">&times;</span>
+			 </button>
+		  <% end %>
+	    <% end %>
+	  <% end %>
+	</div>	
+	
+	<div id="content" class="row">
+		<div id="main" class="small-9 columns">
+	    	<%= yield %>
+		</div>
+		
+		<div id="sidebar" class="small-3 columns">
+			<%= yield :sidebar %>
+		</div>
+	</div>
+	<div class="row" id="footer-wrap">
+		<div id="footer">
+			<p id="copyright">
+				Copyright &copy; 2007&ndash;<%= Time.now.year %> <a href="http://www.washington.edu">University of Washington</a>.
+				Managed by the <a href="http://expd.uw.edu">Center for Experiential Learning &amp; Diversity</a>, a unit of 
+				<a href="http://www.washington.edu/uaa/">Undergraduate Academic Affairs</a>.
+				Any problems or questions should be sent to <%= auto_link(Rails.configuration.constants['system_help_email']) %>.
+			</p>
+			<%= render :partial => "shared/disability_statement" %>
+		</div>
+	</div>	
+		
+  </body>
 </html>
