@@ -62,16 +62,13 @@ end
 group :development do
   gem 'web-console', '~> 2.0'
   gem 'spring'
-  gem 'capistrano'
+  gem 'capistrano', '~> 3.0'
+  gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-passenger'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rvm'
   gem 'annotate'
-end
-
-group :development do 
   gem 'thin', :require => false
-end  
-
-group :test do
 end
 
 

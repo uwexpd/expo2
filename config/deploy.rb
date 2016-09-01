@@ -1,5 +1,3 @@
-require 'capistrano-passenger'
-
 # passenger once had only one way to restart: `touch tmp/restart.txt`
 # Beginning with passenger v4.0.33, a new way was introduced: `passenger-config restart-app`
 # 
@@ -24,3 +22,29 @@ require 'capistrano-passenger'
 # Gemfile and rely on capistrano-bundler to install it with the rest of your bundle.
 # If you are installing passenger during your deployment AND you want to restart using `passenger-config restart-app`,
 # you need to set `:passenger_in_gemfile` to `true` in your `config/deploy.rb`.
+
+set :stage, :production
+
+set :application, "expo2"
+set :deploy_to, "/usr/local/apps/expo2"
+set :repo_url,  "git@github.com:uwexpd/expo2.git"
+set :scm, "git"
+set :branch, 'master'
+set :deploy_user, "joshlin"
+
+# Tell cap your own private keys for git and use agent forwarding with this command.
+set :ssh_options, {
+  forward_agent: true
+}
+
+set :pty, true # Must be set for the password prompt from git to work
+
+set :rvm_ruby_string, "2.3.1" # set up which rvm ruby to use in server
+
+  server 'expd.uaa.washington.edu', user: 'joshlin', roles: %w{web app db}, primary: true
+
+set :keep_releases, 10
+
+
+
+
