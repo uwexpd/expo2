@@ -24,7 +24,7 @@ gem 'bcrypt', '~> 3.1.7'
 #gem "autoprefixer-rails", ">= 5.0.0.1"
 
 # Active Admin
-gem 'activeadmin', github: 'activeadmin'
+gem 'activeadmin', '~> 1.0.0.pre4'
 gem 'ransack' # successor of meta search for rails 4
 gem 'active_skin'
 
@@ -34,7 +34,7 @@ gem 'active_skin'
 # handle multiple primary keys in UWSDB tables: Since many UWSDB tables have multiple primary keys and Rails doesn't really "do" composite PK's
 gem "composite_primary_keys", '>=8.1.1'
 # adapter for ms sql server 2012
-gem 'tiny_tds'
+gem 'tiny_tds', '~> 0.7.0'
 gem 'activerecord-sqlserver-adapter', '~> 4.2.0'
 
 gem 'activeresource', require: 'active_resource'
