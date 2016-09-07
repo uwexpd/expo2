@@ -61,9 +61,9 @@ end
 # Note that this only work on Mac
 namespace :deploy do
   desc 'Sends a message when deployment is completed'
-  task :send do
+  task :notify do
     system("\\say Capistrano Deployment Completed!")
   end
 end
 
-after :finished, 'deploy:send'
+after :finishing, 'deploy:notify'
