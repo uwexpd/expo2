@@ -66,4 +66,4 @@ namespace :deploy do
   end
 end
 
-after :finishing, 'deploy:notify'
+after "deploy:finished", "deploy:notify"
