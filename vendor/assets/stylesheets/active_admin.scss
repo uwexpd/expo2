@@ -10,7 +10,7 @@
 // Active Admin's got SASS!
 @import "active_admin/mixins";
 @import "active_admin/base";
-$skinLogo: url("uw_patch_and_wordmark.png") no-repeat 0 0;
+$skinLogo: url(image-path("uw_patch_and_wordmark.png")) no-repeat 0 0;
 $skinActiveColor: #603CAA;
 /*$skinHeaderBck: #4b2e83;*/
 $panelHeaderBck: #4b2e83;

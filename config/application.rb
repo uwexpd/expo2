@@ -31,5 +31,7 @@ module Expo2
     
     config.constants = config_for(:constants)
     
+    config.relative_url_root = '/expo'
+    config.assets.prefix = '/expo/assets'
   end
 end

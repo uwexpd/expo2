@@ -1,17 +1,19 @@
 Rails.application.routes.draw do
-  ActiveAdmin.routes(self)
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
-  # Public Routes  
-  # User and Sessions
-  get 'login', to: 'sessions#new'
-  resources :sessions
+  scope 'expo' do
+    ActiveAdmin.routes(self)
+    # User and Sessions
+    get 'login', to: 'sessions#new'
+    resources :sessions
 
-  # You can have the root of your site routed with "root"
-  root 'admin/dashboard#index'
+    # You can have the root of your site routed with "root"
+    root 'admin/dashboard#index'
   
-  resources :scholarships, only: [:show, :index]
+    resources :scholarships, only: [:show, :index], param: :page_stub
+  end
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

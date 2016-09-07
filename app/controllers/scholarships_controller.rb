@@ -4,14 +4,14 @@ class ScholarshipsController < ApplicationController
   
   def index
     @search = Scholarship.active.ransack(params[:q])
-    @scholarships = @search.result.includes(:scholarship_deadlines).page(params[:page]).order('title')
+    @scholarships = @search.result(distinct: true).page(params[:page]).order('title')
     
     add_breadcrumb "scholarships search"
   end
 
   def show
-    if params[:id]
-      @scholarship = Scholarship.find params[:id]
+    if params[:page_stub]
+      @scholarship = Scholarship.find_by_page_stub params[:page_stub]
       unless @scholarship.is_active?
         flash[:alert] = "The scholarship, #{@scholarship.title}, is inactive. You are not able to see the details."
         redirect_to :action => "index"

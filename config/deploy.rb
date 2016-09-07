@@ -49,6 +49,21 @@ set :linked_files, %w{config/database.yml}
 # dirs we want symlinking to shared
 set :linked_dirs, %w{config/certs}
 
+namespace :deploy do
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      execute :touch, release_path.join('tmp/restart.txt')
+    end
+  end
+end
 
+# Note that this only work on Mac
+namespace :deploy do
+  desc 'Sends a message when deployment is completed'
+  task :send do
+    system("\\say Capistrano Deployment Completed!")
+  end
+end
 
-
+after :finished, 'deploy:send'
