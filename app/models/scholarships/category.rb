@@ -1,5 +1,5 @@
-class Category < ActiveRecord::Base
-  establish_connection "uso_#{Rails.env}".to_sym
+class Category < ScholarshipBase
+  self.table_name = "categories"
   
   has_many :scholarship_category
   
@@ -12,4 +12,7 @@ class Category < ActiveRecord::Base
     name
   end
   
+  def sub_categories
+    Category.where(parent_id: self.id)
+  end
 end

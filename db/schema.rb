@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160520190543) do
+ActiveRecord::Schema.define(version: 20160822231123) do
 
   create_table "academic_departments", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -2286,6 +2286,20 @@ ActiveRecord::Schema.define(version: 20160520190543) do
   create_table "pipeline_positions_grade_levels_links", force: :cascade do |t|
     t.integer "pipeline_position_id",              limit: 4
     t.integer "pipeline_positions_grade_level_id", limit: 4
+  end
+
+  create_table "pipeline_positions_language_spokens", force: :cascade do |t|
+    t.string   "name",        limit: 255
+    t.text     "description", limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pipeline_positions_language_spokens_links", force: :cascade do |t|
+    t.integer  "pipeline_position_id",                  limit: 4
+    t.integer  "pipeline_positions_language_spoken_id", limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "pipeline_positions_subjects", force: :cascade do |t|

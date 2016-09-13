@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.6', git: "git://github.com/rails/rails.git", branch: '4-2-stable'
+#gem 'rails', '4.2.6', git: "git://github.com/rails/rails.git", branch: '4-2-stable'
+gem 'rails', '~> 4.2', '>= 4.2.7.1'
 gem 'sass-rails'
 gem 'coffee-rails'
 # Use Uglifier as compressor for JavaScript assets
@@ -62,7 +63,7 @@ end
 group :development do
   gem 'web-console', '~> 2.0'
   gem 'spring'
-  gem 'capistrano', '~> 3.0'
+  gem 'capistrano', '~> 3.1'
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-passenger'
   gem 'capistrano-bundler'

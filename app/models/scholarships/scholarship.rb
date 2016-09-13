@@ -1,5 +1,5 @@
-class Scholarship < ActiveRecord::Base
-  establish_connection "uso_#{Rails.env}".to_sym
+class Scholarship < ScholarshipBase
+  self.table_name = "scholarships"
   
   has_many :scholarship_categories
   has_many :scholarship_deadlines
@@ -8,6 +8,8 @@ class Scholarship < ActiveRecord::Base
   has_many :scholarship_types
   
   scope :active, -> { where(is_active: true) }
+  scope :incoming, -> { where(is_incoming_student: true) }
+  scope :upcoming, -> { joins(:scholarship_deadlines).where('scholarship_deadlines.is_active = ? and scholarship_deadlines.deadline >= NOW() and scholarship_deadlines.deadline < DATE_ADD(NOW(), INTERVAL 1 MONTH)', true).group('title') }
   
   def scholarship_type_name
     scholarship_type.collect{|t|t.type.title}

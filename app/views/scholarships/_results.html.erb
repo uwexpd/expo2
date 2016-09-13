@@ -6,7 +6,7 @@
 			<th><%= sort_link(@search, :title, default_order: :desc) %></th>
 			<th>Class Standing</th>
 			<th><%= sort_link(@search, :gpa, default_order: :desc) %></th>
-			<th>Deadline</th>
+			<th><%= sort_link(@search, :scholarship_deadlines_deadline, "Deadline", default_order: :desc) %></th>
 		</tr>
 	</thead>
 	<tbody>

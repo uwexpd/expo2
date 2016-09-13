@@ -1,5 +1,5 @@
-class Type < ActiveRecord::Base
-  establish_connection "uso_#{Rails.env}".to_sym
+class Type < ScholarshipBase
+  self.table_name = "types"
   
   has_many :scholarship_type
   

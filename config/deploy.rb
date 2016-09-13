@@ -25,7 +25,6 @@
 
 set :stage, :production
 
-set :application, "expo2"
 set :deploy_to, "/usr/local/apps/expo2"
 set :repo_url,  "git@github.com:uwexpd/expo2.git"
 set :scm, "git"
@@ -44,26 +43,29 @@ set :ssh_options, {
 set :keep_releases, 10
 
 # files we want symlinking to specific entries in shared.
-set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/database.yml config/database_scholarships.yml Passengerfile.json}
 
 # dirs we want symlinking to shared
 set :linked_dirs, %w{config/certs}
 
+set :assets_prefix, 'expo/assets'
+  
 namespace :deploy do
+  task :fix_absent_manifest_bug do
+     on roles(:web) do
+       within release_path do execute :touch,
+         release_path.join('public/expo/assets/manifest-fix.temp')
+       end
+     end
+  end
+
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
       execute :touch, release_path.join('tmp/restart.txt')
     end
   end
+  
 end
 
-# Note that this only work on Mac
-namespace :deploy do
-  desc 'Sends a message when deployment is completed'
-  task :notify do
-    system("\\say Capistrano Deployment Completed!")
-  end
-end
-
-after "deploy:finished", "deploy:notify"
+after 'deploy:assets:precompile', 'deploy:fix_absent_manifest_bug'

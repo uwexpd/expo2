@@ -1,5 +1,5 @@
-class ScholarshipEthnicity < ActiveRecord::Base
-  establish_connection "uso_#{Rails.env}".to_sym
+class ScholarshipEthnicity < ScholarshipBase
+  self.table_name = "scholarship_ethnicities"
   
   belongs_to :scholarship
   belongs_to :ethnicity

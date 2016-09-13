@@ -16,12 +16,12 @@
 		<label>4th Year Undergraduate</label>
 		<%= f.select :senior_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.senior_true), include_blank: "Any"  %>
 		<label>5th Year Undergraduate</label>
-		<%= f.select :graduate_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_true), include_blank: "Any"  %>
+		<%= f.select :fifth_year_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.fifth_year_true), include_blank: "Any"  %>
 		<label>Alumni and/or graduate student</label>
 		<%= f.select :graduate_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_true), include_blank: "Any"  %>
 	
 	<strong>Field(s) of Interest or Study</strong>
-		<%= f.collection_select :scholarship_categories_category_id_in, Category.where(parent_id: 0), :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'}  %>
+		<%= f.collection_select :scholarship_categories_category_id_in, Category.where(parent_id: 0).where.not(id: [188,189]), :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'}  %>
 		
 	<strong>Citizenship</strong>
 		<label>US Citizen</label>
@@ -43,13 +43,15 @@
 		<%= f.collection_select :scholarship_disabilities_disability_id_in, Disability.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
 		<label>Ethnicities or racial groups</label>
 		<%= f.collection_select :scholarship_ethnicities_ethnicity_id_in, Ethnicity.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
+		<label>LGBTQI community</label>
+		<%= f.select :lgbtqi_community_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.lgbtqi_community_true), include_blank: 'Any'  %>		
 		<label>Veterans, military service members, and their family members</label>
 		<%= f.select :veteran_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.veteran_true), include_blank: 'Any'  %>
 		<label>Women</label>
 		<%= f.select :female_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.female_true), include_blank: 'Any'  %>
 	<strong>Scholarship Type</strong>
 		<label>Are offered by UW</label>
-		<%= f.select :is_national_false, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.is_national_false), include_blank: 'Any'  %>
+		<%= f.select :is_departmental_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.is_departmental_true), include_blank: 'Any'  %>
 		<label>Support activities
 			<%= f.collection_select :scholarship_types_type_id_in, Type.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
 		</label>

@@ -1,5 +1,5 @@
-class ScholarshipDeadline < ActiveRecord::Base
-  establish_connection "uso_#{Rails.env}".to_sym
+class ScholarshipDeadline < ScholarshipBase
+  self.table_name = "scholarship_deadlines"
   
   belongs_to :scholarship
   belongs_to :category

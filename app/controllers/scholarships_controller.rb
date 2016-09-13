@@ -3,8 +3,18 @@ class ScholarshipsController < ApplicationController
   add_breadcrumb "OSMFA home", "http://expd.uw.edu/scholarships"
   
   def index
+    if params[:q]
+      selected_categories = params[:q][:scholarship_categories_category_id_in].reject(&:blank?) unless params[:q][:scholarship_categories_category_id_in].nil?
+      unless selected_categories.blank?
+        categories_with_sub = selected_categories
+        selected_categories.each do |category_id|
+          categories_with_sub += Category.find(category_id).sub_categories.collect{|s| s.id.to_s }
+        end
+        params[:q][:scholarship_categories_category_id_in] = categories_with_sub
+      end
+    end
     @search = Scholarship.active.ransack(params[:q])
-    @scholarships = @search.result(distinct: true).page(params[:page]).order('title')
+    @scholarships = @search.result.includes(:scholarship_deadlines).page(params[:page]).uniq.order('title')
     
     add_breadcrumb "scholarships search"
   end

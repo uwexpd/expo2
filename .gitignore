@@ -22,7 +22,7 @@
 
 # Security
 /config/database.yml
+/config/database_scholarships.yml
 /config/certs
 /config/uwca.crt
-
-
+Passengerfile.json
