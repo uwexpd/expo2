@@ -2,6 +2,8 @@ class ScholarshipsController < ApplicationController
 
   add_breadcrumb "OSMFA home", "http://expd.uw.edu/scholarships"
   
+  skip_before_filter :login_required
+  
   def index
     if params[:q]
       selected_categories = params[:q][:scholarship_categories_category_id_in].reject(&:blank?) unless params[:q][:scholarship_categories_category_id_in].nil?

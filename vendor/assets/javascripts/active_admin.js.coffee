@@ -1,6 +1,8 @@
 #= require active_admin/base
 #= require tinymce
 
+tinyMCE.baseURL = '/expo/assets/tinymce/';
+
 `$(document).ready(function() {
   tinyMCE.init({
      selector: '.tinymce',

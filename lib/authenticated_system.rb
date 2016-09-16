@@ -33,7 +33,7 @@ module AuthenticatedSystem
     #  def authorized?
     #    current_user.login != "bob"
     #  end
-    def authorized?(required_identity = nil)
+    def user_authorized?(required_identity = nil)
       # logger.info { "authorized?() -- required_identity: #{required_identity}" }
       logged_in?(required_identity)
     end
@@ -50,18 +50,18 @@ module AuthenticatedSystem
     #   skip_before_filter :login_required
     #
     def login_required
-      authorized? || access_denied
+      user_authorized? || access_denied
     end
     
     # Filter method to enforce a login requirement. Requires that the user is a student.
     def student_login_required
-      authorized?('Student') || access_denied
+      user_authorized?('Student') || access_denied
     end
     
     # Filter method to enforce a login requirement. Requires that the user is logged in as a Student if a student record
     # exists for the person. Otherwise, allow them to login as a normal non-Student user.
     def student_login_required_if_possible
-      authorized?('Student') || authorized? || access_denied
+      user_authorized?('Student') || user_authorized? || access_denied
     end
 
     # Returns true if the current user is an admin user and deny access if not.
@@ -82,7 +82,7 @@ module AuthenticatedSystem
       respond_to do |accepts|
         accepts.html do
           store_location
-          redirect_to :controller => '/session', :action => 'new'
+          redirect_to :controller => '/sessions', :action => 'new'
         end
         accepts.xml do
           headers["Status"]           = "Unauthorized"
@@ -97,7 +97,7 @@ module AuthenticatedSystem
     #
     # We can return to this location by calling #redirect_back_or_default.
     def store_location
-      session[:return_to] = request.request_uri
+      session[:return_to] = request.original_url
     end
     
     # Redirect to the URI stored by the most recent store_location call or

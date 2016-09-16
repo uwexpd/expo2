@@ -1,8 +1,10 @@
 # This controller handles the login/logout function of the site.  
 class SessionsController < ApplicationController
   
+  skip_before_filter :login_required
+  
   layout 'active_admin_logged_out'
-
+  
   def create
     # auth = request.env["omniauth.auth"]
     #     if !auth.nil? && auth["provider"] == "shibboleth"        

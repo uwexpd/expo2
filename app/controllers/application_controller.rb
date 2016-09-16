@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
   
   include AuthenticatedSystem
   
+  before_filter :login_required
+  
   def authenticate_admin_user!
     unless current_admin_user
       flash[:error] = "Access denied! Please make sure you have admin permission."
@@ -13,9 +15,10 @@ class ApplicationController < ActionController::Base
   end
   
   def current_admin_user
-    return nil if !current_user.admin?
+    return false if !current_user.admin?
     current_user
   end
+    
       
       
 end

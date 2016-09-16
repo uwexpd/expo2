@@ -4,13 +4,14 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   scope 'expo' do
+    
     ActiveAdmin.routes(self)
-    # User and Sessions
-    get 'login', to: 'sessions#new'
+    
+    root 'scholarships#index'
+    
+    # User and Sessions    
     resources :sessions
-
-    # You can have the root of your site routed with "root"
-    root 'admin/dashboard#index'
+    get 'login', to: 'sessions#new'   
   
     resources :scholarships, only: [:show, :index], param: :page_stub
   end
