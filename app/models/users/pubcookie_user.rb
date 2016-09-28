@@ -6,9 +6,9 @@ class PubcookieUser < User
   end
   
   # For use in polymporphic finds. TODO: This is a hack.
-  def self.parent_class
-    User
-  end
+  # def self.parent_class
+  #   User
+  # end
 
 =begin
   def person_is_valid

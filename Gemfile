@@ -27,7 +27,7 @@ gem 'bcrypt', '~> 3.1.7'
 # Active Admin
 gem 'activeadmin', '~> 1.0.0.pre4'
 gem 'ransack' # successor of meta search for rails 4
-gem 'active_skin'
+# gem 'active_skin'
 
 # hardens your app against XSS attack
 #gem 'secure_headers', '>= 2.1.0'
@@ -54,8 +54,11 @@ gem 'jquery-turbolinks'
 
 gem 'breadcrumbs_on_rails'
 
+group :production do  
+  gem "omniauth-shibboleth"
+end
+
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'awesome_print'  
 end

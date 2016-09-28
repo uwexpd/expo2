@@ -39,7 +39,7 @@
 		<label>Requiring Washington residency</label>
 		<%= f.select :resident_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.resident_true), include_blank: 'Any'  %>
 	<strong>Additional Identity Categories</strong>
-	    <label>Limit my results to show only scholarships that might target students identifying with these categories. I understand that I could also be a strong candidate for scholarships that aren't targets at these specific identities. I also understand that this list of identityies reflects the limited scholarships in this specific database, and it not exhaustive.</label>
+	    <label><small>Use these categories to show only those scholarships that target students identifying with these communities. Please understand that you could also be a strong candidate for scholarships that don’t target these specific identities, and that this list is not exhaustive.</small></label>
 		<label>Disabilities</label>
 		<%= f.collection_select :scholarship_disabilities_disability_id_in, Disability.all.reject{|d|d.id==4}, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
 		<label>Ethnicities or racial groups</label>

@@ -5,13 +5,14 @@ Rails.application.routes.draw do
 
   scope 'expo' do
     
-    ActiveAdmin.routes(self)
+    root 'admin/dashboard#index'
     
-    root 'scholarships#index'
+    ActiveAdmin.routes(self)        
     
     # User and Sessions    
     resources :sessions
-    get 'login', to: 'sessions#new'   
+    get 'login', to: 'sessions#new'
+    get '/auth/:provider/callback', to: 'sessions#create'
   
     resources :scholarships, only: [:show, :index], param: :page_stub
   end

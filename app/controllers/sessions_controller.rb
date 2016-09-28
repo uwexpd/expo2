@@ -6,13 +6,13 @@ class SessionsController < ApplicationController
   layout 'active_admin_logged_out'
   
   def create
-    # auth = request.env["omniauth.auth"]
-    #     if !auth.nil? && auth["provider"] == "shibboleth"        
-    #         redirect_back_or_default(root_url)
-    #         return
-    #     else
-        password_authentication(params[:username], params[:password])
-    # end   
+    auth = request.env["omniauth.auth"]
+    if !auth.nil? && auth["provider"] == "shibboleth"        
+        redirect_back_or_default(root_url)
+        return
+    else
+        password_authentication(params[:login], params[:password])
+    end   
   end
   
     
@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
   
   def successful_login
     session[:limit_login_to] = nil
-    redirect_back_or_default(root_path)
+    redirect_back_or_default(root_url)
     flash[:notice] = "Logged in successfully"
     LoginHistory.login(self.current_user, (request.env["HTTP_X_FORWARDED_FOR"] || request.env["REMOTE_ADDR"]), request.session_options[:id])    
   end

@@ -1,5 +1,16 @@
 <div id="login">
-  <h2>EXPD Online System</h2>
+
+<h2>UW Students, Faculty &amp; Staff</h2>	
+  <%= form_tag '/auth/shibboleth' do %>
+	<div id="uwnetid">				
+		<div id="login_button">	
+			<%= submit_tag 'Sign In with UW NetID', :name => 'uwnetid_button', :id => "uwnetid_button" %>
+			<%#= link_to image_tag('app/weblogin-logo.gif', :id => "weblogin_logo"), '/auth/shibboleth' %>		
+		</div>
+	</div>	
+  <% end %>
+	
+<h2>All Other Non-UW Users</h2>
 				
   <%= form_tag sessions_path do %>
 	<table>
