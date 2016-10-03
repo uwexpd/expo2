@@ -44,9 +44,9 @@ body.logged_out #login form table tr td {
 
 
 body.logged_out #login form label {
-  	font-size: 1.3em;
-    font-weight: bold;
+  	font-size: 1.1em;   
     text-align: right;
+    padding-right: 1em;
 }
 
 body.logged_out #login form input[type=text], body.logged_out #login form input[type=email], body.logged_out #login form input[type=password] {
@@ -77,12 +77,22 @@ form fieldset.inputs ol li.text div.mce-tinymce {
     text-align: left;
 }
 
+#login {
+	padding: 20px 40px;
+}
+
+#login h2 {
+    position: relative !important;
+	border-bottom: #999 2px dotted;
+    padding-bottom: 5px;	
+}
+
 #login #uwnetid {
 	padding-bottom: 2rem;
 }
 
 .scope.selected a {
   background-color: #009688;
-  padding:4px  0
+  padding:4px  0;
 }
 

@@ -10,6 +10,23 @@ ActiveAdmin.register Scholarship do
   scope :incoming
   scope :upcoming
 
+  # Customize columns displayed on the index screen in the table
+  index do
+    selectable_column
+    column 'Title', sortable: :title do |scholarship|
+      link_to scholarship.title, admin_scholarship_path(scholarship)
+    end    
+    column 'National', :is_national do |scholarship| 
+        status_tag scholarship.is_national? 
+    end
+    column 'Active', :is_national do |scholarship| 
+        status_tag scholarship.is_active? 
+    end
+    column 'Deadlines', :deadlines
+    actions
+  end
+  
+  
   show do
     tabs do
       tab 'Overview' do
@@ -17,7 +34,7 @@ ActiveAdmin.register Scholarship do
             row :title
             row :page_stub
             row (:description) {|scholarship| raw(scholarship.description) }
-            row :blurb
+            row (:blurb) {|scholarship| raw(scholarship.blurb) }
             row :website_name
             row :website_url
             row (:procedure) {|scholarship| raw(scholarship.procedure) }
@@ -101,19 +118,7 @@ ActiveAdmin.register Scholarship do
           column :title        
         end
       end
-  end
-  
-  # Customize columns displayed on the index screen in the table
-  index do
-    selectable_column
-    column 'Title', sortable: :title do |scholarship|
-      link_to scholarship.title, admin_scholarship_path(scholarship)
-    end    
-    column 'National', :is_national
-    column 'Active', :is_active
-    column 'Deadlines', :deadlines
-    actions
-  end
+  end    
   
   form do |f|
       f.semantic_errors *f.object.errors.keys
