@@ -21,7 +21,7 @@
 		<%= f.select :graduate_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_true), include_blank: "Any"  %>
 	
 	<strong>Field(s) of Interest or Study</strong>
-		<%= f.collection_select :scholarship_categories_category_id_in, Category.where(parent_id: 0).where.not(id: [188,189]), :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'}  %>
+		<%= f.collection_select :categories_category_id_in, Category.where(parent_id: 0).where.not(id: [188,189]), :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'}  %>
 		
 	<strong>Citizenship</strong>
 		<label>US Citizen</label>
@@ -41,9 +41,9 @@
 	<strong>Additional Identity Categories</strong>
 	    <label><small>Use these categories to show only those scholarships that target students identifying with these communities. Please understand that you could also be a strong candidate for scholarships that don’t target these specific identities, and that this list is not exhaustive.</small></label>
 		<label>Disabilities</label>
-		<%= f.collection_select :scholarship_disabilities_disability_id_in, Disability.all.reject{|d|d.id==4}, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
+		<%= f.collection_select :disabilities_disability_id_in, Disability.all.reject{|d|d.id==4}, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
 		<label>Ethnicities or racial groups</label>
-		<%= f.collection_select :scholarship_ethnicities_ethnicity_id_in, Ethnicity.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>				
+		<%= f.collection_select :ethnicities_ethnicity_id_in, Ethnicity.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>				
 		<label>LGBTQI community</label>
 		<%= f.select :lgbtqi_community_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.lgbtqi_community_true), include_blank: 'Any'  %>		
 		<label>Veterans, military service members, and their family members <small>(Under development, more listings coming soon. Meanwhile, <%= link_to 'please download our veterans scholarships list', 'http://depts.washington.edu/scholarq/pdfs/Scholarships for Military Veterans and Families2.pdf', target: '_blank' %>)</small></label>		
@@ -55,7 +55,7 @@
 		<label>Are offered by UW</label>
 		<%= f.select :is_departmental_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.is_departmental_true), include_blank: 'Any'  %>
 		<label>Support activities
-			<%= f.collection_select :scholarship_types_type_id_in, Type.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
+			<%= f.collection_select :types_type_id_in, Type.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
 		</label>
 		<label>Support gap year experiences</label>
 		<%= f.select :gap_year_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.gap_year_true), include_blank: 'Any'  %>

@@ -27,7 +27,7 @@ gem 'bcrypt', '~> 3.1.7'
 # Active Admin
 gem 'activeadmin', '~> 1.0.0.pre4'
 gem 'ransack' # successor of meta search for rails 4
-# gem 'active_skin'
+gem "active_material", github: "vigetlabs/active_material"
 
 # hardens your app against XSS attack
 #gem 'secure_headers', '>= 2.1.0'

@@ -9,7 +9,8 @@
 
 // Active Admin's got SASS!
 @import "active_admin/mixins";
-@import "active_admin/base";
+/*@import "active_admin/base";*/
+@import "active_material";
 /*$skinLogo: url(image-path("uw_patch_and_wordmark.png")) no-repeat 0 0;
 $skinActiveColor: #603CAA;*/
 /*$skinHeaderBck: #4b2e83;*/
@@ -55,9 +56,9 @@ body.logged_out #login form input[type=text], body.logged_out #login form input[
 }
 
 form fieldset.inputs ol li.text div.mce-tinymce {
-	float: left;
-	width:75%;
-	margin-bottom: 25px;	
+/*	float: left;*/
+	width:87%;
+/*		margin-bottom: 25px;	*/
 }
 
 #header h1.site_title {
@@ -73,9 +74,15 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 	padding: 15px 30px;
     font-size: 0.9em;
     clear: both;
+    text-align: left;
 }
 
 #login #uwnetid {
 	padding-bottom: 2rem;
+}
+
+.scope.selected a {
+  background-color: #009688;
+  padding:4px  0
 }
 

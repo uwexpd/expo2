@@ -4,4 +4,8 @@ class ScholarshipCategory < ScholarshipBase
   belongs_to :scholarship
   belongs_to :category
   
+  def name
+    category.name
+  end
+  
 end

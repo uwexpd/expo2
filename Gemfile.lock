@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/vigetlabs/active_material.git
+  revision: d5770178831fc67e2224290a532e26d9e8da7ec7
+  specs:
+    active_material (1.4.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -290,6 +296,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_material!
   activeadmin (~> 1.0.0.pre4)
   activerecord-sqlserver-adapter (~> 4.2.0)
   activerecord-userstamp

@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
         redirect_back_or_default(root_url)
         return
     else
-        password_authentication(params[:login], params[:password])
+       password_authentication(params[:username], params[:password])
     end   
   end
   

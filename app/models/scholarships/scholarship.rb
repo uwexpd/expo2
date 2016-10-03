@@ -1,11 +1,13 @@
 class Scholarship < ScholarshipBase
-  self.table_name = "scholarships"
+  self.table_name = "scholarships"  
   
-  has_many :scholarship_categories
+  has_many :categories, :class_name => "ScholarshipCategory", :foreign_key => "scholarship_id"
+  has_many :disabilities, :class_name => "ScholarshipDisability", :foreign_key => "scholarship_id"
+  has_many :ethnicities, :class_name => "ScholarshipEthnicity", :foreign_key => "scholarship_id"
+  has_many :types, :class_name => "ScholarshipType", :foreign_key => "scholarship_id"
   has_many :scholarship_deadlines
-  has_many :scholarship_disabilities
-  has_many :scholarship_ethnicities
-  has_many :scholarship_types
+  
+  accepts_nested_attributes_for :scholarship_deadlines, :categories, :disabilities, :ethnicities, :types, allow_destroy: true
   
   scope :active, -> { where(is_active: true) }
   scope :incoming, -> { where(is_incoming_student: true) }
@@ -38,6 +40,15 @@ class Scholarship < ScholarshipBase
   
   def deadlines(separator = ", ")
     scholarship_deadlines.collect{|d| d.deadline.to_s }.join(separator)
+  end
+  
+  def deadlines_list
+    line = '<ul>'    
+    scholarship_deadlines.each do |d|
+       line <<  "<li>#{d.deadline.to_s}</li>"
+    end
+    line = line + "</ul>"
+    line.html_safe
   end
   
 end
