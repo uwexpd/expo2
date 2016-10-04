@@ -10,13 +10,12 @@
 // Active Admin's got SASS!
 @import "active_admin/mixins";
 /*@import "active_admin/base";*/
+
+/* Custom active material theme variables for UW look and feel */
+$am-theme-primary: #4b2e83;
+$am-theme-accent: #b7a57a;
 @import "active_material";
-/*$skinLogo: url(image-path("uw_patch_and_wordmark.png")) no-repeat 0 0;
-$skinActiveColor: #603CAA;*/
-/*$skinHeaderBck: #4b2e83;*/
-/*$panelHeaderBck: #4b2e83;
-@import "active_skin";
-*/
+
 // Overriding any non-variable SASS must be done after the fact.
 // For example, to change the default status-tag color:
 //
@@ -26,33 +25,6 @@ $skinActiveColor: #603CAA;*/
 
 body.active_admin {
 	padding-bottom: 0px;
-}
-
-body.logged_out h2 {
-	font-size: 1.5em;
-	line-height: 30px;
-	
-}
-
-body.logged_out #login form {
-  	padding: 15px 0;
-}
-
-body.logged_out #login form table tr td {
- 	vertical-align: middle;
-}
-
-
-body.logged_out #login form label {
-  	font-size: 1.1em;   
-    text-align: right;
-    padding-right: 1em;
-}
-
-body.logged_out #login form input[type=text], body.logged_out #login form input[type=email], body.logged_out #login form input[type=password] {
-  	width: 70%;
-  	font-size:1.2em;
-  	padding-left:8px;
 }
 
 form fieldset.inputs ol li.text div.mce-tinymce {
@@ -77,6 +49,7 @@ form fieldset.inputs ol li.text div.mce-tinymce {
     text-align: left;
 }
 
+/* login page style */
 #login {
 	padding: 20px 40px;
 }
@@ -91,8 +64,52 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 	padding-bottom: 2rem;
 }
 
-.scope.selected a {
-  background-color: #009688;
-  padding:4px  0;
+body.logged_out h2 {
+	font-size: 1.5em;
+	line-height: 30px;	
 }
 
+body.logged_out #login form {
+  	padding: 15px 0;
+}
+
+body.logged_out #login form table tr td {
+ 	vertical-align: middle;
+}
+
+
+body.logged_out #login form label {
+  	font-size: 1.1em;   
+    text-align: right;
+    padding-right: 1em;
+}
+
+body.logged_out #login form input[type=text], body.logged_out #login form input[type=email], body.logged_out #login form input[type=password] {
+  	width: 70%;
+  	font-size:1.2em;
+  	padding-left:8px;
+}
+
+.scope.selected a {
+  padding:4px  0;
+  -webkit-font-smoothing: antialiased;
+  color: whitesmoke;
+}
+
+.with_sidebar #sidebar {
+	min-width: 280px;	
+}
+
+form ul.errors {
+	background-color: #f44336;
+	color: white;
+	padding: 15px;
+}
+
+form ul.errors li {
+	margin-left: 20px;	
+}
+
+.inline-errors{
+	font-size: 0.85rem;
+}

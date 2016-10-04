@@ -3,5 +3,6 @@ class ScholarshipType < ScholarshipBase
   
   belongs_to :scholarship
   belongs_to :type
+  validates :scholarship_id, :type_id, presence: true
   
 end
