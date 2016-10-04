@@ -274,7 +274,7 @@ ActiveAdmin.setup do |config|
   #
   # config.include_default_association_filters = true
   
-  config.current_filters = false
+  #config.current_filters = false
   
   config.register_javascript 'tinymce.js'
   

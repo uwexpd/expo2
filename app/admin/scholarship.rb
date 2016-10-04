@@ -20,7 +20,9 @@ ActiveAdmin.register Scholarship do
     column 'Active', sortable: :is_active do |scholarship| 
         status_tag scholarship.is_active? 
     end
-    column 'Deadlines', :deadlines
+    column "Deadlines" do |scholarship|
+       scholarship.scholarship_deadlines.map{ |d| d.deadline }.compact.join("<br>").html_safe
+    end
     actions
   end  
   

@@ -113,3 +113,7 @@ form ul.errors li {
 .inline-errors{
 	font-size: 0.85rem;
 }
+
+#index_table_scholarships .col-title, #index_table_scholarships .col-deadlines {
+	min-width: 110px;
+}

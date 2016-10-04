@@ -13,6 +13,8 @@ class Scholarship < ScholarshipBase
   scope :incoming, -> { where(is_incoming_student: true) }
   scope :upcoming, -> { joins(:scholarship_deadlines).where('scholarship_deadlines.is_active = ? and scholarship_deadlines.deadline >= NOW() and scholarship_deadlines.deadline < DATE_ADD(NOW(), INTERVAL 1 MONTH)', true).group('title') }
   
+  validates :title, presence: true
+  
   def scholarship_type_name
     scholarship_type.collect{|t|t.type.title}
   end
@@ -40,15 +42,6 @@ class Scholarship < ScholarshipBase
   
   def deadlines(separator = ", ")
     scholarship_deadlines.collect{|d| d.deadline.to_s }.join(separator)
-  end
-  
-  def deadlines_list
-    line = '<ul>'    
-    scholarship_deadlines.each do |d|
-       line <<  "<li>#{d.deadline.to_s}</li>"
-    end
-    line = line + "</ul>"
-    line.html_safe
   end
   
 end

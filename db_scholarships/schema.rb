@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20160912175344) do
 
   create_table "categories", force: :cascade do |t|
     t.string  "name",      limit: 200, default: "", null: false
@@ -89,13 +89,13 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   create_table "scholarship_disabilities", force: :cascade do |t|
-    t.integer "scholarship_id", limit: 4
-    t.integer "disability_id",  limit: 4
+    t.integer "scholarship_id", limit: 4, null: false
+    t.integer "disability_id",  limit: 4, null: false
   end
 
   create_table "scholarship_ethnicities", force: :cascade do |t|
-    t.integer "scholarship_id", limit: 4
-    t.integer "ethnicity_id",   limit: 4
+    t.integer "scholarship_id", limit: 4, null: false
+    t.integer "ethnicity_id",   limit: 4, null: false
   end
 
   create_table "scholarship_types", force: :cascade do |t|
@@ -104,7 +104,7 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   create_table "scholarships", force: :cascade do |t|
-    t.string   "uwnetid",             limit: 64,                  null: false
+    t.string   "uwnetid",             limit: 64,    default: ""
     t.text     "title",               limit: 65535,               null: false
     t.text     "description",         limit: 65535
     t.text     "history",             limit: 65535
@@ -114,8 +114,8 @@ ActiveRecord::Schema.define(version: 0) do
     t.text     "service_agreement",   limit: 65535
     t.string   "website_name",        limit: 500,   default: ""
     t.string   "website_url",         limit: 2000,  default: ""
-    t.datetime "created",                                         null: false
-    t.datetime "modified",                                        null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
     t.text     "award_amount",        limit: 65535
     t.integer  "freshman",            limit: 2,     default: 0,   null: false
     t.integer  "sophomore",           limit: 2,     default: 0,   null: false
@@ -123,8 +123,8 @@ ActiveRecord::Schema.define(version: 0) do
     t.integer  "senior",              limit: 2,     default: 0,   null: false
     t.integer  "graduate",            limit: 2,     default: 0,   null: false
     t.string   "disability",          limit: 1000,  default: ""
-    t.integer  "male",                limit: 2,     default: 0,   null: false
-    t.integer  "female",              limit: 2,     default: 0,   null: false
+    t.integer  "male",                limit: 2,     default: 0
+    t.integer  "female",              limit: 2,     default: 0
     t.string   "gpa",                 limit: 1000,  default: ""
     t.integer  "us_citizen",          limit: 2,     default: 0,   null: false
     t.integer  "permanent_resident",  limit: 2,     default: 0,   null: false
@@ -133,7 +133,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string   "ethnicity",           limit: 1000,  default: ""
     t.string   "length_of_award",     limit: 1000,  default: ""
     t.string   "num_awards",          limit: 1000,  default: "0", null: false
-    t.integer  "is_active",           limit: 2,     default: 1,   null: false
+    t.integer  "is_active",           limit: 2,     default: 0,   null: false
     t.integer  "resident",            limit: 2,     default: 0,   null: false
     t.integer  "non_resident",        limit: 2,     default: 0,   null: false
     t.integer  "is_national",         limit: 2,     default: 0,   null: false
