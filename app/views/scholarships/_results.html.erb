@@ -17,7 +17,7 @@
 	<% @scholarships.each do |scholarship| %>
 
 		<tr>
-			<td width = "60%"><%= link_to scholarship.title, scholarship_path(scholarship.page_stub) %></td>
+			<td width = "60%"><%= link_to scholarship.title, scholarship_path(scholarship.page_stub) rescue scholarship.title %></td>
 			<td width = "16%" ><%= scholarship.class_standings(", ") %></td>
 			<td width = "8%"><%= scholarship.gpa %></td>
 			<td width = "16%" >

@@ -30,7 +30,7 @@ ActiveAdmin.register Scholarship do
     tabs do
         tab 'Overview' do
           attributes_table do
-              row :title
+              row :title         
               row :page_stub
               row (:description) {|scholarship| raw(scholarship.description) }
               row (:blurb) {|scholarship| raw(scholarship.blurb) }
@@ -104,20 +104,25 @@ ActiveAdmin.register Scholarship do
       end # end of tabs
   end
   
-  sidebar "Award Details", only: :show do       
+  sidebar "Award Details", only: :show do
       attributes_table_for scholarship do
         row :length_of_award
         row :num_awards
         row :award_amount
       end
-      panel "Deadlines" do
-        deadlines = scholarship.scholarship_deadlines
-        table_for deadlines do
-          column :deadline
-          column :title        
-        end
+  end
+  sidebar "Deadlines", only: :show do  
+      deadlines = scholarship.scholarship_deadlines
+      table_for deadlines do
+        column :deadline
+        column :title
       end
-  end    
+  end
+  sidebar "Last update time", only: :show do
+    attributes_table_for scholarship do
+      row :updated_at
+    end
+  end
   
   form do |f|
     f.semantic_errors *f.object.errors.keys
