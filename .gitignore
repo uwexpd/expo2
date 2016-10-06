@@ -19,7 +19,6 @@
 
 # Ignore results of `rake assets:precompile`.
 /public/assets/
-/public/error_images/
 
 # Security
 /config/database.yml
