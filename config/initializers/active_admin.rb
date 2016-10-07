@@ -101,13 +101,13 @@ ActiveAdmin.setup do |config|
   #
   # Default:
   #config.logout_link_path = :destroy_admin_user_session_path
-  config.logout_link_path = false
+  config.logout_link_path = :logout_path
 
   # This setting changes the http method used when rendering the
   # link. For example :get, :delete, :put, etc..
   #
   # Default:
-  # config.logout_link_method = :get
+  config.logout_link_method = :delete
 
   # == Root
   #

@@ -1,16 +1,19 @@
-<div id="login">
+<div id="login_header"></div>
 
-<h2>UW Students, Faculty &amp; Staff</h2>	
-  <%= form_tag '/expo/auth/shibboleth' do %>
+<div id="login">
+	
+<h2 id="uw">UW Students, Faculty &amp; Staff</h2>
+
+  <%= form_tag '/expo/auth/shibboleth/callback' do %>
 	<div id="uwnetid">				
 		<div id="login_button">	
-			<%= submit_tag 'Sign In with UW NetID', :name => 'uwnetid_button', :id => "uwnetid_button" %>
+			<p><%= submit_tag 'Sign In with UW NetID', :name => 'uwnetid_button', :id => "uwnetid_button" %></p>
 			<%#= link_to image_tag('app/weblogin-logo.gif', :id => "weblogin_logo"), '/auth/shibboleth' %>		
 		</div>
 	</div>	
   <% end %>
 	
-<h2>All Other Non-UW Users</h2>
+<h2 id="non_uw">All Other Non-UW Users</h2>
 				
   <%= form_tag sessions_path do %>
 	<table>

@@ -11,7 +11,8 @@ Rails.application.routes.draw do
     
     # User and Sessions    
     resources :sessions
-    get 'login', to: 'sessions#new'
+    get 'login',  to: 'sessions#new'
+    delete 'logout', to: 'sessions#destroy'
     get '/auth/:provider/callback', to: 'sessions#create'
   
     resources :scholarships, only: [:show, :index], param: :page_stub

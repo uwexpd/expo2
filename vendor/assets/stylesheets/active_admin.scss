@@ -51,18 +51,41 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 }
 
 /* login page style */
-#login {
-	padding: 20px 40px;
+#login_header {
+	width: 37%;
+    margin: -102px auto 32px;
+	background: url(image-path('expo-logo-light.png')) no-repeat;
+    height: 67px;    
 }
 
-#login h2 {
+#login {
+	width: 37%;
+	padding: 40px 40px 20px 40px;
+	max-width: initial;
+	max-width : none;  /*	for IE*/
+}
+
+#login h2 {	
     position: relative !important;
 	border-bottom: #999 2px dotted;
-    padding-bottom: 5px;	
+    padding-bottom: 5px;
+	padding-left: 1.4em;
 }
 
-#login #uwnetid {
-	padding-bottom: 2rem;
+#login #uw {
+	background: url(image-path('uw-block-logo.gif')) no-repeat;
+	background-size: 20px;
+    background-position: 0 8px;
+}
+
+#login #non_uw {
+	background: url(image-path('icon_building.png')) no-repeat;
+	background-size: 19px 15px;
+    background-position: 0 6px;
+}
+
+#login #uwnetid_button {
+	width: 60%;
 }
 
 body.logged_out h2 {
@@ -76,6 +99,7 @@ body.logged_out #login form {
 
 body.logged_out #login form table tr td {
  	vertical-align: middle;
+    padding: 0.2em;
 }
 
 
@@ -86,7 +110,7 @@ body.logged_out #login form label {
 }
 
 body.logged_out #login form input[type=text], body.logged_out #login form input[type=email], body.logged_out #login form input[type=password] {
-  	width: 70%;
+	width: 100%;
   	font-size:1.2em;
   	padding-left:8px;
 }
