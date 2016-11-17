@@ -1,5 +1,12 @@
-<h4>Results<span class="page_info"><i class="fi-results"></i> <%= page_entries_info @scholarships %></span></h4>
+<div class="scholarship_result">
+<h4>Results<span class="page_info"><i class="fi-results"></i> <%= page_entries_info @scholarships %></span>
+	<ul class="menu align-right scope_menu">
+		<li <%= 'class=active' if params[:scope] %>><%= link_to "Upcoming Scholarships (#{Scholarship.upcoming.size})", scholarships_path(scope: 'upcoming') %></li>
+		<li <%= 'class=active' unless params[:scope] %>><%= link_to "All Scholarships (#{Scholarship.active.size})", scholarships_path %></li>
+	</ul>
+</h4>
 <%= will_paginate @scholarships, renderer: FoundationPagination::Rails %>
+
 <table class="hover">
 	<thead>
 		<tr>
@@ -34,3 +41,4 @@
 </table>
 
 <%= will_paginate @scholarships, renderer: FoundationPagination::Rails %>
+</div>

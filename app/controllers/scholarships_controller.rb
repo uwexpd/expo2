@@ -14,9 +14,10 @@ class ScholarshipsController < ApplicationController
         end
         params[:q][:scholarship_categories_category_id_in] = categories_with_sub
       end
-    end
+    end    
     @search = Scholarship.active.ransack(params[:q])
-    @scholarships = @search.result.includes(:scholarship_deadlines).page(params[:page]).uniq.order('title')
+    @search = Scholarship.upcoming.ransack(params[:q]) if params[:scope] == 'upcoming'
+    @scholarships = @search.result.includes(:scholarship_deadlines).page(params[:page]).uniq.order('scholarships.title')
     
     add_breadcrumb "scholarships search"
   end

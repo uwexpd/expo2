@@ -46,7 +46,7 @@
     height: 50px;
     display: block;
     border: none;
-    top: 1px;
+    top: -1px;
     left: 75px;
     position: absolute;
 
@@ -200,4 +200,22 @@ tbody th, tbody td{
 
 .close-button{
 	top: 0.2rem;
+}
+
+.scope_menu {
+	float:right;
+	font-size:0.85rem;
+}
+
+.scholarship_search {
+	padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.scholarship_result {
+	padding-top: 0.5rem;
+}
+
+.scholarship_result .menu .active > a {
+	background:#999;
 }

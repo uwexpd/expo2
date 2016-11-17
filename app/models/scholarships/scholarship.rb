@@ -11,7 +11,7 @@ class Scholarship < ScholarshipBase
   
   scope :active, -> { where(is_active: true) }
   scope :incoming, -> { where(is_incoming_student: true) }
-  scope :upcoming, -> { joins(:scholarship_deadlines).where('scholarship_deadlines.is_active = ? and scholarship_deadlines.deadline >= NOW() and scholarship_deadlines.deadline < DATE_ADD(NOW(), INTERVAL 1 MONTH)', true).group('title') }
+  scope :upcoming, -> { joins(:scholarship_deadlines).where('scholarship_deadlines.is_active = ? and scholarship_deadlines.deadline >= NOW() and scholarship_deadlines.deadline < DATE_ADD(NOW(), INTERVAL 1 MONTH)', true).uniq }
   
   validates :title, presence: true
   

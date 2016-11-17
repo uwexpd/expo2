@@ -23,7 +23,7 @@ ActiveAdmin.register_page "Dashboard" do
         column do
           div id: "welcome_dashboard" do
             panel "Welcome to EXPO Admin" do
-                para "More funcitons are on the way!"
+                para "More functions are on the way!"
             end
           end
         end
