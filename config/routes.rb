@@ -16,6 +16,8 @@ Rails.application.routes.draw do
     get '/auth/:provider/callback', to: 'sessions#create'
   
     resources :scholarships, only: [:show, :index], param: :page_stub
+    resources :mge_scholars, only: [:show, :index]
+    
   end
   
   # Example of regular route:

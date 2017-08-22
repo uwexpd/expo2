@@ -18,7 +18,7 @@ class LoginHistory < ActiveRecord::Base
   end
 
   def session_histories
-    SessionHistory.find(:all, :conditions => ['session_id = ?', session_id])
+    SessionHistory.where("session_id = ?" , session_id)
   end
   
   private

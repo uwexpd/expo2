@@ -7,7 +7,8 @@ class SessionsController < ApplicationController
   
   def create
     auth = request.env["omniauth.auth"]
-    if !auth.nil? && auth["provider"] == "shibboleth"        
+    logger.info "AUTH => #{auth} , #{request.env["omniauth.auth"]}"
+    if !auth.nil? && auth["provider"] == "shibboleth"
         redirect_back_or_default(root_url)
         return
     else

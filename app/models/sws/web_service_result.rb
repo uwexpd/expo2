@@ -2,6 +2,7 @@
 This is the parent class for result objects that come from the UW Web services (Student web service, idCard service, etc.). It requires that you define a primary_key to be used to fetch records from the web services, and then caches the resulting xhtml document for use later. Then you can access attributes just like a normal ActiveResource object. (Note that we aren't using ActiveResource here because UW web services only provide xhtml formatted data and ActiveResource can't properly parse it.)
 
 Update: Changed to receive XML formatted data from SWS at 12-23-2014 since SWS v5 is no longer support xhtml.
+Update: Changed to receive Json data as default at 08-16-2017
 
 == Class Attributes
 These class attributes should be defined in sub-classes.
@@ -39,15 +40,16 @@ class WebServiceResult
     self.new(primary_key)
   end
 
-  # Returns an encapsulated object of xhtml data returned by the service. Also manages the
-  # cache and requeries the service if needed. Caches of the raw xhtml are stored in
+  # Returns an encapsulated object of Json data returned by the service. Also manages the
+  # cache and requeries the service if needed. Caches of the raw json are stored in
   # Rails.root/tmp/cache/web_service_result/<class_name>/<primary_key><extension>
   def document(options = {})
     cache = FileStoreWithExpiration.new("tmp/cache/web_service_result/#{self.class.to_s}")
+    options[:extension] = '.json'
     cache_key = options[:extension] ? "#{@id.to_s}#{options[:extension]}" : @id.to_s
     @raw = cache.fetch(cache_key, {:expires_in => self.class.cache_lifetime}.merge(options)) do
       connection.get(constructed_path(options[:extension]))
-    end
+    end  
     self.class.encapsulate_data(@raw)
   end
   
@@ -69,9 +71,9 @@ class WebServiceResult
   # end
 =end
   
-  # Tries to look up the specified attribute in the returned xhtml by doing an XPath search for
-  # +//div/span[@class='#{attribute.to_s}']+. You can also assign attribute aliases in your subclasses by populating
-  # the ATTRIBUTE_ALIASES hash. If no element is found using the base attribute or any aliases, or if an array of 
+  # Tries to look up the specified attribute in the returned Json data. 
+  # You can also assign attribute aliases in your subclasses by populating the ATTRIBUTE_ALIASES hash. 
+  # If no element is found using the base attribute or any aliases, or if an array of 
   # elements bigger than one element is found, this method returns nil. 
   # 
   # Note that no type-casting is performed here.
@@ -79,14 +81,14 @@ class WebServiceResult
     matching_aliases = self.class::ATTRIBUTE_ALIASES.collect{|k,v| k unless v.select{|a| a.to_s == attribute.to_s}.empty?}.compact
     aliases = ([attribute] + matching_aliases).flatten.compact
     element = []
-    
     for a in aliases
-      element = document.css("Person #{a}") # For SWS V4 -> element = document.xpath("//div/span[@class='#{a.to_s}']")
+      # For XML => document.css("Person #{a}") # For SWS V4 -> element = document.xpath("//div/span[@class='#{a.to_s}']")
+      element = document["#{a}"]
       
       break unless element.empty? || element.size > 1
     end
     return nil if element.empty?
-    element.first.content
+    element
   end
 
   class << self
@@ -157,12 +159,12 @@ class WebServiceResult
     # The +refresh+ parameter toggles whether or not the \connection is refreshed at every request
     # or not (defaults to <tt>false</tt>).
     def connection(refresh = false)
-      if !@connection || refresh
+      if !@connection || refresh        
         @connection = UwWebServiceConnection.new(site) if refresh || @connection.nil?
         @connection.timeout = timeout if timeout
         @connection.ssl_options = ssl_options
         @connection.caller_class = self
-        @connection
+        @connection        
       else
         @connection
       end
@@ -175,7 +177,7 @@ class WebServiceResult
         :cert         => OpenSSL::X509::Certificate.new(File.open("#{Rails.root}/config/certs/#{config_options[:cert]}")),
         :key          => OpenSSL::PKey::RSA.new(File.open("#{Rails.root}/config/certs/#{config_options[:key]}")),
         :ca_file      => "#{Rails.root}/config/certs/#{config_options[:ca_file]}",
-        :verify_mode  => OpenSSL::SSL::VERIFY_PEER
+        :verify_mode  => OpenSSL::SSL::VERIFY_NONE
       }
     end
   
@@ -183,18 +185,18 @@ class WebServiceResult
     # hosts, certs, etc. in different Rails environments.
     def config_options
       config_file_path = "#{Rails.root}/config/web_services.yml"
-      @config_options ||= YAML::load(ERB.new((IO.read(config_file_path))).result)[(RAILS_ENV)].symbolize_keys
+      @config_options ||= YAML::load(ERB.new((IO.read(config_file_path))).result)[(Rails.env)].symbolize_keys
     end
     
-    def headers
-      { "x-uw-act-as" => 'expo', "Accept" => "application/xml" }
-    end
+    # def headers
+    #       { "x-uw-act-as" => 'expo', "Accept" => "application/xml" }
+    #     end
   
   end
 
   def connection(refresh = false)
     self.class.connection(refresh)
-  end
+  end  
 
   protected
 
@@ -205,10 +207,12 @@ class WebServiceResult
     RAILS_DEFAULT_LOGGER.info message
   end
 
-  # Encapsulates the raw data from the service into a Nokogiri::HTML object. Override in subclasses to do something else. 
-  # Update: Changed to parse XML
+  # Encapsulates the raw data from the service into a Nokogiri::XML object. Override in subclasses to do something else. 
+  # Update: Changed to parse JSON
   def self.encapsulate_data(raw_data)
-    Nokogiri::XML(raw_data)
+    raw_data = clean raw_data
+    JSON.parse raw_data
+    #Nokogiri::XML(raw_data)
   end
 
   # Raises an error if the cert, key, or CA file does not exist.
@@ -216,6 +220,22 @@ class WebServiceResult
     raise ActiveResource::SSLError, "Could not find cert file" unless File.exist?("#{Rails.root}/config/certs/#{config_options[:cert]}")
     raise ActiveResource::SSLError, "Could not find key file" unless File.exist?("#{Rails.root}/config/certs/#{config_options[:key]}")
     raise ActiveResource::SSLError, "Could not find CA file" unless File.exist?("#{Rails.root}/config/certs/#{config_options[:ca_file]}")
+  end
+  
+  def self.clean_bools(raw_data)
+      raw_data.gsub('"false"', "false")
+      raw_data.gsub('"true"', "true")
+    end
+
+  def self.clean_spaces(raw_data)
+      raw_data.gsub!(/(\\?"|)((?:.(?!\1))+.)(?:\1)/) do |match|
+        match.gsub(/^(\\?")\s+|\s+(\\?")$/, "\\1\\2").strip
+      end
+  end
+
+  def self.clean(raw_data)
+      raw_data = clean_spaces raw_data
+      raw_data = clean_bools raw_data
   end
 
 end

@@ -25,13 +25,17 @@ module Expo2
     config.active_record.raise_in_transactional_callbacks = true
     
     # Allow for models or class in subdirectories off models and lib
-    config.autoload_paths += Dir["#{config.root}/app/models/**/"]
-    config.autoload_paths << Rails.root.join('lib')    
-    #config.autoload_paths += Dir["#{config.root}/app/lib/**/"]
+    #config.autoload_paths += Dir["#{config.root}/app/models/**/"]
+    config.autoload_paths += Dir[Rails.root.join('app', 'models', '{*/}')]
+    config.autoload_paths << Rails.root.join('lib')     
     
     config.constants = config_for(:constants)
     
     config.relative_url_root = '/expo'
     config.assets.prefix = '/expo/assets'
+    
+    Raven.configure do |config|
+      config.dsn = 'https://1201e893bd9f46a3a7487bbef67f62f1:ba372b40539a4d4d902fd6afeba23ee2@sentry.io/207047'
+    end
   end
 end

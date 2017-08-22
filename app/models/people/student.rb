@@ -5,6 +5,9 @@ class Student < Person
   belongs_to :sdb, :class_name => "StudentRecord", :foreign_key => "system_key"  
   validates :student_no, presence: true
   
+  attr_accessor :electronic_signature
+  
+  delegate :class_standing_description, :raw_gpa, :gpa, :institution_name, :majors_list, :minors_list, :minors, :majors, :age, :transfer_student?, :washington_state_resident?, :to => :sdb
   
   SDB_CACHE_VALIDITY_LENGTH = {
      :name     => 1.month,
@@ -18,16 +21,16 @@ class Student < Person
    # email information.
    def sdb_update(attr_group)
      valid_length = SDB_CACHE_VALIDITY_LENGTH[attr_group]
-     self.fetch_sdb_updates if valid_length.nil? || sdb_update_at.nil? || Time.now - sdb_update_at > valid_length
+     # self.fetch_sdb_updates if valid_length.nil? || sdb_update_at.nil? || Time.now - sdb_update_at > valid_length
    end
    
    def fetch_sdb_updates
      log_with_color "UWSDB Fetch", "Fetching student data update for Student #{self.id}"
      return false if sdb.nil?
      attrs = { 
-       :fullname => sws ? sws.fullname : sdb.fullname,
-       :firstname => sws ? sws.firstname : sdb.firstname,
-       :lastname => sws ? sws.lastname : sdb.lastname,
+       :fullname => sws ? (sws.fullname rescue sdb.fullname) : sdb.fullname,
+       :firstname => sws ? (sws.firstname rescue sdb.firstname) : sdb.firstname,
+       :lastname => sws ? (sws.lastname rescue sdb.lastname) : sdb.lastname,
        :email => sdb.email,
  	     :gender => sdb.s1_gender,
  	     :class_standing_id => sdb.class_standing,
@@ -51,6 +54,10 @@ class Student < Person
      include_nickname ? "#{read_attribute(:firstname)}#{" (" + nickname + ")" unless nickname.blank?}" : read_attribute(:firstname)
    end
 
+   def firstname_first(formal = true)
+     "#{formal ? formal_firstname(true) : read_attribute(:firstname)} #{lastname}"
+   end
+   
    def lastname
      self.sdb_update(:name)
      read_attribute(:lastname)

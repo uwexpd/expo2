@@ -5,6 +5,7 @@ class StudentPhoto < WebServiceResult
   self.element_path = "idcard/#{SWS_VERSION}/photo"  
   self.cache_lifetime = 1.month
   
+  # Overrite encapsulate_data to use subclass
   def self.encapsulate_data(data)
     data
   end
@@ -38,9 +39,9 @@ class StudentPhoto < WebServiceResult
   
   def fetch_and_store_image!(size)
     suffix = (size.nil? || size.to_s == 'default') ? ".jpg" : "-#{size.to_s}.jpg"
-    raw = connection.get(constructed_path(suffix))
+    raw = connection.get(constructed_path(suffix))    
     FileUtils.mkdir_p(File.dirname(file_path(size))) unless File.exists?(File.dirname(file_path(size)))
-    File.open(file_path(size), 'w') {|f| f.write(raw) }
+    File.open(file_path(size), 'wb') {|f| f.write(raw) }
   end
   
   def expired?(size)
@@ -51,7 +52,7 @@ class StudentPhoto < WebServiceResult
 
   def file_path(size = nil)
     filename = (size.nil? || size.to_s == 'default') ? "default" : size.to_s
-    file_path = File.join("#{RAILS_ROOT}", "tmp", "cache", "web_service_result", "StudentPhoto", @id.to_s, "#{filename}.jpg")
+    file_path = File.join("#{Rails.root}", "tmp", "cache", "web_service_result", "StudentPhoto", @id.to_s, "#{filename}.jpg")
   end
   
 end

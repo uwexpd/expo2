@@ -1,0 +1,40 @@
+<div class="scholarship_result">
+<h4>Results<span class="page_info"><i class="fi-results"></i> <%= page_entries_info @scholars, :entry_name => 'Scholar' %></span></h4>
+
+<%= will_paginate @scholars, renderer: FoundationPagination::Rails %>
+
+<table class="hover">
+	<thead>
+		<tr>
+			<th>Student Name</th>
+			<th>Type of Scholarship</th>
+			<th>Quarter Awarded</th>
+			<th>Major</th>
+			<th>Mentor</th>
+		</tr>
+	</thead>
+	<tbody>
+	<% if @scholars.empty? %>
+	  <tr><td colspan=5>There are no data found. Please try another search.</td></tr>
+	<% end %>
+
+	<% @scholars.each do |scholar| %>
+
+		<tr>
+			<td width = '20%'><%= scholar.person.firstname_first(false) %></td>
+			<td width = '25%'><%= scholar.offering.name %></td>
+			<td width = '15%'><%= scholar.offering.quarter_offered.title %></td>
+			<td width = '20%'><%= scholar.person.majors_list(true, ", ",scholar.offering.quarter_offered) %></td>
+			<td width = '20%'>
+			<% if scholar.primary_mentor %>
+				<%= scholar.primary_mentor.fullname %><%= ", " + scholar.primary_mentor.department unless scholar.primary_mentor.department.blank? %>
+			<% end %>
+			</td>			
+		</tr>
+
+	<% end %>
+	</tbody>
+</table>
+
+<%= will_paginate @scholars, renderer: FoundationPagination::Rails %>
+</div>

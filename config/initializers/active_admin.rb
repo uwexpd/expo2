@@ -278,4 +278,6 @@ ActiveAdmin.setup do |config|
   
   config.register_javascript 'tinymce.js'
   
+  config.footer = "Copyright © 2007–#{Date.today.year} University of Washington. Problems, questions or suggestions? Send an e-mail to #{Rails.configuration.constants['system_help_email']}."
+  
 end

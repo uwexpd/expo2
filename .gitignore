@@ -9,8 +9,6 @@
 
 .DS_Store
 /.ruby-gemset
-/.ruby-version
-
 
 # Ignore all logfiles and tempfiles.
 /log/*

@@ -6,9 +6,9 @@ class Unit < ActiveRecord::Base
   has_many :roles, :class_name => "UserUnitRole", :foreign_key => "unit_id"
   #   has_many :events, :class_name => "Event", :foreign_key => "unit_id", :dependent => :nullify
   #   has_many :event_times, :through => :events, :source => :times
-  #   has_many :offerings
+  has_many :offerings
   #   
-  #   has_many :organization_quarters, :class_name => "OrganizationQuarter", :foreign_key => "unit_id"
+  has_many :organization_quarters, :class_name => "OrganizationQuarter", :foreign_key => "unit_id"
   #   
   #   has_many :service_learning_positions, :class_name => "ServiceLearningPosition", :foreign_key => "unit_id"
   #   has_many :service_learning_courses, :class_name => "ServiceLearningCourse", :foreign_key => "unit_id"

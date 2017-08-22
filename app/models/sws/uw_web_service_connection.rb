@@ -6,9 +6,9 @@ class UwWebServiceConnection < ActiveResource::Connection
   # Execute a GET request.
   # Used to get (find) resources.
   def get(path, headers = {})
-    begin
+    begin      
       body = nil
-      time = Benchmark::realtime { body = request(:get, path, build_request_headers(headers, :get)).body }
+      time = Benchmark::realtime { body = request(:get, path).body }    
       sws_log "GET #{path}", time
       body
     rescue
@@ -33,7 +33,7 @@ class UwWebServiceConnection < ActiveResource::Connection
       message = "  \e[4;33;1m#{caller_class_s} Fetch"
       message << " (#{'%.1f' % (time*1000)}ms)" if time
       message << "\e[0m   #{msg}"
-      RAILS_DEFAULT_LOGGER.info message
+      Rails.logger.info message
     end
   
 end

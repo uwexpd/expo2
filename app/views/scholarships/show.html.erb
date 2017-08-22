@@ -33,6 +33,11 @@
 <h5>Procedure</h5>
 <p><%= raw @scholarship.procedure %></p>
 
+<% unless @scholarship.history.blank? %>
+	<h5>History</h5>
+	<p><%= raw @scholarship.history %></p>
+<% end %>
+
 <h5>Contact Information</h5>
 <p><%= raw @scholarship.contact_info %></p>
 </div>

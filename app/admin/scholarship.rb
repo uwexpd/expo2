@@ -1,6 +1,7 @@
 ActiveAdmin.register Scholarship do
   config.sort_order = 'title_asc'
   batch_action :destroy, false
+  #menu parent: 'Modules' 
 
   permit_params :title, :description, :history, :eligibility, :procedure, :contact_info, :service_agreement, :website_name, :website_url, :created, :modified, :award_amount, :freshman, :sophomore, :junior, :senior, :graduate, :disability, :male, :female, :gpa, :us_citizen, :permanent_resident, :other_visa_status, :need_based, :ethnicity, :length_of_award, :num_awards, :is_active, :resident, :non_resident, :is_national, :type_id, :page_stub, :is_incoming_student, :is_departmental, :hb_1079, :veteran, :gap_year, :graduate_school, :blurb, :fifth_year, :lgbtqi_community, scholarship_deadlines_attributes: [:id, :title, :deadline, :is_active, :_destroy], categories_attributes: [:id, :category_id, :scholarship_id, :_destroy], disabilities_attributes: [:id, :disability_id, :scholarship_id, :_destroy], ethnicities_attributes: [:id, :ethnicity_id, :scholarship_id, :_destroy], types_attributes: [:id, :type_id, :scholarship_id, :_destroy]
   
@@ -10,15 +11,14 @@ ActiveAdmin.register Scholarship do
   scope :upcoming
 
   index do
-    selectable_column
     column 'Title', sortable: :title do |scholarship|
       link_to scholarship.title, admin_scholarship_path(scholarship)
     end    
     column 'National', sortable: :is_national do |scholarship| 
-        status_tag scholarship.is_national? 
+        status_tag scholarship.is_national?, class: 'small'
     end
     column 'Active', sortable: :is_active do |scholarship| 
-        status_tag scholarship.is_active? 
+        status_tag scholarship.is_active?, class: 'small'
     end
     column "Deadlines" do |scholarship|
        scholarship.scholarship_deadlines.map{ |d| d.deadline }.compact.join("<br>").html_safe

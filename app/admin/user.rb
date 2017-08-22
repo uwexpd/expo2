@@ -1,17 +1,95 @@
-#ActiveAdmin.register User do
-
-# See permitted parameters documentation:
-# https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-#
-# permit_params :login, :email, :password, :password_confirmation, :identity_url, :person_attributes, :picture, :picture_temp
-#
-# or
-#
-# permit_params do
-#   permitted = [:permitted, :attributes]
-#   permitted << :other if params[:action] == 'create' && current_user.admin?
-#   permitted
-# end
-
-
-#end
+ActiveAdmin.register User do  
+  actions :all, :except => [:destroy]
+  batch_action :destroy, false
+  config.sort_order = 'created_at_desc'
+  menu parent: 'People'
+  
+  permit_params :admin
+  
+  member_action :session_history, :method => :get do
+    @requests = SessionHistory.where("session_id = ? ", params[:id]).order(:created_at)
+    @start_time = @requests.first.created_at
+    @user = LoginHistory.find_by_session_id(params[:id]).user
+  end  
+    
+  index pagination_total: false do  
+    column 'Username' do |user|
+      span link_to(user.login, admin_user_path(user))
+      span "@u" if user.is_a? PubcookieUser
+    end
+    column '' do |user|
+      status_tag 'admin', :admin, class: 'small' if user.admin?
+    end
+    column 'Type' do |user|
+      user.identity_type || "Standard User"
+    end
+    column 'Person' do |user|
+      link_to user.person.fullname, admin_person_path(user.person), :target => '_blank'
+    end
+    column 'Last Login' do |user|
+      "#{time_ago_in_words user.logins.last.created_at} ago" rescue "never"
+    end    
+    actions
+  end
+    
+  show do
+    panel '' do
+      div :class => 'content-block' do
+        h1 "User: #{user.login}" do
+          span '(PubCookies User)', :class => 'light small' if user.is_a? PubcookieUser
+          status_tag 'admin', :admin, class: 'small' if user.admin?
+        end
+        div do
+          "Email: " + user.email
+        end
+        span :class => 'light small' do
+          "Created #{user.created_at.strftime("%m/%d/%Y at %I:%M %P")} #{' by ' + user.creator.firstname_first rescue nil}"  "#{' | Last edited ' + user.updated_at.strftime("%m/%d/%Y at %I:%M %P")}" + "#{' by ' + user.updater.firstname_first rescue nil}"
+        end
+        span link_to '← Back to Users', admin_users_path
+      end
+    end    
+    panel '' do
+      tabs do
+          tab "Units & Roles (#{user.roles.size})" do
+            table_for user.roles.order('unit_id ASC') do
+              column ('Unit') {|role| role.unit ? role.unit.name : 'Global' }
+              column ('Role') {|role| role.name }
+              #column ('functions') {|role| link_to 'Remove', user_role_path(user, role), remote: true }              
+            end                        
+          end
+          tab "Logins (#{user.logins.size})" do
+            paginated_collection(user.logins.page(params[:page]).per(25).order('id DESC'), download_links: false) do
+              table_for(collection, sortable: false) do
+                  column ('Type') {|login| status_tag 'Sucessful Login', :green, class: 'small' }
+                  column ('Date/Time') {|login| time_ago_in_words(login.created_at) }
+                  column ('Source IP') do |login| 
+                    span login.ip
+                    span 'on campus', class: 'outline tag' if login.on_campus?
+                  end 
+                  column ('Session History') {|login| link_to "Session History", session_history_admin_user_path(login.session_id) unless login.session_histories.empty?}                   
+              end 
+            end
+          end
+      end
+    end
+  end
+  
+  sidebar "Search Username", only: :show do  
+      render "search_user"
+  end
+  
+  form do |f|
+    f.semantic_errors *f.object.errors.keys
+    f.inputs "Edit #{user.login}" do
+      f.input :admin, label: 'User can access admin aera', as: :boolean
+    end
+    f.actions do
+       f.action(:submit)
+       f.cancel_link(admin_user_path(user))
+     end
+  end
+  
+  filter :login, label: 'Username',  as: :string
+  filter :email, label: 'Email (only for non-uw users)', as: :string
+  
+end

@@ -13,7 +13,7 @@ ActiveAdmin.register_page "Dashboard" do
         column do
           panel "Recent Scholarships" do
             table_for Scholarship.order("created_at desc").limit(5) do
-              column("Status")     {|scholarship| status_tag(scholarship.is_active? ? 'active' : 'inactive') }
+              column("Status")     {|scholarship| status_tag(scholarship.is_active? ? 'active' : 'inactive', class: 'small')  }
               column("Scholarship"){|scholarship| link_to(scholarship.title, admin_scholarship_path(scholarship)) }
               column("Created at") {|scholarship| scholarship.created_at.to_date }                
             end

@@ -50,7 +50,9 @@
 				Copyright &copy; 2007&ndash;<%= Time.now.year %> <a href="http://www.washington.edu">University of Washington</a>.
 				Managed by the <a href="http://expd.uw.edu">Center for Experiential Learning &amp; Diversity</a>, a unit of 
 				<a href="http://www.washington.edu/uaa/">Undergraduate Academic Affairs</a>.
-				Any problems or questions should be sent to <%= auto_link(Rails.configuration.constants['system_help_email']) %>.
+				<% if logged_in? %>
+					Any problems or questions should be sent to <%= auto_link(Rails.configuration.constants['system_help_email']) %>.
+				<% end %>
 			</p>
 			<%= render :partial => "shared/disability_statement" %>
 		</div>

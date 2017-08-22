@@ -11,9 +11,11 @@ class User < ActiveRecord::Base
       def minus_exp; find(:all, :conditions => "abbreviation != 'exp'"); end
   end
   
+  has_many :logins, :class_name => "LoginHistory"
+    
   # Virtual attribute for the unencrypted password
   attr_accessor :password
-  # attr_accessor :allow_invalid_person
+  attr_accessor :allow_invalid_person
   
   # TODO: Rails 4.0 has removed attr_accessible and attr_protected feature in favor of Strong Parameters. 
   # You can use the Protected Attributes gem for a smooth upgrade path. 
@@ -24,26 +26,48 @@ class User < ActiveRecord::Base
   validates :password_confirmation, presence: true, :if => :password_required?
   validates :password, length: { :in => 6..40 }, :if => :password_required?
   validates :password, confirmation: true, :if => :password_required?
-  # validates :person, presence: true, :unless => :allow_invalid_person?
+  validates :person, presence: true, :unless => :allow_invalid_person?
   validates :login, length: {:in => 3..40 }
   validates :login, uniqueness: { :scope => [:type, :identity_type], case_sensitive: false }
     
-  # validates_associated :person, :if => :check_person, :unless => :allow_invalid_person?
+  validates_associated :person, :if => :check_person, :unless => :allow_invalid_person?
   
   before_save :encrypt_password
   
   scope :admin, -> { where(admin: true) }
   
-  # def check_person
-  #   return false if person.nil?
-  #   unless person.is_a?(Student)
-  #     return false if allow_invalid_person? # needed to let the pubcookie user not be validated
-  #     person.require_validations = true
-  #     return true
-  #   else
-  #     return false
-  #   end
-  # end
+  def check_person
+      return false if person.nil?
+      unless person.is_a?(Student)
+        return false if allow_invalid_person? # needed to let the pubcookie user not be validated
+        person.require_validations = true
+        return true
+      else
+        return false
+      end
+    end
+  
+  def person_attributes=(person_attributes)
+    if person.nil?
+      self.person = Person.new(person_attributes)
+    else
+      self.person.update_attributes(person_attributes)
+    end
+  end
+
+  # Returns a user's full name based on person's info
+  def fullname
+    person.fullname_unknown? ? login : person.fullname rescue login
+  end
+
+  # Returns the user's firstname_first from the person record
+  def firstname_first
+    person.fullname_unknown? ? login : person.firstname_first rescue login
+  end
+
+  def firstname
+    person.fullname_unknown? ? login : person.firstname rescue login
+  end    
   
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil. Note that this method is
   # case-insensitive, so "Mike" and "mike" will both return the same user object.
@@ -82,8 +106,8 @@ class User < ActiveRecord::Base
 
     # In some cases, we want to be able to update user attributes without worrying about a valid person record.
     # An example is when we are reseting the password and the form only allows them to edit passwords.
-    # def allow_invalid_person?
-    #   allow_invalid_person
-    # end
+    def allow_invalid_person?
+          allow_invalid_person
+    end
   
 end

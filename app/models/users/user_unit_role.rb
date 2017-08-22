@@ -3,7 +3,7 @@ class UserUnitRole < ActiveRecord::Base
   belongs_to :role
   belongs_to :unit
 
-  # has_many :authorizations, :class_name => "UserUnitRoleAuthorization", :dependent => :destroy
+  has_many :authorizations, :class_name => "UserUnitRoleAuthorization", :dependent => :destroy
 
   delegate :person, :email, :fullname, :login, :to => :user
 
@@ -33,21 +33,21 @@ class UserUnitRole < ActiveRecord::Base
     role.nil? ? nil : role.description
   end
 
-  # def authorize_for(authorizable)
-  #   return false unless authorizable
-  #   if exists = authorizations.find_by_authorizable_type_and_authorizable_id(authorizable.class.to_s, authorizable.id)
-  #     return exists
-  #   else
-  #     authorizations.create(:authorizable => authorizable)
-  #   end
-  # end
-
-  def <=>(o)
-    unit <=> o.unit rescue -1 
+  def authorize_for(authorizable)
+      return false unless authorizable
+      if exists = authorizations.find_by_authorizable_type_and_authorizable_id(authorizable.class.to_s, authorizable.id)
+        return exists
+      else
+        authorizations.create(:authorizable => authorizable)
+      end
   end
+
+  # def <=>(o)
+  #     unit <=> o.unit rescue -1 
+  #   end
   
-  # def accountability_departments(delimiter = ", ")
-  #    authorizations.collect{|a| a.authorizable.name}.join(delimiter) rescue nil
-  # end
+  def accountability_departments(delimiter = ", ")
+     authorizations.collect{|a| a.authorizable.name}.join(delimiter) rescue nil
+  end
 
 end

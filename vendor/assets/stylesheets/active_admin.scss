@@ -16,15 +16,81 @@ $am-theme-primary: #4b2e83;
 $am-theme-accent: #b7a57a;
 @import "active_material";
 
-// Overriding any non-variable SASS must be done after the fact.
-// For example, to change the default status-tag color:
-//
-//   .status_tag { background: #6090DB; }
-
 /* Active Admin CSS for Customization */
+/* Overriding any non-variable SASS must be done after the fact.
+For example, to change the default status-tag color: */
+.status_tag {
+	&.ok, &.published, &.complete, &.completed, &.green { background: #8daa92; }
+	&.warn, &.warning, &.orange { background: #e29b20; }
+	&.error, &.errored, &.red { background: #d45f53; }
+	&.admin, &.highlight {background: #fce01e; color: #656565}
+}
+.status_tag.small { padding: 2px 6px; font-size:0.6rem; }
+
+/* @group Tags */
+
+.tag {	
+	font-size: 0.75rem;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	background: #d8d8d8;
+	padding: 0.5px 4px;
+	margin: 0 3px;
+	color: #999;
+	position: relative;
+	top: -1px;
+}
+
+.outline.tag {
+	background: #f9f9f9;
+	border: 1px solid #d8d8d8;
+}
+
+.light {
+	color: #bbbbbb;
+}
+
+.smaller {
+	font-size: smaller;
+}
+
+.small {
+	font-size: small;
+}
+
+.larger {
+	font-size: larger;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
 
 body.active_admin {
 	padding-bottom: 0px;
+	
+	/* To fix input text size not working */
+	form {
+    	input[type="text"][size],
+		input[type="tel"][size],
+		input[type="phone"][size],
+		input[type="email"][size],
+		input[type="url"][size],
+	    input[type="number"][size] {
+	      width: auto;
+	    }
+  	}
+}
+
+/* To fix input textarea cols and rows not working for foundaiton*/
+.input.text textarea {
+    height: auto;
+	width: auto;
 }
 
 a:link, a:visited {
@@ -102,7 +168,6 @@ body.logged_out #login form table tr td {
     padding: 0.2em;
 }
 
-
 body.logged_out #login form label {
   	font-size: 1.1em;   
     text-align: right;
@@ -115,16 +180,9 @@ body.logged_out #login form input[type=text], body.logged_out #login form input[
   	padding-left:8px;
 }
 
-.scope.selected a {
-  padding:4px  0;
-  -webkit-font-smoothing: antialiased;
-  color: whitesmoke;
-}
+/* end login page style */
 
-.with_sidebar #sidebar {
-	min-width: 280px;	
-}
-
+/* @Form style */
 form ul.errors {
 	background-color: #f44336;
 	color: white;
@@ -139,6 +197,28 @@ form ul.errors li {
 	font-size: 0.85rem;
 }
 
+
+
+#welcome_dashboard p {
+	padding: 0px 15px 15px 15px;
+    font-size: 0.75rem;	
+}
+
+
+.scope.selected a {
+  padding: 5px;
+  -webkit-font-smoothing: antialiased;
+  color: whitesmoke;
+}
+
+.scope.selected a span {
+  padding-right: 5px;
+}
+
+.with_sidebar #sidebar {
+	min-width: 280px;	
+}
+
 #index_table_scholarships .col-title, #index_table_scholarships .col-deadlines {
 	min-width: 110px;
 }
@@ -147,11 +227,44 @@ form ul.errors li {
 	padding:15px;
 }
 
-.columns .column{
+.columns .column {
 	float:left;
 }
 
-#welcome_dashboard p{
-	padding: 0px 15px 15px 15px;
-    font-size: 0.75rem;	
+#index_table_units .col-unit, #index_table_units .col-email, #index_table_units .col-phone, #index_table_offerings .col-unit, #index_table_offerings .col-quarter {
+	white-space: nowrap;
 }
+
+#index_table_offerings .col-unit, { min-width: 80px; }
+#index_table_offerings .col-quarter, { min-width: 120px; }
+
+#q_submit {
+	background-color: #4b2e83;
+}
+
+
+/* @Panel style */
+#search-status-_sidebar_section .panel_contents {
+    padding: 0px 16px 5px;
+}
+
+.panel_contents h1{
+	font-size: 1.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.panel_contents .content-block {
+	padding: 0px 16px 16px;
+}
+
+.panel_contents .content-block div {
+	line-height: 1.75rem;	
+}
+
+/* @Tab style*/
+.nav-tabs > li > a {
+	font: 400 13px/15px "RobotoDraft", sans-serif;
+	text-transform: capitalize;
+}
+
+

@@ -1,6 +1,6 @@
 class ScholarshipsController < ApplicationController
 
-  add_breadcrumb "OSMFA home", "http://expd.uw.edu/scholarships"
+  add_breadcrumb 'OSMFA home', Unit.find_by_abbreviation('omsfa').home_url
   
   skip_before_filter :login_required
   
@@ -12,6 +12,7 @@ class ScholarshipsController < ApplicationController
         selected_categories.each do |category_id|
           categories_with_sub += Category.find(category_id).sub_categories.collect{|s| s.id.to_s }
         end
+        logger.debug "DEBUG => #{categories_with_sub}"
         params[:q][:scholarship_categories_category_id_in] = categories_with_sub
       end
     end    
