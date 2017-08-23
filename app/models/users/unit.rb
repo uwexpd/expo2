@@ -25,7 +25,7 @@ class Unit < ActiveRecord::Base
   #             :versions => { :thumb => "100x50", :medium => "150x150", :large => "300x300" }, 
   #             :store_dir => proc{|record, file| "shared/unit/#{record.id}/logo"} 
     
-  scope :for_welcome_screen, -> { where(show_on_expo_welcome: true }
+  scope :for_welcome_screen, -> { where(show_on_expo_welcome: true) }
   scope :for_equipment_reservation, -> { where(show_on_equipment_reservation: true) }
   scope :with_description, -> { where("description != ''") }
     
