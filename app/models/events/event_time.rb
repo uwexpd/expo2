@@ -13,8 +13,6 @@ class EventTime < ActiveRecord::Base
   PLACEHOLDER_CODES = %w( time_detail time_only notes location_text )
   PLACEHOLDER_ASSOCIATIONS = %w( event location )
 
-#  named_scope :all, :conditions => { :parent_time_id => nil }
-
   def <=>(o)
     start_time <=> o.start_time rescue 0
   end

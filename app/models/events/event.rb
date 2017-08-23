@@ -26,8 +26,8 @@ class Event < ActiveRecord::Base
   PLACEHOLDER_CODES = %w( title description )
   PLACEHOLDER_ASSOCIATIONS = %w( offering unit )
   
-  named_scope :public, :conditions => { :public => true }
-  named_scope :send_reminders, :conditions => "reminder_email_template_id is not null"
+  scope :public, -> { where(public: true) }  
+  scope :send_reminders, -> { where('reminder_email_template_id is not null') } 
   
   def <=>(o)
     title <=> o.title rescue 0

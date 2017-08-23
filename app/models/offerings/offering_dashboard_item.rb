@@ -12,8 +12,8 @@ class OfferingDashboardItem < ActiveRecord::Base
   validates_presence_of :offering_id, :dashboard_item_id
   validates_associated :dashboard_item
   
-  named_scope :enabled, :conditions => "disabled IS NULL or disabled = 0"
-  named_scope :disabled, :conditions => { :disabled => true }
+  scope :enabled, -> { where("disabled IS NULL or disabled = 0") }
+  scope :disabled, -> { where(disabled: true) }
   
   def <=>(o)
     sequence <=> o.sequence rescue 0
