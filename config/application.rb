@@ -25,8 +25,8 @@ module Expo2
     config.active_record.raise_in_transactional_callbacks = true
     
     # Allow for models or class in subdirectories off models and lib
-    #config.autoload_paths += Dir["#{config.root}/app/models/**/"]
-    config.autoload_paths += Dir[Rails.root.join('app', 'models', '{*/}')]
+    config.autoload_paths += Dir["#{config.root}/app/models/**/"]
+    #config.autoload_paths += Dir[Rails.root.join('app', 'models', '{*/}')]
     config.autoload_paths << Rails.root.join('lib')     
     
     config.constants = config_for(:constants)

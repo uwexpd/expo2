@@ -4,7 +4,7 @@ class EventType < ActiveRecord::Base
 
 	validates_presence_of :title
 
-  default_scope :order => "title"
+  default_scope { order('title') }
 	
 	def <=>(o)
 		title <=> o.title rescue 0

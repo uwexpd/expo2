@@ -1,7 +1,7 @@
 class Type < ScholarshipBase
   self.table_name = "types"
   
-  has_many :scholarship_type
+  has_many :omsfa_scholarship_type
   
   validates_presence_of :name
   

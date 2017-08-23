@@ -4,7 +4,7 @@ class EventSubTime < EventTime
   validates_presence_of :parent_time_id
   
   def attendees
-    parent_time.attendees.find :all, :conditions => { :sub_time_id => id}
+    parent_time.attendees.where(sub_time_id: id)
   end
 
 end

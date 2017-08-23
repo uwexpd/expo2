@@ -2,10 +2,10 @@
 class OfferingPage < ActiveRecord::Base
   stampable
   belongs_to :offering
-  has_many :offering_questions, :order => "ordering", :dependent => :destroy
-  has_many :questions, :class_name => "OfferingQuestion", :order => "ordering"
+  has_many :offering_questions, -> { order('ordering') }, :dependent => :destroy
+  has_many :questions, -> { order('ordering') },  :class_name => "OfferingQuestion"
 
-  acts_as_list :column => 'ordering', :scope => :offering
+  #acts_as_list :column => 'ordering', :scope => :offering
   
   validates_uniqueness_of :ordering, :scope => :offering_id
 

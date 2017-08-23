@@ -3,9 +3,8 @@ class OfferingSession < ActiveRecord::Base
   stampable
   belongs_to :offering
   belongs_to :moderator, :class_name => "CommitteeMember", :foreign_key => "moderator_id"
-  has_many :presenters, :class_name => "ApplicationForOffering", :include => :person,
-                        :order => "offering_session_order, people.lastname" do 
-    def with_easel_numbers; find(:all, :conditions => "easel_number IS NOT NULL AND easel_number != ''"); end
+  has_many :presenters, -> { includes :person, order("offering_session_order, people.lastname") }, :class_name => "ApplicationForOffering" do 
+    def with_easel_numbers; -> { where("easel_number IS NOT NULL AND easel_number != ''") }; end
   end
   has_many :group_members, :through => :presenters
   belongs_to :application_type, :class_name => "OfferingApplicationType", :foreign_key => "offering_application_type_id"

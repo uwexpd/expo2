@@ -1,16 +1,14 @@
 # An Event is anything that could be attended by another object in EXPO, such as a workshop, a meeting, or a conference. Each Event can have multiple EventTimes, allowing you to break down an event into different sections or different options. For example, let's say you offer abstract writing workshops to students. You want to setup 10 different workshop dates, all of which are essentially the same event. You create an Event called "Abstract Writing Workshop," and then for each of the ten dates, you create separate EventTimes. This also allows you to restrict attendees to only attend one of the workshop times by setting the +allow_multiple_times_per_attendee+ to +false+.
 class Event < ActiveRecord::Base
   stampable
-  has_many :times, :class_name => "EventTime", :conditions => { :type => nil }, :dependent => :destroy do 
-    def future; find(:all, :conditions => "start_time > NOW()"); end
+  has_many :times, -> { where(type: nil) }, :class_name => "EventTime", :dependent => :destroy do 
+    def future; -> { where("start_time > NOW()") }; end
   end
   has_many :invitees, :class_name => "EventInvitee", :through => :times
-  has_many :attendees, :class_name => "EventInvitee", :through => :times, :conditions => { :attending => true } do
-    def tomorrow_reminder
-        find(:all, :conditions => "TO_DAYS(start_time) = TO_DAYS(adddate(curdate(),1))")
-    end
+  has_many :attendees, -> { where(attending: true) }, :class_name => "EventInvitee", :through => :times do
+    def tomorrow_reminder; -> { where("TO_DAYS(start_time) = TO_DAYS(adddate(curdate(),1))") }; end
   end  
-  has_many :attended, :class_name => "EventInvitee", :through => :times, :conditions => "checkin_time IS NOT NULL"
+  has_many :attended, -> { where("checkin_time IS NOT NULL") }, :class_name => "EventInvitee", :through => :times
   has_many :staff_positions, :class_name => "EventStaffPosition", :dependent => :destroy
   has_many :staff_position_shifts, :class_name => "EventStaffPositionShift", :through => :staff_positions, :source => :shifts
   
@@ -26,7 +24,7 @@ class Event < ActiveRecord::Base
   PLACEHOLDER_CODES = %w( title description )
   PLACEHOLDER_ASSOCIATIONS = %w( offering unit )
   
-  scope :public, -> { where(public: true) }  
+  scope :public_open, -> { where(public: true) }
   scope :send_reminders, -> { where('reminder_email_template_id is not null') } 
   
   def <=>(o)

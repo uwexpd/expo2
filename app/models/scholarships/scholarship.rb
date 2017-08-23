@@ -4,7 +4,7 @@ class Scholarship < ScholarshipBase
   has_many :categories, :class_name => "ScholarshipCategory", :foreign_key => "scholarship_id"
   has_many :disabilities, :class_name => "ScholarshipDisability", :foreign_key => "scholarship_id"
   has_many :ethnicities, :class_name => "ScholarshipEthnicity", :foreign_key => "scholarship_id"
-  has_many :types, :class_name => "ScholarshipType", :foreign_key => "scholarship_id"
+  has_many :types, :class_name => "OmsfaScholarshipType", :foreign_key => "scholarship_id"
   has_many :scholarship_deadlines
   
   accepts_nested_attributes_for :scholarship_deadlines, :categories, :disabilities, :ethnicities, :types, allow_destroy: true

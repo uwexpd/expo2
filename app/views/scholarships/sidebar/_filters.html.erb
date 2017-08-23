@@ -43,7 +43,7 @@
 		<label>Disabilities</label>
 		<%= f.collection_select :disabilities_disability_id_in, Disability.all.reject{|d|d.id==4}, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
 		<label>Ethnicities or racial groups</label>
-		<%= f.collection_select :ethnicities_ethnicity_id_in, Ethnicity.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>				
+		<%= f.collection_select :ethnicities_ethnicity_id_in, OmsfaEthnicity.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>				
 		<label>LGBTQI community</label>
 		<%= f.select :lgbtqi_community_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.lgbtqi_community_true), include_blank: 'Any'  %>		
 		<label>Veterans, military service members, and their family members <small>(Under development, more listings coming soon. Meanwhile, <%= link_to 'please download our veterans scholarships list', 'http://depts.washington.edu/scholarq/pdfs/Scholarships for Military Veterans and Families2.pdf', target: '_blank' %>)</small></label>		

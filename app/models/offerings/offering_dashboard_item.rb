@@ -5,7 +5,7 @@ class OfferingDashboardItem < ActiveRecord::Base
   belongs_to :offering_status, :class_name => "OfferingStatus"
   belongs_to :offering_application_type
   
-  acts_as_list :column => 'sequence'
+  #acts_as_list :column => 'sequence'
   
   delegate :title, :content, :icon, :css_class, :to => :dashboard_item
   

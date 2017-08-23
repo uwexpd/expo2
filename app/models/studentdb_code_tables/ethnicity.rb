@@ -1,7 +1,6 @@
 # Ethnic codes
 class Ethnicity < StudentInfo
   self.table_name = "sys_tbl_21_ethnic"
-  #self.primary_keys = :table_type, :table_key
   self.primary_key = :table_key
 
   PLACEHOLDER_CODES = %w(group description long_description under_represented?)

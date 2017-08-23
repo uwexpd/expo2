@@ -1,7 +1,7 @@
 # Contains all address information (mail, email, phone) for all student entities in UWSDB.
 class StudentAddress < StudentInfo
   self.table_name = "addresses"
-  self.set_primary_key = "system_key"
+  self.primary_key = "system_key"
   belongs_to :student_record
 
   ADDRESS_FIELDS = %w(line_1 line_2 city state zip_5 zip_4 country postal_cd)
