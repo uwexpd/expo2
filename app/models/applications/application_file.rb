@@ -4,7 +4,7 @@ class ApplicationFile < ActiveRecord::Base
   belongs_to :application_for_offering
   belongs_to :offering_question
   
-  acts_as_soft_deletable
+  #acts_as_soft_deletable
 
   #validates_format_of :file, :with => %r{\.(pdf|gif|jpg|png|xls|xlsx)$}i, :message => ": File must be uploaded with PDF file." - Didn't work with nested active record for file. Add file validation in offeringQuestion model
   

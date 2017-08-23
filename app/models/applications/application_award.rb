@@ -27,7 +27,7 @@ class ApplicationAward < ActiveRecord::Base
   belongs_to :amount_approved_user, :class_name => "User", :foreign_key => "amount_approved_user_id"
   belongs_to :amount_awarded_user, :class_name => "User", :foreign_key => "amount_awarded_user_id"
   belongs_to :amount_disbersed_user, :class_name => "User", :foreign_key => "amount_disbersed_user_id"
-  acts_as_soft_deletable
+  #acts_as_soft_deletable
 
   PLACEHOLDER_CODES = %w[ amount_requested amount_requested_notes amount_approved amount_approved_notes 
                           amount_awarded amount_awarded_notes amount_disbersed amount_disbersed_notes ]

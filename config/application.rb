@@ -34,6 +34,7 @@ module Expo2
     config.relative_url_root = '/expo'
     config.assets.prefix = '/expo/assets'
     
+    # Sentry Error Reporting
     Raven.configure do |config|
       config.dsn = 'https://1201e893bd9f46a3a7487bbef67f62f1:ba372b40539a4d4d902fd6afeba23ee2@sentry.io/207047'
     end
