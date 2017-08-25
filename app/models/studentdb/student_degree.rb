@@ -7,6 +7,9 @@ class StudentDegree < StudentInfo
   self.primary_keys = :system_key, :index1
   belongs_to :student_record, :class_name => "StudentRecord", :foreign_key => "system_key"
   
+  scope :granted, -> { where('deg_status = 9') }
+  scope :applied, -> { where('deg_status = 3 OR deg_status = 4 OR deg_status = 5') }
+  
   # The quarter that this degree was granted or applied for.
   def quarter
     Quarter.find_easily(deg_earned_qtr, deg_earned_yr)

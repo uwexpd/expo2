@@ -16,6 +16,8 @@ $am-theme-primary: #4b2e83;
 $am-theme-accent: #b7a57a;
 @import "active_material";
 
+@import "chosen";
+
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.
 For example, to change the default status-tag color: */
@@ -266,5 +268,31 @@ form ul.errors li {
 	font: 400 13px/15px "RobotoDraft", sans-serif;
 	text-transform: capitalize;
 }
+
+/* Custom Chosen style */
+.chosen-container-single .chosen-single {
+	height: 40px;
+	line-height: 40px;
+	border-color: #d3d3d3;
+	border-radius: 3px;	
+}
+
+.chosen-container-single .chosen-single div {
+	top: 10px;
+}
+
+.caption {
+	font-size: 80%;
+	color: #999;
+	margin-top: -13px;
+	padding: 0 8px 0 16px;
+}
+
+.intro {
+	padding: 8px 16px;
+}
+
+
+
 
 

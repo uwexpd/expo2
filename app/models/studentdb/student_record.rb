@@ -1,3 +1,4 @@
+# The StudentRecord entity (UWSDB.student_1_v) contains attributes of the student (person) pursuing an officially recognized course of learning at the University of Washington. Student_1 displays the SDB's most current information on a student. The student_1 entity is SDB's closest approximation of a "person." [Unified Definition of Student here, 2001] -- Anyone with a system_key-bearing record in SDB has a student_1 record.
 class StudentRecord < StudentInfo
   self.table_name = "student_1_v"
   self.primary_key = "system_key"
@@ -7,15 +8,23 @@ class StudentRecord < StudentInfo
   has_many :transcripts, :class_name => "StudentTranscript", :foreign_key => "system_key"
   has_many :admission_applications, :class_name => "StudentAdmissionApplication", :foreign_key => "system_key"
   has_many :transfers, :class_name => "StudentTransfer", :foreign_key => "system_key"
+  has_many :degrees, :class_name => "StudentDegree", :foreign_key => "system_key"
   has_many :majors, :class_name => "StudentMajor", :foreign_key => "system_key"
   has_many :minors, :class_name => "StudentMinor", :foreign_key => "system_key"
   belongs_to :class_standing_record, :class_name => "ClassStanding", :foreign_key => "class"  
-  belongs_to :class_standing_record, :class_name => "ClassStanding", :foreign_key => "class"
   belongs_to :ethnic_ethnicity, :class_name => "Ethnicity", :foreign_key => "ethnic_code"
   belongs_to :hispanic_ethnicity, :class_name => "Ethnicity", :foreign_key => "hispanic_code"
   belongs_to :special_program, :class_name => "SpecialProgram", :foreign_key => "spcl_program"
   belongs_to :high_school, :class_name => "HighSchool", :foreign_key => "high_sch_ceeb_cd"
   belongs_to :last_institution, :class_name => "Institution", :foreign_key => "last_sch_code"
+  has_many :registrations, :class_name => "StudentRegistration", :foreign_key => "system_key" do
+    def for(qtr)
+      return nil unless qtr.is_a? Quarter
+      -> { where('regis_yr = ? and regis_qtr = ?', qtr.year, qtr.quarter_code_id) }.first
+    end
+    def enrolled; -> { where("enroll_status = 12") }; end 
+    # see enrollment status codes: http://depts.washington.edu/reptreq/sdb-code-manual-registration-codes/#enrollmentstatus
+  end
   
   PLACEHOLDER_CODES = %w(fullname formal_fullname firstname lastname his_her him_her he_she email salutation formal_greeting
                           class_standing_description majors_list minors_list institution_name last_institution_name transfer_student?
@@ -82,6 +91,59 @@ class StudentRecord < StudentInfo
     s1_gender
   end
   
+  # Since +class+ is a reserved word, that column does not automatically become an instance method. This method creates an easy
+  # way to reference the +class+ attribute without causing all sorts of hell with ActiveRecord.
+  # 
+  # If a Quarter object is passed, this method examines the student's transcript to determine the class_standing of the
+  # student during that quarter rather than the current class code stored in student_1_v. Returns nil if the student was
+  # not a registered student for that quarter, unless the quarter is a summer quarter -- we'll reference Spring quarter in
+  # that case).
+  def class_standing(quarter = nil)
+    if quarter
+      t = transcripts.find([system_key, quarter.year, quarter.quarter_code_id]) rescue nil
+      t = (transcripts.find([system_key, quarter.prev.year, quarter.prev.quarter_code_id]) rescue nil) if t.nil?
+      t.nil? ? nil : t.class_standing
+    else
+      read_attribute(:class)
+    end
+  end
+
+  # Returns true if this student has a valid transcript record with an undergraduate class code for the given quarter.
+  # By default, valid class codes are 1,2,3,4 or 5, but you can override this by passing an array of valid class codes.
+  def undergrad_during_quarter?(quarter = Quarter.current_quarter, valid_class_codes = [1,2,3,4,5])
+    raise Exception.new("quarter cannot be nil") if quarter.nil?
+    valid_class_codes.include? class_standing(quarter)
+  end
+  
+  # In the SDB, "class standing" refers to the most recent class standing for this student. If they are a recent graduate, for instance,
+  # this will still return "Senior." To remedy this, we check to see if this student has any valid degrees AND they have a class standing
+  # of "4" (senior) and return "Graduated <Quarter>" if so. Otherwise, return the class standing description from the ClassStanding table.
+  # 
+  # == Options
+  # 
+  # * +show_upcoming_graduation+: Set to true to also include "(Graduating <Quarter>)" if the student 
+  #   has applied for graduation.
+  # * +recent_graduate_placeholder+: Return a different text if this is a recent graduate. Default is "Graduated <quarter>"
+  # * +reference_quarter+: Base the results of this method on a different quarter instead of the current quarter. This
+  #   will examine the student's transcript records instead of using the +class+ standing attribtue from +student_1_v+
+  def class_standing_description(options = {})
+    ref_class_standing = options[:reference_quarter] ? (class_standing(options[:reference_quarter]) || class_standing) : class_standing
+    ref_quarter = options[:reference_quarter] || Quarter.current_quarter
+    if !degrees.granted.empty? && degrees.granted.first.quarter < ref_quarter && ref_class_standing == 4
+      return options[:recent_graduate_placeholder] if options[:recent_graduate_placeholder]
+      return "Graduated #{degrees.granted.first.quarter.title}"
+    end
+    if !degrees.applied.empty? && ref_class_standing == 4 && options[:show_upcoming_graduation] == true
+      return "Senior (Graduating #{degrees.applied.first.quarter.title})"
+    end
+    ref_class_standing_record = ClassStanding.find(ref_class_standing) rescue nil
+    ref_class_standing_record.description unless ref_class_standing_record.nil?
+  end
+
+  def institution_name
+    "#{Rails.configuration.constants['university_name']}"
+  end
+  
   def email
     return "" if uw_netid.blank?
     address.e_mail_ucs.blank? ? "#{uw_netid.strip}@u.washington.edu" : address.e_mail_ucs.strip rescue "#{uw_netid.strip}@u.washington.edu"
@@ -97,6 +159,13 @@ class StudentRecord < StudentInfo
     tot_grade_points/tot_graded_attmp rescue 0.0/0.0
   end
   
+  # Returns the student's GPA for a specific quarter -- NOT the cumulative GPA for that quarter.
+  def quarter_gpa(quarter = nil)
+    t = transcripts.find(system_key, quarter.year, quarter.quarter_code_id) rescue nil
+    raw_gpa = t.nil? ? nil : (t.qtr_grade_points/t.qtr_graded_attmp) rescue nil
+    '%.2f' % raw_gpa rescue "unknown"    
+  end
+  
   def age
     # ((Date.today - birth_date.to_date).to_f/365.25).floor
     age = Date.today.year - birth_date.to_date.year
@@ -110,6 +179,13 @@ class StudentRecord < StudentInfo
   def birth_date
     year = yr_of_birth > 30 ? yr_of_birth+1900 : yr_of_birth+2000
     birth_dt.nil? ? Date.new(year, mth_of_birth, day_of_birth) : birth_dt.to_date
+  end
+  
+  # Finds this records first StudentAdmissionApplication record and returns the value of +#transfer_applicant?+. If an application 
+  # record can't be found (not all student records have admission applications), this method returns +nil+.
+  def transfer_student?
+    return nil if admission_applications.empty?
+    admission_applications.first.transfer_applicant?
   end
   
   # Returns a list of the student's majors. By default, this is a comma-separated list of the major abbreviations, but this can
@@ -134,6 +210,22 @@ class StudentRecord < StudentInfo
   # CURRENTLY, this will always only show abbreviations because titles aren't in the student database.
   def minors_list(show_full_names = false, join_string = ", ")
     minors.collect { |m| m.minor_abbr.strip }.join(join_string)
+  end
+  
+  # Default ethnic_code for a Student with a "0" ethnic code (this is a very rare situation).
+  DEFAULT_ETHNIC_CODE = 987
+  
+  # The Student database tracks ethnicity in two ways: ethnic_code and hispanic_code. Interestingly, these two codes both
+  # refer to the same code table (system_table_21). To reduce the complexity of this arrangement, we look at hispanic_code first
+  # and see if the person is hispanic. If so, we return that Ethnicity record. If not, we return the Ethnicity record linked to the
+  # ethnic_code attribute. (This might need to be revisited to ensure accuracy)
+  def ethnicity
+    hispanic_ethnicity.try(:description) == "HISPANIC" ? hispanic_ethnicity : (ethnic_ethnicity || Ethnicity.find(DEFAULT_ETHNIC_CODE))
+  end
+
+  # Returns true if this student's resident code is 1 ("RESIDENT") and 2 ("RESIDENT IMMIGRANT") see more: https://studentdata.washington.edu/sdb-resident-codes/.
+  def washington_state_resident?
+    resident == 1 || resident == 2
   end
   
   

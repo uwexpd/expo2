@@ -1,6 +1,7 @@
 #= require active_admin/base
 #= require active_material
 #= require tinymce
+#= require chosen-jquery
 
 tinyMCE.baseURL = '/expo/assets/tinymce/';
 
@@ -20,3 +21,9 @@ tinyMCE.baseURL = '/expo/assets/tinymce/';
 
    });
 });`
+
+$ ->
+  # enable chosen js
+  $('.chosen-select').chosen
+    allow_single_deselect: true
+    no_results_text: 'No results matched'

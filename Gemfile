@@ -56,6 +56,7 @@ gem 'breadcrumbs_on_rails'
 gem 'json'
 gem 'activesupport-json_encoder'
 gem 'nokogiri'
+gem 'spreadsheet'
 
 # Error reporting
 gem 'sentry-raven'

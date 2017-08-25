@@ -21,5 +21,5 @@
 
 <%= render 'results' %>
 <% sidebar :filters %>
-
-<div>Any problems or questions about this scholarship search should be sent to <%= auto_link(Unit.find_by_abbreviation('omsfa').email) %>.</div>
+<br>
+<small>Any problems or questions about this scholarship search should be sent to <%= auto_link(Unit.find_by_abbreviation('omsfa').email) %>.</small>
