@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 4.2', '>= 4.2.7.1'
+gem 'rails', '~> 4.2', '> 4.2.8'
 gem 'sass-rails'
 gem 'coffee-rails'
 # Use Uglifier as compressor for JavaScript assets

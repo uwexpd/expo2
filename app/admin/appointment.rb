@@ -6,11 +6,11 @@ ActiveAdmin.register Appointment do
   permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type
   
   index do
-    column ('Time') {|appointment| appointment.start_time.to_s(:long)}
-    column ('Type') {|appointment| appointment.contact_type.title if appointment.contact_type.title}
+    column ('Time') {|appointment| appointment.start_time.to_s(:long_time12)}
+    column ('Type') {|appointment| appointment.contact_type.title if appointment.contact_type}
     column ('Staff Person') {|appointment| appointment.staff_person.firstname_first rescue "unknown" }
     column ('Student') {|appointment| appointment.student.fullname rescue "unknown"}
-    column ('Chick In Time') {|appointment| appointment.check_in_time.to_s(:long)}
+    column ('Chick In Time') {|appointment| appointment.check_in_time.to_s(:time12)}
     actions
   end
   
@@ -29,12 +29,12 @@ ActiveAdmin.register Appointment do
       end
     end
     attributes_table do
-      row (:start_time) {|appointment| appointment.start_time.strftime("%m/%d/%Y at %I:%M %P")}
+      row (:start_time) {|appointment| appointment.start_time.to_s(:date_pretty)}
       row :student      
       row :unit
       row :staff_person
       row :drop_in
-      row (:check_in_time) {|appointment| appointment.check_in_time.strftime("%m/%d/%Y at %I:%M %P")}
+      row (:check_in_time) {|appointment| appointment.check_in_time.to_s(:date_pretty)}
       row :front_desk_notes
       row :notes
     end
