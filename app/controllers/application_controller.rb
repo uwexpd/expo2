@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   
   include AuthenticatedSystem
   
-  before_filter :login_required
+  before_filter :login_required, :except => :redriect_to_expo_directory
   
   def authenticate_admin_user!
     unless current_admin_user
@@ -18,7 +18,5 @@ class ApplicationController < ActionController::Base
     return false if !current_user.admin?
     current_user
   end
-    
-      
       
 end

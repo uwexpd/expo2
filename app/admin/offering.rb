@@ -5,7 +5,7 @@ ActiveAdmin.register Offering do
   scope 'All', :sorting, default: true
     
   index do
-    column :name
+    column ('Name') {|offering| link_to(offering.name, admin_offering_path(offering)) }
     column ('Unit') {|offering| link_to(offering.unit.abbreviation, admin_unit_path(offering.unit)) if offering.unit }
     column ('Quarter') {|offering|  offering.quarter_offered ? offering.quarter_offered.title : offering.year_offered }
     column ('Current Phase') {|offering| offering.current_offering_admin_phase.name rescue nil }
@@ -20,7 +20,7 @@ ActiveAdmin.register Offering do
     end
   end
   
-  sidebar "More Settings" do  
+  sidebar "More Settings", only: :show do  
      
   end
   

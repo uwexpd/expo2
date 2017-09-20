@@ -17,6 +17,7 @@ $am-theme-accent: #b7a57a;
 @import "active_material";
 
 @import "chosen";
+@import "material_icons_unicode";
 
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.
@@ -107,7 +108,6 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 
 #header h1.site_title {
 	padding: 0 0 0 16px;
-	margin-right: -50px;
 }
 
 #footer {
@@ -199,14 +199,6 @@ form ul.errors li {
 	font-size: 0.85rem;
 }
 
-
-
-#welcome_dashboard p {
-	padding: 0px 15px 15px 15px;
-    font-size: 0.75rem;	
-}
-
-
 .scope.selected a {
   padding: 5px;
   -webkit-font-smoothing: antialiased;
@@ -274,7 +266,9 @@ form ul.errors li {
 	height: 40px;
 	line-height: 40px;
 	border-color: #d3d3d3;
-	border-radius: 3px;	
+	border-radius: 3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
 }
 
 .chosen-container-single .chosen-single div {
@@ -291,6 +285,43 @@ form ul.errors li {
 .intro {
 	padding: 8px 16px;
 }
+
+.sherlock-buttons {
+	padding-bottom: 2em;
+}
+
+.sherlock-buttons > li {
+    display: inline-block;
+    font-weight: 500;
+    line-height: 24px;
+}
+
+.sherlock-buttons > li:hover, .sherlock-buttons > li:focus {
+	display: inline-block;
+}
+
+.sherlock-buttons > li a {
+	display: block;
+	padding: 17px 7px 7px 7px;	
+	margin: 5px;
+	border: 1px solid #fff;
+	width: 9em;
+	color: #4b2e83;
+	text-align: center;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+}
+
+.sherlock-buttons > li a:hover {
+	background-color: #d8dfea;
+	border: 1px solid #b7c1cb;
+	color: #08d;
+	text-decoration: none;
+}
+
+
+
 
 
 

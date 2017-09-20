@@ -8,10 +8,10 @@ class MgeScholarsController < ApplicationController
   
   def index
     
-    if params[:student_major] && params[:mentor_department].blank?
+    if !params[:student_major].blank? && params[:mentor_department].blank?
       params[:q][:id_in] = @majors.values_at(params[:student_major]).flatten.compact.map(&:to_s)
     end    
-    if params[:mentor_department] && params[:student_major].blank?
+    if !params[:mentor_department].blank? && params[:student_major].blank?
       params[:q][:id_in] = @mentor_departments.values_at(params[:mentor_department]).flatten.compact.map(&:to_s)
     end    
     if !params[:student_major].blank? && !params[:mentor_department].blank?

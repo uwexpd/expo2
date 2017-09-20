@@ -18,6 +18,10 @@
 //= require tinymce
 //= require chosen-jquery
 //= require chosen
+//= require Chart.bundle
+//= require highcharts
+//= require chartkick
 //= require_tree .
+
 
 $(function(){ $(document).foundation(); });

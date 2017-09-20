@@ -6,11 +6,11 @@ ActiveAdmin.register Appointment do
   permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type
   
   index do
-    column ('Time') {|appointment| appointment.start_time.to_s(:long_time12)}
+    column ('Time') {|appointment| link_to appointment.start_time.to_s(:long_time12), admin_appointment_path(appointment)}
     column ('Type') {|appointment| appointment.contact_type.title if appointment.contact_type}
     column ('Staff Person') {|appointment| appointment.staff_person.firstname_first rescue "unknown" }
     column ('Student') {|appointment| appointment.student.fullname rescue "unknown"}
-    column ('Chick In Time') {|appointment| appointment.check_in_time.to_s(:time12)}
+    column ('Chick In Time') {|appointment| appointment.check_in_time.to_s(:time12) if appointment.check_in_time }
     actions
   end
   
@@ -43,19 +43,19 @@ ActiveAdmin.register Appointment do
   form do |f|
     semantic_errors *f.object.errors.keys
     f.inputs do
-      f.input :start_time, as: :datetime_picker, required: true, :input_html => { :style => "width:50%;" }
-      f.input :end_time, as: :datetime_picker, :input_html => { :style => "width:50%;" }
+      f.input :start_time, as: :datetime_picker, required: true, :input_html => { :style => 'width:50%;' }
+      f.input :end_time, as: :datetime_picker, :input_html => { :style => 'width:50%;' }
       f.input :unit, as: :select, include_blank: false, required: true
       f.input :staff_person_id, as: :select, required: true,
                collection: User.admin.reject{|u| u.person.firstname.nil?}.sort_by{|u| u.person.firstname}.map{|u| [u.fullname, u.person_id]}, 
-               include_blank: false, :input_html => { :class => 'chosen-select', :style => "width:34%;" }
-      f.input :student_id, label: 'Student EXPO ID', :input_html => { :style => "width:50%;" }
-      f.input :check_in_time, as: :datetime_picker, :input_html => { :style => "width:50%;" }
+               include_blank: false, :input_html => { :class => 'chosen-select', :style => 'width:34%;' }
+      f.input :student_id, label: 'Student EXPO ID', :input_html => { :style => 'width:50%;' }
+      f.input :check_in_time, as: :datetime_picker, :input_html => { :style => 'width:50%;' }
       f.input :drop_in
       f.input :contact_type_id, as: :select, collection: ContactType.all
-      f.input :front_desk_notes, :input_html => { :rows => 3, :style => "width:50%;" }
-      f.input :notes, :input_html => { :rows => 3, :style => "width:50%;" }
-      f.input :follow_up_notes, :input_html => { :rows => 3, :style => "width:50%;" }
+      f.input :front_desk_notes, :input_html => { :rows => 3, :style => 'width:50%;' }
+      f.input :notes, :input_html => { :rows => 3, :style => 'width:50%;' }
+      f.input :follow_up_notes, :input_html => { :rows => 3, :style => 'width:50%;' }
     end
     f.actions
   end

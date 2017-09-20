@@ -2,7 +2,10 @@ Rails.application.routes.draw do
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-
+  
+  root to: redirect('expo'), :as => 'redirect_root'
+  get '/auth/:provider/callback', to: 'sessions#create'
+  
   scope 'expo' do
     
     root 'admin/dashboard#index'
@@ -12,13 +15,18 @@ Rails.application.routes.draw do
     # User and Sessions    
     resources :sessions
     get 'login',  to: 'sessions#new'
-    delete 'logout', to: 'sessions#destroy'
-    get '/auth/:provider/callback', to: 'sessions#create'
+    delete 'logout', to: 'sessions#destroy'    
   
     resources :scholarships, only: [:show, :index], param: :page_stub
     resources :mge_scholars, only: [:show, :index]
     
   end
+  
+  # Redirect to Sub URI only when it doesn't match '/expo/' in the request URLs
+  constraints ->(req) { !req.url.match('/expo/') } do
+      get "/*all", to: redirect{|params, request| "/expo/#{params[:all]}"}
+  end
+  
   
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

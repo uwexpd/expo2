@@ -1168,7 +1168,7 @@ class ApplicationForOffering < ActiveRecord::Base
   end
 
   def self.mge_awardees
-    Rails.cache.fetch('mge_awardees', :expires_in => 24.hours) do
+    Rails.cache.fetch('mge_awardees', :expires_in => 1.month) do
       ApplicationForOffering.joins(:offering).where(offerings: {unit_id: 2}).awardees
     end
   end
@@ -1176,7 +1176,7 @@ class ApplicationForOffering < ActiveRecord::Base
   # Creates (or restores from cache) a hash with keys of major names and values of arrays of application ID numbers.
   # Default cache is 24 hours.
   def self.awardees_majors_mapping
-    Rails.cache.fetch('awardees_majors_mapping', :expires_in => 24.hours) do      
+    Rails.cache.fetch('awardees_majors_mapping', :expires_in => 1.month) do      
       majors ||= {}
       major_extras ||= MajorExtra.all
       major_abbrs ||= {}
@@ -1218,7 +1218,7 @@ class ApplicationForOffering < ActiveRecord::Base
   # Creates (or restores from cache) a hash with keys of mentor department names and values of arrays of application ID numbers.
   # Default cache is 24 hours.
   def self.mentor_departments_mapping
-    Rails.cache.fetch('mentor_departments_mapping', :expires_in => 24.hours) do      
+    Rails.cache.fetch('mentor_departments_mapping', :expires_in => 1.month) do      
       departments = {}
       mge_awardees.each do |app|
         dept = app.mentor_department

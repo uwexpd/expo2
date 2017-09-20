@@ -2,6 +2,9 @@
 #= require active_material
 #= require tinymce
 #= require chosen-jquery
+#= require Chart.bundle
+#= require highcharts
+#= require chartkick
 
 tinyMCE.baseURL = '/expo/assets/tinymce/';
 

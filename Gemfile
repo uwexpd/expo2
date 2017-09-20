@@ -61,6 +61,11 @@ gem 'spreadsheet'
 # Error reporting
 gem 'sentry-raven'
 
+gem 'chartkick'
+gem 'groupdate'
+
+gem "sanitize"
+gem 'material_icons'
 
 group :production do  
   gem "omniauth-shibboleth"
