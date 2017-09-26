@@ -6,9 +6,9 @@
 <table class="hover">
 	<thead>
 		<tr>
-			<th>Student Name</th>
-			<th>Type of Scholarship</th>
-			<th>Quarter Awarded</th>
+			<th><%= sort_link(@search, :person_firstname,  [:person_firstname, :person_lastname], 'Student Name') %></th>
+			<th><%= sort_link(@search, :offering_name, 'Type of Scholarship') %></th>
+			<th><%= sort_link(@search, :offering_quarter_offered_year, [:offering_quarter_offered_year, :offering_quarter_offered_quarter_code_id], 'Quarter Awarded') %></th>
 			<th>Major</th>
 			<th>Mentor</th>
 		</tr>
