@@ -1,0 +1,18 @@
+<table border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td><%= link_to new_admin_event_time_path(event) do %>
+				<i class='material-icons md-20' style='vertical-align:top; width: 10.1em; margin-right:-9em;'>add_circle</i> Add New
+			<% end %>
+			<span class='right'>
+				<%= link_to admin_event_times_path(event) do %>
+					<i class='material-icons md-20' style='vertical-align:top; width: 10.1em; margin-right:-9em;'>list</i> See All
+				<% end %>
+			</span>
+		</td>
+	</tr>
+	
+	<% event.times.sort.each do |time| %>
+		<tr><td><%= link_to time.time_detail, admin_event_time_path(event, time) %></td></tr>
+	<% end -%>
+	
+</table>

@@ -3,6 +3,7 @@ ActiveAdmin.register Offering do
   menu label: "OnlineApps"  
   config.sort_order = '' # Use blank to override the default sort by id in activeadmin
   scope 'All', :sorting, default: true
+  menu parent: 'Modules'
     
   index do
     column ('Name') {|offering| link_to(offering.name, admin_offering_path(offering)) }

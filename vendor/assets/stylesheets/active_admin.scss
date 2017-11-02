@@ -230,7 +230,8 @@ form ul.errors li {
 }
 
 #index_table_offerings .col-unit, { min-width: 80px; }
-#index_table_offerings .col-quarter, { min-width: 120px; }
+#index_table_offerings .col-quarter { min-width: 120px; }
+#index_table_events .col-type { min-width: 110px; }
 
 #q_submit {
 	background-color: #4b2e83;
@@ -272,7 +273,11 @@ form ul.errors li {
 }
 
 .chosen-container-single .chosen-single div {
-	top: 10px;
+	top: 9px;
+}
+
+.chosen-container-single .chosen-single abbr {
+	top: 14px;
 }
 
 .caption {
@@ -320,10 +325,66 @@ form ul.errors li {
 	text-decoration: none;
 }
 
+/* Top Navigation*/
+#dashboard a {
+	background-image: url(image-path('sprite-action-white.png'));
+	background-position: -31px -192px;
+	width: 32px;
+	height: 32px;
+	margin-right: 70px;
+}
 
+#modules a {
+	background-image: url(image-path('sprite-action-white.png'));
+	background-position: -127px -256px;
+	width: 32px;
+	height: 32px;
+	margin-right: 57px;
+}
 
+#tools a {
+	background-image: url(image-path('sprite-navigation-white.png'));
+	background-position: -32px -0px;
+	width: 32px;
+	height: 32px;
+	margin-right: 37px;
+}
 
+#people a {
+	background-image: url(image-path('sprite-action-white.png'));
+	background-position: -414px -96px;
+	width: 32px;
+	height: 32px;
+	margin-right: 47px;
+}
 
+#site_title a:hover, #dashboard a:hover, #modules a:hover, #tools a:hover, #people a:hover {
+	opacity: 0.8;
+}
 
+.header-item > li > a {
+	padding: 9px 9px 0px 31px;
+	text-decoration: none;
+	color: white;
+	display: block;
+	line-height: 16px;
+	text-align: center;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
 
+#q_unit_id {
+	width: 20em;
+}
+
+#index_table_events tbody .col-sponsor {
+	font-variant: small-caps;
+}
+
+#sidebar .material-icons:hover {
+	opacity: 0.8;
+}
+
+.material-icons.md-20, .mi.md-20 {
+	font-size: 20px;
+}
 

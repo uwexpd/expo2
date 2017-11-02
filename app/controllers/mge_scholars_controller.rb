@@ -15,14 +15,14 @@ class MgeScholarsController < ApplicationController
     end
 
     if !params[:student_major].blank? && params[:mentor_department].blank?
-      if mentor_result.empty?        
+      if mentor_result.blank?        
         params[:q][:id_in] = @majors.values_at(params[:student_major]).flatten.compact.map(&:to_s)
       else
         params[:q][:id_in] = @majors.values_at(params[:student_major]).flatten.compact.map(&:to_s) & mentor_result
       end
     end    
     if !params[:mentor_department].blank? && params[:student_major].blank?
-      if mentor_result.empty? 
+      if mentor_result.blank? 
         params[:q][:id_in] = @mentor_departments.values_at(params[:mentor_department]).flatten.compact.map(&:to_s)
       else
         params[:q][:id_in] = @mentor_departments.values_at(params[:mentor_department]).flatten.compact.map(&:to_s) & mentor_result
@@ -31,7 +31,7 @@ class MgeScholarsController < ApplicationController
     if !params[:student_major].blank? && !params[:mentor_department].blank?
       major_result = @majors.values_at(params[:student_major]).flatten.compact.map(&:to_s)
       dept_result = @mentor_departments.values_at(params[:mentor_department]).flatten.compact.map(&:to_s)
-      if mentor_result.empty? 
+      if mentor_result.blank? 
         params[:q][:id_in] = major_result & dept_result
       else
         params[:q][:id_in] = major_result & dept_result & mentor_result

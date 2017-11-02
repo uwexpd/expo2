@@ -5,7 +5,7 @@ class Quarter < ActiveRecord::Base
   belongs_to :quarter_code
   validates_presence_of :quarter_code, :year, :first_day
   
-  default_scope { order('year, quarter_code_id') }
+  scope :default_order, -> { order('year, quarter_code_id') }
   
   # Returns the quarter abbreviation in the form of "QQQYYYY" (e.g., "AUT2009").
   def abbrev
@@ -47,7 +47,7 @@ class Quarter < ActiveRecord::Base
 
   # Returns the current Quarter, based on quarter start dates.
   def self.current_quarter
-    @current_quarter ||= Quarter.where("first_day < ?", Time.now).order("first_day DESC").first
+    @current_quarter ||= Quarter.where("first_day < ?", Time.now).order("first_day DESC, year, quarter_code_id").first
   end
   
   # Returns true if this quarter is the current_quarter.

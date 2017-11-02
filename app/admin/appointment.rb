@@ -2,6 +2,7 @@ ActiveAdmin.register Appointment do
   actions :all, :except => [:destroy]
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
+  menu parent: 'Modules'
 
   permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type
   
@@ -34,7 +35,7 @@ ActiveAdmin.register Appointment do
       row :unit
       row :staff_person
       row :drop_in
-      row (:check_in_time) {|appointment| appointment.check_in_time.to_s(:date_pretty)}
+      row (:check_in_time) {|appointment| appointment.check_in_time.to_s(:date_pretty) if appointment.check_in_time}
       row :front_desk_notes
       row :notes
     end

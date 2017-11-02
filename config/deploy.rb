@@ -1,12 +1,15 @@
 set :stage, :production
 
-set :deploy_to, "/usr/local/apps/expo2"
-set :repo_url,  "git@github.com:uwexpd/expo2.git"
-set :scm, "git"
+set :deploy_to, '/usr/local/apps/expo2'
+set :repo_url,  'git@github.com:uwexpd/expo2.git'
+set :scm, 'git'
 set :branch, 'master'
-set :deploy_user, "joshlin"
+set :deploy_user, 'joshlin'
 server 'expd.uaa.washington.edu', user: 'joshlin', roles: %w{web app db}, primary: true
-set :rvm_ruby_version, "2.3.1" # set up which rvm ruby to use in server
+set :rvm_ruby_version, '2.3.1' # set up which rvm ruby to use in server
+# Setup multiple rubies to run same version of phusion passenger: https://www.phusionpassenger.com/library/indepth/ruby/multiple_rubies.html
+set :passenger_environment_variables, { :path => '/home/joshlin/.rvm/gems/ruby-1.8.7-head/gems/passenger-5.1.11/bin:$PATH' }
+set :passenger_restart_command, 'rvm-exec 1.8.7@default ruby -S passenger-config restart-app'
 
 # Tell cap your own private keys for git and use agent forwarding with this command.
 set :ssh_options, {

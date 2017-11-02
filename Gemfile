@@ -12,7 +12,6 @@ gem 'foundation-rails'
 # gem 'therubyracer', platforms: :ruby
 
 gem 'jquery-rails'
-# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 
 # Use ActiveModel has_secure_password
@@ -30,7 +29,7 @@ gem 'active_material', github: 'vigetlabs/active_material'
 #gem 'secure_headers', '>= 2.1.0'
 
 # handle multiple primary keys in UWSDB tables: Since many UWSDB tables have multiple primary keys and Rails doesn't really "do" composite PK's
-gem "composite_primary_keys", '>=8.1.1'
+gem 'composite_primary_keys', '>=8.1.1'
 
 # adapter for ms sql server 2012
 gem 'tiny_tds', '~> 0.7.0'
@@ -52,7 +51,7 @@ gem 'chosen-rails'
 gem 'jquery-turbolinks'
 
 gem 'breadcrumbs_on_rails'
-#gem "paranoia", github: "rubysherpas/paranoia", branch: "rails4"
+#gem 'paranoia', github: 'rubysherpas/paranoia', branch: 'rails4'
 gem 'json'
 gem 'activesupport-json_encoder'
 gem 'nokogiri'
@@ -62,13 +61,14 @@ gem 'spreadsheet'
 gem 'sentry-raven'
 
 gem 'chartkick'
-gem 'groupdate'
+#gem 'groupdate'
 
-gem "sanitize"
+gem 'sanitize'
 gem 'material_icons'
+gem 'capitalize-names'
 
 group :production do  
-  gem "omniauth-shibboleth"
+  gem 'omniauth-shibboleth'
 end
 
 group :development, :test do
@@ -86,6 +86,7 @@ group :development do
   gem 'capistrano-rvm'
   gem 'annotate'
   gem 'thin', :require => false
+  gem 'brakeman', :require => false
   gem 'uw_sws'
 end
 

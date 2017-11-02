@@ -13,7 +13,12 @@ ActiveAdmin.register_page "Dashboard" do
     columns do
       column min_width: '65%' do
         panel 'Current Appointments' do
-          para ''
+          @current_person = current_user.person
+          @my_appointments = @current_person.appointments.today + @current_person.appointments.yesterday + @current_person.appointments.tomorrow
+          table_for @my_appointments do 
+            column('Time') {|appointment| link_to appointment.start_time.to_s(:date_pretty), admin_appointment_path(appointment) }
+            column :student
+          end
         end
       end
       column max_width: '33%' do
@@ -47,17 +52,7 @@ ActiveAdmin.register_page "Dashboard" do
           render partial: 'charts/offering_by_unit', locals: { offering_by_unit: @offering_by_unit }
         end
       end
-    end
-    
-      # column do
-      #         panel "Recent Scholarships" do
-      #           table_for Scholarship.order("created_at desc").limit(5) do
-      #             column("Status")     {|scholarship| status_tag(scholarship.is_active? ? 'active' : 'inactive', class: 'small')  }
-      #             column("Scholarship"){|scholarship| link_to(scholarship.title, admin_scholarship_path(scholarship)) }
-      #             column("Created at") {|scholarship| scholarship.created_at.to_date }
-      #           end
-      #         end
-      #       end  
+    end          
     
   end # content
 end

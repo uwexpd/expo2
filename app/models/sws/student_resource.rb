@@ -1,5 +1,6 @@
+require 'capitalize_names'
 # UWSWS => Person Search Resource V5, refer to https://wiki.cac.washington.edu/display/SWS/Person+Search+Resource+V5
-class StudentResource < WebServiceResult  
+class StudentResource < WebServiceResult
   
   SWS_VERSION = "v5"
 
@@ -38,11 +39,13 @@ class StudentResource < WebServiceResult
   end
     
   def lastname
-    self.LastName.try(:titleize)
+    #self.LastName.try(:titleize)
+    CapitalizeNames.capitalize(self.LastName) rescue self.LastName
   end
   
   def firstname
-    self.FirstName.try(:titleize)
+    #self.FirstName.try(:titleize)
+    CapitalizeNames.capitalize(self.FirstName) rescue self.FirstName
   end
   
   def fullname

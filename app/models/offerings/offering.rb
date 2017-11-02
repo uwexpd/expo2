@@ -136,7 +136,7 @@ class Offering < ActiveRecord::Base
   # An Offering is considered "past" if the +quarter_offered+ is older than the current quarter or if +year_offered+ is older than  
   # the current year.
   def past?
-    return quarter_offered < Quarter.current_quarter unless quarter_offered.nil?
+    return quarter_offered.first_day < Quarter.current_quarter.first_day unless quarter_offered.nil?
     return year_offered < Time.now.year unless year_offered.nil?
     return false
   end

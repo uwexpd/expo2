@@ -15,8 +15,14 @@ Rails.application.routes.draw do
     # User and Sessions    
     resources :sessions
     get 'login',  to: 'sessions#new'
-    delete 'logout', to: 'sessions#destroy'    
-  
+    delete 'logout', to: 'sessions#destroy'
+
+    # RSVP for events
+    get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event
+    get 'rsvp/attend/:id', to: 'rsvp#attend', as: :rsvp_attend
+    get 'rsvp/unattend/:id', to: 'rsvp#unattend', as: :rsvp_unattend
+    get 'rsvp', to: 'rsvp#index'
+
     resources :scholarships, only: [:show, :index], param: :page_stub
     resources :mge_scholars, only: [:show, :index]
     

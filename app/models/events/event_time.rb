@@ -16,7 +16,12 @@ class EventTime < ActiveRecord::Base
   def <=>(o)
     start_time <=> o.start_time rescue 0
   end
-
+  
+  # for activeadmin breadcrumb title display
+  def display_name
+    title.blank? ? "#{time_detail}" : "#{title}"
+  end
+  
   # Returns true if this event time is in the past. If end_time is defined, we use that for the comparison; otherwise start_date.
   def past?
     return Time.now > end_time if end_time

@@ -2,13 +2,38 @@ class Person < ActiveRecord::Base
   
   belongs_to :department
   belongs_to :institution
+  belongs_to :class_standing, :class_name => "ClassStanding", :foreign_key => "class_standing_id"
   
   has_many :users
-  has_many :application_for_offerings
+  has_many :application_for_offerings do
+    def past
+      all.select{|a| a.offering.past? }
+    end
+    def current
+      all.select{|a| a.offering.current? }
+    end
+    def open
+      all.select{|a| a.offering.open? }
+    end
+    def closed
+      all.select{|a| !a.offering.open? }
+    end
+  end
   has_many :application_mentors     
   
   has_many :committee_members
   has_many :committees, :through => :committee_members
+  has_many :contact_histories, -> {order('updated_at DESC')}
+  has_many :event_staffs
+  has_many :event_staff_shifts, :through => :event_staffs, :source => :shift do
+    def for; -> (position) { where('event_staff_position_id = ?', position.id) }; end
+  end
+  
+  has_many :appointments, :foreign_key => 'staff_person_id' do    
+    def today;  all.where("DATE(start_time) = ?", Time.now.to_date);  end
+    def yesterday; all.where("DATE(start_time) = ?", 1.day.ago.to_date); end
+    def tomorrow; all.where("DATE(start_time) = ?", 1.day.from_now.to_date); end
+  end
   
   validates :firstname, presence: true, if: [ :require_validations?, :require_name_validations? ]
   validates :lastname,  presence: true, if: [ :require_validations?, :require_name_validations? ]
@@ -55,7 +80,7 @@ class Person < ActiveRecord::Base
     end
   end
   
-  # for activeadmin page title display  
+  # for activeadmin breadcrumb title display
   def display_name
     "#{fullname}"
   end
