@@ -2,8 +2,14 @@
 class Offering < ActiveRecord::Base
   stampable
   
-  scope :sorting, -> { joins("LEFT JOIN `quarters` ON `quarters`.`id` = `offerings`.`quarter_offered_id`").order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC") }
+  scope :sorting, -> { 
+    joins("LEFT JOIN `quarters` ON `quarters`.`id` = `offerings`.`quarter_offered_id`").
+    order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC") 
+  }
 
+  #scope :current, -> { where("`offerings`.`quarter_offered_id`") }
+  #scope :past. ->{ where() }
+  
   belongs_to :unit  
   has_many :application_for_offerings, 
                   -> { includes( :person, 
@@ -11,18 +17,21 @@ class Offering < ActiveRecord::Base
                                 { group_members: :person },
                                 :mentors)
                      },
-           :dependent => :destroy do             
+           :dependent => :destroy do 
+     def valid_status
+       all.where('current_application_status_id is not null')
+     end         
      def awarded      
        all.select{|a| a.awarded?}
      end
      def awaiting_dean_approval
-       -> { where awaiting_dean_approval: true }
+       all.select{|a| a.awaiting_dean_approval? }
      end
      def awaiting_financial_aid_approval
-       -> { where awaiting_financial_aid_approval: true }
+       all.select{|a| a.awaiting_financial_aid_approval? }
      end
      def awaiting_disbursement
-       -> { where awaiting_disbursement: true }
+       all.select{|a| a.awaiting_disbursement? }
      end 
   end  
   

@@ -1168,8 +1168,8 @@ class ApplicationForOffering < ActiveRecord::Base
   end
 
   def self.mge_awardees
-    Rails.cache.fetch('mge_awardees', :expires_in => 1.month) do
-      ApplicationForOffering.joins(:offering).where(offerings: {unit_id: 2}).awardees
+    Rails.cache.fetch('mge_awardees', :expires_in => 2.weeks) do
+      ApplicationForOffering.joins(:offering).where("unit_id=2 OR name = 'Summer Institute in the Arts and Humanities'").awardees
     end
   end
   

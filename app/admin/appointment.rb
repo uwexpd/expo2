@@ -8,7 +8,7 @@ ActiveAdmin.register Appointment do
   
   index do
     column ('Time') {|appointment| link_to appointment.start_time.to_s(:long_time12), admin_appointment_path(appointment)}
-    column ('Type') {|appointment| appointment.contact_type.title if appointment.contact_type}
+    column ('Type') {|appointment| status_tag appointment.contact_type.title, class: 'small' if appointment.contact_type}
     column ('Staff Person') {|appointment| appointment.staff_person.firstname_first rescue "unknown" }
     column ('Student') {|appointment| appointment.student.fullname rescue "unknown"}
     column ('Chick In Time') {|appointment| appointment.check_in_time.to_s(:time12) if appointment.check_in_time }

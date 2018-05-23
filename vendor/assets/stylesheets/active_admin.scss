@@ -120,17 +120,20 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 
 /* login page style */
 #login_header {
-	width: 37%;
-    margin: -102px auto 32px;
+	width: 42%;
+    margin: -112px auto 32px;
 	background: url(image-path('expo-logo-light.png')) no-repeat;
-    height: 67px;    
+    height: 67px;
+	min-width: 400px;
 }
 
 #login {
-	width: 37%;
-	padding: 40px 40px 20px 40px;
+	width: 42%;
+	padding: 40px 50px 20px 50px;
 	max-width: initial;
 	max-width : none;  /*	for IE*/
+	min-width: 400px;
+	min-height: 400px;
 }
 
 #login h2 {	
@@ -162,7 +165,7 @@ body.logged_out h2 {
 }
 
 body.logged_out #login form {
-  	padding: 15px 0;
+  	padding: 20px 0;
 }
 
 body.logged_out #login form table tr td {
@@ -325,7 +328,7 @@ form ul.errors li {
 	text-decoration: none;
 }
 
-/* Top Navigation*/
+/* Top Navigation Menu */
 #dashboard a {
 	background-image: url(image-path('sprite-action-white.png'));
 	background-position: -31px -192px;
@@ -358,6 +361,10 @@ form ul.errors li {
 	margin-right: 47px;
 }
 
+.has_nested ul li a {
+	display: inline;
+}
+	
 #site_title a:hover, #dashboard a:hover, #modules a:hover, #tools a:hover, #people a:hover {
 	opacity: 0.8;
 }
@@ -376,7 +383,7 @@ form ul.errors li {
 	width: 20em;
 }
 
-#index_table_events tbody .col-sponsor {
+#index_table_events tbody .col-sponsor, #index_table_offerings tbody .col-unit {
 	font-variant: small-caps;
 }
 

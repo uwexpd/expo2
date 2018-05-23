@@ -10,7 +10,7 @@ ActiveAdmin.register Offering do
     column ('Unit') {|offering| link_to(offering.unit.abbreviation, admin_unit_path(offering.unit)) if offering.unit }
     column ('Quarter') {|offering|  offering.quarter_offered ? offering.quarter_offered.title : offering.year_offered }
     column ('Current Phase') {|offering| offering.current_offering_admin_phase.name rescue nil }
-    column ('Applications') {|offering| "#{offering.application_for_offerings_count.to_s} Apps" unless offering.application_for_offerings_count.nil? }
+    column ('Applications') {|offering| "#{offering.application_for_offerings.valid_status.size.to_s} Apps" unless offering.application_for_offerings_count.nil? }
     actions
   end
   

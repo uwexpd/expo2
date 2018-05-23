@@ -9,6 +9,15 @@ ActiveAdmin.register_page "Dashboard" do
     #         small I18n.t("active_admin.dashboard_welcome.call_to_action")
     #       end
     #     end
+ 
+ 
+    columns do
+      column do        
+          panel "Modules" do
+            render 'modules'            
+          end        
+      end        
+    end
     
     columns do
       column min_width: '65%' do
@@ -24,26 +33,18 @@ ActiveAdmin.register_page "Dashboard" do
       column max_width: '33%' do
         panel "Student Search" do
           para ''
+          para ''
         end
       end
     end
-
-    
-    columns do
-      column do        
-          panel "Modules" do
-            render 'modules'            
-          end        
-      end        
-    end
-    
-    columns do
-      column do
-        panel "Management Tools" do
-          para ''
-        end
-      end      
-    end
+        
+    # columns do
+    #       column do
+    #         panel "Management Tools" do
+    #           para ''
+    #         end
+    #       end      
+    #     end
     
     columns do
       column do

@@ -38,7 +38,7 @@ gem 'activerecord-sqlserver-adapter', '~> 4.2.0'
 # Connect to UW Student Web Service
 gem 'activeresource', require: 'active_resource'
 
-gem 'mysql2'
+gem 'mysql2', '~> 0.4.0'
 gem 'activerecord-userstamp'
 gem 'tinymce-rails'
 gem 'will_paginate'
@@ -64,8 +64,15 @@ gem 'chartkick'
 #gem 'groupdate'
 
 gem 'sanitize'
-gem 'material_icons'
 gem 'capitalize-names'
+# gem 'auto_strip_atrributes'
+
+# material ui
+gem 'material_icons'
+#gem 'materialize-sass'
+
+# TODO: gem 'rails_email_preview', '~> 2.0.4'
+
 
 group :production do  
   gem 'omniauth-shibboleth'
@@ -73,7 +80,8 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'awesome_print'  
+  gem 'awesome_print'
+  gem "rspec-rails"
 end
 
 group :development do
@@ -88,6 +96,7 @@ group :development do
   gem 'thin', :require => false
   gem 'brakeman', :require => false
   gem 'uw_sws'
+  gem 'rack-mini-profiler', require: false
 end
 
   

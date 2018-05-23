@@ -12,6 +12,8 @@
  *
  *= require_tree .
  *= require_self
+//= require foundation_and_overrides
+
  *= require foundation_and_overrides
 
  */
@@ -21,6 +23,8 @@
 @import 'foundation-icons';
 @import 'chosen-compass';
 @import 'material_icons';
+
+
 
 
 

@@ -9,7 +9,7 @@ ActiveAdmin.register EventTime, as: 'times' do
     column ('Times') {|event_time| link_to event_time.time_detail, admin_event_time_path(event, event_time) }
     column ('Location') {|event_time| event_time.location_text.blank? ? "TBD" : event_time.location_text}
     column ('Capacity') {|event_time| event_time.capacity}
-    column ('Attending') {|event_time| event_time.invitees.size }
+    column ('Attending') {|event_time| event_time.attendees.size }
     column 'Attended' do |event_time| 
       span event_time.attended.size
       span "(#{number_to_percentage((event_time.attended.size.to_f / event_time.attendees.size.to_f) * 100, :precision => 1)})", class: 'smaller light'

@@ -40,12 +40,12 @@ class StudentResource < WebServiceResult
     
   def lastname
     #self.LastName.try(:titleize)
-    CapitalizeNames.capitalize(self.LastName) rescue self.LastName
+    CapitalizeNames.capitalize(self.LastName) rescue self.LastName.try(:titleize)
   end
   
   def firstname
     #self.FirstName.try(:titleize)
-    CapitalizeNames.capitalize(self.FirstName) rescue self.FirstName
+    CapitalizeNames.capitalize(self.FirstName) rescue self.FirstName.try(:titleize)
   end
   
   def fullname
@@ -53,7 +53,7 @@ class StudentResource < WebServiceResult
   end
   
   def legalname
-    self.RegisteredName
+    CapitalizeNames.capitalize(self.RegisteredName) rescue self.RegisteredName
   end
     
 end

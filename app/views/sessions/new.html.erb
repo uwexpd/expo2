@@ -7,8 +7,8 @@
   <%= form_tag '/auth/shibboleth' do %>
 	<div id="uwnetid">				
 		<div id="login_button">	
+			<%= link_to image_tag('weblogin.png', :id => "weblogin_logo"), '/auth/shibboleth' %>
 			<p><%= submit_tag 'Sign In with UW NetID', :name => 'uwnetid_button', :id => "uwnetid_button" %></p>
-			<%#= link_to image_tag('app/weblogin-logo.gif', :id => "weblogin_logo"), '/auth/shibboleth' %>		
 		</div>
 	</div>	
   <% end %>
