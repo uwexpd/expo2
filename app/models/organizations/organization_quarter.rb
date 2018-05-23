@@ -3,7 +3,7 @@ class OrganizationQuarter < ActiveRecord::Base
   stampable
   belongs_to :organization
   belongs_to :quarter
-  belongs_to :staff_contact_user, :class_name => "User", :foreign_key => "staff_contact_user_id", :include => :person
+  #FIXME belongs_to :staff_contact_user, :class_name => "User", :foreign_key => "staff_contact_user_id", :include => :person
   has_many :positions, :class_name => "ServiceLearningPosition", :dependent => :destroy do
     def in_progress; find(:all, :conditions => { :in_progress => true }); end
     def pending; find(:all, :conditions => "(approved IS NULL OR approved = 0) && (in_progress IS NULL OR in_progress = 0)"); end
@@ -23,12 +23,12 @@ class OrganizationQuarter < ActiveRecord::Base
   #   end
   # end
   
-  has_many :related_organization_quarters, :class_name => "OrganizationQuarter", 
-           :finder_sql => %q( SELECT * FROM organization_quarters oq WHERE oq.organization_id = #{organization_id} AND oq.quarter_id = #{quarter_id} AND oq.unit_id != #{unit_id} )
+  #FIXME has_many :related_organization_quarters, :class_name => "OrganizationQuarter", 
+  #         :finder_sql => %q( SELECT * FROM organization_quarters oq WHERE oq.organization_id = #{organization_id} AND oq.quarter_id = #{quarter_id} AND oq.unit_id != #{unit_id} )
   
   belongs_to :unit, :class_name => "Unit"
   
-  acts_as_soft_deletable
+  #acts_as_soft_deletable
   
   validates_presence_of :organization_id
   validates_presence_of :quarter_id
