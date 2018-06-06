@@ -2,7 +2,6 @@ set :stage, :production
 
 set :deploy_to, '/usr/local/apps/expo2'
 set :repo_url,  'git@github.com:uwexpd/expo2.git'
-set :scm, 'git'
 set :branch, 'master'
 set :deploy_user, 'joshlin'
 server 'expd.uaa.washington.edu', user: 'joshlin', roles: %w{web app db}, primary: true

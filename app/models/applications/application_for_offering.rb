@@ -8,6 +8,7 @@ class ApplicationForOffering < ActiveRecord::Base
   include ActionView::Helpers::SanitizeHelper
   include Comparable
   #   acts_as_soft_deletable
+  self.per_page = 20
   
   belongs_to :offering, :counter_cache => true
   belongs_to :person

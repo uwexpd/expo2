@@ -1,15 +1,14 @@
 <% title "#{@scholarship.title} | Scholarship Database | University of Washington" %>
 
-<div class="scholarship_detail">
-<h3><%= @scholarship.title %></h3>
+<div class="card scholarship_detail">
+<h4><%= @scholarship.title %></h4>
 
-<small>Website: <%= link_to @scholarship.website_name, @scholarship.website_url %></small>
-<br><br>
+<p class="smaller">Website:  <%= @scholarship.website_name.blank? ? "N/A" : link_to(@scholarship.website_name, @scholarship.website_url) %></p>
 
-<h5>Description</h5>
+<h6>Description</h6>
 <p><%= raw @scholarship.description %></p>
 
-<h5>Eligibility</h5>
+<h6>Eligibility</h6>
 	<p><%= raw @scholarship.eligibility %></p>
 	
 	<% unless @scholarship.class_standings.blank? %>
@@ -30,15 +29,15 @@
 		</ul>	
 	<% end %>
 
-<h5>Procedure</h5>
+<h6>Procedure</h6>
 <p><%= raw @scholarship.procedure %></p>
 
 <% unless @scholarship.history.blank? %>
-	<h5>History</h5>
+	<h6>History</h6>
 	<p><%= raw @scholarship.history %></p>
 <% end %>
 
-<h5>Contact Information</h5>
+<h6>Contact Information</h6>
 <p><%= raw @scholarship.contact_info %></p>
 </div>
 

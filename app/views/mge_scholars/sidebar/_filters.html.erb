@@ -1,6 +1,5 @@
-<h5 id="filters"><i class="fi-filter"></i> Filters</h5>
-
-<div class="scholarship_filters">
+<div class="card scholarship_filters">
+	<h5><i class="material-icons vertical_top">filter_list</i> Filters</h5>
 	<%= search_form_for @search, url: mge_scholars_path do |f| %>
 		<label>Student Name</label>
 			<%= f.search_field :person_full_name_cont, :placeholder => "firstname lastname" %>
@@ -18,10 +17,11 @@
 			<%= text_field_tag :mentor_name, params[:mentor_name], :placeholder => 'firstname lastname' %>		
 
 		<label>Mentor Department</label>
-			<%= select_tag :mentor_department,	options_for_select([["Departments (#{@mentor_departments.size})", nil]] + @mentor_departments.map{|k,v| ["#{k} (#{v.size})", k]}.sort,	params[:mentor_department]) %>
-																				
-		<%= f.submit 'Filter', :class => 'button' %>
-		<%= link_to "Clear Filters", mge_scholars_path, :class => 'button clear_filter' %>
+			<%= select_tag :mentor_department,	options_for_select([["Departments (#{@mentor_departments.size})", nil]] + @mentor_departments.map{|k,v| ["#{k} (#{v.size})", k]}.sort,	params[:mentor_department]),  {class: 'browser-default'} %>
+
+		<br>
+		<%= f.submit 'Filter', :class => 'btn' %>
+		<%= link_to "CLEAR FILTERS", mge_scholars_path, :class => 'clear_filter' %>
 
 	<% end %>
 </div>

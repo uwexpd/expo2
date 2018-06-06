@@ -1,72 +1,74 @@
 
-<h5 id="filters"><i class="fi-filter"></i> Filters</h5>
-
-<div class="scholarship_filters">
+<div class="card scholarship_filters">
+<h5><i class="material-icons vertical_top">filter_list</i> Filters</h5>
 <%= search_form_for @search do |f| %>
-	<%= f.submit 'Filter', :class => 'button' %>
-	<%= link_to "Clear Filters", scholarships_path, :class => 'button clear_filter' %>
-	
-	<strong>Academic Standing</strong>
+	<%= f.submit 'Filter', :class => 'btn' %>
+	<%= link_to "CLEAR FILTERS", scholarships_path, :class => 'clear_filter' %>
+
+	<p><strong>Academic Standing</strong></p>
 		<label>1st Year Undergraduate</label>
-		<%= f.select :freshman_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.freshman_true), {include_blank: "Any"}  %>
+		<%= f.select :freshman_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.freshman_true), {include_blank: "Any"}, {class: 'browser-default'} %>
 		<label>2nd Year Undergraduate</label>
-		<%= f.select :sophomore_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.sophomore_true), include_blank: "Any"  %>
+		<%= f.select :sophomore_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.sophomore_true), {include_blank: "Any"}, {class: 'browser-default'} %>
 		<label>3rd Year Undergraduate</label>
-		<%= f.select :junior_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.junior_true), include_blank: "Any"  %>
+		<%= f.select :junior_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.junior_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 		<label>4th Year Undergraduate</label>
-		<%= f.select :senior_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.senior_true), include_blank: "Any"  %>
+		<%= f.select :senior_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.senior_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 		<label>5th Year Undergraduate</label>
-		<%= f.select :fifth_year_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.fifth_year_true), include_blank: "Any"  %>
+		<%= f.select :fifth_year_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.fifth_year_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 		<label>Alumni and/or graduate student</label>
-		<%= f.select :graduate_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_true), include_blank: "Any"  %>
+		<%= f.select :graduate_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_true), {include_blank: "Any"}, {class: 'browser-default'} %>
 	
-	<strong>Field(s) of Interest or Study</strong>
+	<p><strong>Field(s) of Interest or Study</strong></p>
 		<%= f.collection_select :categories_category_id_in, Category.where(parent_id: 0).where.not(id: [188,189]), :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'}  %>
 		
-	<strong>Citizenship</strong>
+	<p><strong>Citizenship</strong></p>
 		<label>US Citizen</label>
-		<%= f.select :us_citizen_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.us_citizen_true), include_blank: 'Any'  %>
+		<%= f.select :us_citizen_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.us_citizen_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 		<label>Permanent Resident</label>
-		<%= f.select :permanent_resident_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.permanent_resident_true), include_blank: 'Any'  %>
+		<%= f.select :permanent_resident_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.permanent_resident_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 		<label>International or Other Visa Status</label>
-		<%= f.select :other_visa_status_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.other_visa_status_true), include_blank: 'Any'  %>
+		<%= f.select :other_visa_status_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.other_visa_status_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 		<label>Undocumented</label>
-		<%= f.select :hb_1079_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.hb_1079_true), include_blank: 'Any'  %>		
-	<strong>Financial Need</strong>	
+		<%= f.select :hb_1079_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.hb_1079_true), {include_blank: "Any"}, {class: 'browser-default'}  %>		
+	
+	<p><strong>Financial Need</strong></p>
 		<label>Requiring financial need</label>
-		<%= f.select :need_based_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.need_based_true), include_blank: 'Any'  %>
-	<strong>Residency</strong>
+		<%= f.select :need_based_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.need_based_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
+	
+	<p><strong>Residency</strong></p>
 		<label>Requiring Washington residency</label>
-		<%= f.select :resident_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.resident_true), include_blank: 'Any'  %>
-	<strong>Additional Identity Categories</strong>
-	    <label><small>Use these categories to show only those scholarships that target students identifying with these communities. Please understand that you could also be a strong candidate for scholarships that don’t target these specific identities, and that this list is not exhaustive.</small></label>
+		<%= f.select :resident_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.resident_true), {include_blank: "Any"}, {class: 'browser-default'} %>
+
+	<p><strong>Additional Identity Categories</strong></p>
+	    <p><small>Use these categories to show only those scholarships that target students identifying with these communities. Please understand that you could also be a strong candidate for scholarships that don’t target these specific identities, and that this list is not exhaustive.</small></p>
 		<label>Disabilities</label>
 		<%= f.collection_select :disabilities_disability_id_in, Disability.all.reject{|d|d.id==4}, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
 		<label>Ethnicities or racial groups</label>
 		<%= f.collection_select :ethnicities_ethnicity_id_in, OmsfaEthnicity.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>				
 		<label>LGBTQI community</label>
-		<%= f.select :lgbtqi_community_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.lgbtqi_community_true), include_blank: 'Any'  %>		
-		<label>Veterans, military service members, and their family members <small>(Under development, more listings coming soon. Meanwhile, <%= link_to 'please download our veterans scholarships list', 'http://depts.washington.edu/scholarq/pdfs/Scholarships for Military Veterans and Families2.pdf', target: '_blank' %>)</small></label>		
-		<%= f.select :veteran_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.veteran_true), include_blank: 'Any'  %>
+		<%= f.select :lgbtqi_community_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.lgbtqi_community_true), {include_blank: "Any"}, {class: 'browser-default'}  %><br>
+		<label>Veterans, military service members, and their family members <small>(Under development, more listings coming soon. Meanwhile, <%= link_to 'please download our veterans scholarships list', 'http://depts.washington.edu/scholarq/pdfs/Scholarships for Military Veterans and Families2.pdf', target: '_blank' %>)</small></label>
+		<%= f.select :veteran_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.veteran_true), {include_blank: "Any"}, {class: 'browser-default'} %>
 			
 		<label>Women</label>
-		<%= f.select :female_true, options_for_select([['Yes', 'true' ]], @search.female_true), include_blank: 'Any'  %>
-	<strong>Scholarship Type</strong>
+		<%= f.select :female_true, options_for_select([['Yes', 'true' ]], @search.female_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
+
+	<p><strong>Scholarship Type</strong></p>
 		<label>Are offered by UW</label>
-		<%= f.select :is_departmental_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.is_departmental_true), include_blank: 'Any'  %>
+		<%= f.select :is_departmental_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.is_departmental_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 		<label>Support activities
 			<%= f.collection_select :types_type_id_in, Type.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
 		</label>
 		<label>Support gap year experiences</label>
-		<%= f.select :gap_year_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.gap_year_true), include_blank: 'Any'  %>
+		<%= f.select :gap_year_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.gap_year_true), {include_blank: "Any"}, {class: 'browser-default'} %>
 		<label>Support graduate studies</label>
-		<%= f.select :graduate_school_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_school_true), include_blank: 'Any'  %>
+		<%= f.select :graduate_school_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_school_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 
 		
 	<br>	
-	<%= f.submit 'Filter', :class => 'button' %>
-	<%= link_to "Clear Filters", scholarships_path, :class => 'button clear_filter' %>
-
+	<%= f.submit 'Filter', :class => 'btn' %>
+	<%= link_to "CLEAR FILTERS", scholarships_path, :class => 'clear_filter' %>	
 
 <% end %>
 </div>

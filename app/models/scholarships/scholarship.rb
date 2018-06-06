@@ -1,5 +1,6 @@
 class Scholarship < ScholarshipBase
-  self.table_name = "scholarships"  
+  self.table_name = "scholarships" 
+  self.per_page = 20
   
   has_many :categories, :class_name => "ScholarshipCategory", :foreign_key => "scholarship_id"
   has_many :disabilities, :class_name => "ScholarshipDisability", :foreign_key => "scholarship_id"

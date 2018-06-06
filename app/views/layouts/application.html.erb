@@ -17,11 +17,13 @@
 	<%= content_tag(:div,  content_tag(:span, "#{Rails.env}"), :class => 'rails_env', :id => Rails.env) if Rails.env != 'production' %>
 	<%= render 'shared/navigation' %>
 	
-	<div class="column row">
-		<ul class="breadcrumbs">
-			 <%= render_breadcrumbs :tag => :li, :separator => "" %>
-		</ul>		
-	</div>
+  <nav>
+    <div class="nav-wrapper">
+      <div class="col s12">
+      	<%= render_breadcrumbs %>
+      </div>
+    </div>
+  </nav>
 	
 	<div class="column row">
 	  <% flash.each do |name, message| %>
@@ -37,11 +39,11 @@
 	</div>	
 	
 	<div id="content" class="row">
-		<div id="main" class="small-9 columns">
+		<div id="main" class="col s9">
 	    	<%= yield %>
 		</div>
 		
-		<div id="sidebar" class="small-3 columns">
+		<div id="sidebar" class="col s3">
 			<%= yield :sidebar %>
 		</div>
 	</div>

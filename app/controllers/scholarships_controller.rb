@@ -1,6 +1,6 @@
 class ScholarshipsController < ApplicationController
 
-  add_breadcrumb 'OSMFA home', Unit.find_by_abbreviation('omsfa').home_url
+  add_breadcrumb 'OSMFA Home', Unit.find_by_abbreviation('omsfa').home_url
   
   skip_before_filter :login_required
   
@@ -11,8 +11,7 @@ class ScholarshipsController < ApplicationController
         categories_with_sub = selected_categories
         selected_categories.each do |category_id|
           categories_with_sub += Category.find(category_id).sub_categories.collect{|s| s.id.to_s }
-        end
-        logger.debug "DEBUG => #{categories_with_sub}"
+        end        
         params[:q][:scholarship_categories_category_id_in] = categories_with_sub
       end
     end    
@@ -20,10 +19,12 @@ class ScholarshipsController < ApplicationController
     @search = Scholarship.upcoming.ransack(params[:q]) if params[:scope] == 'upcoming'
     @scholarships = @search.result.includes(:scholarship_deadlines).page(params[:page]).uniq.order('scholarships.title')
     
-    add_breadcrumb "scholarships search"
+    add_breadcrumb "Scholarships Search"
   end
 
   def show
+    add_breadcrumb "Scholarships Search", scholarships_path
+
     if params[:page_stub] 
       @scholarship = Scholarship.find_by_page_stub params[:page_stub]
       if @scholarship
@@ -36,8 +37,7 @@ class ScholarshipsController < ApplicationController
         flash[:alert] = "Cannot find the scholarship."
         redirect_to :action => "index"
       end            
-    end    
-    add_breadcrumb "scholarships search", scholarships_path    
+    end        
   end
   
 end

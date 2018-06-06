@@ -11,10 +11,9 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery.turbolinks
 //= require jquery_ujs
-
-//= require foundation
+//= require jquery.turbolinks
+//= require materialize
 //= require turbolinks
 //= require tinymce
 //= require chosen-jquery
@@ -25,4 +24,9 @@
 //= require_tree .
 
 
-$(function(){ $(document).foundation(); });
+// Fix: https://stackoverflow.com/questions/37797741/rails-5-turbolinks-5-some-js-not-loaded-on-page-render
+$(document).on('turbolinks:load', function() {
+  $('#screen-selection').chosen({
+    width: '100%'
+  })
+})

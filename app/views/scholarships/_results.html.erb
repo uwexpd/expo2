@@ -1,44 +1,47 @@
-<div class="scholarship_result">
-<h4>Results<span class="page_info"><i class="fi-results"></i> <%= page_entries_info @scholarships %></span>
-	<ul class="menu align-right scope_menu">
-		<li <%= 'class=active' if params[:scope] %>><%= link_to "Upcoming Scholarships (#{Scholarship.upcoming.size})", scholarships_path(scope: 'upcoming') %></li>
-		<li <%= 'class=active' unless params[:scope] %>><%= link_to "All Scholarships (#{Scholarship.active.size})", scholarships_path %></li>
-	</ul>
-</h4>
-<%= will_paginate @scholarships, renderer: FoundationPagination::Rails %>
+  <div class="card">
+	<div class="table-header">
+		
+		<h5>Results<span class="page_info"><%= page_entries_info @scholarships %></span></h5>
+			<ul class="scopes right">
+				<li <%= 'class=selected' if params[:scope] %>><%= link_to "Upcoming (#{Scholarship.upcoming.size})", scholarships_path(scope: 'upcoming') %></li>
+				<li <%= 'class=selected' unless params[:scope] %>><%= link_to "All (#{Scholarship.active.size})", scholarships_path %></li>
+			</ul>			
+	</div>	
+	<table class="responsive-table highlight">
+		<thead>
+			<tr>
+				<th><%= sort_link(@search, :title, default_order: :desc) %></th>
+				<th>Class Standing</th>
+				<th><%= sort_link(@search, :gpa, default_order: :desc) %></th>
+				<th><%= sort_link(@search, :scholarship_deadlines_deadline, "Deadline", default_order: :desc) %></th>
+			</tr>
+		</thead>
+		<tbody>
+		<% if @scholarships.empty? %>
+		  <tr><td colspan="4">No data found. Please try another search.</td></tr>
+		<% end %>
 
-<table class="hover">
-	<thead>
-		<tr>
-			<th><%= sort_link(@search, :title, default_order: :desc) %></th>
-			<th>Class Standing</th>
-			<th><%= sort_link(@search, :gpa, default_order: :desc) %></th>
-			<th><%= sort_link(@search, :scholarship_deadlines_deadline, "Deadline", default_order: :desc) %></th>
-		</tr>
-	</thead>
-	<tbody>
-	<% if @scholarships.empty? %>
-	  <tr><td>There are no data found. Please try another search.</td></tr>
-	<% end %>
+		<% @scholarships.each do |scholarship| %>
 
-	<% @scholarships.each do |scholarship| %>
+			<tr>
+				<td width = "60%"><%= link_to scholarship.title, scholarship_path(scholarship.page_stub) rescue scholarship.title %></td>
+				<td width = "16%" ><%= scholarship.class_standings(", ") %></td>
+				<td width = "8%"><%= scholarship.gpa %></td>
+				<td width = "16%" >
+					<ul>
+						<% scholarship.scholarship_deadlines.each do |d| %>
+						<li><%= d.deadline.to_s %></li>
+						<% end %>
+					</ul>
+				</td>
+			</tr>
 
-		<tr>
-			<td width = "60%"><%= link_to scholarship.title, scholarship_path(scholarship.page_stub) rescue scholarship.title %></td>
-			<td width = "16%" ><%= scholarship.class_standings(", ") %></td>
-			<td width = "8%"><%= scholarship.gpa %></td>
-			<td width = "16%" >
-				<ul>
-					<% scholarship.scholarship_deadlines.each do |d| %>
-					<li><%= d.deadline.to_s %></li>
-					<% end %>
-				</ul>
-			</td>
-		</tr>
+		<% end %>
+		</tbody>
+	</table>
+	<div class="table-footer">
+		<%= will_paginate @scholarships %>
+	</div>  
 
-	<% end %>
-	</tbody>
-</table>
 
-<%= will_paginate @scholarships, renderer: FoundationPagination::Rails %>
 </div>

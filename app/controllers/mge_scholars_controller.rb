@@ -1,6 +1,6 @@
 class MgeScholarsController < ApplicationController
 
-  add_breadcrumb 'MGE home', Unit.find_by_abbreviation('mge').home_url
+  add_breadcrumb 'MGE Home', Unit.find_by_abbreviation('mge').home_url
   
   skip_before_filter :login_required
   before_filter :fetch_mge_awardees, :fetch_majors, :fetch_mentor_departments
@@ -50,7 +50,7 @@ class MgeScholarsController < ApplicationController
       @scholars = @search.result.includes(:person, {offering: :quarter_offered}).page(params[:page]).order('application_for_offerings.ID DESC')
     end        
     
-    add_breadcrumb "scholars search"
+    add_breadcrumb "Scholars Search"
   end
 
   def fetch_mge_awardees

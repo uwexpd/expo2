@@ -12,20 +12,15 @@
  *
  *= require_tree .
  *= require_self
-//= require foundation_and_overrides
 
- *= require foundation_and_overrides
-
- */
-
-@import "public";
-@import "button_partial";
-@import 'foundation-icons';
+*/
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
 @import 'chosen-compass';
+@import 'materialize';
 @import 'material_icons';
+@import 'public';
 
 
-
-
-
-
+.pagination li.active a {
+  color: #fff;
+}

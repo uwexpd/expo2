@@ -5,8 +5,6 @@ gem 'sass-rails'
 gem 'coffee-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-gem 'foundation-icons-sass-rails'
-gem 'foundation-rails' 
 
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
@@ -41,8 +39,8 @@ gem 'activeresource', require: 'active_resource'
 gem 'mysql2', '~> 0.4.0'
 gem 'activerecord-userstamp'
 gem 'tinymce-rails'
-gem 'will_paginate'
-gem 'will_paginate-foundation'
+gem 'will_paginate', '~> 3.1.6'
+gem 'will_paginate-materialize', github: 'harrybournis/will_paginate-materialize'
 gem 'rails_autolink'
 
 # for chosen
@@ -69,7 +67,7 @@ gem 'capitalize-names'
 
 # material ui
 gem 'material_icons'
-#gem 'materialize-sass'
+gem 'materialize-sass'
 
 # TODO: gem 'rails_email_preview', '~> 2.0.4'
 

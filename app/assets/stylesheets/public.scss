@@ -1,5 +1,13 @@
 // public pages stylesheet
 
+a:hover{
+	color: #b7a57a;
+}
+
+.smaller {
+	font-size: 85%;
+}
+
 .top-bar {
 	margin-bottom: 2em;
 }
@@ -9,7 +17,7 @@
 }
 
 // EXPO Header
-#header {	
+#header {
     background: #39275B url(image-path('jellyfish.jpg')) -410px;
     height: 49px;
     text-align: left;
@@ -62,17 +70,52 @@
 	z-index: 100;
 }
 
-.breadcrumbs {
-	padding: 8px 15px;
-    list-style: none;
-    background-color: whitesmoke;
-    border-radius: 4px;
- 	margin-top: 4rem;
+nav .nav-wrapper{
+	margin-top:3rem;
+	color: rgba(0, 0, 0, 0.7);
+	background-color: white;
+	padding-left: 12px;
 }
 
-tbody th, tbody td{
-	font-size: 0.9em;
+nav .nav-wrapper a {
+	color: #039be5;
 }
+
+nav .nav-wrapper a:hover{
+	color: #b7a57a;
+}
+
+// thead {
+// 	border-bottom: 1px solid #efefef !important;
+// }
+
+thead th, tbody td{
+	font-size: 0.9em;
+	border-bottom: solid 1px #ddd;
+	padding: 15px 0px 15px 24px;
+}
+
+
+.table-header {
+    height: 64px;
+    padding-left: 24px;
+    padding-right: 14px;
+    align-items: center;
+    display: flex;
+    border-bottom: solid 1px #ddd;
+}
+
+.table-footer {
+	height: 56px;
+    padding-left: 24px;
+    padding-right: 14px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    color: rgba(0,0,0,0.54);
+}
+
 
 #footer-wrap{
 	padding: 0.9375rem;
@@ -122,6 +165,49 @@ tbody th, tbody td{
 	margin: 0;
 }
 
+.btn, .btn-large, .btn-floating{
+	background-color: #4b2e83;
+	padding: 0 16px;
+}
+
+.btn:hover, .btn-large:hover {
+ 	background-color: #6e579b;
+}
+
+.btn:focus, .btn-large:focus, .btn-floating:focus {
+  background-color: #3c2468;
+}
+
+.vertical_top{
+	vertical-align: top;
+}
+
+ul.pagination{
+	padding-top: 20px;
+}
+
+.scopes {
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;   
+    text-align: right;
+}
+
+.scopes li { 
+	display: inline-block;
+	font-size: 1rem;
+	margin-left: 16px;
+}
+
+.scopes .selected > a {
+	padding: 5px;
+	-webkit-font-smoothing: antialiased;
+	background-color: #4b2e83;
+	color: whitesmoke;
+}
+
+
+
 /* Scholarship Database Search Style */
 
 #sidebar select {
@@ -131,61 +217,36 @@ tbody th, tbody td{
     padding-bottom: 0.1rem;
 }
 
-.clear_filter {
-	background: #ecf0f1;
-	color: #95a5a6;
-    margin-left: 0.9em;
-}
-
-.clear_filter:hover, .clear_filter:active  {
-    background-color: #FFFFFF;
-	color: #95a5a6;
-	border: solid 1px #c7c7c7;
-    border-color: #c7c7c7;
-    border-top-color: #d3d3d3;
-    border-right-color: #c7c7c7;
-    border-bottom-color: #c2c2c2;
-    border-left-color: #c7c7c7;
+.clear_filter {    
+    cursor: pointer;
+    vertical-align: middle;
+    padding-left:12px;
 }
 
 .scholarship_filters {
-	border: 1px solid #d3d8dc ;
-	padding: 0.7em;
+	padding: 0.7em;	
 }
 
-#filters {
-	margin-top: 0.4em;
-	margin-bottom: 0;
-	background: #4b2e83;
-    color: #FFFFFF; 
-    padding: 8px 15px;
-    font-weight: bold;
+.scholarship_filters h5{
+	margin-bottom: 1.2rem;
 }
 
-.scholarship_detail h3 {
+.scholarship_detail{
+	padding: 0.4rem 1rem;
+}
+
+.scholarship_detail h4 {
 	color: #4b2e83;
 }
 
-.scholarship_detail h5 {
-	background: #4b2e83;
+.scholarship_detail h6 {
+	background-color: #4b2e83;
     color: #FFFFFF;
-	padding: 0.4rem 1rem;
-	font-weight: bold;
+    padding: 0.6rem 0.8rem;
 }
 
 .scholarship_sidebar {
-	margin-top: 6.2rem;
-}
-
-.scholarship_sidebar h5 {
-	background: #4b2e83;
-    color: #FFFFFF;
 	padding: 0.4rem 1rem;
-	font-weight: bold;
-}
-
-#scholarship_search label{
-	font-size: 0.775rem;
 }
 
 .page_info {
@@ -202,20 +263,3 @@ tbody th, tbody td{
 	top: 0.2rem;
 }
 
-.scope_menu {
-	float:right;
-	font-size:0.85rem;
-}
-
-.scholarship_search {
-	padding-bottom: 0.5rem;
-    border-bottom: 1px solid #ddd;
-}
-
-.scholarship_result {
-	padding-top: 0.5rem;
-}
-
-.scholarship_result .menu .active > a {
-	background:#999;
-}
