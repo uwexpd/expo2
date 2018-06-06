@@ -1,44 +1,47 @@
 <% title "#{@scholarship.title} | Scholarship Database | University of Washington" %>
 
 <div class="card scholarship_detail">
-<h4><%= @scholarship.title %></h4>
 
-<p class="smaller">Website:  <%= @scholarship.website_name.blank? ? "N/A" : link_to(@scholarship.website_name, @scholarship.website_url) %></p>
+	<h4><%= @scholarship.title %></h4>
 
-<h6>Description</h6>
-<p><%= raw @scholarship.description %></p>
+	<p class="smaller">Website:  <%= @scholarship.website_name.blank? ? "N/A" : link_to(@scholarship.website_name, @scholarship.website_url) %></p>
 
-<h6>Eligibility</h6>
-	<p><%= raw @scholarship.eligibility %></p>
-	
-	<% unless @scholarship.class_standings.blank? %>
-	<strong>Student Type</strong>
-		<ul>
-			<% @scholarship.class_standings.each do |class_standing| %>
-				<li><%= class_standing %></li>
+	<h6>Description</h6>
+	<div class="content"><%= raw @scholarship.description %></div>
+
+	<h6>Eligibility</h6>
+		<div class="content"><%= raw @scholarship.eligibility %></div>
+		<div class="content">
+			<% unless @scholarship.class_standings.blank? %>
+				<strong>Student Type</strong>
+				<ul>
+					<% @scholarship.class_standings.each do |class_standing| %>
+						<li><%= class_standing %></li>
+					<% end %>
+				</ul>
 			<% end %>
-		</ul>
-	<% end %>
-	
-	<% unless @scholarship.class_standings.blank? %>
-	<strong>Citizen Type</strong>
-		<ul>
-			<% @scholarship.citizen_types.each do |citizen_type| %>
-				<li><%= citizen_type %></li>
+			
+			<% unless @scholarship.class_standings.blank? %>
+				<strong>Citizen Type</strong>
+				<ul>
+					<% @scholarship.citizen_types.each do |citizen_type| %>
+						<li><%= citizen_type %></li>
+					<% end %>
+				</ul>	
 			<% end %>
-		</ul>	
+		</div>
+
+	<h6>Procedure</h6>
+	<div class="content"><%= raw @scholarship.procedure %></div>
+
+	<% unless @scholarship.history.blank? %>
+		<h6>History</h6>
+		<div class="content"><%= raw @scholarship.history %></div>
 	<% end %>
 
-<h6>Procedure</h6>
-<p><%= raw @scholarship.procedure %></p>
+	<h6>Contact Information</h6>
+	<div class="content"><%= raw @scholarship.contact_info %></div>
 
-<% unless @scholarship.history.blank? %>
-	<h6>History</h6>
-	<p><%= raw @scholarship.history %></p>
-<% end %>
-
-<h6>Contact Information</h6>
-<p><%= raw @scholarship.contact_info %></p>
 </div>
 
 <% sidebar :details_sidebar %>
