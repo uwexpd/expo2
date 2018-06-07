@@ -1,6 +1,5 @@
-
-<div class="card scholarship_filters">
 <h5><i class="material-icons vertical_top">filter_list</i> Filters</h5>
+
 <%= search_form_for @search do |f| %>
 	<%= f.submit 'Filter', :class => 'btn' %>
 	<%= link_to "CLEAR FILTERS", scholarships_path, :class => 'clear_filter' %>
@@ -71,4 +70,3 @@
 	<%= link_to "CLEAR FILTERS", scholarships_path, :class => 'clear_filter' %>	
 
 <% end %>
-</div>

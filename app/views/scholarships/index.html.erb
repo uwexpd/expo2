@@ -1,25 +1,24 @@
 <% title "Scholarship Database | University of Washington" %>
 
-<h5><%= link_to "UW Office of Merit Scholarships, Fellowships & Awards Scholarships Search", scholarships_path %></h5><br />
+<div class="card content" style="padding-bottom: 0px">
+	<h5><%= link_to "UW Office of Merit Scholarships, Fellowships & Awards Scholarships Search", scholarships_path %></h5>	
 
-
-
-<div class="row">
-  <%= search_form_for @search do |f| %>
-		<div class="input-field col s5">
-			<%= f.search_field :title_or_description_or_history_or_eligibility_cont, :placeholder => "Type keywords" %>			
-		</div>
-		<div class="input-field col s3">
-			<%= f.button :submit, :class => 'btn waves-effect waves-light' do %>
-					<i class="material-icons left">search</i>Search
-				<% end %>
-		</div>
-  <% end %>
+	<div class="row">
+	  <%= search_form_for @search do |f| %>
+			<div class="input-field col s5">
+				<%= f.search_field :title_or_description_or_history_or_eligibility_cont, :placeholder => "Type keywords" %>			
+			</div>
+			<div class="input-field col s3">
+				<%= f.button :submit, :class => 'btn waves-effect waves-light' do %>
+						<i class="material-icons left">search</i>Search
+					<% end %>
+			</div>
+	  <% end %>
+	</div>
 </div>
 
 
-
 <%= render 'results' %>
-<% sidebar :filters %>
+<% sidebar :filters, :id => "scholarships" %>
 <br>
 <small>Any problems or questions about this scholarship search should be sent to <%= auto_link(Unit.find_by_abbreviation('omsfa').email) %>.</small>

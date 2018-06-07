@@ -17,26 +17,26 @@
 	<%= content_tag(:div,  content_tag(:span, "#{Rails.env}"), :class => 'rails_env', :id => Rails.env) if Rails.env != 'production' %>
 	<%= render 'shared/navigation' %>
 	
-  <nav>
-    <div class="nav-wrapper">
-      <div class="col s12">
-      	<%= render_breadcrumbs %>
-      </div>
-    </div>
-  </nav>
+   <nav>
+     <div class="nav-wrapper">
+       <div class="col s12">
+        	<%= render_breadcrumbs %>
+       </div>
+     </div>
+   </nav>
 	
-	<div class="column row">
+   <div class="row">
 	  <% flash.each do |name, message| %>
 	    <% if message.is_a?(String) %>
-	      <%= content_tag :div, class: "#{name} callout small", :data => { :closable => '' } do %>
+	      <%#= content_tag :div, class: "#{name} callout small", :data => { :closable => '' } do %>
 	         <%= message %>
-			 <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+			 <!-- <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
 			    <span aria-hidden="true">&times;</span>
-			 </button>
-		  <% end %>
+			 </button> -->
+		  <%# end %>
 	    <% end %>
 	  <% end %>
-	</div>	
+	</div>
 	
 	<div id="content" class="row">
 		<div id="main" class="col s9">

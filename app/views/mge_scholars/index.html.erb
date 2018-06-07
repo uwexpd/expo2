@@ -1,8 +1,9 @@
 <% title "Mary Gates Endowment Scholars Database | University of Washington" %>
 
-<h5><%= link_to "UW Mary Gates Endowment Scholars Search", mge_scholars_path %></h5><br />
+<div class="card content">
+	<h5><%= link_to "UW Mary Gates Endowment Scholars Search", mge_scholars_path %></h5>
+	<p class="gray smaller">Any problems or questions about this scholars search should be sent to <%= auto_link(Unit.find_by_abbreviation('mge').email) %>.</p>
+</div>
 
 <%= render 'results' %>
 <% sidebar :filters %>
-<br>
-<small>Any problems or questions about this scholars search should be sent to <%= auto_link(Unit.find_by_abbreviation('mge').email) %>.</small>
