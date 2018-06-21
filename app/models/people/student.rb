@@ -43,6 +43,16 @@ class Student < Person
      @sws ||= StudentResource.find_by_system_key(system_key, true)
    end
    
+   def reg_id
+    if read_attribute(:reg_id).blank?
+      @reg_id ||= StudentResource.find_by_system_key(system_key, false)
+      update_attribute(:reg_id, @reg_id)
+    else
+      @reg_id ||= read_attribute(:reg_id)
+    end
+    @reg_id
+   end
+
    def firstname
      self.sdb_update(:name)
      nickname.blank? ? read_attribute(:firstname) : nickname
@@ -82,6 +92,27 @@ class Student < Person
      sdb.nil? ? read_attribute('student_no').to_s.rjust(7,'0') : sdb.student_no.to_s.rjust(7,'0')
    end
    
+   def current_credits(quarter = Quarter.current_quarter)
+    return 0 if sdb.registrations.size < 1
+    sr = sdb.registrations.find_by_regis_yr_and_regis_qtr(quarter.year, quarter.quarter_code_id)
+    sr.nil? ? 0 : sr.current_credits
+  end
+  
+  def full_time?(quarter = Quarter.current_quarter)
+    current_credits(quarter) >= Rails.configuration.constants['credits_required_for_full_time']
+  end
+
+  # Returns true if this student is an undergraduate at the University. A student is considered undergraduate if his or her
+  # +class_standing+ is <= 5.
+  def undergrad?
+    sdb.class_standing <= 5
+  end
+  
+  def class_standing_id
+  self.sdb_update(:class_standing)
+  read_attribute(:class_standing_id)
+  end
+  
    # @alias for find_or_create_by_student_no
    def self.find_by_student_no(student_no)
      find_or_create_by_student_no(student_no)

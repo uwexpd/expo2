@@ -1,10 +1,10 @@
 ActiveAdmin.register Offering do    
-  batch_action :destroy, false  
-  menu label: "OnlineApps"  
+  batch_action :destroy, false    
   config.sort_order = '' # Use blank to override the default sort by id in activeadmin
   scope 'All', :sorting, default: true
+  menu label: "OnlineApps"
   menu parent: 'Modules'
-    
+  
   index do
     column ('Name') {|offering| link_to(offering.name, admin_offering_path(offering)) }
     column ('Unit') {|offering| link_to(offering.unit.abbreviation, admin_unit_path(offering.unit)) if offering.unit }
@@ -21,9 +21,15 @@ ActiveAdmin.register Offering do
     end
   end
   
-  sidebar "More Settings", only: :show do  
+  sidebar "Applications", only: :show do     
+    i 'chrome_reader_mode', :class => 'material-icons md-32'
+    link_to 'Manage student applications', admin_apply_manage_path(offering)     
+  end
+
+  sidebar "More Settings", only: :show do
      
   end
+
   
   form do |f|
     f.semantic_errors *f.object.errors.keys

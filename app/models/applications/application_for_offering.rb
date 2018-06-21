@@ -4,7 +4,7 @@
 class ApplicationForOffering < ActiveRecord::Base
   stampable
   include Rails.application.routes.url_helpers
-  include ActionView::Helpers::NumberHelper
+  #include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::SanitizeHelper
   include Comparable
   #   acts_as_soft_deletable
@@ -150,7 +150,7 @@ class ApplicationForOffering < ActiveRecord::Base
   def current_status
     # self.application_statuses.find :first, :order => 'updated_at DESC'
     if current_application_status.nil?
-      search_result = self.application_statuses.find(:first, :order => 'updated_at DESC')
+      search_result = self.application_statuses.order('updated_at DESC').first
       update_attribute(:current_application_status_id, search_result.id) unless search_result.nil?
       return search_result
     else
@@ -180,8 +180,8 @@ class ApplicationForOffering < ActiveRecord::Base
     awards_formatted = Array.new
     awards.valid.each do |a|
       str = "#{a.requested_quarter.title}"
-      str << ": #{number_to_currency(a.amount_requested)}" if include_amount
-      str << " (Awarded #{number_to_currency(a.amount_awarded)})" if include_amount && !a.amount_awarded.blank?
+      str << ": #{ActiveSupport::NumberHelper.number_to_currency(a.amount_requested)}" if include_amount
+      str << " (Awarded #{ActiveSupport::NumberHelper.number_to_currency(a.amount_awarded)})" if include_amount && !a.amount_awarded.blank?
       awards_formatted << str
     end
     awards_formatted.join(delimiter)

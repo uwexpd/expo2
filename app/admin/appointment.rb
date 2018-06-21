@@ -3,6 +3,10 @@ ActiveAdmin.register Appointment do
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   menu parent: 'Modules'
+  scope :all, default: true
+  scope 'Today', :today
+  scope 'Tomorrow', :tomorrow
+  scope 'Yesterday', :yesterday
 
   permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type
   
@@ -16,22 +20,24 @@ ActiveAdmin.register Appointment do
   end
   
   show do
-    panel '' do
-      div :class => 'content-block' do
-        h1 "#{appointment.student.fullname}" do
-          span "#{appointment.student.student_no}", :class => 'light small'          
-        end
-        div do
-          "#{appointment.student.sdb.class_standing_description(:show_upcoming_graduation => true)}, #{appointment.student.sdb.majors_list(true, ', ')}"
-        end
-        div do
-          "#{appointment.student.email}"
-        end
-      end
-    end
+    #panel '' do
+      render "admin/students/student_header", { student: appointment.student }
+      # div :class => 'content-block' do
+      #   #image_tag photo_admin_student_path(appointment.student.reg_id)
+      #   h1 "#{appointment.student.fullname}" do
+      #     span "#{appointment.student.student_no}", :class => 'light small'          
+      #   end
+      #   div do
+      #     "#{appointment.student.sdb.class_standing_description(:show_upcoming_graduation => true)}, #{appointment.student.sdb.majors_list(true, ', ')}"
+      #   end
+      #   div do
+      #     "#{appointment.student.email}"
+      #   end
+      # end
+    #end
     attributes_table do
       row (:start_time) {|appointment| appointment.start_time.to_s(:date_pretty)}
-      row :student      
+      #row :student      
       row :unit
       row :staff_person
       row :drop_in
@@ -39,6 +45,10 @@ ActiveAdmin.register Appointment do
       row :front_desk_notes
       row :notes
     end
+  end
+
+  sidebar "Other Appointments", only: :show do
+      
   end
   
   form do |f|

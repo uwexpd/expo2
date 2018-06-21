@@ -1,5 +1,5 @@
-class Person < ActiveRecord::Base
-  
+class Person < ActiveRecord::Base  
+
   belongs_to :department
   belongs_to :institution
   belongs_to :class_standing, :class_name => "ClassStanding", :foreign_key => "class_standing_id"
@@ -151,11 +151,11 @@ class Person < ActiveRecord::Base
   end
     
   def phone_formatted
-    number_to_phone(read_attribute(:phone))
+    ActiveSupport::NumberHelper.number_to_phone(read_attribute(:phone))
   end
     
   def fax_formatted
-    number_to_phone(fax)
+    ActiveSupport::NumberHelper.number_to_phone(fax)
   end
 
   # Returns a formatted address block for this person, including name. Depending on whether or not this person has a custom address 

@@ -18,7 +18,7 @@ ActiveAdmin.register User do
       span "@u" if user.is_a? PubcookieUser
     end
     column '' do |user|
-      status_tag 'admin', :admin, class: 'small' if user.admin?
+      status_tag 'admin', class: 'admin small' if user.admin?
     end
     column 'Type' do |user|
       user.identity_type || "Standard User"
@@ -37,7 +37,7 @@ ActiveAdmin.register User do
       div :class => 'content-block' do
         h1 "User: #{user.login}" do
           span '(PubCookies User)', :class => 'light small' if user.is_a? PubcookieUser
-          status_tag 'admin', :admin, class: 'small' if user.admin?
+          status_tag 'admin', class: 'admin small' if user.admin?
         end
         div do
           "Email: " + user.email
@@ -47,33 +47,38 @@ ActiveAdmin.register User do
         end
         span link_to '← Back to Users', admin_users_path
       end
-    end    
-    panel '' do
+    end
+
+    div :class => 'tabsview' do
       tabs do
           tab "Units & Roles (#{user.roles.size})" do
-            table_for user.roles.order('unit_id ASC') do
-              column ('Unit') {|role| role.unit ? role.unit.name : 'Global' }
-              column ('Role') {|role| role.name }
-              #column ('functions') {|role| link_to 'Remove', user_role_path(user, role), remote: true }              
-            end                        
+            panel '' do
+              table_for user.roles.order('unit_id ASC') do
+                column ('Unit') {|role| role.unit ? role.unit.name : 'Global' }
+                column ('Role') {|role| role.name }
+                #column ('functions') {|role| link_to 'Remove', user_role_path(user, role), remote: true }              
+              end
+            end
           end
           tab "Logins (#{user.logins.size})" do
-            paginated_collection(user.logins.page(params[:page]).per(25).order('id DESC'), download_links: false) do
-              table_for(collection, sortable: false) do
-                  column ('Type') {|login| status_tag 'Sucessful Login', :green, class: 'small' }
-                  column ('Date/Time') {|login| time_ago_in_words(login.created_at) }
-                  column ('Source IP') do |login| 
-                    span login.ip
-                    span 'on campus', class: 'outline tag' if login.on_campus?
-                  end 
-                  column ('Session History') {|login| link_to "Session History", session_history_admin_user_path(login.session_id) unless login.session_histories.empty?}                   
-              end 
+            panel '' do
+              paginated_collection(user.logins.page(params[:page]).per(20).order('id DESC'), download_links: false) do
+                table_for(collection, sortable: false) do
+                    column ('Type') {|login| status_tag 'Sucessful Login', class: 'ok small' }
+                    column ('Date/Time') {|login| time_ago_in_words(login.created_at) }
+                    column ('Source IP') do |login| 
+                      span login.ip
+                      span 'on campus', class: 'outline tag' if login.on_campus?
+                    end 
+                    column ('Session History') {|login| link_to "Session History", session_history_admin_user_path(login.session_id) unless login.session_histories.empty?}                   
+                end 
+              end
             end
           end
       end
     end
-  end
-  
+  end  
+
   sidebar "Search Username", only: :show do  
       render "search_user"
   end

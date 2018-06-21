@@ -129,7 +129,7 @@ class StudentRecord < StudentInfo
   def class_standing_description(options = {})
     ref_class_standing = options[:reference_quarter] ? (class_standing(options[:reference_quarter]) || class_standing) : class_standing
     ref_quarter = options[:reference_quarter] || Quarter.current_quarter
-    if !degrees.granted.empty? && degrees.granted.first.quarter < ref_quarter && ref_class_standing == 4
+    if !degrees.granted.empty? && degrees.granted.first.quarter.id < ref_quarter.id && ref_class_standing == 4
       return options[:recent_graduate_placeholder] if options[:recent_graduate_placeholder]
       return "Graduated #{degrees.granted.first.quarter.title}"
     end

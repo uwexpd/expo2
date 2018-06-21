@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   scope 'expo' do
     
     root 'admin/dashboard#index'
-    
+    # Custom active admin routes        
+    get '/admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
+    get 'admin/apply/:offering/:action', to: 'admin/apply#:action', as: :admin_apply_action
     ActiveAdmin.routes(self)        
     
     # User and Sessions    

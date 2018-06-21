@@ -1,4 +1,4 @@
-ActiveAdmin.register EventTime, as: 'times' do  
+ActiveAdmin.register EventTime, as: 'times' do
   belongs_to :event
   batch_action :destroy, false
   config.filters = false
@@ -32,8 +32,8 @@ ActiveAdmin.register EventTime, as: 'times' do
     panel 'Invitees' do
        table_for times.invitees.joins(:person).order((params[:order] ? params[:order] : 'lastname asc').gsub('_asc', ' asc').gsub('_desc', ' desc')), sortable: true do
          column('Name', sortable: 'lastname') {|invitee| invitee.person.is_a?(Student) ? (link_to invitee.person.fullname, admin_user_path(invitee)) : (invitee.person.fullname rescue invitee.fullname rescue "#error") }
-         column('Expected?', sortable: 'attending') {|invitee| invitee.attending? ? (status_tag 'Yes', :green, class: 'small') : (status_tag 'No', :red, class: 'small') }
-         column('Attended?', sortable: 'checkin_time') {|invitee| invitee.checked_in? ? (status_tag 'Yes', :green, class: 'small') : (status_tag 'No', :red, class: 'small') }         
+         column('Expected?', sortable: 'attending') {|invitee| invitee.attending? ? (status_tag 'Yes', :green, class: 'small') : (status_tag 'No', class: 'red small') }
+         column('Attended?', sortable: 'checkin_time') {|invitee| invitee.checked_in? ? (status_tag 'Yes', class: 'ok small') : (status_tag 'No', class: 'red small') }         
        end
     end
   end

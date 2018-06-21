@@ -1,0 +1,41 @@
+<% anchor ||= nil %>
+<% mode ||= :default %>
+
+<div class="panel">
+  <div class="panel_contents">	
+	<div class="content-block student_header">
+		<%= image_tag photo_admin_student_path(:reg_id => student.reg_id), :class => 'student_photo', :size => "96x120", :alt => "" %>
+
+		<% if mode == :info %>
+			<dl class="id_numbers">
+				<dt>RegID:</dt>
+				<dd><%= student.reg_id %></dd>
+				
+				<dt>Student #:</dt>
+				<dd><%= student.student_no %></dd>
+
+				<dt>EXPO Person ID:</dt>
+				<dd><%= student.id %></dd>
+
+				<dt>System Key:</dt>
+				<dd><%= student.system_key %></dd>
+			</dl>
+		<% end %>
+
+		<h1><%= student.fullname %>
+			<% unless mode == :info %>
+				<span class="light small"><%= student.student_no %></span>
+			<% end %>
+		</h1>
+		<p>
+		<% if student.respond_to?(:sdb) %>
+			<%= student.sdb.class_standing_description(:show_upcoming_graduation => true) %>,
+				<%= student.sdb.majors_list(true, ", ") %>
+		<% end -%>
+		</p>
+
+		<p><%= student.email %></p>
+		
+	</div>
+  </div>	
+</div>

@@ -4,7 +4,7 @@ ActiveAdmin.register Person do
   config.sort_order = 'created_at_desc'  
   
   permit_params :firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip
-    
+  
   index pagination_total: false do
     column 'Name' do |person|
       link_to person.fullname, admin_person_path(person)
@@ -75,7 +75,11 @@ ActiveAdmin.register Person do
          tab "Contact History" do
          end                  
     end    
-  end  
+  end
+  sidebar "People Search", only: :show do
+      
+  end
+
   
   form do |f|
      f.semantic_errors *f.object.errors.keys

@@ -33,8 +33,10 @@ class Offering < ActiveRecord::Base
      def awaiting_disbursement
        all.select{|a| a.awaiting_disbursement? }
      end 
-  end  
-  
+  end
+
+  has_many :valid_status_applications, -> { includes({:current_application_status => :application_status_type }).where('current_application_status_id is not null')}, :class_name => "ApplicationForOffering"
+              
   has_many :application_group_members, :through => :application_for_offerings, :source => :group_members
   has_many :people, :through => :application_for_offerings
   has_many :pages, -> { order(:ordering) }, :class_name => "OfferingPage", :dependent => :destroy

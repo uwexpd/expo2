@@ -247,8 +247,8 @@ form ul.errors li {
 }
 
 .panel_contents h1{
-	font-size: 1.5rem;
-	padding-bottom: 0.5rem;
+	font-size: 1.3rem;
+	padding: 0.3rem 0rem;
 }
 
 .panel_contents .content-block {
@@ -263,6 +263,10 @@ form ul.errors li {
 .nav-tabs > li > a {
 	font: 400 13px/15px "RobotoDraft", sans-serif;
 	text-transform: capitalize;
+}
+
+.tabsview {
+	padding-top: 16px;
 }
 
 /* Custom Chosen style */
@@ -281,6 +285,10 @@ form ul.errors li {
 
 .chosen-container-single .chosen-single abbr {
 	top: 14px;
+}
+
+.chosen-container-single .chosen-search {
+	background: none;
 }
 
 .caption {
@@ -394,4 +402,138 @@ form ul.errors li {
 .material-icons.md-20, .mi.md-20 {
 	font-size: 20px;
 }
+
+.panel_contents .student_header {
+	padding: 16px;
+}
+
+.student_header {
+	display: block;	
+	overflow: hidden;
+	width: 100%;
+}
+
+.student_header img.student_photo {
+	float: left;
+	margin-right:1rem;	
+	background: #dadada url(image-path('app/blank_avatar.png')) no-repeat;	
+	-moz-background-size: cover;
+	background-size: cover;
+}
+
+.student_header h1 {
+	color: #035;
+}
+
+.student_header p {
+	margin: 6px 0;
+	font-size: small;
+}
+
+.student_header .id_numbers {
+	float: right;
+	font-size: 85%;
+	color: #999;
+	margin-bottom: 0;
+}
+
+.student_header .id_numbers dt {
+	float: left;
+	margin: 0;
+	display: block;	
+	font-weight: bold;
+	padding: 3px;
+}
+
+.student_header .id_numbers dd {
+	margin: 0;
+	margin-bottom: 1px;
+	padding: 3px;
+	padding-left: 11em;
+}
+
+.student_header .id_numbers dd:hover {
+	background: #fef5d4;
+	color: #07b;
+}
+
+.minor.warning {
+	width: 35px;
+	height: 12px;
+	padding-left: 35px;
+	margin: .3em;
+	background: url(image-path('app/minor_warning.gif')) no-repeat 0 bottom;
+}
+
+.minor.ok {
+	width: 35px;
+	height: 12px;
+	padding-left: 35px;
+	margin: .3em;
+	background: url(image-path('app/minor_ok.gif')) no-repeat 0 bottom;
+}
+
+.tooltip {
+	border-bottom: 1px dotted #c5dafd;
+	position: relative;
+}
+
+.tooltip:hover {
+	cursor: help;
+}
+
+.content-topper {
+	margin: 0 -10px 0 -10px;
+	// margin-bottom: 15px;
+	background-color: #f3f8fd;
+	padding: 5px 10px 0 10px;	
+	border-bottom: 1px solid #9abadb;	
+}
+
+.welcome-links {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	clear: left;
+}
+
+.welcome-links li {
+	padding: 1.3rem;	
+	margin: 0 10px;
+	border-bottom: 1px solid #f2f2f2;		
+	// clear: left;
+}
+
+
+.welcome-links li i{
+	color: #4b2e83;
+	margin-right: 0.5rem;
+}
+
+.welcome-links li:hover {
+	background-color: #fdfbce;
+}
+
+.welcome-links div {
+	margin-left: 3rem;
+}
+
+#applications_sidebar_section {
+	padding-bottom: 1rem;
+}
+
+#applications_sidebar_section i {
+	color: #4b2e83;
+	margin-left: 1rem;
+	margin-right: 0.4rem;	
+}
+
+//https://github.com/google/material-design-icons/issues/206
+.welcome-links .material-icons, #applications_sidebar_section .material-icons{
+    // vertical-align: middle !important;
+    display: inline-flex;
+    align-items: center; 
+    vertical-align: middle;
+}
+
 

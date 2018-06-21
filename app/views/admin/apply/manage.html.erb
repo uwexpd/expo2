@@ -1,0 +1,45 @@
+<div class='panel'>	
+	<div class='panel_contents'>
+		<div class='content-block'>
+
+			<div class="content-topper">
+				<h1><%= @offering.title %></h1>
+			</div>
+
+			<ul class="welcome-links">
+				<li>
+					<i class='material-icons md-36'>assignment_turned_in</i>
+					<b >Current Phase: <%= @phase.name %></b>
+					<div>Complete tasks for this phase or move on to another.</div>
+				</li>
+
+				<li>
+					<i class='material-icons md-36'>description</i>
+					
+					<%= link_to "All Applications", admin_apply_action_path(@offering, 'list') %>
+					<div>There are currently <b><%= pluralize @offering.valid_status_applications.size, "application" %></b> in the system.</div>
+					
+				</li>
+				<% unless @offering.application_for_offerings.awarded.empty? %>
+					<li>
+						<i class='material-icons md-36'>starts</i>
+						<%= link_to "Awardees", admin_apply_action_path(@offering, 'awardees') %>
+			<div><strong><%= pluralize @offering.application_for_offerings.awarded.size, "applicant" %></strong> have been awarded.</div>
+					</li>
+				<% end %>
+				<li>
+					<i class='material-icons md-36'>find_in_page</i>
+					Data Query
+					<div></div>
+				</li>
+				<li>
+					<i class='material-icons md-36'>settings</i>
+					<%= link_to "Edit Offering Details", admin_offering_path(@offering) %>
+					<div>Change application questions, phases, tasks, and more.</div>
+
+				</li>
+
+			</ul>
+		</div>
+	</div>
+</div>		

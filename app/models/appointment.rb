@@ -13,6 +13,9 @@ class Appointment < ActiveRecord::Base
   
   attr_accessor :student_search
   
+  scope :today, -> { where(start_time: Date.today.beginning_of_day..Date.today.end_of_day) }
+  scope :yesterday, -> { where(start_time: Date.yesterday.beginning_of_day..Date.yesterday.end_of_day) }
+  scope :tomorrow, -> { where(start_time: Date.tomorrow.beginning_of_day..Date.tomorrow.end_of_day) }
   scope :without_quick_contacts, -> { where(type: nil) }
   
   # Default sort is by start_time

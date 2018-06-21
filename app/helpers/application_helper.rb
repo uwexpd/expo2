@@ -50,5 +50,10 @@ module ApplicationHelper
       ]
     end
   end
+
+  # Tries to produce a human-readable phone number. Strips all non-digits and then feeds to number_to_phone
+  def phone_number(number)
+    number.nil? ? "" : number_to_phone(number.to_s.strip[0..9], :area_code => true, :extension => number.to_s.strip[10..20])
+  end
   
 end
