@@ -1,0 +1,107 @@
+<div class='panel'>	
+	<div class='panel_contents'>
+		<div class='content-block offering'>
+			<h1><%= offering.name %>
+				<span class="status_tag right <%= 'green' if offering.open? %>"><%= offering.open? ? "Open" : "Closed" %></span>
+			</h1>
+
+			<ul class="welcome-links">
+
+				<li class="status">
+					<i class='material-icons md-36'>public</i>
+					Application URL (applicants use this link to access the application process):					
+					<div><%= link_to apply_url(offering), apply_url(offering) %></div>
+				</li>
+
+				<li class="settings">
+					<i class='material-icons md-36'>settings</i>
+					<%= link_to "Offering Parameters and Global Settings", edit_admin_offering_path(offering) %>
+					<span class="sub-links">
+						<ul class="inline">
+							<li><%= link_to "Main Details", edit_admin_offering_path(offering) %></li>
+							<li><%= link_to "Features", edit_admin_offering_path(offering, :anchor => "features") %></li>
+							<li class="for_uses_awards"><%= link_to "Awards", edit_admin_offering_path(offering, :anchor => "awards") %></li>
+							<li><%= link_to "Applicants", edit_admin_offering_path(offering, :anchor => "applicants") %></li>
+							<li class="for_uses_mentors"><%= link_to "Mentors", edit_admin_offering_path(offering, :anchor => "mentors") %></li>
+							<li class="for_uses_reviews"><%= link_to "Reviews", edit_admin_offering_path(offering, :anchor => "reviews") %></li>
+							<li class="for_uses_interviews"><%= link_to "Interviews", edit_admin_offering_path(offering, :anchor => "interviews") %></li>
+							<li class="for_uses_moderators"><%= link_to "Moderators", edit_admin_offering_path(offering, :anchor => "moderators") %></li>
+							<li class="for_uses_confirmation"><%= link_to "Confirmation Process", edit_admin_offering_path(offering, :anchor => "confirmation") %></li>
+							<li class="for_uses_award_acceptance"><%= link_to "Award Acceptance", edit_admin_offering_path(offering, :anchor => "award_acceptance") %></li>
+							<li class="for_uses_proceedings"><%= link_to "Online Proceedings", edit_admin_offering_path(offering, :anchor => "proceedings") %></li>
+							</ul>
+						<br class="clear">
+						</span>
+					</li>
+
+				<li class="pages">
+					<i class='material-icons md-36'>description</i>
+					<%= link_to "Application Pages and Questions", admin_offering_pages_path(offering) %>
+					(<%= pluralize offering.pages.size, "page" %>, <%= pluralize offering.questions.size, "question" %>)
+					<span class="sub-links">
+						<ul class="inline">
+						<% for page in offering.pages %>
+							<li><%= link_to "#{page.title} (#{page.questions.size})", admin_offering_page_path(offering, page) %></li>
+						<% end %>
+						</ul>
+						<br class="clear">
+					</span>
+				</li>
+
+				<li class="emails">
+					<i class='material-icons md-36'>mail_outline</i>
+					<%= link_to "Statuses and Automatic E-mails", admin_offering_statuses_path(offering) %>
+					(<%= pluralize offering.statuses.size, "status" %>)
+					<span class="sub-links">
+						<ul class="inline">
+						<% for status in offering.statuses %>
+							<li><%= link_to "#{status.private_title} (#{status.emails.size})", admin_offering_status_path(offering, status) %></li>
+						<% end %>
+						</ul>
+						<br class="clear">
+					</span>
+				</li>
+
+				<li class="tasks">
+					<i class='material-icons md-36'>assignment_turned_in</i>
+					<%= link_to "Admin Process Phases and Tasks", admin_offering_phases_path(offering) %>
+					(<%= pluralize offering.phases.size, "phase" %>, <%= pluralize offering.tasks.size, "task" %>)
+					<span class="sub-links">
+						<ul class="inline">
+						<% for phase in offering.phases.sort %>
+							<li><%= link_to phase.name, admin_offering_phase_path(offering, phase) %>
+							<%#= link_to "(#{phase.tasks.size})", admin_offering_phase_tasks_path(offering, phase) %></li>
+						<% end %>
+						</ul>
+					<br class="clear">
+					</span>
+				</li>	
+
+				<li class="dashboard">
+					<i class='material-icons md-36'>dashboard</i>
+					<%= link_to "Dashboard Items", admin_offering_dashboard_items_path(offering) %>
+					(<%= pluralize offering.dashboard_items.size, "item" %>)
+					<span class="sub-links" style='margin-left: 3rem;'>
+						Dashboard items are customized information blocks that are displayed on applicants' dashboard pages.
+						<br class="clear">
+					</span>
+				</li>	
+
+				<li class="restrictions">
+					<i class='material-icons md-36'>remove_circle</i>
+					<%= link_to "Restrictions and Exemptions", admin_offering_restrictions_path(offering) %>
+					(<%= pluralize offering.restrictions.size, "restriction" %>, <%= pluralize offering.exemptions.size, "exemption" %>)
+					<span class="sub-links">
+						<ul class="inline">
+						<% for restriction in offering.restrictions %>
+							<li><%= link_to "#{restriction.title} (#{restriction.exemptions.size})",admin_offering_restriction_path(offering, restriction) %></li>
+						<% end -%>
+						</ul>
+					<br class="clear">
+					</span>
+				</li>	
+
+			</ul>
+		</div>
+	</div>
+</div>	

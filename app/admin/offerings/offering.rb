@@ -1,32 +1,32 @@
-ActiveAdmin.register Offering do    
+ActiveAdmin.register Offering do
   batch_action :destroy, false    
   config.sort_order = '' # Use blank to override the default sort by id in activeadmin
-  scope 'All', :sorting, default: true
-  menu label: "OnlineApps"
-  menu parent: 'Modules'
+  scope 'All', :sorting, default: true  
+  menu parent: 'Modules', label: 'Online Apps', :priority => 25
   
   index do
     column ('Name') {|offering| link_to(offering.name, admin_offering_path(offering)) }
     column ('Unit') {|offering| link_to(offering.unit.abbreviation, admin_unit_path(offering.unit)) if offering.unit }
     column ('Quarter') {|offering|  offering.quarter_offered ? offering.quarter_offered.title : offering.year_offered }
     column ('Current Phase') {|offering| offering.current_offering_admin_phase.name rescue nil }
-    column ('Applications') {|offering| "#{offering.application_for_offerings.valid_status.size.to_s} Apps" unless offering.application_for_offerings_count.nil? }
+    column ('Applications') {|offering| link_to "#{offering.application_for_offerings.valid_status.size.to_s} Apps", admin_apply_manage_path(offering) unless offering.application_for_offerings_count.nil? }
     actions
   end
   
   show do
-    attributes_table do
-      row :name
-      row :unit
-    end
+      render 'show', { offering: offering}
   end
   
   sidebar "Applications", only: :show do     
-    i 'chrome_reader_mode', :class => 'material-icons md-32'
-    link_to 'Manage student applications', admin_apply_manage_path(offering)     
+    i 'view_list', :class => 'material-icons md-32'
+    link_to "Manage student applications (#{offering.valid_status_applications.size})", admin_apply_manage_path(offering)     
   end
 
-  sidebar "More Settings", only: :show do
+  sidebar "Offering Settings", only: [:edit] do
+    
+  end
+  
+  sidebar "More Settings", only: [:show, :edit] do
      
   end
 

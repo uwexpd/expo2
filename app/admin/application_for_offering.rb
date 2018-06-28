@@ -1,4 +1,4 @@
-ActiveAdmin.register ApplicationForOffering do    
+ActiveAdmin.register ApplicationForOffering do
 
   menu false
   #belongs_to :offering  

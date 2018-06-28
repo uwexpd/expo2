@@ -29,7 +29,7 @@ menu parent: 'People'
               row ('Gender') {|student| student.sdb.gender}
               row ('Age') do |student| 
                 span student.sdb.age
-                span "&nbsp;", :class => 'minor warning' if student.sdb.age < 18
+                span :class => 'minor warning' if student.sdb.age < 18
               end
               row ('Birthday') {|student| student.sdb.birth_date}
               row ('Local phone') do |student| 

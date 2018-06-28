@@ -11,8 +11,16 @@ Rails.application.routes.draw do
     root 'admin/dashboard#index'
     # Custom active admin routes        
     get '/admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
-    get 'admin/apply/:offering/:action', to: 'admin/apply#:action', as: :admin_apply_action
-    ActiveAdmin.routes(self)        
+    get 'admin/apply/:offering/:action', to: 'admin/apply#:action', as: :admin_apply_action    
+    ActiveAdmin.routes(self)
+    # namespace :admin do
+    #   resources :offering do
+    #     resources :offering_admin_phase do
+    #       resources :offering_admin_phase_task
+    #     end
+    #   end    
+    # end
+
     
     # User and Sessions    
     resources :sessions
@@ -25,7 +33,15 @@ Rails.application.routes.draw do
     get 'rsvp/unattend/:id', to: 'rsvp#unattend', as: :rsvp_unattend
     get 'rsvp', to: 'rsvp#index'
 
+    # Online Applications
+    get 'apply/:offering/:action', to: 'apply#:action', :requirements => { :offering => /\d+/ }, as: :apply_action
+    get 'apply/:offering/', to: 'apply#index', :requirements => { :offering => /\d+/ }, as: :apply
+
+
+    # OMSFA Scholarship Sesarch
     resources :scholarships, only: [:show, :index], param: :page_stub
+
+    # MGE Scholars Search
     resources :mge_scholars, only: [:show, :index]
     
   end

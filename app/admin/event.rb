@@ -1,7 +1,7 @@
 ActiveAdmin.register Event do  
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
-  menu parent: 'Modules'
+  menu parent: 'Modules', :priority => 20
 
   permit_params :title, :description, :unit_id, :capacity, :event_type_id, :offering_id, :confirmation_email_template_id, :reminder_email_template_id, :staff_signup_email_template_id, :public, :allow_multiple_times_per_attendee, :allow_guests, :allow_multiple_positions_per_staff, :show_application_location_in_checkin, :extra_fields_to_display
   

@@ -1,7 +1,7 @@
 ActiveAdmin.register AcademicDepartment do  
   batch_action :destroy, false
   config.sort_order = 'name'
-  menu parent: 'Tools'#, label: "Academic Departments"
+  menu parent: 'Tools'
   
   
   permit_params :name, :description

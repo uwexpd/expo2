@@ -2,7 +2,6 @@ ActiveAdmin.register EventTime, as: 'times' do
   belongs_to :event
   batch_action :destroy, false
   config.filters = false
-  menu false
   config.sort_order = 'start_time_asc'
   
   index do  

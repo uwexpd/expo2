@@ -39,6 +39,11 @@
 		<div class="content"><%= raw @scholarship.history %></div>
 	<% end %>
 
+	<% unless @scholarship.service_agreement.blank? %>
+		<h6>Service Agreement</h6>
+		<div class="content"><%= raw @scholarship.service_agreement %></div>
+	<% end %>
+
 	<h6>Contact Information</h6>
 	<div class="content"><%= raw @scholarship.contact_info %></div>
 
