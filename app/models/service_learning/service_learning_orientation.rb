@@ -4,7 +4,7 @@ class ServiceLearningOrientation < ActiveRecord::Base
   belongs_to :orientation_location, :class_name => "Location", :foreign_key => "location_id"
   belongs_to :orientation_contact, :class_name => "OrganizationContact", :foreign_key => "organization_contact_id"
   has_one :service_learning_position
-  acts_as_soft_deletable
+  # acts_as_soft_deletable
   
   def location=(location_attributes)
     new_location_id = location_attributes.delete(:location_id)

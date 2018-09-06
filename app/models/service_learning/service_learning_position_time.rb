@@ -3,7 +3,7 @@ class ServiceLearningPositionTime < ActiveRecord::Base
   stampable
   belongs_to :service_learning_position
   
-  acts_as_soft_deletable
+  # acts_as_soft_deletable
   
   attr_accessor :should_destroy
   
