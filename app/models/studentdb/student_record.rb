@@ -20,7 +20,7 @@ class StudentRecord < StudentInfo
   has_many :registrations, :class_name => "StudentRegistration", :foreign_key => "system_key" do
     def for(qtr)
       return nil unless qtr.is_a? Quarter
-      -> { where('regis_yr = ? and regis_qtr = ?', qtr.year, qtr.quarter_code_id) }.first
+      where('regis_yr = ? and regis_qtr = ?', qtr.year, qtr.quarter_code_id).first
     end
     def enrolled; -> { where("enroll_status = 12") }; end 
     # see enrollment status codes: http://depts.washington.edu/reptreq/sdb-code-manual-registration-codes/#enrollmentstatus

@@ -343,6 +343,7 @@ GEM
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
+    where-or (0.1.6)
     will_paginate (3.1.6)
 
 PLATFORMS
@@ -397,6 +398,7 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   uw_sws
   web-console (~> 2.0)
+  where-or
   will_paginate (~> 3.1.6)
   will_paginate-materialize!
 

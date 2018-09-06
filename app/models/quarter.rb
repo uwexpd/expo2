@@ -7,9 +7,57 @@ class Quarter < ActiveRecord::Base
   
   scope :default_order, -> { order('year, quarter_code_id') }
   
+  has_many :organization_quarters, -> { includes(:organization, { :statuses => :organization_quarter_status_type }, 
+                                                 :staff_contact_user,
+                                                 :positions) } do
+    def for_unit(unit)
+      where(unit_id: (unit.class == Integer ? unit : unit.id))
+    end
+  end
+  has_many :organizations, :through => :organization_quarters          
+
+  has_many :service_learning_positions, :through => :organization_quarters, :source => :positions do
+    # find by unit, can pass unit id or unit object
+    def for_unit(unit)
+      where(:organization_quarters => {:unit_id => (unit.nil? ? nil : unit.class == Integer ? unit : unit.id)})      
+    end
+  end  
+
+  has_many :service_learning_courses, -> { includes(:courses) } do
+    def for_unit(unit)
+      where(:unit_id => (unit.nil? ? nil : unit.class == Integer ? unit : unit.id))
+    end
+  end
+  has_many :service_learning_evaluation_questions, :class_name => "EvaluationQuestion", :as => :evaluation_questionable do
+    def for_unit(unit) 
+      where(:unit_id => (unit.nil? ? nil : unit.class == Integer ? unit : unit.id))
+    end
+  end
+  has_many :service_learning_self_placements
+
+  PLACEHOLDER_CODES = %w(title abbrev first_day quarter_code_id year academic_year)
+    
+  # Overrides ActiveRecord#to_param so that we can use the abbreviation instead of the ID of this object, e.g. "SPR2008" instead of "13".
+  def to_param
+    abbrev
+  end
+
+  # Returns the record for this quarter out of the SDB's calendar table. Returns a StudentCalendarQuarter object.
+  def sdb
+    StudentCalendarQuarter.find("0#{year.to_s}#{quarter_code_id.to_s}")
+  end
+
   # Returns the quarter abbreviation in the form of "QQQYYYY" (e.g., "AUT2009").
   def abbrev
     "#{quarter_code.abbreviation}#{year}"
+  end
+
+  def organization_contacts
+    OrganizationContact.joins([:organization, {:organization => :organization_quarters}, :person]).where("organization_quarters.quarter_id = ?", self.id)
+  end
+
+  def service_learning_placements
+    ServiceLearningPlacement.joins([:position, {position: :organization_quarter}]).where("organization_quarters.quarter_id = ?", self.id)
   end
 
   # Searches for Quarters using the quarter abbreviation in the form of "QQQYYYY". Pass an array of abbreviations to find multiple.
@@ -47,7 +95,7 @@ class Quarter < ActiveRecord::Base
 
   # Returns the current Quarter, based on quarter start dates.
   def self.current_quarter
-    @current_quarter ||= Quarter.where("first_day < ?", Time.now).order("first_day DESC, year, quarter_code_id").first
+    Quarter.where("first_day < ?", Time.now).order("first_day DESC, year, quarter_code_id").first
   end
   
   # Returns true if this quarter is the current_quarter.
@@ -82,7 +130,27 @@ class Quarter < ActiveRecord::Base
     q ||= Quarter.create(:quarter_code_id => quarter_code, :year => year, :first_day => guess_first_day(quarter_code, year))
     q
   end
+
+  # Returns all students who were placed in service learning positions for this Quarter.
+  def service_learners
+    service_learning_positions.collect(&:placements).flatten.collect(&:person).compact.uniq
+  end
   
+  # Returns all students who are enrolled in service learning quarters for this Quarter.
+  def potential_service_learners
+    service_learning_courses.collect(&:enrollees)
+  end
+
+  # Finds all courses in the time schedule for this quarter that have the "ts_research" flag set to "Y".
+  def research_courses
+    Course.find :all, :conditions => { :ts_year => year, :ts_quarter => quarter_code, :ts_research => true }
+  end
+
+  # Finds all courses in the time schedule for this quarter that have the "ts_service" flag set to "Y".
+  def service_courses
+    Course.find :all, :conditions => { :ts_year => year, :ts_quarter => quarter_code, :ts_service => true }
+  end
+
   def include?(date)
     date >= start_date && date < self.next.date
   end

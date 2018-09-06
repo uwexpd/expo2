@@ -10,8 +10,10 @@ Rails.application.routes.draw do
     
     root 'admin/dashboard#index'
     # Custom active admin routes        
-    get '/admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
-    get 'admin/apply/:offering/:action', to: 'admin/apply#:action', as: :admin_apply_action    
+    get 'admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
+    get 'admin/apply/:offering/:action', to: 'admin/apply#:action', as: :admin_apply_action
+    post 'admin/base/vicarious_login', :to => 'admin/base#vicarious_login', as: :admin_vicarious_login
+    get 'admin/base/remove_vicarious_login', :to => 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
     ActiveAdmin.routes(self)
     # namespace :admin do
     #   resources :offering do
@@ -26,6 +28,7 @@ Rails.application.routes.draw do
     resources :sessions
     get 'login',  to: 'sessions#new'
     delete 'logout', to: 'sessions#destroy'
+    get 'remove_vicarious_login', :to => 'application#remove_vicarious_login'
 
     # RSVP for events
     get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event
@@ -44,6 +47,11 @@ Rails.application.routes.draw do
     # MGE Scholars Search
     resources :mge_scholars, only: [:show, :index]
     
+    # Service Learning
+    get 'service_learning', to: 'service_learning#index', :quarter_abbrev => 'current', as: :service_learning
+    get 'service_learning/:action', to: 'service_learning#:action', :quarter_abbrev => 'current'
+    get 'service_learning/:action/:id', to: 'service_learning#:action', :quarter_abbrev => 'current'
+
   end
   
   # Redirect to Sub URI only when it doesn't match '/expo/' in the request URLs

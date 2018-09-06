@@ -1,0 +1,22 @@
+<% title("Service-Learning Registration", @quarter.title) %>
+
+<div class="card content">
+	<h5><%= link_to "UW Service-Learning Registration", service_learning_path %></h5>
+	<p><strong>Welcome, <%= @student.firstname %>.</strong></p>
+	<p>You are currently enrolled in the following <%= pluralize @enrolled_service_learning_courses.size, "service-learning course" %>: 
+	<strong><%= @enrolled_service_learning_courses.collect(&:title).join(", ") %></strong>
+	<%= link_to "(Switch to another course)", :action => 'which' if @enrolled_service_learning_courses.size > 1 %>
+	</p>
+
+</div>	
+
+
+<% if @service_learning_course.finalized? %>
+		<% show_switch_link = @placements.empty? ? :false : :true %>
+		<div id="service_learning_positions">
+			<%= render 	:partial => "position", 
+						:collection => @service_learning_course.positions.uniq.reject{|p| p.self_placement? || !p.approved?}, 
+						:locals => { :service_learning_course => @service_learning_course, :show_switch_link => show_switch_link } %>
+		</div>
+<% end %>
+

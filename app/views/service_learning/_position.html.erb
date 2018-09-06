@@ -1,0 +1,36 @@
+<% do_not_identify_as_filled ||= false %>
+<% filled = do_not_identify_as_filled ? false : position.filled_for?(service_learning_course) %>
+<% is_your_position = @placements.nil? ? false : @placements.collect(&:position).include?(position) %>
+<% show_change_link = show_change_link == :true ? true : false %>
+<% show_switch_link = show_switch_link == :true ? true : false %>
+<% show_links = show_links == :false ? false : !filled %>
+<% show_my_details_link ||= false %>
+<% hide_change_button ||= false %>
+
+<ul class="collection">
+    <li class="collection-item avatar">
+      <i class="material-icons circle green">business</i>
+      <div class="title" style="width: 90%;">
+        <%= link_to position.title, :action => "position", :id => position.id %>
+        <%#= link_to_if show_links, position.title, :action => "position", :id => position.id %>
+        <span class="smaller">at <%= position.organization.name %></span>
+      </div>
+      <div style="width: 90%; padding-top: 0.5rem" class="smaller">
+         <% description_text = position.impact_description.strip if position.impact_description
+            description_text = position.description.strip if strip_tags(description_text).blank?
+            description_text = position.context_description.strip if strip_tags(description_text).blank?
+         %>        
+         <p><%= description_text.html_safe %></p>
+      </div>
+      <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+      <div >
+        <ul class="position requirements smaller">
+          <%= "<li>Must be #{position.age_requirement} years old</li>".html_safe unless position.age_requirement.blank? %>
+          <%= "<li>Must commit for #{position.duration_requirement}</li>".html_safe unless position.duration_requirement.blank? %>
+          <%= "<li>Background check required</li>".html_safe if position.background_check_required? %>
+          <%= "<li>TB test required</li>".html_safe if position.tb_test_required? %>
+          <%= "<li>Other paperwork: #{position.paperwork_requirement}</li>".html_safe unless position.paperwork_requirement.blank? %>
+        </ul>
+      </div>
+    </li>
+</ul>    

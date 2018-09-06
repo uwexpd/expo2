@@ -35,6 +35,12 @@ ActiveAdmin.register_page "Dashboard" do
           para ''
           para ''
         end
+
+        if current_user.has_role?(:vicarious_login)
+          panel "Vicarious Login" do
+            render partial: 'admin/base/vicarious_login'
+          end
+        end
       end
     end
         
@@ -56,4 +62,5 @@ ActiveAdmin.register_page "Dashboard" do
     end          
     
   end # content
+  
 end

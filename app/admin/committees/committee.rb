@@ -13,8 +13,9 @@ ActiveAdmin.register Committee do
   	render 'show', { committee: committee}
   end
 
-  sidebar 'Sidebar', only: [:show, :edit] do
-  	
+  sidebar 'Add Committee Member', only: [:show, :edit] do
+  	i 'person_add', :class => 'material-icons md-32'
+    link_to "Add new committee member", new_admin_committee_member_path(committee)
   end
 
   form do |f|

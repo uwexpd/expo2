@@ -6,22 +6,21 @@ class Organization < ActiveRecord::Base
   #acts_as_soft_deletable
   
   belongs_to :parent_organization, :class_name => "Organization"
-#  has_many :contacts, :class_name => "OrganizationContact", :dependent => :destroy, :include => [:person, :organization_contact_units], :conditions => { :current => true }
+  has_many :contacts, -> { includes([:person, :organization_contact_units]).where(:current => true)}, :class_name => "OrganizationContact", :dependent => :destroy
   has_many :former_contacts, -> { includes(:person).where(:current => true) }, :class_name => "OrganizationContact", :dependent => :destroy
 
-#  has_many :organization_quarters, :dependent => :destroy do
-#    def allowing_position_edits; find(:all, :conditions => ['allow_position_edits = ?', true]); end
-#    def allowing_unit_position_edits(unit); find(:all, :conditions => {:allow_position_edits => true, :unit_id => (unit.nil? ? nil : unit.class == Fixnum ? unit : unit.id)}); end
-#    def with_students_placed; find(:all).select{|oq| !oq.placements.filled.empty? }; end
-#    # search for org quarters by passing the unit id of the unit object
-##    def for_unit(unit); find(:all, :conditions => {:unit_id => (unit.nil? ? nil : unit.class == Fixnum ? unit : unit.id)}); end
-#    def for_quarter(quarter); find(:all, :conditions => { :quarter_id => (quarter.nil? ? nil : quarter.class == Fixnum ? quarter : quarter.id)}); end
-#  end
-  #has_many :active_quarters, :through => :organization_quarters, :source => :quarter ## turned into a function
-#  has_many :service_learning_positions, :through => :organization_quarters, :source => :positions
-#  has_many :pipeline_positions, :through => :organization_quarters, :source => :pipeline_positions
-#  has_and_belongs_to_many :coalitions
-#  has_many :notes, :as => :notable, :dependent => :nullify
+  has_many :organization_quarters, :dependent => :destroy do
+    def allowing_position_edits; find(:all, :conditions => ['allow_position_edits = ?', true]); end
+    def allowing_unit_position_edits(unit); find(:all, :conditions => {:allow_position_edits => true, :unit_id => (unit.nil? ? nil : unit.class == Fixnum ? unit : unit.id)}); end
+    def with_students_placed; find(:all).select{|oq| !oq.placements.filled.empty? }; end
+   # search for org quarters by passing the unit id of the unit object
+    def for_unit(unit); find(:all, :conditions => {:unit_id => (unit.nil? ? nil : unit.class == Integer ? unit : unit.id)}); end
+    def for_quarter(quarter); find(:all, :conditions => { :quarter_id => (quarter.nil? ? nil : quarter.class == Integer ? quarter : quarter.id)}); end
+  end  
+  has_many :service_learning_positions, :through => :organization_quarters, :source => :positions
+  #FIXME has_many :pipeline_positions, :through => :organization_quarters, :source => :pipeline_positions
+  has_and_belongs_to_many :coalitions
+  has_many :notes, :as => :notable, :dependent => :nullify
   belongs_to :default_location, :class_name => "Location"
   belongs_to :next_active_quarter, :class_name => "Quarter", :foreign_key => "next_active_quarter_id"
   has_many :locations

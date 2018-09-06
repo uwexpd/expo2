@@ -517,7 +517,7 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
 	margin: 0.75rem;
 }
 
-.panel_contents .offering h1 {
+.panel_contents .offering h1, .panel_contents .committee h1 {
 	font-weight: bold;
 	padding: 1.5rem 1rem 1rem;
 }
@@ -612,27 +612,23 @@ div.admin_phase div.title {
 	margin-left: 3rem;
 }
 
-#applications_sidebar_section {
+.sidebar_section {
 	padding-bottom: 1rem;
 }
 
-#applications_sidebar_section i {
+.sidebar_section i {
 	color: #4b2e83;
 	margin-left: 1rem;
 	margin-right: 0.4rem;	
 }
 
 //https://github.com/google/material-design-icons/issues/206
-.welcome-links .material-icons, #applications_sidebar_section .material-icons{
+.welcome-links .material-icons, .sidebar_section .material-icons{
     // vertical-align: middle !important;
     display: inline-flex;
     align-items: center; 
     vertical-align: middle;
 }
-
-// .welcome-links .settings,.welcome-links .pages, {
-// 	padding-bottom: 2rem;
-// }
 
 .sub-links {	
 	font-size: 80%;
@@ -662,9 +658,64 @@ div.admin_phase div.title {
 	color: #5d98bb !important;
 }
 
+/**
+ **  Utility Nav Menu
+ */
+#utility_nav #expd_website {
+  clip: rect(0, 0, 0, 0);
+  opacity: 0;
+  transition: 0.28s all;
+}
 
+#utility_nav:hover #expd_website {
+  clip: initial;
+  opacity: 1;
+}
 
+#current_user {
+  height: 90px;
+}
 
+#expd_website {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+  background: #fff;
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+  padding: 16px;
+  height: 56px;
+  width: 200px;
+  position: absolute;
+  right: 0;
+  top: 139px;
+}
 
+#expd_website:before {
+  content: "";
+  border: 7px solid transparent;
+  border-bottom-color: #fff;
+  top: -14px;
+  right: 12px;
+  position: absolute;
+}
+
+#logout {
+	top: 195px;
+}
+
+#vicarious_login .panel{
+	padding: 8px 16px;
+}
+
+#log_out_of_vicarious_mode {
+	float: right;
+}
+
+#account-nav {
+	position: fixed;
+	float: right;
+	top: 1rem;
+	right: 1rem;
+	color: whitesmoke;	
+}
 
 

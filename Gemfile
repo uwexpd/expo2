@@ -71,6 +71,8 @@ gem 'materialize-sass'
 
 # TODO: gem 'rails_email_preview', '~> 2.0.4'
 
+# backport from Rails 5 for Rails 4.2
+gem 'where-or'
 
 group :production do  
   gem 'omniauth-shibboleth'

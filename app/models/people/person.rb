@@ -30,11 +30,59 @@ class Person < ActiveRecord::Base
   end
   
   has_many :appointments, :foreign_key => 'staff_person_id' do    
-    def today;  all.where("DATE(start_time) = ?", Time.now.to_date);  end
-    def yesterday; all.where("DATE(start_time) = ?", 1.day.ago.to_date); end
-    def tomorrow; all.where("DATE(start_time) = ?", 1.day.from_now.to_date); end
+    def today;  where("DATE(start_time) = ?", Time.now.to_date);  end
+    def yesterday; where("DATE(start_time) = ?", 1.day.ago.to_date); end
+    def tomorrow; where("DATE(start_time) = ?", 1.day.from_now.to_date); end
   end
   
+  has_many :service_learning_placements do
+    # Limit results to placements that are specifically connected to the supplied object. Object can be a Quarter, a 
+    # ServiceLearningPosition, or a ServiceLearningCourse.
+    def for(obj, unit = Unit.find_by_abbreviation("carlson"))      
+      if obj.is_a? Quarter        
+        includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { quarter_id: obj.id, unit_id: unit.id})        
+      else
+        includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { unit_id: unit.id}).where(["#{obj.class.name.foreign_key} = ? ", obj]) rescue []        
+      end
+    end
+  end
+  
+  has_many :pipeline_placements, -> { inclues(:position => {:organization_quarter => :organization}).where(["organization_quarters.unit_id = :unit_id OR service_learning_placements.unit_id = :unit_id ", :unit_id => Unit.find_by_abbreviation("pipeline")])}, :class_name => "ServiceLearningPlacement" do
+    # Limit to the passed quarter
+    def for(quarter, unit = Unit.find_by_abbreviation("pipeline"))
+      if quarter.is_a? Quarter
+        includes(:position => {:organization_quarter => :organization}).where(organization_quarters: {quarter_id: quarter.id, unit_id: unit.id}).or(service_learning_placements: {unit_id: unit.id})
+        # find(:all, 
+        #      :conditions => [" organization_quarters.quarter_id = :quarter_id AND 
+        #                        (organization_quarters.unit_id = :unit_id OR
+        #                         service_learning_placements.unit_id = :unit_id) ", 
+        #                        {:quarter_id => quarter.id, :unit_id => unit.id}],
+             
+      else
+        return nil
+      end
+    end
+  end
+      
+
+  has_many :service_learning_self_placements do
+  #Object can be a ServiceLearningPosition, or a ServiceLearningCourse.
+    def for(obj, quarter)
+      where(["#{obj.class.name.foreign_key} = ? AND quarter_id = ?", obj, quarter.id ]) rescue []
+    end
+  end
+  
+  has_many :course_extra_enrollees, :dependent => :destroy do
+    def for(qtr)
+      where(:ts_year => qtr.year, :ts_quarter => qtr.quarter_code_id)      
+    end
+  end
+  has_many :service_learning_course_extra_enrollees, -> {includes(:service_learning_course)}
+  has_many :extra_service_learning_courses, 
+            :class_name => "ServiceLearningCourse", 
+            :through => :service_learning_course_extra_enrollees,
+            :source => :service_learning_course
+
   validates :firstname, presence: true, if: [ :require_validations?, :require_name_validations? ]
   validates :lastname,  presence: true, if: [ :require_validations?, :require_name_validations? ]
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i}, if: :require_validations?  

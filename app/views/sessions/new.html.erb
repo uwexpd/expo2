@@ -1,4 +1,14 @@
+
 <div id="login_header"></div>
+
+<div id="account-nav">
+	<% if logged_in? %>
+		<%= vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS" : "Logged in as" %>
+		<strong><%= (current_user.fullname) %></strong></a>
+		<%= "[#{current_user.identity_type}]" if current_user.identity_type %>
+		<%= link_to 'Log out of vicarious mode', remove_vicarious_login_path if vicariously_logged_in? %>	
+	<% end %>
+</div>
 
 <div id="login">
 	

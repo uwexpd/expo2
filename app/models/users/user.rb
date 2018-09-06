@@ -91,6 +91,52 @@ class User < ActiveRecord::Base
     crypted_password == encrypt(password)
   end
   
+  # Returns true if this user's roles include the requested role. This can be passed as a symbol or string.
+  # If the user must have the role assigned for a specific unit, specify the unit object or ID as the second parameter.
+  # Note that "global" roles (i.e., roles with no unit assigned) will always return true regardless of the
+  # unit that is passed.
+  def has_role?(role, unit = nil)
+    if unit
+      unit = Unit.find(unit) unless unit.is_a?(Unit)
+      roles.for(unit.id).collect(&:to_sym).include?(role.to_sym) || roles.for(nil).collect(&:to_sym).include?(role.to_sym)
+    else
+      roles.collect(&:to_sym).include?(role.to_sym)
+    end
+  end
+
+  # Returns the authorizations that this user has for the specified role in an array of UserUnitRoleAuthorization objects,
+  # or nil if the user does not have the role assigned.
+  def authorizations_for(role)
+    auth_roles = roles.find(:all, :joins => :role, :include => :authorizations, :conditions => { "roles.name" => role.to_s })
+    return nil if auth_roles.empty?
+    auth_roles.collect(&:authorizations).flatten.compact
+  end
+  
+  # Returns true if this user is assigned a role for the specified unit.
+  def in_unit?(unit)
+    unit = Unit.find(unit) if unit.is_a?(Numeric)
+    units.include?(unit)
+  end
+  
+  def assign_role(role)
+    return false if role.blank?
+    role_type = Role.find_by_name(role.to_s)
+    return false if role_type.nil?
+    return roles.find_by_role_id(role_type.id) if has_role?(role)
+    roles.create(:role_id => role_type.id)
+  end
+
+  # Returns a user type such as Student, Standard Users(uw staff and faulty), Exteranl Users(non-uw users)
+  def user_type
+    if self.class.name == "PubcookieUser"
+      type = self.identity_type == "Student" ? self.identity_type : "UW Standard user"
+    else
+      type = "External user"
+    end
+    type
+  end
+
+  
   protected
   
     # before filter 
@@ -109,5 +155,7 @@ class User < ActiveRecord::Base
     def allow_invalid_person?
           allow_invalid_person
     end
+
+
   
 end

@@ -1,5 +1,5 @@
-ActiveAdmin.register CommitteeMember do
+ActiveAdmin.register CommitteeMember, as: 'members' do
 	belongs_to :committee
-	belongs_to :person
+	
 
 end

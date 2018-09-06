@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   
   include AuthenticatedSystem
   
-  before_filter :login_required, :except => :redriect_to_expo_directory
+  before_filter :login_required, :except => :remove_vicarious_login
   
   def authenticate_admin_user!
     unless current_admin_user
@@ -17,6 +17,14 @@ class ApplicationController < ActionController::Base
   def current_admin_user
     return false if !current_user.admin?
     current_user
+  end
+
+  def remove_vicarious_login
+      session[:user] = session[:original_user]
+      session[:original_user] = nil
+      session[:vicarious_token] = nil
+      session[:vicarious_user] = nil      
+      redirect_to :redirect_root
   end
       
 end

@@ -1,0 +1,43 @@
+<div class='panel'>	
+	<div class='panel_contents'>
+		<div class='content-block committee'>
+			<h1>Committee Manager &raquo; <%= committee.name %></h1>
+
+			<ul class="welcome-links">
+				
+				<li id="people">
+					<i class='material-icons md-36'>people_outline</i>
+					<%= link_to "Committee Members", admin_committee_members_path(committee) %>
+					<div>There are currently <b><%= committee.members.size %> members</b> in the committee.</div>
+				</li>
+				
+				<li id="calendar">
+					<i class='material-icons md-36'>today</i>
+					<%= link_to "Active Quarters", admin_committee_quarters_path(committee) %>
+					<div>View the quarters that this committee is active.
+						<br><small>
+						<%= raw(committee.committee_quarters.sort.collect{|q| link_to q.title, admin_committee_quarter_path(committee, q)}.join(", ")) %>
+						</small>
+					</div>
+				</li>
+
+				<li id="meetings">
+					<i class='material-icons md-36'>speaker_notes</i>
+					<%= link_to "Meetings", admin_committee_meetings_path(committee) %>
+					<div>View the meetings that have been arranged for this committee.
+					<br><small>
+					<%= raw(committee.meetings.future.sort.collect{|m| link_to m.title, admin_committee_meeting_path(committee, m)}.join(", ")) %>
+					</small>
+					</div>
+				</li>
+
+				<li id="edit">
+					<i class='material-icons md-36'>settings</i>
+					<%= link_to "Edit Committee Details", edit_admin_committee_path(committee) %>
+					<div>Edit the details of this committee, including the text that is displayed on the committee member interface.</div>
+				</li>
+			</ul>
+
+		</div>
+	</div>
+</div>			

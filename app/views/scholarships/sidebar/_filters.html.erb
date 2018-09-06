@@ -46,8 +46,8 @@
 		<label>Ethnicities or racial groups</label>
 		<%= f.collection_select :ethnicities_ethnicity_id_in, OmsfaEthnicity.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>				
 		<label>LGBTQI community</label>
-		<%= f.select :lgbtqi_community_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.lgbtqi_community_true), {include_blank: "Any"}, {class: 'browser-default'}  %><br>
-		<label>Veterans, military service members, and their family members <small>(Under development, more listings coming soon. Meanwhile, <%= link_to 'please download our veterans scholarships list', 'http://depts.washington.edu/scholarq/pdfs/Scholarships for Military Veterans and Families2.pdf', target: '_blank' %>)</small></label>
+		<%= f.select :lgbtqi_community_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.lgbtqi_community_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
+		<label>Veterans</label>
 		<%= f.select :veteran_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.veteran_true), {include_blank: "Any"}, {class: 'browser-default'} %>
 			
 		<label>Women</label>

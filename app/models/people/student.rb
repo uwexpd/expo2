@@ -113,41 +113,191 @@ class Student < Person
   read_attribute(:class_standing_id)
   end
   
-   # @alias for find_or_create_by_student_no
-   def self.find_by_student_no(student_no)
-     find_or_create_by_student_no(student_no)
-   end
+   # Checks if this student has a valid service-learning risk waiver on file. The valid lifetime is defined in the
+  # +service_learning_risk_lifetime+ EXPo constant.
+  def valid_service_learning_waiver_on_file?
+    return false if service_learning_risk_paper_date.nil?
+    return false if Time.now - service_learning_risk_paper_date < 0 # in the future
+    return false if Time.now - service_learning_risk_paper_date > ((eval(CONSTANTS[:service_learning_risk_lifetime]) rescue nil) || 3.months)
+    true
+  end
 
-   # Find a student by student number and also create a Student record for that student if needed.
-   # - Returns a Student object or nil if search fails
-   def self.find_or_create_by_student_no(student_no)
-     sr = StudentRecord.find_by_student_no(student_no)
-     return nil if sr.blank?
-     s = Student.find_by_system_key(sr.system_key)
-     if s.blank?
-       Student.create(:system_key => sr.system_key, :student_no => sr.student_no)
-     else
-       s
-     end
-   end
-   
-   # @alias for find_or_create_by_uw_netid
-    def self.find_by_uw_netid(uw_netid)
-      find_or_create_by_uw_netid(uw_netid)
+  # Checks if this student has a valid service learning risk waiver at all, either on paper or digitally. If the student is under
+  # age 18, they must have a valid paper waiver on file. If not, check if the +service_learning_risk_date+ is within the lifetime
+  # for service-learning risk waivers as defined by the +service_learning_risk_lifetime+ EXPo constant.
+  def valid_service_learning_waiver?(unit = nil)
+    valid_lifetime = ((eval(CONSTANTS[:service_learning_risk_lifetime]) rescue nil) || 3.months)
+    return valid_service_learning_waiver_on_file? if sdb.age < 18
+    return false if service_learning_risk_date.nil? and service_learning_risk_paper_date.nil?
+    unless service_learning_risk_date.nil?
+      return true if Time.now - service_learning_risk_date < valid_lifetime
+      return true if unit && unit.abbreviation == 'carlson' && extention_valid_date && service_learning_risk_date < extention_valid_date
     end
-
-    # Find a student by uw_netid and also create a Student record for that student if needed.
-    # - Returns a Student object or nil if search fails
-    def self.find_or_create_by_uw_netid(uw_netid)
-      sr = StudentRecord.find_by_uw_netid(uw_netid)
-      return nil if sr.blank?
-      s = Student.find_by_system_key(sr.system_key)
-      if s.blank?
-        Student.create(:system_key => sr.system_key, :student_no => sr.student_no)
-      else
-        s
+    unless service_learning_risk_paper_date.nil?
+      return true if Time.now - service_learning_risk_paper_date < valid_lifetime
+    end
+    false
+  end
+  
+  # Extend risk date to September 1st at the end of each academic year for carlson positions        
+  def extention_valid_date
+    if service_learning_risk_date_extention?
+      if service_learning_risk_date > DateTime.new(service_learning_risk_date.year, 9, 1) 
+        DateTime.new(service_learning_risk_date.year.next, 9, 1)
+      else  
+        DateTime.new(service_learning_risk_date.year, 9, 1)
       end
     end
+  end
+
+  # Checks to see if this Student is enrolled in the specified Course.
+  def enrolled_in?(course)
+    course.all_enrollees.include?(self)
+  end
+  
+  # Given an array of Courses, removes the Courses for which this Student is not enrolled
+  def enrolled_in_which?(courses)
+    courses.reject {|course| !self.enrolled_in?(course)}
+  end
     
+  # Returns an array of the Courses that this student is enrolled in for the given quarter. 
+  # (Returns actual Course objects, not StudentRegsitrationCourse records)
+  # To include courses where this student is force-enrolled as a CourseExtraEnrollee, specify
+  # :include_extra_enrollees option as true.
+  def enrolled_courses(quarter = Quarter.current_quarter, options = {})
+    @registrations ||= {}; @enrolled_courses ||= {}
+    @registrations[quarter] ||= sdb.registrations.for(quarter)
+    if @registrations[quarter].nil? && !options[:include_extra_enrollees]
+      return [] 
+    elsif !@registrations[quarter].nil?
+      # @enrolled_courses ||= r.courses.enrolled.collect(&:course)
+      @enrolled_courses[quarter] ||= @registrations[quarter].courses.includes(:course).where("request_status IN ('A','C','R')").collect(&:course)
+    end
+    if options[:include_extra_enrollees]
+      
+      if @enrolled_courses[quarter] && options[:remove_old_extra_enrollees]
+        for cee in course_extra_enrollees.for(quarter)
+          if @enrolled_courses[quarter].include?(cee.course)
+            cee.destroy
+          end
+        end
+      end
+      
+      course = course_extra_enrollees.for(quarter).collect(&:course)
+      if @enrolled_courses[quarter]
+        @enrolled_courses[quarter] << course
+      else
+        @enrolled_courses[quarter] = course
+      end
+      @enrolled_courses[quarter] = @enrolled_courses[quarter].flatten.uniq
+    end
+    @enrolled_courses[quarter]
+  end
+    
+  # Returns an array of which ServiceLearningCourses a Student is enrolled in for the specified Quarter. If left blank,
+  # this defaults to the current quarter. Pass an array of Quarters to do the lookup for each of those quarters.
+  def enrolled_service_learning_courses(quarter = Quarter.current_quarter, unit = Unit.find_by_abbreviation("carlson"), options = {:enrolled_courses_options => {}})
+    quarter = [quarter] unless quarter.is_a?(Array)
+    @enrolled_service_learning_courses = []    
+    for q in quarter
+      service_learning_courses = unit.nil? ? q.service_learning_courses : q.service_learning_courses.for_unit(unit)      
+      enrolled_courses = enrolled_courses(q, {:include_extra_enrollees => true}.merge(options[:enrolled_courses_options]))
+      eslc ||= extra_service_learning_courses
+      
+      service_learning_courses.each do |slc|        
+        @enrolled_service_learning_courses << slc if !(slc.courses.collect(&:course) & enrolled_courses).empty? || eslc.include?(slc)        
+      end
+    end    
+    @enrolled_service_learning_courses.uniq
+    # service_learning_courses = quarter.is_a?(Array) ? quarter.collect(&:service_learning_courses).flatten : quarter.service_learning_courses
+    # service_learning_courses.reject {|service_learning_course| !service_learning_course.enrolls?(self, :include_extra_enrollees => true)}
+  end
+
+  # Tries to find a student based on the parameter passed. If the parameter is numeric, we search by student number. Otherwise, search
+  # by UW NetID and then name. Returns an array of the results (or an empty array if nothing is found).
+  # 
+  # Note: In previous versions, this returned nil when no results were found, instead of an empty array. Changing this may cause problems
+  # elsewhere, such as in Admin::StudentsController and ExtraEnrolleesController.
+  def self.find_by_anything(q, limit = 10000)
+    students = []
+    if q.to_s.is_numeric?
+      q.to_i == 0 ? students = [] : students = Student.find_by_student_no("#{q}")      
+    else
+      students << Student.find_by_uw_netid("#{q}") << Student.find_by_name("#{q}", limit)
+    end
+    return [students] if students.is_a?(Student)
+    return [] if students.nil?
+    students.flatten.compact.uniq || []
+  end
+
+  # @alias for find_or_create_by_student_no
+  def self.find_by_student_no(student_no)
+    find_or_create_by_student_no(student_no)
+  end
+
+  # Find a student by student number and also create a Student record for that student if needed.
+  # - Returns a Student object or nil if search fails
+  def self.find_or_create_by_student_no(student_no)
+    sr = StudentRecord.find_by_student_no(student_no)
+    return nil if sr.blank?
+    s = Student.find_by_system_key(sr.system_key)
+    if s.blank?
+      Student.create(:system_key => sr.system_key, :student_no => sr.student_no)
+    else
+      s
+    end
+  end
+   
+  # @alias for find_or_create_by_uw_netid
+  def self.find_by_uw_netid(uw_netid)
+      find_or_create_by_uw_netid(uw_netid)
+  end
+
+  # Find a student by uw_netid and also create a Student record for that student if needed.
+  # - Returns a Student object or nil if search fails
+  def self.find_or_create_by_uw_netid(uw_netid)
+    sr = StudentRecord.find_by_uw_netid(uw_netid)
+    return nil if sr.blank?
+    s = Student.find_by_system_key(sr.system_key)
+    if s.blank?
+      Student.create(:system_key => sr.system_key, :student_no => sr.student_no)
+    else
+      s
+    end
+  end
+
+  # Find a student by name. This will create a record for every student found in the people table.
+  def self.find_by_name(name, limit = 10000)
+    sr = StudentRecord.find_by_name(name, limit)
+    students = []
+    if sr.blank?
+      nil
+    else
+      # sr.each do |s|
+      #   students << self.find_or_create_by_student_no(s.student_no)
+      # end
+      # students
+      sr.collect(&:student).flatten
+    end
+  end
+  
+  # Returns true if the SDB contact info update has happened since the requested time +t+. 
+  # Overrides Person#contact_info_updated_since.
+  def contact_info_updated_since(t)
+    return false if sdb_update_at.nil?
+    t < sdb_update_at
+  end
+    
+  def major_branch_list(join_string = ", ")
+    sdb.majors.collect(&:major_branch_name).uniq.join(join_string)
+  end
+    
+  
+  protected
+  
+  def log_with_color(message, detail, message_color = "4;33;1")
+    logger.debug { "  \e[#{message_color}m#{message}\e[0m   #{detail}" }
+  end
+
     
 end

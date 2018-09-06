@@ -19,19 +19,19 @@ class Offering < ActiveRecord::Base
                      },
            :dependent => :destroy do 
      def valid_status
-       all.where('current_application_status_id is not null')
+       where('current_application_status_id is not null')
      end         
      def awarded      
-       all.select{|a| a.awarded?}
+       select{|a| a.awarded?}
      end
      def awaiting_dean_approval
-       all.select{|a| a.awaiting_dean_approval? }
+       select{|a| a.awaiting_dean_approval? }
      end
      def awaiting_financial_aid_approval
-       all.select{|a| a.awaiting_financial_aid_approval? }
+       select{|a| a.awaiting_financial_aid_approval? }
      end
      def awaiting_disbursement
-       all.select{|a| a.awaiting_disbursement? }
+       select{|a| a.awaiting_disbursement? }
      end 
   end
 
