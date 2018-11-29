@@ -1,0 +1,46 @@
+
+<dl class="inline-definitions">
+	<dt>Date</dt>
+	<dd><%= service_learning_position.orientation.start_time.to_date.to_s(:long) rescue "No date specified" %></dd>
+	
+	<dt>Time</dt>
+	<dd><%= service_learning_position.orientation.start_time.to_time.to_s(:time12) rescue "No time specified" %></dd>
+	
+	<dt>Contact</dt>
+	<dd><%= sanitize service_learning_position.orientation.contact.person.fullname rescue nil %>
+		<%= sanitize "<br />" + auto_link(service_learning_position.orientation.contact.person.email) rescue nil %>
+		<%= sanitize "<br />" + phone_number(service_learning_position.orientation.contact.person.phone.to_i) rescue nil %>
+	</dd>
+
+	<dt>Location</dt>
+	<dd><%= sanitize service_learning_position.orientation.location.title rescue "No location specified" %>
+		<%= sanitize "<br>" + address_block(service_learning_position.orientation.location) rescue nil %>
+		</dd>
+	
+	<% if service_learning_position.orientation %>
+		<% if service_learning_position.orientation.notes %>
+			<dt>Orientation notes</dt>
+			<dd><%= auto_link(simple_format(service_learning_position.orientation.notes)) %></dd>
+		<% end %>
+
+		<% if service_learning_position.orientation.location; location = service_learning_position.orientation.location %>
+			<% unless location.driving_directions.blank? %>
+				<dt>Driving notes</dt>
+				<dd><%= auto_link(simple_format(location.driving_directions)) %></dd>
+			<% end %>
+
+			<% unless location.bus_directions.blank? %>
+				<dt>Bus notes</dt>
+				<dd><%= auto_link(simple_format(location.bus_directions)) %></dd>
+			<% end -%>
+
+			<% unless location.notes.blank? %>
+				<dt>Location notes</dt>
+				<dd><%= auto_link(simple_format(location.notes)) %></dd>
+			<% end %>
+		<% end %>
+
+
+	<% end %>
+	
+</dl>

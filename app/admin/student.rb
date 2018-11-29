@@ -82,6 +82,6 @@ menu parent: 'People'
   end  
 
   filter :firstname, as: :string
-  filter :lastname, as: :string  
+  filter :lastname, as: :string
 
 end

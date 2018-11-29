@@ -74,32 +74,38 @@ class ServiceLearningPosition < ActiveRecord::Base
   belongs_to :previous, :class_name => "ServiceLearningPosition", :foreign_key => "previous_service_learning_position_id"
   has_many :children, :class_name => "ServiceLearningPosition", :foreign_key => "previous_service_learning_position_id"
   belongs_to :supervisor, :class_name => "OrganizationContact", :foreign_key => "supervisor_person_id"
-  belongs_to :orientation, :class_name => "ServiceLearningOrientation"
+  belongs_to :orientation, :class_name => "ServiceLearningOrientation", :foreign_key => "service_learning_orientation_id"
   has_many :times, :class_name => "ServiceLearningPositionTime", :dependent => :destroy
   has_many :placements, :class_name => "ServiceLearningPlacement", :dependent => :destroy do
     def filled
-      find(:all, :conditions => 'person_id != 0')
+      where("person_id != 0")      
     end
     # Limits the list of placements to only those associated with the passed object. _Obj_ can be either a ServiceLearningCourse or Person.
     def for(obj)
-      find(:all, :conditions => ["#{obj.class.name.foreign_key} = ?", obj]) rescue []
+      if obj.is_a? Student
+        where("#{obj.class.superclass.name.foreign_key} = ?", obj) rescue []
+      else
+        where("#{obj.class.name.foreign_key} = ?", obj) rescue []
+      end
     end
     # Limits the list of placements to only those associated with the passed object but _also_ still considered and "open slot"
     # (i.e., person_id is null)
     def open_for(obj)
       unless obj.nil?
-        find(:all, :conditions => ["#{obj.class.name.foreign_key} = ? AND (person_id <=> 0 OR person_id IS NULL) ", obj]) rescue []
+        where("#{obj.class.name.foreign_key} = ? AND (person_id <=> 0 OR person_id IS NULL) ", obj) rescue []        
       else
-        find(:all, :conditions => ["service_learning_course_id IS NULL AND (person_id <=> 0 OR person_id IS NULL) "]) rescue []
+        where("service_learning_course_id IS NULL AND (person_id <=> 0 OR person_id IS NULL) ") rescue []        
       end
     end
     # Limits ONLY ONE of placements to those associated with the passed object but _also_ still considered and "open slot" (i.e., person_id is null)
     # To avoid race condiction by useing mysql FOR UPDATE # add pessimistic locking
     def open_for_place(obj)
       unless obj.nil?
-        find(:all, :conditions => ["#{obj.class.name.foreign_key} = ? AND (person_id <=> 0 OR person_id IS NULL) ", obj], :limit => 1, :lock => true) rescue []
+        where("#{obj.class.name.foreign_key} = ? AND (person_id <=> 0 OR person_id IS NULL) ", obj).lock(true).first rescue []
+        #find(:all, :conditions => ["#{obj.class.name.foreign_key} = ? AND (person_id <=> 0 OR person_id IS NULL) ", obj], :limit => 1, :lock => true) rescue []
       else
-        find(:all, :conditions => ["service_learning_course_id IS NULL AND (person_id <=> 0 OR person_id IS NULL) "], :limit => 1, :lock => true) rescue []
+        where("service_learning_course_id IS NULL AND (person_id <=> 0 OR person_id IS NULL) ").lock(true).first rescue []
+        #find(:all, :conditions => ["service_learning_course_id IS NULL AND (person_id <=> 0 OR person_id IS NULL) "], :limit => 1, :lock => true) rescue []
       end
     end
     # Limits the list of placements to only those that are not matched to a specific course yet.
@@ -180,9 +186,9 @@ class ServiceLearningPosition < ActiveRecord::Base
   
   attr_accessor :new_number_of_slots, :new_times
   
-  def <=>(o)
-    title <=> o.title
-  end
+  # def <=>(o)
+  #   title <=> o.title
+  # end
   
   # Used for change logs and other objects that request a unified "name" from this object.
   def identifier_string
@@ -309,7 +315,7 @@ class ServiceLearningPosition < ActiveRecord::Base
   
   def save_times
     times.each do |time|
-      time.save(false)
+      time.save(validate: false)
     end
   end
   
@@ -496,7 +502,7 @@ class ServiceLearningPosition < ActiveRecord::Base
       p[a] =  self.read_attribute(a)
     end
     p.title = title.to_s + " Copy" unless copy_groups.include?('details')
-    p.save(false)
+    p.save(validate: false)
     if copy_groups.include?('times')
       times.each do |time|
         p.times.build time.attributes

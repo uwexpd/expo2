@@ -32,16 +32,17 @@ class ServiceLearningCourse < ActiveRecord::Base
   has_many :placements,-> { includes(:evaluation) },  :class_name => "ServiceLearningPlacement", :dependent => :nullify do
     # Limits the list of placements to only those associated with the passed object. _Obj_ can be either a ServiceLearningPosition or Person.
     def for(obj)
-      find(:all, :conditions => ["#{obj.class.name.foreign_key} = ?", obj], :include => [{:position => :organization}, :evaluation]) rescue []
+      includes(:position => :organization).where(["#{obj.class.name.foreign_key} = ?", obj]) rescue []
+      #find(:all, :conditions => ["#{obj.class.name.foreign_key} = ?", obj], :include => [{:position => :organization}, :evaluation]) rescue []
     end
     # Limits the list of placements to only those are that are still open (i.e., not associated with a Student)
     def open
-      find(:all, :conditions => ["person_id is null"], :include => [:organization])
+      includes(:organization).where("person_id is null")      
     end
   end
   has_many :positions, :through => :placements do
     def open
-      find(:all, :conditions => ["person_id is null"]).uniq
+      where("person_id is null").uniq      
     end
     def offered_by(organization)
       find :all, 

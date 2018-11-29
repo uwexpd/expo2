@@ -1,4 +1,5 @@
 <% do_not_identify_as_filled ||= false %>
+<% selected_position ||= false %>
 <% filled = do_not_identify_as_filled ? false : position.filled_for?(service_learning_course) %>
 <% is_your_position = @placements.nil? ? false : @placements.collect(&:position).include?(position) %>
 <% show_change_link = show_change_link == :true ? true : false %>
@@ -6,31 +7,100 @@
 <% show_links = show_links == :false ? false : !filled %>
 <% show_my_details_link ||= false %>
 <% hide_change_button ||= false %>
+<% show_grid_view ||= false %>
+<% show_list_view ||= false %>
 
-<ul class="collection">
-    <li class="collection-item avatar">
+<div class="col s4 <%=  show_grid_view ? 'show_block' : 'hide_block' %> <%= 'selected_position' if selected_position %>">
+    <div class="card medium sticky-action hoverable <%= "filled" if filled %>">
+        <div class="card-image waves-effect waves-block waves-light">        
+          <%= image_tag("/assets/P-Patch-Program.jpg",  alt: "P-Patch-Program", class: "activator") %>
+
+        </div>
+        <div class="card-content" style="overflow: overlay;">
+          <span class="card-title activator grey-text text-darken-4" style="font-size: 18px; line-height: 24px">
+            <% if is_your_position %>
+              <%= link_to position.title, :action => "my_position", :id => position.id %>
+            <% else %>
+              <%= link_to_if show_links, position.title, :action => "position", :id => position.id %>
+            <% end %>
+            <i class="material-icons right">more_vert</i></span>
+          <span class="smaller">at <%= position.organization.name %></span>
+        </div>      
+        <div class="card-action">
+          <center>
+          <% if is_your_position %>
+            Your current position
+          <% elsif show_switch_link && !filled %>
+            <%= link_to "Switch to this position", { :action => 'change', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>            
+          <% elsif show_links %>
+            <%= link_to "Choose this position", { :action => 'choose', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>            
+          <% elsif filled %>
+            This position is filled            
+          <% end %>
+          </center>
+        </div>
+        <div class="card-reveal">
+          <span class="card-title grey-text text-darken-4" style="font-size: 18px; line-height: 24px"><%= position.title %><i class="material-icons right">close</i></span>
+          <div class="smaller">
+             <% description_text = position.impact_description.strip if position.impact_description
+                description_text = position.description.strip if strip_tags(description_text).blank?
+                description_text = position.context_description.strip if strip_tags(description_text).blank?
+             %>        
+             <p><%= sanitize description_text %></p>
+             <ul class="show-list-style">
+                  <%= sanitize "<li>Must be #{position.age_requirement} years old</li>" unless position.age_requirement.blank? %>
+                  <%= sanitize "<li>Must commit for #{position.duration_requirement}</li>" unless position.duration_requirement.blank? %>
+                  <%= sanitize "<li>Background check required</li>" if position.background_check_required? %>
+                  <%= sanitize "<li>TB test required</li>" if position.tb_test_required? %>
+                  <%= sanitize "<li>Other paperwork: #{position.paperwork_requirement}</li>" unless position.paperwork_requirement.blank? %>
+             </ul>
+          </div>          
+        </div>
+    </div>
+</div>
+
+
+
+<ul class="collection hoverable <%=  show_list_view ? 'show_block' : 'hide_block' %> <%= 'z-depth-1 hightlight selected_position' if selected_position %>">
+    <li class="collection-item avatar <%= "filled" if filled %>">
       <i class="material-icons circle green">business</i>
-      <div class="title" style="width: 90%;">
-        <%= link_to position.title, :action => "position", :id => position.id %>
-        <%#= link_to_if show_links, position.title, :action => "position", :id => position.id %>
+      <div class="title" style="width: 77%;">
+        <% if is_your_position %>
+          <%= link_to position.title, :action => "my_position", :id => position.id %>
+        <% else %>
+          <%= link_to_if show_links, position.title, :action => "position", :id => position.id %>
+        <% end %>
         <span class="smaller">at <%= position.organization.name %></span>
       </div>
-      <div style="width: 90%; padding-top: 0.5rem" class="smaller">
+      <div style="width: 80%; padding-top: 0.5rem" class="smaller">
          <% description_text = position.impact_description.strip if position.impact_description
             description_text = position.description.strip if strip_tags(description_text).blank?
             description_text = position.context_description.strip if strip_tags(description_text).blank?
          %>        
-         <p><%= description_text.html_safe %></p>
+         <p><%= sanitize description_text %></p>
       </div>
-      <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-      <div >
+
+      <div class="secondary-content smaller">
+        <% if is_your_position %>
+          Your current position<br>
+        <% elsif show_switch_link && !filled %>
+          <%= link_to "Switch to this position", { :action => 'change', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>          
+        <% elsif show_links %>
+          <%= link_to "Choose this position", { :action => 'choose', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>          
+        <% elsif filled %>
+          This position is filled
+        <% end %>
+        <%= link_to "Change my position", { :action => 'index' }, class: 'waves-effect waves-light btn small'  if show_change_link && service_learning_course.open? && !hide_change_button %>
+        <%= link_to "More details →", :action => "my_position" if show_my_details_link %>
+      </div>      
+      <div style="width: 80%">
         <ul class="position requirements smaller">
-          <%= "<li>Must be #{position.age_requirement} years old</li>".html_safe unless position.age_requirement.blank? %>
-          <%= "<li>Must commit for #{position.duration_requirement}</li>".html_safe unless position.duration_requirement.blank? %>
-          <%= "<li>Background check required</li>".html_safe if position.background_check_required? %>
-          <%= "<li>TB test required</li>".html_safe if position.tb_test_required? %>
-          <%= "<li>Other paperwork: #{position.paperwork_requirement}</li>".html_safe unless position.paperwork_requirement.blank? %>
+          <%= sanitize "<li>Must be #{position.age_requirement} years old</li>" unless position.age_requirement.blank? %>
+          <%= sanitize"<li>Must commit for #{position.duration_requirement}</li>" unless position.duration_requirement.blank? %>
+          <%= sanitize "<li>Background check required</li>" if position.background_check_required? %>
+          <%= sanitize "<li>TB test required</li>" if position.tb_test_required? %>
+          <%= sanitize "<li>Other paperwork: #{position.paperwork_requirement}</li>" unless position.paperwork_requirement.blank? %>
         </ul>
       </div>
     </li>
-</ul>    
+</ul>

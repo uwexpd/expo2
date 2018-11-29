@@ -38,11 +38,13 @@ class Person < ActiveRecord::Base
   has_many :service_learning_placements do
     # Limit results to placements that are specifically connected to the supplied object. Object can be a Quarter, a 
     # ServiceLearningPosition, or a ServiceLearningCourse.
-    def for(obj, unit = Unit.find_by_abbreviation("carlson"))      
+    # if unit is nil, we get placements from all units except pipeline
+    def for(obj, unit = Unit.find_by_abbreviation("carlson"))
+      unit_id = unit.nil? ? [1,9] : unit.id
       if obj.is_a? Quarter        
-        includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { quarter_id: obj.id, unit_id: unit.id})        
+        includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { quarter_id: obj.id, unit_id: unit_id})      
       else
-        includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { unit_id: unit.id}).where(["#{obj.class.name.foreign_key} = ? ", obj]) rescue []        
+        includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { unit_id: unit_id}).where(["#{obj.class.name.foreign_key} = ? ", obj]) rescue []        
       end
     end
   end
@@ -243,6 +245,47 @@ class Person < ActiveRecord::Base
     gender.blank? ? "him or her" : gender == "F" ? "her" : "him"
   end    
   
+  # Returns true if the students has been placed into a ServiceLearningPlacement for a given ServiceLearningCourse.
+  def placed_for?(service_learning_course)
+    !service_learning_placements.for(service_learning_course).empty?
+  end
+
+  # Places this person into the specified position for the specified course. Pass +true+ for the third parameter to also
+  # update the date that this person submitted a risk waiver form. By default, this method sends the confirmation email to the student
+  # at the end; pass +false+ as the fourth paramater to reverse this behavior.
+  def place_into(position, service_learning_course, unit = nil, update_service_learning_risk_paper_date = false, send_confirmation_email = "1")
+    ServiceLearningPlacement.transaction do  
+      placement = position.placements.open_for_place(service_learning_course) rescue nil
+      if placement
+        placement.update_attribute :person_id, self.id
+        placement.update_attribute :unit_id, unit.nil? ? position.unit_id : unit.id        
+        update_attribute :service_learning_risk_placement_id, placement.id 
+        update_attribute :service_learning_risk_paper_date, Time.now if update_service_learning_risk_paper_date == "1"
+          
+        if send_confirmation_email == "1" && position.try(:unit).try(:bothell?)          
+          EmailContact.log(self.id, EmailTemplate.find_by_name("bothell service learning registration complete").create_email_to(placement).deliver_now)
+        elsif send_confirmation_email == "1"                  
+          EmailContact.log(self.id, EmailTemplate.find_by_name("service learning registration complete").create_email_to(placement).deliver_now)
+        elsif send_confirmation_email == "2"
+          EmailContact.log(self.id, EmailTemplate.find_by_name("pipeline service learning registration complete").create_email_to(placement).deliver_now)
+        end      
+      end
+    end
+    true
+  end
+  
+  # Uses the place_into function but adds the ability to create a placement if it should
+  def place_into!(position, service_learning_course, unit = nil, update_service_learning_risk_paper_date = false, send_confirmation_email = "1", force = true)
+    ServiceLearningPosition.transaction do
+      if force
+        service_learning_course_id = service_learning_course.nil? ? nil : service_learning_course.id
+        position.placements.create(:service_learning_course_id => service_learning_course_id)
+        position = position.reload
+      end    
+      return place_into(position, service_learning_course, unit, update_service_learning_risk_paper_date, send_confirmation_email)
+    end
+  end
+
   # Returns an array of this person's majors, based on the "major_n" fields in the person record. Used for non-UW students.
   def majors
     [major_1, major_2, major_3].delete_if{|m| m.blank?}

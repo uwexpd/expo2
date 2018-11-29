@@ -107,5 +107,6 @@ ActiveAdmin.register Person do
    end
    
   filter :email, as: :string
-  
+  filter :firstname, as: :string
+  filter :lastname, as: :string
 end

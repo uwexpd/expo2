@@ -2,6 +2,9 @@
   Controls the student service learning registration process.
 =end
 class ServiceLearningController < ApplicationController
+
+  add_breadcrumb 'Carlson Center Home', Unit.find_by_abbreviation('carlson').home_url
+
   skip_before_filter :login_required
   before_filter :student_login_required
   before_filter :fetch_quarter
@@ -19,12 +22,10 @@ class ServiceLearningController < ApplicationController
   before_filter :check_if_registration_finalized, :only => [:position, :choose, :contact, :risk, :change]
   before_filter :check_if_registration_open, :only => [:choose, :contact, :risk, :change]
   before_filter :check_if_registered_with_same_course, :only => [:self_placement]
-  before_filter :fetch_self_placement, :only => [:self_placement]
+  before_filter :fetch_self_placement, :only => [:self_placement]  
 
-  add_breadcrumb 'Carlson Center Home', Unit.find_by_abbreviation('carlson').home_url
-
-  def index
-    session[:type] = nil # clean session so it won't redirect to self_placement action
+  def index    
+    session[:type] = nil # clean session so it won't redirect to self_placement action    
     add_breadcrumb "Service-Learning Registration"
   end
 
@@ -33,6 +34,8 @@ class ServiceLearningController < ApplicationController
 
   def position
     @timecodes = @position.times.collect(&:timecodes).flatten
+    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Position Details"
   end
 
   def which
@@ -54,8 +57,10 @@ class ServiceLearningController < ApplicationController
   end
 
   def my_position
-    @placements ||= @student.service_learning_placements.for(@quarter,nil).reject{|p|p.position.general_study?}
+    @placements ||= @student.service_learning_placements.for(@quarter,nil)
     redirect_to :action => "index" if @placements.empty?
+    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "My Position Details"
   end
 
   def change
@@ -67,13 +72,16 @@ class ServiceLearningController < ApplicationController
       redirect_to :action => "index"
     end
     
-    if request.put?
+    if request.patch?
       @old_placement.update_attribute(:person_id, nil)
       # TODO: change place_into to the place_into(position, course, unit) format when the student side it set up to use units
       @student.place_into(@new_position, @service_learning_course)
-      flash[:notice] = "You are now registered into your new service-learning position."
+      flash[:success] = "You are now registered into your new service-learning position."
       redirect_to :action => "complete"
     end
+
+    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Change Position"
   end
 
   def choose
@@ -81,39 +89,42 @@ class ServiceLearningController < ApplicationController
   end
 
   def contact
-    if request.put?
-      if params[:student][:phone].blank?
-        @student.errors.add :phone, "cannot be blank."
-      else
-        @student.update_attribute :phone, params[:student][:phone]
-        flash[:notice] = "Contact information saved. Thank you."
-        redirect_to :action => "risk", :id => @position
-      end
+    if request.patch?
+      # if params[:student][:phone].blank?
+      #   @student.errors.add :phone, "cannot be blank."
+      # else
+      @student.update_attribute :phone, params[:student][:phone]
+      flash[:success] = "Contact information saved. Thank you."
+      redirect_to :action => "risk", :id => @position
+      # end
     end
+    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Update Contact"
   end
 
   def risk
-    if request.put?
-      if params[:student][:electronic_signature].blank?
-        @student.errors.add :electronic_signature, "cannot be blank."
-      else
+    if request.patch?      
         @student.update_attribute :service_learning_risk_signature, params[:student][:electronic_signature]
         @student.update_attribute :service_learning_risk_date, Time.now
         @student.update_attribute :service_learning_risk_date_extention, true if @service_learning_course.unit.abbreviation == 'carlson'
         # TODO: change place_into to the place_into(position, course, unit) format when the student side it set up to use units
         @student.place_into(@position, @service_learning_course)
-        flash[:notice] = "Service-learning registration complete."
-        redirect_to :action => "complete"
-      end
+        flash[:success] = "Service-learning registration complete."
+        redirect_to :action => "complete"      
     end
+    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Update Contact", service_learning_action_path(action: :contact, id: @position)
+    add_breadcrumb "Finish Registeration"
   end
 
   def complete
     # by specifying nil here, we get placements from all units except pipeline
-    @placements ||= @student.service_learning_placements.for(@quarter, nil).reject{|p|p.position.general_study?}
+    @placements ||= @student.service_learning_placements.for(@quarter, nil)
     if !@placements.empty? && @placements.first.position.unit.abbreviation == 'bothell'
       return render :template => 'service_learning/complete_bothell'
     end
+    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Registeration Complete"
   end
 
   def test
@@ -133,7 +144,7 @@ class ServiceLearningController < ApplicationController
 
   def self_placement           
     if @self_placement.submitted?
-      flash[:notice] = "Your self placement position form has been submitted."
+      flash[:success] = "Your self placement position form has been submitted."
       redirect_to :action => "self_placement_submit", :id => @self_placement.id and return
     end
         
@@ -330,11 +341,11 @@ class ServiceLearningController < ApplicationController
   end
 
   def fetch_position
-    @position = ServiceLearningPosition.find(params[:id], :include => :times)
+    @position = ServiceLearningPosition.includes(:times).find(params[:id])
     if @position.filled_for?(@service_learning_course)
       flash[:error] = "We're sorry, but the position you selected is no longer available. Please choose another."
       redirect_to :action => "index"
-    end
+    end        
   end
   
   def fetch_self_placement
@@ -349,7 +360,7 @@ class ServiceLearningController < ApplicationController
   end
 
   def check_if_already_registered
-    @placements ||= @student.service_learning_placements.for(@quarter).reject{|p|p.position.general_study?}
+    @placements ||= @student.service_learning_placements.for(@quarter)
     @current_position = @placements.first.position unless @placements.empty?
     redirect_to :action => "complete" if !@service_learning_course.open? && !@placements.empty?
   end

@@ -25,27 +25,25 @@
      </div>
    </nav>
 	
-   <div class="row">
-	  <% flash.each do |name, message| %>
-	    <% if message.is_a?(String) %>
-	      <%#= content_tag :div, class: "#{name} callout small", :data => { :closable => '' } do %>
-	         <%= message %>
-			 <!-- <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
-			    <span aria-hidden="true">&times;</span>
-			 </button> -->
-		  <%# end %>
-	    <% end %>
-	  <% end %>
-	</div>
+   
+   <% flash.each do |name, message| %>
+	 <%= content_tag :div, message, :class => "alert #{name}" %>
+   <% end %>
 	
 	<div id="content" class="row">
-		<div id="main" class="col s9">
-	    	<%= yield %>
-		</div>
-		
-		<div id="sidebar" class="col s3">
-			<%= yield :sidebar %>
-		</div>
+		<% if yield(:sidebar).blank? %>
+			<div id="main" class="col s12">
+		    	<%= yield %>
+			</div>
+		<% else %>
+			<div id="main" class="col s9">
+		    	<%= yield %>
+			</div>
+			
+			<div id="sidebar" class="col s3">
+				<%= yield :sidebar %>
+			</div>
+		<% end %>
 	</div>
 	<div class="row" id="footer-wrap">
 		<div id="footer">

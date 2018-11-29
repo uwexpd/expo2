@@ -1,22 +1,30 @@
 <% title("Service-Learning Registration", @quarter.title) %>
 
 <div class="card content">
-	<h5><%= link_to "UW Service-Learning Registration", service_learning_path %></h5>
-	<p><strong>Welcome, <%= @student.firstname %>.</strong></p>
+	<h5><%= link_to "UW Service-Learning Registration", service_learning_path %>
+		<span class="status_tag info"><%= @quarter.title %></span>
+	</h5>
+
+	<p><strong>Welcome, <%= @student.firstname %>.<i class="material-icons">sentiment_satisfied_alt</i></span></strong></p>
+
+	<%= render :partial => "your_position", :locals => { :service_learning_course => @service_learning_course, :position => @current_position, :hide_change_button => true } if @placements && !@placements.empty? %>
+
 	<p>You are currently enrolled in the following <%= pluralize @enrolled_service_learning_courses.size, "service-learning course" %>: 
 	<strong><%= @enrolled_service_learning_courses.collect(&:title).join(", ") %></strong>
 	<%= link_to "(Switch to another course)", :action => 'which' if @enrolled_service_learning_courses.size > 1 %>
 	</p>
 
-</div>	
-
+	<p><strong><%= @service_learning_course.title %> has total <%= pluralize @service_learning_course.positions.open.size, "position" %> open.</strong></p>
+</div>
 
 <% if @service_learning_course.finalized? %>
 		<% show_switch_link = @placements.empty? ? :false : :true %>
-		<div id="service_learning_positions">
+
+		<div id="service_learning_positions" class="row">
 			<%= render 	:partial => "position", 
-						:collection => @service_learning_course.positions.uniq.reject{|p| p.self_placement? || !p.approved?}, 
-						:locals => { :service_learning_course => @service_learning_course, :show_switch_link => show_switch_link } %>
+						:collection => @service_learning_course.positions.uniq.reject{|p| p.self_placement? || !p.approved?},
+						:locals => { :service_learning_course => @service_learning_course, :show_switch_link => show_switch_link, show_grid_view: true } %>
 		</div>
 <% end %>
 
+<% sidebar :filters %>

@@ -10,17 +10,17 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require_tree .
+ *
  *= require_self
+ *= require main
 
 */
-@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+
+
+// Import material-sass and icons
 @import 'chosen-compass';
 @import 'materialize';
 @import 'material_icons';
-@import 'public';
+@import 'styles/alert';
 
-
-.pagination li.active a {
-  color: #fff;
-}
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";

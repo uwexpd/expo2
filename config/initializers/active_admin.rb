@@ -217,11 +217,11 @@ ActiveAdmin.setup do |config|
         # menu.add  :label  => "Vicarious Login",
         #           :url    => proc{ admin_user_path(current_active_admin_user) },          
         #           :if     => proc{ current_active_admin_user.has_role?(:vicarious_login) }
+        menu.add :label => "EXPD Website", :url => "http://expd.uw.edu", :html_options => { target: :blank }
         menu.add  :label => proc {  (vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS " : "Logged in as ") + display_name(current_active_admin_user) },                  
                   :url    => proc{  admin_person_path(current_active_admin_user.person) },
                   :id     => 'current_user',
-                  :if     => proc{ current_active_admin_user? }
-        menu.add :label => "EXPD Website", :url => "http://expd.uw.edu", :html_options => { target: :blank }
+                  :if     => proc{ current_active_admin_user? }        
         admin.add_logout_button_to_menu menu
 
       end

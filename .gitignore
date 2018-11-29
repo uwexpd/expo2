@@ -23,4 +23,4 @@
 /config/database_scholarships.yml
 /config/certs
 /config/uwca.crt
-Passengerfile.json
+/config/email.yml

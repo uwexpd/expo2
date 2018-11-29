@@ -1,0 +1,29 @@
+.alert {    
+    @extend .card-panel, .lighten-4, .text-darken-4;
+
+    padding: 18px;
+    margin: 0rem;
+
+    &.success, &.notice{
+        @extend .green, .green-text;
+    }
+
+    &.info {
+        @extend .blue, .blue-text;
+    }
+
+    &.warning {
+        @extend .yellow, .yellow-text;
+    }
+
+    &.error {
+        @extend .red, .red-text;
+    }
+
+    .close {
+        position: absolute;
+        top: 8rem;
+        right: 0.5rem;
+        color: inherit;        
+    }
+}

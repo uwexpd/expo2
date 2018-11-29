@@ -1,11 +1,15 @@
 <div id="header">
-	<div id="w-patch"></div>
-<!-- <div class="top-bar">  	
-  <div class="top-bar-left"> -->
+	<div id="w-patch"></div>	
     <ul class="menu">
-      <li class="menu-text">EXPD-Online</li>
-      	<!-- <li><a href="http://expd.uw.edu">Center For Experiential Learning and Diversity</a></li>
-        <li><a href="http://uaa.uw.edu">Undergraduate Academic Affairs</a></li> -->
+      <li class="menu-text">EXPD-Online</li>      	        
+      <li id="account-nav">
+			<% if logged_in? %>
+				<%= vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS" : "Logged in as" %>
+				<strong><%= (current_user.fullname) %></strong></a>
+				<%= "[#{current_user.identity_type}]" if current_user.identity_type %>
+				<%= link_to 'Log out of vicarious mode', remove_vicarious_login_path if vicariously_logged_in? %>	
+			<% end %>
+	  </li>
     </ul>
   </div>
 </div>

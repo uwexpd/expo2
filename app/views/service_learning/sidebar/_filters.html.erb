@@ -1,0 +1,19 @@
+<h5><i class="material-icons vertical_top">filter_list</i> View and Filters</h5>
+
+<div class="view_switch">
+<a href="#" data-view-display="list" class="list_view waves-effect waves-light btn"><i class="material-icons left">list</i>List</a>
+<a href="#" data-view-display="grid" class="grid_view waves-effect waves-light btn"><i class="material-icons left">apps</i>Grid</a>
+</div>
+
+<br>
+<%= form_tag(service_learning_path, remote: true, method: :get, id: "position-filled") do %>
+	<div class="switch">
+		Show filled positions?<br>
+	    <label>
+	      off
+	      <input type="checkbox" checked>
+	      <span class="lever"></span>
+	      On
+	    </label>
+	</div>
+<% end %>

@@ -5,13 +5,14 @@ class OrganizationQuarter < ActiveRecord::Base
   belongs_to :quarter
   belongs_to :staff_contact_user, -> { includes :person }, :class_name => "User"
   has_many :positions, :class_name => "ServiceLearningPosition", :dependent => :destroy do
-    def in_progress; find(:all, :conditions => { :in_progress => true }); end
-    def pending; find(:all, :conditions => "(approved IS NULL OR approved = 0) && (in_progress IS NULL OR in_progress = 0)"); end
-    def approved; find(:all, :conditions => { :approved => true }); end
+    def in_progress; where(in_progress: true); end
+    def pending; where("(approved IS NULL OR approved = 0) && (in_progress IS NULL OR in_progress = 0)"); end
+    def approved; where(approved: true); end
   end
   # has_many :pipeline_positions, :class_name => "PipelinePosition", :dependent => :destroy
   has_many :placements, :through => :positions, :source => :placements do
-    def filled; find(:all, :conditions => 'person_id IS NOT NULL'); end; end
+    def filled; where('person_id IS NOT NULL'); end
+  end
   # has_many :pipeline_placements, :through => :pipeline_positions, :source => :placements do
   #   def filled; find(:all, :conditions => 'person_id IS NOT NULL'); end; end
   has_many :statuses, :class_name => "OrganizationQuarterStatus", :dependent => :destroy

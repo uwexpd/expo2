@@ -1,0 +1,95 @@
+<dl class="inline-definitions">
+
+	<dt>Title</dt>
+	<dd><%= service_learning_position.title %></dd>
+	
+	<dt>Organization</dt>
+	<dd><%= service_learning_position.organization.name %>
+		<p class="smaller">
+		<%= link_to "About this organization", {remote: true}, data: { link_toggle: "#about_organization"} %></p>
+		<div id="about_organization" style="display:none">
+			<p><%= sanitize @position.organization.mission_statement %></p>
+			<p>Website: <%= link_to sanitize(@position.organization.website_url), @position.organization.website_url, :target => "_blank" %></a></p>
+		</div>
+	</dd>
+
+	<% unless service_learning_position.context_description.blank? %>
+		<dt>Context</dt>
+		<dd><%= sanitize service_learning_position.context_description %></dd>
+	<% end %>
+
+	<% unless service_learning_position.description.blank? %>
+		<dt>Work description</dt>
+		<dd><%= sanitize service_learning_position.description %></dd>
+	<% end %>
+
+	<% unless service_learning_position.impact_description.blank? %>
+		<dt>Impact</dt>
+		<dd><%= sanitize service_learning_position.impact_description %></dd>
+	<% end %>
+
+	<dt>Supervisor</dt>
+	<dd><%= sanitize service_learning_position.supervisor.person.fullname rescue nil %>
+		<%= sanitize "<br />" + auto_link(service_learning_position.supervisor.person.email) rescue nil %>
+		<%= sanitize "<br />" + phone_number(service_learning_position.supervisor.person.phone.to_i) rescue nil %>
+		</dd>
+
+	<dt>Location</dt>
+	<dd><%= sanitize service_learning_position.location.title rescue "None" %>
+		<br><%= sanitize address_block(service_learning_position.location) %>
+		</dd>
+
+	<% if service_learning_position.location; location = service_learning_position.location %>
+		<% unless location.driving_directions.blank? %>
+			<dt>Driving notes</dt>
+			<dd><%= auto_link(simple_format(location.driving_directions)) %></dd>
+		<% end %>
+
+		<% unless location.bus_directions.blank? %>
+			<dt>bus notes</dt>
+			<dd><%= auto_link(simple_format(location.bus_directions)) %></dd>
+		<% end %>
+
+		<% unless location.notes.blank? %>
+			<dt>location notes</dt>
+			<dd><%= auto_link(simple_format(location.notes)) %></dd>
+		<% end %>
+	<% end %>
+
+	<% unless service_learning_position.alternate_transportation.blank? %>
+		<dt>Alt. transportation</dt>
+		<dd><%= sanitize service_learning_position.alternate_transportation %></dd>
+	<% end %>	
+
+	<dt>Requirements</dt>
+	<dd><%= sanitize "Must be #{service_learning_position.age_requirement} #{'('+service_learning_position.other_age_requirement+')' if service_learning_position.has_other_age_requirement? && service_learning_position.other_age_requirement} years old<br>" unless service_learning_position.age_requirement.blank? %>
+		<%= "Must commit for #{service_learning_position.duration_requirement}<br>" unless service_learning_position.duration_requirement.blank? %>						
+		<%= sanitize "TB test required<br>" if service_learning_position.tb_test_required? %>
+		<%= sanitize "Flu vaccination required<br>" if service_learning_position.flu_vaccination_required? %>
+		<%= sanitize "Valid food handler’s permit required<br>" if service_learning_position.food_permit_required? %>
+		<%= sanitize "Valid food handler’s permit required<br>" if service_learning_position.food_permit_required? %>
+		<%= sanitize "Valid food handler’s permit required<br>" if service_learning_position.food_permit_required? %>
+		<%= sanitize "Other health screenings or certifications required: #{service_learning_position.other_health_requirement if service_learning_position.other_health_requirement} <br>" if service_learning_position.other_health_required? %>
+		
+		<%= sanitize "Other paperwork: #{service_learning_position.paperwork_requirement}<br>" unless service_learning_position.paperwork_requirement.blank? %>
+		
+		<% if service_learning_position.background_check_required? %>
+			<%= sanitize "<strong>Background check required</strong><br>" %>
+			<div style="margin-left: 10px;">
+			<%= sanitize "Full legal name required<br>" if service_learning_position.legal_name_required? %>
+			<%= sanitize "Birthdate required<br>" if service_learning_position.birthdate_required? %>
+			<%= sanitize "Social security number required<br>" if service_learning_position.ssn_required? %>
+			<%= sanitize "Fingerprinting  required<br>" if service_learning_position.fingerprint_required? %>
+			<%= sanitize "Other background required: #{service_learning_position.other_background_check_requirement if service_learning_position.other_background_check_requirement}<br>" if service_learning_position.other_background_check_required? %>
+			<%= sanitize "This site is not able to accommodate international students, due to the length of time and cost required to complete international background checks<br>" if service_learning_position.non_intl_student_required? %>
+			</div>
+		<% end %>
+			
+	</dd>
+
+	<% unless service_learning_position.skills_requirement.blank? %>
+		<dt>Skills needed</dt>
+		<dd><%= sanitize service_learning_position.skills_requirement %></dd>
+	<% end %>
+
+</dl>

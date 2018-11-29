@@ -1,0 +1,14 @@
+<h5><i class="material-icons vertical_top">add_circle_outline</i> Register Position</h5>
+
+<% if @service_learning_course.open? %>
+	<div>
+		<p style="font-size:0.85rem;">If this position looks interesting, click the button below to register for this position.</p>
+		<% if @placements && !@placements.empty? %>
+			<%= link_to "Switch to this position", { :action => 'change', :id => @position.id }, class: "btn waves-effect waves-light" %>
+		<% else %>
+			<%= link_to "Choose this position", { :action => 'choose', :id => @position.id }, class: "btn waves-effect waves-light" %>
+		<% end %>	
+	</div>
+<% else %>
+	<div>The registration is not yet open.</div>
+<% end %>

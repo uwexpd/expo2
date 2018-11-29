@@ -1,0 +1,43 @@
+<div style="overflow-y:auto; max-height: 550px">
+<table class="selectable" style="width:90%">
+	<thead>
+      <tr>
+      <th></th>
+      <th>Sunday</th>
+      <th>Monday</th>
+      <th>Tuesday</th>
+      <th>Wednesday</th>
+      <th>Thursday</th>
+      <th>Friday</th>
+      <th>Saturday</th>
+      <th></th>
+      </tr>
+    </thead>  
+      <%= render partial: "time_row", collection: (7..23).to_a,  locals: { service_learning_position: service_learning_position, :readonly => true } %>
+
+</table>
+</div>
+<br>
+<dl class="inline-definitions">
+
+	<dt>Times</dt>
+	<dd>
+	<% if service_learning_position.times.size < 10 %>
+		<% for time in service_learning_position.times %>
+			<%= sanitize time.pretty_print %><br />
+		<% end %>
+		<%= "Unknown" if service_learning_position.times.empty? %>
+	<% else %>
+		Multiple
+	<% end -%>
+	</dd>
+
+	<dt>Flexible?</dt>	
+	<dd><%= sanitize service_learning_position.times_are_flexible? ? "Yes, you can choose times <em><strong>within</strong></em> the time slots above." : "No, the times above are exact shift times." %></dd>	
+
+	<% unless service_learning_position.time_notes.blank? %>
+		<dt>Notes</dt>
+		<dd><%= sanitize service_learning_position.time_notes %></dd>
+	<% end -%>
+
+</dl>

@@ -1,0 +1,31 @@
+<% title("Service-Learning Registration", @quarter.title) %>
+
+<div class="card content">
+
+<%= render :partial => "your_position", :locals => { :service_learning_course => @service_learning_course, :position => @position } %>
+
+<%= form_for @student, :url => { :action => 'contact', :id => @position } do |f| %>
+
+<h5>In case we need to get ahold of you...</h5>
+<p>From time to time, we might need to e-mail or call you to get more information. It is important that you check your UW e-mail address (<strong><%= @student.email %></strong>) regularly for updates about your service-learning position.</p><br>
+
+	<%#= error_messages_for :student %>
+
+	<div class="row">
+		<div class="col s12">Your e-mail address: <strong><%= @student.email %></strong></div>
+	</div>
+	
+  <div class="row">        
+        <div class="col s12">
+          Please enter your local phone number:
+          <div class="input-field inline">
+          	<i class="material-icons prefix">phone</i>
+          	<%= f.text_field :phone, id: "phone_inline", class: "validate", required:"", 'aria-required': "true" %>
+            <label for="phone_inline">Telephone<abbr title="required">*</abbr></label>
+          </div>
+        </div>
+  </div>
+	<%= f.submit "Continue", data: { disable_with: 'Saving contact information...' } , class: 'btn' %>
+<% end %>
+<br>
+</div>

@@ -5,7 +5,7 @@ body {
 }
 
 #content {
-	padding: 0 1rem;
+	padding: 1rem 1rem 0 1rem;
 }
 
 a:hover{
@@ -24,8 +24,32 @@ a:hover{
 	margin-bottom: 2em;
 }
 
-.gray, .light {
+.gray, .grey, .light {
 	color: gray;
+}
+
+.show_block {
+	display: block;
+}
+
+.hide_block {
+	display: none;
+}
+
+.hightlight {
+	background-color: #fdfbce;
+	border: 1px solid #fde496;
+}
+
+abbr[title="required"]{
+	font-size: 1rem;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 0.75rem;
+    border: 0;
+    color: #d45f53;
+    margin-left: 4px;
 }
 
 // EXPO Header
@@ -173,6 +197,9 @@ thead th, tbody td{
 	margin: 0;
 }
 
+/*
+   Botton Style
+*/
 .btn, .btn-large, .btn-floating{
 	background-color: #4b2e83;
 	padding: 0 16px;
@@ -186,12 +213,24 @@ thead th, tbody td{
   background-color: #3c2468;
 }
 
+
+.btn.small {
+	padding: 0 10px;
+	height: 28px;
+    line-height: 28px;
+    font-size: 85%;
+}
+
 .vertical_top{
 	vertical-align: top;
 }
 
 ul.pagination{
 	padding-top: 20px;
+}
+
+.pagination li.active a {
+  color: #fff;
 }
 
 .scopes {
@@ -221,9 +260,13 @@ ul.pagination{
 	padding-bottom: 0.1rem;
 }
 
-#sidebar .filters h5{
+#sidebar h5{
 	padding: 15px 0;
 }
+
+#sidebar h5 .material-icons{
+	font-size: 28px;
+}	
 
 #sidebar .chosen-container {
 	margin-bottom: 1rem;
@@ -231,6 +274,7 @@ ul.pagination{
 
 .sideblock {
 	padding: 0rem 1rem 2rem 1rem;
+	margin-top: -0.315rem;
 }
 
 .clear_filter {    
@@ -282,6 +326,16 @@ ul.pagination{
 	top: 0.2rem;
 }
 
+
+/* @group Service Learning */
+#service_learning_positions .card .card-action {
+	padding: 14px 22px;
+}
+
+#service_learning_positions .card.filled .card-action {
+	padding: 18px 24px;
+}
+
 #service_learning_positions .collection .collection-item.avatar {
 	padding-top: 1.5rem;
     padding-bottom: 1.5rem;
@@ -299,4 +353,203 @@ ul.pagination{
 
 #service_learning_positions ul.position.requirements li:before {
   content: "• ";
+}
+
+#service_learning_positions ul.collection li.filled, #service_learning_positions .card.filled, #service_learning_positions .card.filled .card-reveal {
+	background: url(image-path('app/unavailable-xtile.gif')) repeat;
+}
+
+#service_learning_positions ul.show-list-style li {
+	list-style-type: circle;
+    margin-left: 16px;
+}
+
+#service_learning_positions .collection .collection-item.avatar .secondary-content {
+	top: 22px;
+}
+
+.secondary-content .button_to, .card-action .button_to {
+	color: whitesmoke;
+}
+
+span.status_tag {
+    min-width: 3rem;
+    padding: 0 8px;  
+    margin-left: 14px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 300;
+    line-height: 22px;
+    height: 22px;
+    color: #fff;
+    float: right;
+    box-sizing: border-box;    
+    border-radius: 2px;
+    background-color: gray; 
+}
+
+span.status_tag.green {
+	background-color: #4CAF50;
+}
+
+span.status_tag.info {
+	background-color: #26A699;
+}
+
+span.status_tag.warning, span.status_tag.error {
+	background-color: red;
+}
+
+#sidebar .filters :not(.circle-clipper) > .circle {
+	position: absolute;
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    left: 15px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#sidebar .filters i.circle {
+    font-size: 18px;
+    line-height: 42px;
+    color: #fff;
+    background-color: #999;
+    text-align: center;
+}
+
+.tabs {
+	margin-bottom: 1rem;
+}
+
+dl.inline-definitions {
+	// margin-top: 2em;
+}
+
+dl.inline-definitions dt {
+	float: left;	
+	font-size: 0.85rem;
+	font-weight: bold;
+	color: rgba(0,0,0,0.54);
+	margin-left: 20px;
+	display: block;	
+}
+
+dl.inline-definitions dd {
+	margin: 0;
+	margin-bottom: 1.5em;	
+	color: rgba(0,0,0,0.7);	
+	padding: 0px 16px 16px 150px;	    
+    font-size: 0.85rem;
+    border-bottom: 1px solid #efefef;
+    font-weight: 400;    
+}
+
+dl.inline-definitions dd p:first-child {
+	margin-top: 0px;
+}
+
+dl.inline-definitions dd ul li {
+	list-style-type: circle;
+    margin-left: 16px;
+}
+
+/* @group Selectable */
+
+.selectable th {
+	background-color: #d9d9d9;
+    color: #444;
+    padding: 10px;
+    font-size: 90%;
+    text-shadow: 1px 1px #fff;
+    border-bottom: 1px solid #BDBDBD;
+    text-align: center;
+}
+
+.selectable .hour {
+	width: 5%;
+	font-size: 80%;
+	font-weight: normal;
+	padding: 1px 5px;
+}
+
+.selectable tbody td {
+	padding: 5px;
+}
+
+.selectable tr.half_row td {
+	border-bottom-color: #dadada;
+}
+
+.selectable .selected {
+	background: #3a87ad;
+	border-bottom-color: #88b7cd;
+}
+
+.selectable tr.half_row td.selected {
+	border-bottom-color: #88b7cd;
+}
+
+.selectable tr:hover {
+	background-color: inherit;
+}
+
+.selectable td {
+	border-right: 1px solid #dadada;
+	width: 12%;
+}
+
+/* @end */
+
+
+#student_electronic_signature {
+	width: 150%;
+}
+
+p.final_submit {
+    text-align: center;
+    width: 60%;
+    font-weight: bold;
+    margin: 5px auto;
+}
+
+/* @group Big Numbers */
+dl.big.numbers dt {
+	float: left;
+	margin: 0;
+	font-size: 300%;
+	font-weight: bold;
+	color: #b7d9f8;
+	margin-left: 20px;
+	display: block;
+	line-height: 100%;
+}
+
+dl.big.numbers dt.grey {
+	color: #ccc;
+}
+
+dl.big.numbers dd {
+	margin: 0;
+	margin-bottom: 1em;
+	font-size: 100%;
+	padding: 2px;
+	padding-left: 6em;
+}
+
+dl.big.numbers dd i {
+	vertical-align: bottom;
+}
+
+/* @end */
+
+#account-nav {
+	position: fixed;
+	float: right;
+	top: 1rem;
+	right: 1rem;
+	color: whitesmoke;
+	font-size: small;
+	line-height: 28px;
+
 }

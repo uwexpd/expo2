@@ -28,8 +28,10 @@ ActiveAdmin.register_page "Dashboard" do
             column('Time') {|appointment| link_to appointment.start_time.to_s(:date_pretty), admin_appointment_path(appointment) }
             column :student            
           end
-          div id: 'create_appointment' do
-            link_to_if @my_appointments.blank?, 'No current appointments. Create an appointment.', new_admin_appointment_path
+          if @my_appointments.blank?
+            div id: 'create_appointment' do
+              link_to 'No current appointments. Create an appointment.', new_admin_appointment_path
+            end
           end
         end
       end

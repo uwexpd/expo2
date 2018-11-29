@@ -177,7 +177,7 @@ class WebServiceResult
         :cert         => OpenSSL::X509::Certificate.new(File.open("#{Rails.root}/config/certs/#{config_options[:cert]}")),
         :key          => OpenSSL::PKey::RSA.new(File.open("#{Rails.root}/config/certs/#{config_options[:key]}")),
         :ca_file      => "#{Rails.root}/config/certs/#{config_options[:ca_file]}",
-        :verify_mode  => OpenSSL::SSL::VERIFY_NONE # FIXME - make VERIFY_PEER works for mac os
+        :verify_mode  => OpenSSL::SSL::VERIFY_PEER # FIXME - make VERIFY_PEER works for mac os
       }
     end
   

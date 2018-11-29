@@ -1,0 +1,34 @@
+<% title("Service-Learning Registration", @quarter.title) %>
+
+<div class="card content">
+
+<%= render :partial => "your_position", :locals => { :service_learning_course => @service_learning_course, :position => @position } %>
+
+<h5>Acknowledgement of Risk</h5>
+
+<%= form_for @student, :url => { :action => 'risk', :id => @position } do |f| -%>
+
+	<%= render :partial => "risk" %>
+
+	<%#= error_messages_for :student %>
+
+	<div class="row z-depth-2 hightlight">
+        <div class="col s12">
+          <strong>Electronic Signature:</strong>
+          <div class="input-field inline" style="width: 30%">
+          	<i class="material-icons prefix">create</i>
+          	<%= f.text_field :electronic_signature, class: "validate", required:"", 'aria-required': "true" %>
+            <label for="electronic_signature_inline">Type your full legal name<abbr title="required">*</abbr></label>
+          </div>
+          <span style="margin-left: 15rem"><strong>Date:</strong> <%= Time.now.to_date.to_s(:long) %></span>
+        </div>
+  	</div>			
+<br>
+<p class="final_submit">
+	Click the button below to complete your service learning registration.</p>
+<p class="final_submit">
+	<%= submit_tag "Finish My Registration", data: { disable_with: "Saving your information" }, :class => "btn" %></p>
+
+<% end %>
+<br>
+</div>
