@@ -39,6 +39,7 @@ class ServiceLearningController < ApplicationController
   end
 
   def which
+    add_breadcrumb "Service-Learning Registration"
     if params[:course]
       session[:course] = params[:course]
       if session[:type] == "self_placement"
@@ -360,7 +361,7 @@ class ServiceLearningController < ApplicationController
   end
 
   def check_if_already_registered
-    @placements ||= @student.service_learning_placements.for(@quarter)
+    @placements ||= @student.service_learning_placements.for(@quarter, nil)
     @current_position = @placements.first.position unless @placements.empty?
     redirect_to :action => "complete" if !@service_learning_course.open? && !@placements.empty?
   end

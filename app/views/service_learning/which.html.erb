@@ -1,0 +1,30 @@
+<% title("Service-Learning Registration", @quarter.title) %>
+
+<div class="card content">
+	<h5><%= link_to "UW Service-Learning Registration", service_learning_path %>
+		<span class="status_tag info"><%= @quarter.title %></span>
+	</h5>
+</div>
+
+<div class="card content">
+<h5>Welcome, <%= @student.firstname %>.</h5>
+
+<p>You are currently enrolled in multiple service-learning courses. <b color=red>Please note that you can only register for one service-learning course online.</b></p> 
+
+<p>Please <a href="http://depts.washington.edu/leader/about/contact.html">contact the Carlson Center staff</a> to register for additional positions.</p>
+
+<hr>
+
+<p>For which service-learning course would you like to choose a position?</p>
+<form>	
+	<% for course in @enrolled_service_learning_courses %>
+		<p>
+			<input class="with-gap" name="course" type=radio value="<%= course.id %>" id="course_<%= course.id %>" >
+			<label for="course_<%= course.id %>"><%= course.title %></label>
+		</p>
+	<% end %>
+	<p><input type=submit value="Choose" class='waves-effect waves-light btn small'></p><br>
+
+</form>
+
+</div>
