@@ -1,6 +1,6 @@
-<% title("Error") %>
+<% title("Error | EXPO at the UW Center for Experiential Learning and Diversity") %>
 <div class="restriction failed">
 	<h1><%= @exception.to_s %></h1>
-	<p><%= @exception.detail %></p>
-	<p><%= auto_link @exception.help_text %></p>
+	<p><%= auto_link(@exception.detail) %></p>
+	<p><%= auto_link(@exception.help_text) %></p>
 </div>

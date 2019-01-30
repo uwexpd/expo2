@@ -1,3 +1,9 @@
+// Initialization for materializecss javascript components
+$(document).ready(function(){
+    $('.tabs').tabs();
+  });
+// End
+
 // Alert close button
 $(document).on('page:change', function () {
   $('.alert').append('<button class="waves-effect btn-flat close"><i class="material-icons">close</i></button>');

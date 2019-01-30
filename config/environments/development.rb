@@ -48,5 +48,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.default_url_options = { :host => "localhost:3000" }
   config.action_mailer.smtp_settings = YAML.load_file("#{Rails.root}/config/email.yml")[Rails.env].symbolize_keys
-  
+
+  # Setting this option to false tells Rails to show error pages, rather than the stack traces it normally shows in development mode
+  # config.consider_all_requests_local = false # this is only for testing
 end

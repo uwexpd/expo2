@@ -67,7 +67,7 @@ gem 'capitalize-names'
 
 # material ui
 gem 'material_icons'
-gem 'materialize-sass'
+gem 'materialize-sass', '~> 1.0.0'
 
 # TODO: gem 'rails_email_preview', '~> 2.0.4'
 

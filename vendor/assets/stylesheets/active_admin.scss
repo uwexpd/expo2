@@ -232,9 +232,9 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
   padding-right: 5px;
 }
 
-.with_sidebar #sidebar {
-	min-width: 280px;	
-}
+// .with_sidebar #sidebar {
+// 	min-width: 280px;
+// }
 
 #index_table_scholarships .col-title, #index_table_scholarships .col-deadlines {
 	min-width: 110px;
@@ -409,8 +409,8 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
 	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-#q_unit_id {
-	width: 20em;
+#sidebar .select select:not([multiple]) {
+	max-width: 280px;
 }
 
 #index_table_events tbody .col-sponsor, #index_table_offerings tbody .col-unit {

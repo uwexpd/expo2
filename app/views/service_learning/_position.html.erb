@@ -11,11 +11,23 @@
 <% show_list_view ||= false %>
 
 <div class="col s4 <%=  show_grid_view ? 'show_block' : 'hide_block' %> <%= 'selected_position' if selected_position %>">
-    <div class="card medium sticky-action hoverable <%= "filled" if filled %>">
-        <div class="card-image waves-effect waves-block waves-light">        
-          <%= image_tag("/assets/P-Patch-Program.jpg",  alt: "P-Patch-Program", class: "activator") %>
+    <div class="card medium sticky-action hoverable <%= "filled" if filled %>">        
+          <% if position.picture %>
+             <div class="card-image waves-effect waves-block waves-light">              
+              <%= image_tag( "http://localhost:3000/images/shared/service_learning_position/#{position.id}/picture/#{position.picture}",  alt: "Position picture", class: "activator") %>
+             </div>
+          <% elsif position.organization.logo %>
+             <div class="card-image waves-effect waves-block waves-light">              
+              <%= image_tag( "http://localhost:3000/images/shared/organization/#{position.organization.id}/logo/#{position.organization.logo}",  alt: "Position picture", class: "activator") %>
+             </div>
+          <% else %>
+             <div class="position_picture">
+                <i class="material-icons circle green">business</i>
+             </div>
+             
+             <%#= image_tag( "/expo/assets/P-Patch-Program.jpg",  alt: "Position picture", class: "activator") %>
+          <% end %>        
 
-        </div>
         <div class="card-content" style="overflow: overlay;">
           <span class="card-title activator grey-text text-darken-4" style="font-size: 18px; line-height: 24px">
             <% if is_your_position %>
@@ -30,12 +42,14 @@
           <center>
           <% if is_your_position %>
             Your current position
+          <% elsif !service_learning_course.open? %>
+              Registration is closed
           <% elsif show_switch_link && !filled %>
             <%= link_to "Switch to this position", { :action => 'change', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>            
           <% elsif show_links %>
-            <%= link_to "Choose this position", { :action => 'choose', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>            
+            <%= link_to "Choose position", { :action => 'choose', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>          
           <% elsif filled %>
-            This position is filled            
+            This position is filled
           <% end %>
           </center>
         </div>
@@ -83,10 +97,12 @@
       <div class="secondary-content smaller">
         <% if is_your_position %>
           Your current position<br>
+        <% elsif !service_learning_course.open? %>
+          Registration is closed
         <% elsif show_switch_link && !filled %>
           <%= link_to "Switch to this position", { :action => 'change', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>          
         <% elsif show_links %>
-          <%= link_to "Choose this position", { :action => 'choose', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>          
+          <%= link_to "Choose position", { :action => 'choose', :id => position.id }, class: 'waves-effect waves-light btn small' if service_learning_course.open? %>          
         <% elsif filled %>
           This position is filled
         <% end %>

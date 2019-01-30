@@ -128,7 +128,7 @@ thead th, tbody td{
 }
 
 #main .content{
-    padding: 15px;
+    padding: 15px 20px;
 }
 
 .table-header {
@@ -198,21 +198,24 @@ thead th, tbody td{
 }
 
 /*
-   Botton Style
+   Button Style
 */
-.btn, .btn-large, .btn-floating{
+.btn, .btn-large, .btn-small, .btn-floating{
 	background-color: #4b2e83;
 	padding: 0 16px;
 }
 
-.btn:hover, .btn-large:hover {
+.btn:hover, .btn-small:hover, .btn-large:hover {
  	background-color: #6e579b;
 }
 
-.btn:focus, .btn-large:focus, .btn-floating:focus {
+.btn:focus, .btn-small:focus, .btn-large:focus, .btn-floating:focus {
   background-color: #3c2468;
 }
 
+.btn.smaller{
+	padding: 0 12px;
+}
 
 .btn.small {
 	padding: 0 10px;
@@ -220,6 +223,8 @@ thead th, tbody td{
     line-height: 28px;
     font-size: 85%;
 }
+
+/*****  end *****/
 
 .vertical_top{
 	vertical-align: top;
@@ -258,6 +263,10 @@ ul.pagination{
 	font-size: 0.75rem;
 	padding-top: 0.1rem;
 	padding-bottom: 0.1rem;
+}
+
+#sidebar {
+	min-width: 240px;
 }
 
 #sidebar h5{
@@ -328,12 +337,12 @@ ul.pagination{
 
 
 /* @group Service Learning */
-#service_learning_positions .card .card-action {
-	padding: 14px 22px;
-}
+// #service_learning_positions .card .card-action {
+// 	padding: 14px 22px;
+// }
 
 #service_learning_positions .card.filled .card-action {
-	padding: 18px 24px;
+	padding: 19px 22px;
 }
 
 #service_learning_positions .collection .collection-item.avatar {
@@ -356,7 +365,7 @@ ul.pagination{
 }
 
 #service_learning_positions ul.collection li.filled, #service_learning_positions .card.filled, #service_learning_positions .card.filled .card-reveal {
-	background: url(image-path('app/unavailable-xtile.gif')) repeat;
+	background: #fff url(image-path('app/unavailable-xtile.gif')) repeat;
 }
 
 #service_learning_positions ul.show-list-style li {
@@ -366,6 +375,10 @@ ul.pagination{
 
 #service_learning_positions .collection .collection-item.avatar .secondary-content {
 	top: 22px;
+}
+
+#service_learning_positions .card .card-image img {
+	height: 150px;
 }
 
 .secondary-content .button_to, .card-action .button_to {
@@ -552,4 +565,47 @@ dl.big.numbers dd i {
 	font-size: small;
 	line-height: 28px;
 
+}
+
+.position_picture {	
+	text-align: center;
+	padding-top: 50px;
+	height: 150px;
+
+}
+
+.position_picture i.circle {
+	width: 70px;
+	height: 70px;
+	font-size: 32px;
+    line-height: 70px;
+    color: #fff;
+    background-color: #999;
+    text-align: center;
+}
+
+
+/* @group Restrictions */
+
+.restriction.failed {	
+	margin: 90px auto;
+	width: 55%;
+	background: #fff url(image-path('app/alert_large.png')) no-repeat 20px 15px;
+	padding: 30px;
+	padding-left: 170px;
+
+	border: 1px solid #ddd;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.15);
+}
+
+.restriction.failed h1 {	
+	font-size: 2rem;
+	padding-bottom: 1rem;
+}
+
+div.restriction.failed h1 {
+	margin: 0;
 }

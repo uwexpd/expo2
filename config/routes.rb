@@ -47,9 +47,12 @@ Rails.application.routes.draw do
     resources :mge_scholars, only: [:show, :index]
     
     # Service Learning
+    #match 'service_learning/:quarter_abbrev', to: 'service_learning#index', via: [:get, :post, :put, :patch]
+    #match 'service_learning/:quarter_abbrev/:action', to: 'service_learning#:action', via: [:get, :post, :put, :patch]
     match 'service_learning', to: 'service_learning#index', via: [:get, :post], :quarter_abbrev => 'current', as: :service_learning    
     match 'service_learning/:action', to: 'service_learning#:action', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
     match 'service_learning/:action/:id', to: 'service_learning#:action', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current', as: :service_learning_action
+
   end
   
   # Redirect to Sub URI only when it doesn't match '/expo/' in the request URLs

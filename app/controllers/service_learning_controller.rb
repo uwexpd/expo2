@@ -255,10 +255,9 @@ class ServiceLearningController < ApplicationController
   end
   
   def check_if_student
-    unless @current_user.person.is_a? Student
-      raise ServiceLearningException.new("You aren't a student.", "In order to register for a service-learning opportunity, you must
-                                                                      be a registered student at the University of Washington.")
-    end
+    unless @current_user.person.is_a? Student      
+      raise ServiceLearningException.new("You aren't a student.", "In order to register for a service-learning opportunity, you must be a registered student at the University of Washington.")
+    end    
   end
   
   def fetch_student
@@ -300,10 +299,9 @@ class ServiceLearningController < ApplicationController
   end
   
   def check_enrolled_service_learning_courses
-    if @enrolled_service_learning_courses.empty?
-      raise ServiceLearningException.new("You don't appear to be enrolled in any service-learning courses.", 
-            "Often, this is because you recently added a class and the change has not yet appeared in our system.
-             If you think this is an error, please contact the Carlson Center staff at serve@u.washington.edu immediately." )
+    if @enrolled_service_learning_courses.empty?      
+      raise ServiceLearningException.new("You don't appear to be enrolled in any service-learning courses.", "Often, this is because you recently added a class and the change has not yet appeared in our system. If you think this is an error, please contact the Carlson Center staff at serve@uw.edu immediately.")
+    
       # if session[:non_enrolled_course].nil?
       #   redirect_to :action => "select_non_enrolled_course" and return
       # else
@@ -328,16 +326,13 @@ class ServiceLearningController < ApplicationController
     if @student.sdb.age < 18 && !@student.valid_service_learning_waiver_on_file?
       flash[:error] = "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk
                         form on your behalf <strong>before</strong> you can register for a service learning position. Please
-                        visit the Carlson Center office in 120 Mary Gates Hall as soon as possible."
+                        visit the Carlson Center office in Mary Gates Hall as soon as possible."
     end
   end
 
   def require_waiver_if_minor
-    if @student.sdb.age < 18 && !@student.valid_service_learning_waiver_on_file?
-      raise ServiceLearningException.new("You must have an Acknowledgement of Risk on file.",
-            "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk
-            form on your behalf <strong>before</strong> you can register for a service learning position. Please
-            visit the Carlson Center office in 120 Mary Gates Hall as soon as possible.")
+    if @student.sdb.age < 18 && !@student.valid_service_learning_waiver_on_file?      
+      raise ServiceLearningException.new("You must have an Acknowledgement of Risk on file.", "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk form on your behalf <strong>before</strong> you can register for a service learning position. Please visit the Carlson Center office in Mary Gates Hall as soon as possible.")
     end
   end
 
@@ -371,7 +366,7 @@ class ServiceLearningController < ApplicationController
   end
   
   def check_if_registration_open
-    unless @service_learning_course.open?
+    unless @service_learning_course.open?      
       raise ServiceLearningException.new("Service-learning registration is closed.")
     end
   end

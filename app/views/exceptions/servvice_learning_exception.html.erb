@@ -1,0 +1,9 @@
+<% title ||= title
+   detail ||= detail
+%>
+<% title("Error") %>
+<div class="restriction failed">
+	<h1><%= title %></h1>
+	<p><%= auto_link(detail) if detail %></p>
+	<p><%= auto_link("Please visit the Carlson Center or e-mail serve@uw.edu to discuss your options. For Bothell students, please contact uwbcblr@uw.edu.") %></p>
+</div>
