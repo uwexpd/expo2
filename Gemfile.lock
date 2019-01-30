@@ -1,12 +1,12 @@
 GIT
-  remote: git://github.com/harrybournis/will_paginate-materialize.git
+  remote: https://github.com/harrybournis/will_paginate-materialize.git
   revision: 86e86a9ea3b21636e685b0fafb5b4b1681ff9dbd
   specs:
     will_paginate-materialize (0.1.2)
       will_paginate (~> 3.1.3)
 
 GIT
-  remote: git://github.com/vigetlabs/active_material.git
+  remote: https://github.com/vigetlabs/active_material.git
   revision: 59efa02b4517258a0f22c8951f1a4f21401f44b9
   specs:
     active_material (1.4.1)
