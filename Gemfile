@@ -16,7 +16,7 @@ gem 'turbolinks'
 gem 'bcrypt', '~> 3.1.7'
 
 # automates cross-browser CSS compatibility
-#gem "autoprefixer-rails", ">= 5.0.0.1"
+gem "autoprefixer-rails"
 
 # Active Admin
 gem 'activeadmin'

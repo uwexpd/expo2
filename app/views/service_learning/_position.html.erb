@@ -14,11 +14,11 @@
     <div class="card medium sticky-action hoverable <%= "filled" if filled %>">        
           <% if position.picture %>
              <div class="card-image waves-effect waves-block waves-light">              
-              <%= image_tag( "http://localhost:3000/images/shared/service_learning_position/#{position.id}/picture/#{position.picture}",  alt: "Position picture", class: "activator") %>
+              <%= image_tag( "http://#{CONSTANTS[:base_system_url]}/images/shared/service_learning_position/#{position.id}/picture/#{position.picture}",  alt: "Position picture", class: "activator") %>
              </div>
           <% elsif position.organization.logo %>
              <div class="card-image waves-effect waves-block waves-light">              
-              <%= image_tag( "http://localhost:3000/images/shared/organization/#{position.organization.id}/logo/#{position.organization.logo}",  alt: "Position picture", class: "activator") %>
+              <%= image_tag( "http://#{CONSTANTS[:base_system_url]}/images/shared/organization/#{position.organization.id}/logo/#{position.organization.logo}",  alt: "Position picture", class: "activator") %>
              </div>
           <% else %>
              <div class="position_picture">

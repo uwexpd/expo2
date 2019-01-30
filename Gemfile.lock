@@ -359,6 +359,7 @@ DEPENDENCIES
   activeresource
   activesupport-json_encoder
   annotate
+  autoprefixer-rails
   awesome_print
   bcrypt (~> 3.1.7)
   brakeman
