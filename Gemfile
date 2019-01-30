@@ -22,7 +22,7 @@ gem 'mini_racer'
 # Active Admin
 gem 'activeadmin'
 gem 'ransack' # successor of meta search for rails 4
-gem 'active_material', git: 'https://github.com/vigetlabs/active_material'
+gem 'active_material', github: 'vigetlabs/active_material'
 
 # hardens your app against XSS attack
 #gem 'secure_headers', '>= 2.1.0'
@@ -41,7 +41,7 @@ gem 'mysql2', '~> 0.4.0'
 gem 'activerecord-userstamp'
 gem 'tinymce-rails'
 gem 'will_paginate', '~> 3.1.6'
-gem 'will_paginate-materialize', git: 'https://github.com/harrybournis/will_paginate-materialize'
+gem 'will_paginate-materialize', github: 'harrybournis/will_paginate-materialize'
 gem 'rails_autolink'
 
 # for chosen
