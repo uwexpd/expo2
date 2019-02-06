@@ -18,7 +18,6 @@ gem 'bcrypt', '~> 3.1.7'
 
 # automates cross-browser CSS compatibility
 gem 'autoprefixer-rails'
-gem 'mini_racer'
 
 # Active Admin
 gem 'activeadmin'
