@@ -40,7 +40,7 @@ class SessionsController < ApplicationController
     session[:limit_login_to] = nil
     redirect_back_or_default(root_url)
     flash[:notice] = "Logged in successfully"
-    LoginHistory.login(self.current_user, (request.env["HTTP_X_FORWARDED_FOR"] || request.env["REMOTE_ADDR"]), request.session_options[:id])    
+    LoginHistory.login(self.current_user, (request.env["HTTP_X_FORWARDED_FOR"] || request.env["REMOTE_ADDR"]), session.id)
   end
   
 end

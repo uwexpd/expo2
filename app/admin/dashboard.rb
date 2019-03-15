@@ -64,7 +64,7 @@ ActiveAdmin.register_page "Dashboard" do
           render partial: 'charts/offering_by_unit', locals: { offering_by_unit: @offering_by_unit }
         end
       end
-    end          
+    end
     
   end # content
   

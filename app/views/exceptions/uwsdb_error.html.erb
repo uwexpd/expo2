@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -11,7 +11,7 @@
 	
 </head>
 
-<body class="error">
+<body class="error"> -->
 
 	<div id="header"><h1><%= link_to 'EXP-Online', root_path %></h1></div>
 
@@ -25,10 +25,11 @@
 	<div id="footer">
 		<p>
 			Copyright &copy; 2007&ndash;<%= Time.now.year %> <a href="http://www.washington.edu">University of Washington</a>.
-			Problems, questions or suggestions? Send an e-mail to <%= auto_link CONSTANTS[:system_help_email] %>.
+			Problems, questions or suggestions? Send an e-mail to <%= auto_link "#{Rails.configuration.constants['system_help_email']}" %>.
 		</p>
 	</div>
 	
 
-</body>
+<!-- </body>
 </html>
+ -->

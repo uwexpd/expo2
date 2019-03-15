@@ -250,7 +250,7 @@ ActiveAdmin.setup do |config|
      config.namespace :admin do |admin|
   #
   #     # Disable the links entirely
-  #     admin.download_links = false
+        admin.download_links = true
   #
   #     # Only show XML & PDF options
   #     admin.download_links = [:xml, :pdf]
@@ -289,8 +289,6 @@ ActiveAdmin.setup do |config|
   # config.include_default_association_filters = true
   
   #config.current_filters = false
-  
-  config.register_javascript 'tinymce.js'
   
   config.footer = "Copyright © 2007–#{Date.today.year} University of Washington. Problems, questions or suggestions? Send an e-mail to #{Rails.configuration.constants['system_help_email']}."
   

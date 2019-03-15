@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
 
   rescue_from ::ExpoException, :with => :expo_exception
-  rescue_from ActionController::RedirectBackError, :with => :redirect_exception
+  rescue_from ::ActionController::RedirectBackError, :with => :redirect_exception
   
   before_filter :login_required, :except => :remove_vicarious_login
   before_filter :save_user_in_current_thread
@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   # to connect, for any reason, then we render the uwsdb_error exception page along with a 503 status.
   def verify_uwsdb_connection
     ret = ""
-    cmd = "StudentInfo.connection.reconnect!"
+    cmd = "::StudentInfo.connection.reconnect!"
     time = Benchmark::realtime { ret = eval(cmd) }
     logger.info { "  \e[4;33;1mVerify UWSDB Connection (#{time.to_s[0..8]})\e[0m   #{cmd}" }
   rescue => e
@@ -59,17 +59,17 @@ class ApplicationController < ActionController::Base
   end
 
   def call_rake(task, log_file, options = {})
-      options[:rails_env] ||= RAILS_ENV
-      log_file ||= "rake"
-      args = options.map { |n, v| "#{n.to_s.upcase}='#{v}'" }
-      system "rake #{task} #{args.join(' ')} --trace 2>&1 >> #{RAILS_ROOT}/log/#{log_file}.log"
-      exit! 127
+    options[:rails_env] ||= RAILS_ENV
+    log_file ||= "rake"
+    args = options.map { |n, v| "#{n.to_s.upcase}='#{v}'" }
+    system "rake #{task} #{args.join(' ')} --trace 2>&1 >> #{RAILS_ROOT}/log/#{log_file}.log"
+    exit! 127
   end
 
   private
 
   def save_user_in_current_thread
-    Thread.current['user'] = current_user
+    Thread.current[:user] = @current_user
   end
 
   def expo_exception(exception)
@@ -83,10 +83,12 @@ class ApplicationController < ActionController::Base
     redirect_to root_url and return
   end
 
-  def add_to_session_history
-    SessionHistory.create(:session_id => request.session.id,
-                          :request_uri => request.original_fullpath,
-                          :request_method => request.method.to_s)
+  def add_to_session_history     
+     if current_user != :false
+       ::SessionHistory.create(:session_id => session.id,
+                           :request_uri => request.original_fullpath,
+                           :request_method => request.method.to_s)
+     end
   end
 
   # def check_if_contact_info_is_current

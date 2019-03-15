@@ -18,12 +18,13 @@
 <p>For which service-learning course would you like to choose a position?</p>
 <form>	
 	<% for course in @enrolled_service_learning_courses %>
-		<p>
+		<p><label for="course_<%= course.id %>">
 			<input class="with-gap" name="course" type=radio value="<%= course.id %>" id="course_<%= course.id %>" >
-			<label for="course_<%= course.id %>"><%= course.title %></label>
+			<span><%= course.title %></span>
+		   </label>
 		</p>
 	<% end %>
-	<p><input type=submit value="Choose" class='waves-effect waves-light btn small'></p><br>
+	<p><button type=submit class='waves-effect waves-light btn-small'>Choose</p><br>
 
 </form>
 

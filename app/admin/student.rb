@@ -83,5 +83,6 @@ menu parent: 'People'
 
   filter :firstname, as: :string
   filter :lastname, as: :string
+  filter :email, as: :string
 
 end

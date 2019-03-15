@@ -14,6 +14,8 @@
 /* Custom active material theme variables for UW look and feel */
 $am-theme-primary: #4b2e83;
 $am-theme-accent: #b7a57a;
+@import 'activeadmin_addons/all';
+@import 'activeadmin_addons/material';
 @import "active_material";
 
 @import "chosen";
@@ -232,9 +234,9 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
   padding-right: 5px;
 }
 
-// .with_sidebar #sidebar {
-// 	min-width: 280px;
-// }
+.with_sidebar #sidebar {
+	min-width: 250px;
+}
 
 #index_table_scholarships .col-title, #index_table_scholarships .col-deadlines {
 	min-width: 110px;
@@ -727,6 +729,17 @@ div.admin_phase div.title {
 #create_appointment {
 	padding: 16px;
 	height: 48px;
+}
+
+#index_footer .pagination_per_page {
+	font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 0.75rem;
+    padding: 16px;    
+    border-bottom: 1px solid #efefef;
+    float: right;
 }
 
 

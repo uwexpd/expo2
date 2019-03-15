@@ -23,6 +23,7 @@ gem 'autoprefixer-rails'
 gem 'activeadmin'
 gem 'ransack' # successor of meta search for rails 4
 gem 'active_material', github: 'vigetlabs/active_material'
+gem 'activeadmin_addons'
 
 # hardens your app against XSS attack
 #gem 'secure_headers', '>= 2.1.0'
@@ -98,6 +99,7 @@ group :development do
   gem 'brakeman', :require => false
   gem 'uw_sws'
   gem 'rack-mini-profiler', require: false
+  gem 'spring-commands-rspec'  
 end
 
   

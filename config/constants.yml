@@ -3,13 +3,13 @@ default: &default
     center_name:                        Center For Experiential Learning And Diversity
     application_name_full:              EXP-Online
     credits_required_for_full_time:     12.0
-    system_help_email:                  expohelp@u.washington.edu
+    system_help_email:                  expohelp@uw.edu
     base_url_host:                      expo.uw.edu
     base_system_url:                    expo.uw.edu/expo
     service_learning_risk_lifetime:     3.months
     service_learning_staff_email:       serve@uw.edu
-    accountability_email:               acctblty@u.washington.edu
-    sws_version:                        v5    
+    accountability_email:               acctblty@uw.edu
+    sws_version:                        v5
 
 development:
     <<: *default

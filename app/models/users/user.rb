@@ -36,6 +36,12 @@ class User < ActiveRecord::Base
   
   scope :admin, -> { where(admin: true) }
   
+  # Pulls the current user out of Thread.current. We try to avoid this when possible, but sometimes we need 
+  # to access the current user in a model (e.g., to check EmailQueue#messages_waiting?).
+  def self.current_user
+    Thread.current[:user]
+  end
+
   def check_person
       return false if person.nil?
       unless person.is_a?(Student)
@@ -45,7 +51,7 @@ class User < ActiveRecord::Base
       else
         return false
       end
-    end
+  end
   
   def person_attributes=(person_attributes)
     if person.nil?

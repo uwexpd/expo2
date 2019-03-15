@@ -25,19 +25,26 @@ module Expo2
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
     
-    # Allow for models or class in subdirectories off models and lib
+    # Allow for models or class in subdirectories off models and expo lib
     config.autoload_paths += Dir["#{config.root}/app/models/**/"]
-    config.autoload_paths += Dir["#{config.root}/lib/**/"]
-    #config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths += Dir["#{config.root}/lib/expo/**/"]
     
     config.constants = config_for(:constants)
     
     config.relative_url_root = '/expo'
     config.assets.prefix = '/expo/assets'
     
+    config.generators do |g|
+       g.test_framework :rspec,
+         fixtures: false,
+         view_specs: false,
+         helper_specs: false,
+         routing_specs: false
+    end
+
     Raven.configure do |config|
       config.dsn = "https://1201e893bd9f46a3a7487bbef67f62f1:ba372b40539a4d4d902fd6afeba23ee2@sentry.io/207047"
       config.environments = ['staging', 'production']
-    end    
+    end
   end
 end

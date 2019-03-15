@@ -7,9 +7,9 @@ class EmailContact < ContactHistory
     all(:order => 'updated_at DESC', :include => :person).select{|e| e.email.to.include?(email_address) rescue false }
   end
 
-  def self.log(person, tmail_object, application_status = nil, original_contact_history = nil, contactable = nil)
+  def self.log(person, mail_object, application_status = nil, original_contact_history = nil, contactable = nil)
     EmailContact.create :person_id => person, 
-                        :email => tmail_object, 
+                        :email => mail_object, 
                         :application_status_id => (application_status.nil? ? nil : application_status.id),
                         :original_contact_history_id => (original_contact_history.nil? ? nil : original_contact_history.id),
                         :contactable => (contactable.nil? ? nil : contactable)
