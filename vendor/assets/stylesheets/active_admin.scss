@@ -120,7 +120,7 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 	padding: 0 0 0 16px;
 }
 
-#footer {
+.logged_in #footer {
 	position: inherit;
 	padding: 30px;
     font-size: 0.9em;
@@ -128,22 +128,30 @@ form fieldset.inputs ol li.text div.mce-tinymce {
     text-align: left;
 }
 
+#login_footer #footer{
+	font-size: 0.5rem;
+	padding-left: 2.5rem;
+	margin-top: 5em;
+    border-top: 1px dotted #E5E5E5;
+	background: url(image-path('uw-block-logo.gif')) no-repeat 0 2.1em;
+	clear: both;	
+}
+
 /* login page style */
 #login_header {
-	width: 42%;
+	width: 45%;
     margin: -112px auto 32px;
 	background: url(image-path('expo-logo-light.png')) no-repeat;
     height: 67px;
 	min-width: 400px;
 }
 
-#login {
-	width: 42%;
+#login {	
+	width: 45%;
 	padding: 40px 50px 20px 50px;
-	max-width: initial;
 	max-width : none;  /*	for IE*/
 	min-width: 400px;
-	min-height: 400px;
+	min-height: 450px;
 }
 
 #login h2 {	
@@ -155,18 +163,45 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 
 #login #uw {
 	background: url(image-path('uw-block-logo.gif')) no-repeat;
-	background-size: 20px;
-    background-position: 0 8px;
+	background-size: 22px;
+    background-position: 0 6px;
 }
 
 #login #non_uw {
 	background: url(image-path('icon_building.png')) no-repeat;
-	background-size: 19px 15px;
-    background-position: 0 6px;
+	background-size: 22px 18px;
+    background-position: 0 5px;
+    margin-top: 15px;    
+}
+
+#login #non_uw a:hover {
+	text-decoration: none;
+	color: #85754d;
 }
 
 #login #uwnetid_button {
 	width: 60%;
+}
+
+#login #non_uw_button {
+	width: 60%;
+	margin-top: 20px;	
+}
+
+#login #uwnetid #weblogin_logo {	
+	-webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;  
+}
+
+#login #uwnetid #weblogin_logo:hover {
+	-webkit-transform: scale(1.1);
+	-moz-transform: scale(1.1);
+	-ms-transform: scale(1.1);
+    transform: scale(1.1);
+	// opacity:0.9;
 }
 
 body.logged_out h2 {
@@ -625,7 +660,7 @@ div.admin_phase div.title {
 }
 
 //https://github.com/google/material-design-icons/issues/206
-.welcome-links .material-icons, .sidebar_section .material-icons{
+.welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons{
     // vertical-align: middle !important;
     display: inline-flex;
     align-items: center; 

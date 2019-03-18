@@ -22,6 +22,10 @@ $(document).on("click", "a[data-link-toggle]", function(){
    link_toggle(obj);
 });
 
+function link_toggle(obj){
+    $(obj).toggle();
+}
+
 function toggle_card(obj, display){
     if (display) {
         $(obj).parent().show();
@@ -30,6 +34,3 @@ function toggle_card(obj, display){
     }
 }
 
-function link_toggle(obj){
-    $(obj).toggle();
-}

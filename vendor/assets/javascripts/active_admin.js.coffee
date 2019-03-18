@@ -6,6 +6,8 @@
 #= require Chart.bundle
 #= require highcharts
 #= require chartkick
+#= require active_admin_utility
+
 
 tinyMCE.baseURL = '/expo/assets/tinymce/';
 
