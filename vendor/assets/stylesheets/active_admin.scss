@@ -131,7 +131,7 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 #login_footer #footer{
 	font-size: 0.5rem;
 	padding-left: 2.5rem;
-	margin-top: 5em;
+	margin-top: 2.5rem;
     border-top: 1px dotted #E5E5E5;
 	background: url(image-path('uw-block-logo.gif')) no-repeat 0 2.1em;
 	clear: both;	
@@ -211,6 +211,10 @@ body.logged_out h2 {
 
 body.logged_out #login form {
   	padding: 20px 0;
+}
+
+#login form#external_login {
+	padding-bottom: 0px;
 }
 
 body.logged_out #login form table tr td {
@@ -777,4 +781,8 @@ div.admin_phase div.title {
     float: right;
 }
 
+// Filter toggle
+a#toggle_filters.epon, a#toggle_filters.epon:hover {
+  color: #ff002b;
+}
 

@@ -3,6 +3,7 @@ ActiveAdmin.register Person do
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   menu :priority => 5
+  menu parent: 'People'
   
   permit_params :firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip
   
