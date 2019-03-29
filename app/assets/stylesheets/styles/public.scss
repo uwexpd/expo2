@@ -36,9 +36,21 @@ a:hover{
 	display: none;
 }
 
+span.hightlight{
+	padding: 3px 6px;
+}
+
 .hightlight {
 	background-color: #fdfbce;
 	border: 1px solid #fde496;
+}
+
+ul.list_style {
+	padding-left: 45px;
+}
+
+ul.list_style li {
+	list-style-type: circle;
 }
 
 abbr[title="required"]{

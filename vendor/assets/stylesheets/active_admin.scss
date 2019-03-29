@@ -21,9 +21,12 @@ $am-theme-accent: #b7a57a;
 @import "chosen";
 @import "material_icons";
 
+
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.
 For example, to change the default status-tag color: */
+
+
 .status_tag {
 	&.ok, &.published, &.complete, &.completed, &.green { background: #8daa92; }
 	&.warn, &.warning, &.orange { background: #e29b20; }
@@ -74,6 +77,10 @@ For example, to change the default status-tag color: */
 
 .right {
 	float: right;
+}
+
+.uw_purple {
+	color: #4b2e83;
 }
 
 br.clear {
@@ -140,17 +147,17 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 /* login page style */
 #login_header {
 	width: 45%;
-    margin: -112px auto 32px;
+    margin: -52px auto 32px;
 	background: url(image-path('expo-logo-light.png')) no-repeat;
     height: 67px;
-	min-width: 400px;
+	min-width: 365px;
 }
 
 #login {	
 	width: 45%;
 	padding: 40px 50px 20px 50px;
 	max-width : none;  /*	for IE*/
-	min-width: 400px;
+	min-width: 365px;
 	min-height: 450px;
 }
 
@@ -180,12 +187,19 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 }
 
 #login #uwnetid_button {
-	width: 60%;
+	width: 65%;
 }
 
 #login #non_uw_button {
-	width: 60%;
+	width: 65%;
 	margin-top: 20px;	
+}
+
+/* Extra small devices (phones, 768px and down) */
+@media only screen and (max-width: 768px) {
+	#login #uwnetid_button, #login #non_uw_button{
+		width: 100%;
+	}
 }
 
 #login #uwnetid #weblogin_logo {	
