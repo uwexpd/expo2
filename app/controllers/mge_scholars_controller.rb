@@ -2,8 +2,8 @@ class MgeScholarsController < ApplicationController
 
   add_breadcrumb 'MGE Home', Unit.find_by_abbreviation('mge').home_url
   
-  skip_before_filter :login_required
-  before_filter :fetch_mge_awardees, :fetch_majors, :fetch_mentor_departments
+  skip_before_action :login_required
+  before_action :fetch_mge_awardees, :fetch_majors, :fetch_mentor_departments
   
   
   def index

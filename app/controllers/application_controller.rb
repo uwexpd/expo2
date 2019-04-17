@@ -7,13 +7,14 @@ class ApplicationController < ActionController::Base
 
   rescue_from ::ExpoException, :with => :expo_exception
   rescue_from ::ActionController::RedirectBackError, :with => :redirect_exception
-  
-  before_filter :login_required, :except => :remove_vicarious_login
-  before_filter :save_user_in_current_thread
-  before_filter :save_return_to
-  before_filter :add_to_session_history
-  before_filter :verify_uwsdb_connection
-  # before_filter :check_if_contact_info_blank
+
+  before_action :login_required, :except => :remove_vicarious_login
+  before_action :save_user_in_current_thread
+  before_action :set_stamper # part of activerecord-userstamp -- moved here so that it is called *after* the login process
+  before_action :save_return_to
+  before_action :add_to_session_history
+  before_action :verify_uwsdb_connection
+  # before_action :check_if_contact_info_blank
   
   def authenticate_admin_user!
     unless current_admin_user
@@ -72,6 +73,14 @@ class ApplicationController < ActionController::Base
     Thread.current[:user] = @current_user
   end
 
+  # Overwrite set_stamper in activereocrd-userstamp gem:
+  # https://github.com/lowjoel/activerecord-userstamp/blob/master/lib/active_record/userstamp/controller_additions.rb
+  # changed current_user to instance variable because otherwise student_login_required breaks
+  def set_stamper
+    @_userstamp_stamper = ActiveRecord::Userstamp.config.default_stamper_class.stamper
+    ActiveRecord::Userstamp.config.default_stamper_class.stamper = @current_user # current_user
+  end
+
   def expo_exception(exception)
     @exception = exception
     render :template => "exceptions/expo_exception", :status => 200
@@ -84,7 +93,7 @@ class ApplicationController < ActionController::Base
   end
 
   def add_to_session_history     
-     if current_user != :false
+     if @current_user
        ::SessionHistory.create(:session_id => session.id,
                            :request_uri => request.original_fullpath,
                            :request_method => request.method.to_s)

@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     # User and Sessions    
     resources :sessions
     get 'login',  to: 'sessions#new'
-    delete 'logout', to: 'sessions#destroy'
+    match 'logout', to: 'sessions#destroy', via: [:get, :delete]    
     get 'remove_vicarious_login', :to => 'application#remove_vicarious_login'
 
     # RSVP for events

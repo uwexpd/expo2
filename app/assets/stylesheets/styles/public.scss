@@ -28,6 +28,10 @@ a:hover{
 	color: gray;
 }
 
+.uw_purple {
+	color: #4b2e83;
+}
+
 .show_block {
 	display: block;
 }
@@ -62,6 +66,10 @@ abbr[title="required"]{
     border: 0;
     color: #d45f53;
     margin-left: 4px;
+}
+
+i.align{
+	vertical-align: bottom;
 }
 
 // EXPO Header

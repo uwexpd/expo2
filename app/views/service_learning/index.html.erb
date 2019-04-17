@@ -5,7 +5,7 @@
 		<span class="status_tag info"><%= @quarter.title %></span>
 	</h5>
 
-	<p><strong>Welcome, <%= @student.firstname %>.<i class="material-icons" style="vertical-align: bottom">sentiment_satisfied_alt</i></span></strong></p>
+	<p><strong>Welcome, <%= @student.firstname %>. <i class="material-icons uw_purple align">sentiment_satisfied_alt</i></span></strong></p>
 
 	<%= render :partial => "your_position", :locals => { :service_learning_course => @service_learning_course, :position => @current_position, :hide_change_button => true } if @placements && !@placements.empty? %>
 
@@ -25,12 +25,12 @@
 <% if @service_learning_course.finalized? && !@service_learning_course.open? %>
 		<div class="card content yellow lighten-4">
 			<span class="card-title">Service-learning registration is not open for this course.</span>
-			<p>Until it is, you can browse the positions that are available for this course. Please
+			<p><i class="material-icons uw_purple align">info</i> Until it is, you can browse the positions that are available for this course. Please
 			note that these positions are subject to change until registration opens.</p>
 		</div>
 <% elsif !@service_learning_course.finalized? -%>
 		<div class="card content yellow lighten-4">
-			<p><strong>Service-learning positions have not yet been finalized for this course.</strong> Please check back later.</p>
+			<p><i class="material-icons uw_purple align">info</i><strong> Service-learning positions have not yet been finalized for this course.</strong> Please check back later.</p>
 		</div>
 <% end %>
 

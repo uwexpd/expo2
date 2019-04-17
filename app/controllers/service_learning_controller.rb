@@ -5,26 +5,23 @@ class ServiceLearningController < ApplicationController
 
   add_breadcrumb 'Carlson Center Home', Unit.find_by_abbreviation('carlson').home_url
 
-  skip_before_filter :login_required
-  before_filter :student_login_required
-  before_filter :fetch_quarter
-  skip_before_filter :student_login_required, :only => [:test]
-  skip_before_filter :check_if_student, :only => [:test]
-  before_filter :fetch_student_test, :only => [:test]
-  before_filter :check_if_student, :fetch_student, :except => [:test]
-  before_filter :fetch_enrolled_service_learning_courses
-  before_filter :check_enrolled_service_learning_courses, :except => [:select_non_enrolled_course]
-  before_filter :assign_service_learning_course, :except => [:which, :complete]
-  before_filter :show_minor_warning, :only => [:index, :position]
-  before_filter :require_waiver_if_minor, :only => [:choose, :contact, :risk]
-  before_filter :check_if_already_registered, :except => [:complete, :my_position, :which, :test, :self_placement, :self_placement_submit]
-  before_filter :fetch_position, :only => [:position, :choose, :contact, :risk]
-  before_filter :check_if_registration_finalized, :only => [:position, :choose, :contact, :risk, :change]
-  before_filter :check_if_registration_open, :only => [:choose, :contact, :risk, :change]
-  before_filter :check_if_registered_with_same_course, :only => [:self_placement]
-  before_filter :fetch_self_placement, :only => [:self_placement]  
+  skip_before_action :login_required
+  before_action :student_login_required
+  before_action :fetch_quarter
+  before_action :check_if_student, :fetch_student
+  before_action :fetch_enrolled_service_learning_courses
+  before_action :check_enrolled_service_learning_courses, :except => [:select_non_enrolled_course]
+  before_action :assign_service_learning_course, :except => [:which, :complete]
+  before_action :show_minor_warning, :only => [:index, :position]
+  before_action :require_waiver_if_minor, :only => [:choose, :contact, :risk]
+  before_action :check_if_already_registered, :except => [:complete, :my_position, :which, :self_placement, :self_placement_submit]
+  before_action :fetch_position, :only => [:position, :choose, :contact, :risk]
+  before_action :check_if_registration_finalized, :only => [:position, :choose, :contact, :risk, :change]
+  before_action :check_if_registration_open, :only => [:choose, :contact, :risk, :change]
+  before_action :check_if_registered_with_same_course, :only => [:self_placement]
+  before_action :fetch_self_placement, :only => [:self_placement]
 
-  def index    
+  def index
     session[:type] = nil # clean session so it won't redirect to self_placement action    
     add_breadcrumb "Service-Learning Registration"
   end
@@ -128,22 +125,7 @@ class ServiceLearningController < ApplicationController
     add_breadcrumb "Registeration Complete"
   end
 
-  def test
-    @service_learning_course.finalized = true
-    a = rand(2)
-    if a == 0
-      render :action => 'index'
-    elsif a == 1
-      positions = @service_learning_course.positions.reject{|p| p.self_placement? || !p.approved?}
-      @position = positions[rand(positions.size-1)]
-      return render(:text => "couldn't find a position") unless @position
-      @timecodes = @position.times.collect(&:timecodes).flatten
-      render :action => 'position'
-    end
-    flash[:notice] = "Time: #{Time.now - @start_time} seconds"
-  end
-
-  def self_placement           
+  def self_placement
     if @self_placement.submitted?
       flash[:success] = "Your self placement position form has been submitted."
       redirect_to :action => "self_placement_submit", :id => @self_placement.id and return
@@ -262,25 +244,6 @@ class ServiceLearningController < ApplicationController
   
   def fetch_student
     @student = @current_user.person
-  end
-  
-  def fetch_student_test
-    unless params[:t] == "U3YxOEAGEMg4a4zD"
-      render :text => "400 Bad Request", :status => 400
-      return
-    end
-      
-    enrollees = @quarter.service_learning_courses[rand(@quarter.service_learning_courses.count-1)].enrollees
-    enrollees = @quarter.service_learning_courses[rand(@quarter.service_learning_courses.count-1)].enrollees if enrollees.empty?
-    @student = enrollees[rand(enrollees.size-1)]
-    i=0
-    while i < 10 && !@student
-      @student = enrollees[rand(enrollees.size-1)]
-    end
-    return render(:text => "couldn't find a student") unless @student
-    @placements ||= @student.service_learning_placements.for(@quarter)
-    return render(:text => "couldn't find a placements") unless @placements
-    @quarter = Quarter.find_by_abbrev("WIN2011")
   end
   
   def fetch_enrolled_service_learning_courses

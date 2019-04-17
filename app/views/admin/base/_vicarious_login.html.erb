@@ -1,5 +1,4 @@
-<div>
-<div id="vicarious_login">
+<div id="vicarious_login" style="display:none">
 	<div class="panel">
 	<small>To login temporarily as another user, enter their username and choose an identity type below:</small><br>
 
@@ -11,11 +10,8 @@
 		<p><label for="identity_type">Identity Type:</label>
 		<%= select_tag :identity_type, options_for_select([["Standard User", ""], ["Student", "Student"]]) %></p>
 
-		<p align="center">
-			<%= submit_tag "Log in" %>			
-		</p>
+		<p><%= submit_tag "Log in" %></p>
 
 	<% end %>
 	</div>
-</div>
 </div>

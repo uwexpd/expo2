@@ -1,6 +1,6 @@
 class RsvpController < ApplicationController
-  skip_before_filter :login_required
-  before_filter :student_login_required_if_possible
+  skip_before_action :login_required
+  before_action :student_login_required_if_possible
 
   def index
     @events = Event.public_open.sort

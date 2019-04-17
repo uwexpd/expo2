@@ -1,10 +1,10 @@
 # This controller handles the login/logout function of the site.  
 class SessionsController < ApplicationController
   
-  skip_before_filter :login_required
+  skip_before_action :login_required, :add_to_session_history
   
   layout 'active_admin_logged_out'
-  
+
   def create
     auth = request.env["omniauth.auth"]
     if !auth.nil? && auth["provider"] == "shibboleth"
@@ -18,10 +18,10 @@ class SessionsController < ApplicationController
   def destroy
      reset_session
      flash[:notice] = "You have been logged out."
-      # if self.current_user.is_a? PubcookieUser
-      #         redirect_to "http://www.washington.edu/computing/weblogin/logout.html" and return false
-      #       end
-     render :action => 'new'
+     if self.current_user.is_a? PubcookieUser
+        redirect_to "https://itconnect.uw.edu/security/uw-netids/weblogin/#logout" and return false
+     end
+     redirect_back_or_default(root_url)
   end
     
   protected
