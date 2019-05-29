@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160822231123) do
+ActiveRecord::Schema.define(version: 20181218204609) do
 
   create_table "academic_departments", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -252,6 +252,7 @@ ActiveRecord::Schema.define(version: 20160822231123) do
     t.text     "special_requests",                       limit: 65535
     t.text     "task_completion_status_cache",           limit: 65535
     t.integer  "theme_response3",                        limit: 4
+    t.boolean  "hide_proceeding_abstract"
   end
 
   add_index "application_for_offerings", ["offering_id"], name: "index_applications_on_offering_id", using: :btree
@@ -862,6 +863,7 @@ ActiveRecord::Schema.define(version: 20160822231123) do
     t.text     "special_requests",                       limit: 65535
     t.text     "task_completion_status_cache",           limit: 65535
     t.integer  "theme_response3",                        limit: 4
+    t.boolean  "hide_proceeding_abstract"
   end
 
   create_table "deleted_application_mentors", force: :cascade do |t|
@@ -972,6 +974,7 @@ ActiveRecord::Schema.define(version: 20160822231123) do
     t.string   "type",                                limit: 255
     t.boolean  "does_pipeline"
     t.boolean  "multiple_quarter"
+    t.string   "logo",                                limit: 255
   end
 
   create_table "deleted_service_learning_courses", force: :cascade do |t|
@@ -1111,6 +1114,8 @@ ActiveRecord::Schema.define(version: 20160822231123) do
     t.date     "volunteer_since"
     t.boolean  "paid"
     t.boolean  "religious"
+    t.boolean  "group_ok"
+    t.string   "picture",                               limit: 255
   end
 
   create_table "department_extras", force: :cascade do |t|
@@ -1370,6 +1375,7 @@ ActiveRecord::Schema.define(version: 20160822231123) do
     t.integer  "event_type_id",                              limit: 4
     t.integer  "activity_type_id",                           limit: 4
     t.integer  "pull_accountability_hours_from_application", limit: 4
+    t.integer  "reminder_email_template_id",                 limit: 4
   end
 
   create_table "favorite_pages", force: :cascade do |t|
@@ -2205,6 +2211,7 @@ ActiveRecord::Schema.define(version: 20160822231123) do
     t.boolean  "target_school"
     t.boolean  "does_pipeline"
     t.boolean  "multiple_quarter"
+    t.string   "logo",                                limit: 255
   end
 
   create_table "people", force: :cascade do |t|
@@ -2731,6 +2738,8 @@ ActiveRecord::Schema.define(version: 20160822231123) do
     t.date     "volunteer_since"
     t.boolean  "paid"
     t.boolean  "religious"
+    t.boolean  "group_ok"
+    t.string   "picture",                               limit: 255
   end
 
   add_index "service_learning_positions", ["organization_quarter_id"], name: "index_service_learning_positions_on_organization_quarter_id", using: :btree

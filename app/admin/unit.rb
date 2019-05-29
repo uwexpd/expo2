@@ -2,7 +2,7 @@ ActiveAdmin.register Unit do
   config.filters = false
   batch_action :destroy, false
   config.sort_order = 'name_asc'
-  menu parent: 'People'  
+  menu parent: 'Groups'  
   
   permit_params :name, :abbreviation, :logo_uri, :description, :home_url, :engage_url, :show_on_expo_welcome, :phone, :email
   

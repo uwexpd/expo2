@@ -2,11 +2,10 @@ class EmailQueue < ActiveRecord::Base
   stampable
   # EmailQueue.partial_updates = false # disable partial_updates so that serialized columns get saved
   
-  belongs_to :person
-  serialize :email
-  # belongs_to :application_status
+  belongs_to :person  
+  belongs_to :application_status
   belongs_to :original, :class_name => "ContactHistory", :foreign_key => "original_contact_history_id"
-
+  serialize :email
   belongs_to :contactable, :polymorphic => true
   
   # Adds a message to the queue.
@@ -36,7 +35,7 @@ class EmailQueue < ActiveRecord::Base
   # current user. Pass ":all" as the first parameter to get all messages.
   def self.messages(select = :current_user)
     conditions = (select == :current_user && User.current_user) ? { :creator_id => User.current_user.id } : { }
-    EmailQueue.where(:conditions => conditions)
+    EmailQueue.where(conditions)
   end
   
   # Returns the name of the person this email is being sent to, if available.
@@ -47,15 +46,11 @@ class EmailQueue < ActiveRecord::Base
   # Releases an email from the queue by sending the email and deleting this EmailQueue record. If a +command_after_delivery+ was specified
   # when this object was created, execute that command now as well.
   def release
-    # person_id = person.nil? ? nil : person.id
-    # application_status_id = application_status.nil? ? nil : application_status.id
-    if @email_contact = EmailContact.log(person_id, ApplyMailer.deliver(email), application_status, original, contactable)
-      begin
-        eval(command_after_delivery) if command_after_delivery
-        self.destroy
-      rescue Exception => e
-        self.update_attribute(:error_details, "The message was sent but the command after delivery was not executed: #{e.message}")
-      end
+    # Delivers by logging the encoded message to $stdout
+    email.delivery_method :logger if Rails.env != 'production'
+    
+    if EmailContact.log(person_id, email.deliver!, application_status, original, contactable)
+       self.destroy
     end
   end
 

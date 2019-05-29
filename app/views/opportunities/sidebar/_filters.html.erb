@@ -1,0 +1,18 @@
+<h5><i class="material-icons vertical_top">filter_list</i> Filters</h5>
+
+<%= search_form_for @search, url: opportunities_path do |f| %>
+	
+	<label>Discipline</label>
+		<%= f.collection_select :research_area1_or_research_area2_or_research_area3_or_research_area4_in, ResearchArea.order(:name), :id, :name , {include_blank: 'Any'}, {class: 'chosen-select'} %>
+
+	<label>Keyword</label>
+		<%= f.search_field :title_or_department_or_description_cont, :placeholder => "Title, department, etc" %>
+		
+	<label>Research Mentor/Contact</label>
+		<%= f.search_field :name_or_email_or_description_cont, :placeholder => "Name or email" %>
+
+	<br><br>
+	<%= f.submit 'Filter', :class => 'btn' %>
+	<%= link_to "CLEAR FILTERS", opportunities_path, :class => 'clear_filter' %>
+
+<% end %>

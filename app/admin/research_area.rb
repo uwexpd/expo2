@@ -1,12 +1,16 @@
 ActiveAdmin.register ResearchArea do
   batch_action :destroy, false
   config.sort_order = 'name_asc'
+  config.per_page = [30, 50, 100, 200]
   menu parent: 'Tools'
 
   permit_params :name
   
   index do
-     column ('Name') {|area| link_to area.name, admin_research_area_path(area)}     
+     id_column
+     column :name, sortable: :name do |resource| 
+       editable_text_column resource, "research_area", :name, true
+     end
      actions
   end   
    

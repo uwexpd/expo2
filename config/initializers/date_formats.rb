@@ -10,8 +10,8 @@ my_formats = {
   :date_at_time24         => "%A, %B %d, %Y at %H:%M",
   :date_by_time24         => "%A, %B %d, %Y by %H:%M",
   :date_pretty            => "%A, %B %d, %Y at %I:%M %p",
-  :long_time12            => "%B %d, %Y %I:%M %p"
-  
+  :long_time12            => "%B %d, %Y %I:%M %p",
+  :short_at_time12        => "%m/%d/%Y at %I:%M%p"
 }
 
 Time::DATE_FORMATS.merge!(my_formats)

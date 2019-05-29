@@ -1,3 +1,31 @@
+// Init tinyMCE
+tinyMCE.baseURL = '/expo/assets/tinymce/';
+
+$(document).ready(function() {
+  tinyMCE.init({
+     selector: '.tinymce',
+     theme: 'silver',  
+   plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen searchreplace wordcount',
+      'insertdatetime media table paste'
+   ],
+   toolbar: 'insertfile undo redo | cut copy paste searchreplace | styleselect forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link unlink anchor image media | table insertdatetime charmap preview code | hr spellchecker removeformat',  
+   menubar: false,
+   paste_merge_formats: true,
+   browser_spellcheck: true   
+
+   });
+});
+
+// Enable chosen js
+$(document).ready(function(){
+   $(".chosen-select").chosen({
+      allow_single_deselect: true,
+    no_results_text: 'No results matched'
+   });
+});
+
 // Append a button after action_items that will toggle the sidebar’s visibility. On page load, we are not hiding the sidebar if filters are in use. https://medium.com/@mekdigital/activeadmin-add-a-button-toggle-the-sidebars-visibility-to-save-real-restate-708d89cb5972
 $(document).ready(function(){
   // epon is the class name for sidebar that is open/showing. Just a class name that won't clash :) 
@@ -6,7 +34,6 @@ $(document).ready(function(){
   // if(!window.location.search.includes('Filter')){ $('div#sidebar').hide(); $('a#toggle_filters').removeClass('epon') }
   $('a#toggle_filters').click(function(){ $('div#sidebar').toggle(); $(this).toggleClass('epon') })
 })
-
 
 $(document).on("click", "input[data-link-toggle]", function(){ 
    var obj = $(this).attr('data-link-toggle');

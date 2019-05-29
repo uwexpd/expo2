@@ -5,7 +5,7 @@ class EmailTemplate < TextTemplate
   default_scope { order("LOWER(name)") } 
   
   # Creates an email or emails based on this EmailTemplate. If passed an array, then call this method on each of the array's members
-  # and return an array of TMail objects. Otherwise, just return the one TMail object created.
+  # and return an array of Mail objects. Otherwise, just return the one Mail object created.
   def create_email_to(object, link = nil, alternate_recipient = nil)
     self.reload
     if object.is_a?(Array)

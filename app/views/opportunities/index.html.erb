@@ -1,0 +1,9 @@
+<% title "Current Undergraduate Research Opportunities | University of Washington" %>
+
+<div class="card content">
+	<h5><%= link_to "UW Current Undergraduate Research Opportunities Search", opportunities_path %></h5>
+	<p class="gray smaller">Any problems or questions about this research opportunities search should be sent to <%= auto_link(Unit.find_by_abbreviation('urp').email) %>.</p>
+</div>
+
+<%= render 'results' %>
+<% sidebar :filters %>

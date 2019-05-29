@@ -6,7 +6,7 @@ default: &default
     system_help_email:                  expohelp@uw.edu
     base_url_host:                      expo.uw.edu
     base_system_url:                    expo.uw.edu/expo
-    nextpo_base_system_url:             expd.uw.edu/expo
+    base_app_url:                       expd.uw.edu/expo
     service_learning_risk_lifetime:     3.months
     service_learning_staff_email:       serve@uw.edu
     accountability_email:               acctblty@uw.edu

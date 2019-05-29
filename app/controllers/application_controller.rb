@@ -93,11 +93,10 @@ class ApplicationController < ActionController::Base
   end
 
   def add_to_session_history     
-     if @current_user
-       ::SessionHistory.create(:session_id => session.id,
-                           :request_uri => request.original_fullpath,
-                           :request_method => request.method.to_s)
-     end
+     ::SessionHistory.create(:session_id => session.id,
+                         :request_uri => request.original_fullpath.split("?").first,
+                         :request_method => request.method.to_s)
+
   end
 
   # def check_if_contact_info_is_current

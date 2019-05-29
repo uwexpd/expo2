@@ -46,9 +46,7 @@ gem 'will_paginate-materialize', github: 'harrybournis/will_paginate-materialize
 gem 'rails_autolink'
 
 # for chosen
-gem 'compass-rails'
 gem 'chosen-rails'
-gem 'jquery-turbolinks'
 
 gem 'breadcrumbs_on_rails'
 #gem 'paranoia', github: 'rubysherpas/paranoia', branch: 'rails4'
@@ -70,8 +68,6 @@ gem 'capitalize-names'
 # material ui
 gem 'material_icons'
 gem 'materialize-sass', '~> 1.0.0'
-
-# TODO: gem 'rails_email_preview', '~> 2.0.4'
 
 # backport from Rails 5 for Rails 4.2
 gem 'where-or'

@@ -2,7 +2,7 @@ ActiveAdmin.register User do
   actions :all, :except => [:destroy]
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
-  menu parent: 'People'
+  menu parent: 'Groups'
   
   permit_params :admin
   
@@ -43,7 +43,7 @@ ActiveAdmin.register User do
           "Email: " + user.email
         end
         span :class => 'light small' do
-          "Created #{user.created_at.strftime("%m/%d/%Y at %I:%M %P")} #{' by ' + user.creator.firstname_first rescue nil}"  "#{' | Last edited ' + user.updated_at.strftime("%m/%d/%Y at %I:%M %P")}" + "#{' by ' + user.updater.firstname_first rescue nil}"
+          "Created #{user.created_at.to_s(:short_at_time12)} #{' by ' + user.creator.firstname_first rescue nil}"  "#{' | Last edited ' + user.updated_at.to_s(:short_at_time12)}" + "#{' by ' + user.updater.firstname_first rescue nil}"
         end
         span link_to '← Back to Users', admin_users_path
       end

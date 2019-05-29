@@ -12,12 +12,11 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.turbolinks
 //= require materialize
 //= require turbolinks
 //= require tinymce
 //= require chosen-jquery
-//= require chosen
+//= require chosen_init
 //= require Chart.bundle
 //= require highcharts
 //= require chartkick

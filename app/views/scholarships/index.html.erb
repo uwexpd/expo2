@@ -19,6 +19,6 @@
 
 
 <%= render 'results' %>
-<% sidebar :filters, :id => "scholarships" %>
+<% sidebar :filters %>
 <br>
 <small>Any problems or questions about this scholarship search should be sent to <%= auto_link(Unit.find_by_abbreviation('omsfa').email) %>.</small>

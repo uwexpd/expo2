@@ -45,6 +45,9 @@ Rails.application.routes.draw do
 
     # MGE Scholars Search
     resources :mge_scholars, only: [:show, :index]
+
+    # OMSFA Scholarship Sesarch
+    resources :opportunities, only: [:show, :index]
     
     # Service Learning
     #match 'service_learning/:quarter_abbrev', to: 'service_learning#index', via: [:get, :post, :put, :patch]

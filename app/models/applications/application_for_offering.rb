@@ -1057,7 +1057,7 @@ class ApplicationForOffering < ActiveRecord::Base
   # is mentoring a student outside of his/her discipline and you don't want to group them in a weird way.
   def mentor_department
     return read_attribute(:mentor_department) unless read_attribute(:mentor_department).blank?
-    primary_mentor.department if primary_mentor
+    primary_mentor.department.try(:strip) if primary_mentor
   end
   
   def academic_department(delimiter = ", ")
@@ -1177,7 +1177,7 @@ class ApplicationForOffering < ActiveRecord::Base
   # Creates (or restores from cache) a hash with keys of major names and values of arrays of application ID numbers.
   # Default cache is 24 hours.
   def self.awardees_majors_mapping
-    Rails.cache.fetch('awardees_majors_mapping', :expires_in => 1.month) do      
+    Rails.cache.fetch('awardees_majors_mapping', :expires_in => 2.weeks) do
       majors ||= {}
       major_extras ||= MajorExtra.all
       major_abbrs ||= {}
@@ -1219,7 +1219,7 @@ class ApplicationForOffering < ActiveRecord::Base
   # Creates (or restores from cache) a hash with keys of mentor department names and values of arrays of application ID numbers.
   # Default cache is 24 hours.
   def self.mentor_departments_mapping
-    Rails.cache.fetch('mentor_departments_mapping', :expires_in => 1.month) do      
+    Rails.cache.fetch('mentor_departments_mapping', :expires_in => 2.weeks) do
       departments = {}
       mge_awardees.each do |app|
         dept = app.mentor_department

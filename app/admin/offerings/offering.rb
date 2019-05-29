@@ -17,9 +17,11 @@ ActiveAdmin.register Offering do
       render 'show', { offering: offering}
   end
   
-  sidebar "Applications", only: :show do     
-    i 'view_list', :class => 'material-icons md-32'
-    link_to "Manage student applications (#{offering.valid_status_applications.size})", admin_apply_manage_path(offering)
+  sidebar "Applications", only: :show do
+    div class: "information" do
+      i 'view_list', class: 'material-icons md-32'
+      span link_to "Manage student applications (#{offering.valid_status_applications.size})", admin_apply_manage_path(offering)
+    end
   end
 
   sidebar "Offering Settings", only: [:edit] do

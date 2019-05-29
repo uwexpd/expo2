@@ -1,0 +1,65 @@
+<% title "#{@research_opportunity.title} | Research Opportunities Database | University of Washington" %>
+
+<div class="card">	
+	<table class="responsive-table highlight attributes_table">
+		<thead><tr><th colspan='2'>Contact Information</th></tr></thead>
+		<tbody>
+			<tr>
+				<th>Contact name</th>
+				<td><%= @research_opportunity.name %></td>
+			</tr>
+			<tr>
+				<th>Department/Other Affiliation</th>
+				<td><%= @research_opportunity.department %></td>
+			</tr>
+			<tr>
+				<th>Contact email</th>
+				<td><%= @research_opportunity.email %></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<table class="responsive-table highlight attributes_table">
+		<thead><tr><th colspan='2'>Project Information</th></tr></thead>
+		<tbody>
+			<tr>
+				<th>Research/Project Name</th>
+				<td><%= @research_opportunity.title %></td>
+			</tr>
+			<tr>
+				<th>Project Description</th>
+				<td><%= raw @research_opportunity.description %></td>
+			</tr>
+			<tr>
+				<th>Minimum Requirements</th>
+				<td><%= raw @research_opportunity.requirements %></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table class="responsive-table highlight attributes_table">
+		<thead><tr><th colspan='2'>Research Area</th></tr></thead>
+		<tbody>
+			<tr>
+				<th>Research area 1</th>
+				<td><%= @research_opportunity.area_name(@research_opportunity.research_area1) %></td>
+			</tr>
+			<tr>
+				<th>Research area 2</th>
+				<td><%= @research_opportunity.area_name(@research_opportunity.research_area2) %></td>
+			</tr>
+			<tr>
+				<th>Research area 3</th>
+				<td><%= @research_opportunity.area_name(@research_opportunity.research_area3) %></td>
+			</tr>
+			<tr>
+				<th>Research area 4</th>
+				<td><%= @research_opportunity.area_name(@research_opportunity.research_area4) %></td>
+			</tr>
+		</tbody>
+	</table>
+	
+
+</div>
+
+<% sidebar :filters %>

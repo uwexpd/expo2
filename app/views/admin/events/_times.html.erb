@@ -1,7 +1,7 @@
-
-<i class='material-icons md-32'>add_circle</i><%= link_to 'Add New',new_admin_event_time_path(event) %>
-<i class='material-icons md-32'>view_list</i><%= link_to 'See All',admin_event_times_path(event) %>
-
+<div class="information">
+  <i class='material-icons md-32'>add_circle</i><%= link_to 'Add New',new_admin_event_time_path(event) %>
+  <i class='material-icons md-32'>view_list</i><%= link_to 'See All',admin_event_times_path(event) %>
+</div>
 <%#= link_to new_admin_event_time_path(event) do %>
 	<!-- <i class='material-icons md-32'>add_circle</i> Add New -->
 <%# end %>
@@ -9,9 +9,7 @@
 	<!-- <i class='material-icons md-32'>view_list</i> See All -->
 <%# end %>
 
-<br><br><div style="border-bottom: 1px solid #efefef"></div>
-
-<table border="0" cellspacing="0" cellpadding="0">	
+<table class="borderless">	
 	<% event.times.sort.each do |time| %>
 		<tr><td><%= link_to time.time_detail, admin_event_time_path(event, time) %></td></tr>
 	<% end -%>

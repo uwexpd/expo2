@@ -1,0 +1,32 @@
+  <div class="card">
+	<div class="table-header">		
+		<h5>Results<span class="page_info"><%= page_entries_info @research_opportunities %></span></h5>			
+	</div>	
+	<table class="responsive-table highlight">
+		<thead>
+			<tr>
+				<th><%= sort_link(@search, :title, default_order: :desc) %></th>
+				<th>Submitted At<th>
+			</tr>
+		</thead>
+		<tbody>
+		<% if @research_opportunities.empty? %>
+		  <tr><td colspan="4">No data found. Please try another search.</td></tr>
+		<% end %>
+
+		<% @research_opportunities.each do |opportunity| %>
+
+			<tr>
+				<td><%= link_to opportunity.title, opportunity_path(opportunity) rescue opportunity.title %></td>
+				<td><%= opportunity.created_at.to_date %></td>			
+			</tr>
+
+		<% end %>
+		</tbody>
+	</table>
+	<div class="table-footer">
+		<%= will_paginate @research_opportunities %>
+	</div>  
+
+
+</div>

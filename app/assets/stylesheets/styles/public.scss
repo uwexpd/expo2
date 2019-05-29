@@ -141,10 +141,19 @@ nav .nav-wrapper a:hover{
 	color: #b7a57a;
 }
 
-thead th, tbody td{
+thead th, tbody td, tbody th{
 	font-size: 0.9em;
 	border-bottom: solid 1px #ddd;	
 	padding: 15px;
+}
+
+tbody th{ 
+	color: rgba(0, 0, 0, 0.54);
+	font-weight: 600;
+}
+
+.attributes_table tbody tr th {
+	width: 20%;
 }
 
 #main .content{
@@ -278,7 +287,7 @@ ul.pagination{
 	color: whitesmoke;
 }
 
-#scholarships select {
+#scholarship_search select {
 	height: 1.8rem;
 	font-size: 0.75rem;
 	padding-top: 0.1rem;
@@ -303,7 +312,7 @@ ul.pagination{
 
 .sideblock {
 	padding: 0rem 1rem 2rem 1rem;
-	margin-top: -0.315rem;
+	margin-top: -0.5rem;
 }
 
 .clear_filter {    
@@ -339,10 +348,6 @@ ul.pagination{
 
 .scholarship_detail .content ul li {
 	list-style-type: disc;
-}
-
-.scholarship_sidebar {
-	padding: 0.4rem 0rem;
 }
 
 .page_info {
@@ -609,7 +614,7 @@ dl.big.numbers dd i {
 
 .restriction.failed {	
 	margin: 90px auto;
-	width: 55%;
+	width: 70%;
 	background: #fff url(image-path('app/alert_large.png')) no-repeat 20px 15px;
 	padding: 30px;
 	padding-left: 170px;
@@ -624,8 +629,36 @@ dl.big.numbers dd i {
 .restriction.failed h1 {	
 	font-size: 2rem;
 	padding-bottom: 1rem;
+	font-weight: 600;
 }
 
 div.restriction.failed h1 {
 	margin: 0;
+}
+
+/* Custom Chosen style */
+.chosen-container-single .chosen-single {
+	height: 40px;
+	line-height: 40px;
+	border-color: #d3d3d3;
+	border-radius: 3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+}
+
+.chosen-container-single .chosen-single div {
+	top: 9px;
+}
+
+.chosen-container-single .chosen-single abbr {
+	top: 14px;
+}
+
+.chosen-container-single .chosen-search {
+	background: none;
+}
+
+.chosen-container-single .chosen-search input[type="text"] {
+	padding: 4px 0px 4px 5px;
+	width: 97%;
 }

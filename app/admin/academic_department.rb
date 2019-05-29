@@ -1,14 +1,20 @@
 ActiveAdmin.register AcademicDepartment do  
   batch_action :destroy, false
   config.sort_order = 'name'
+  config.per_page = [30, 50, 100, 200]
   menu parent: 'Tools'
   
   
   permit_params :name, :description
   
   index do
-     column ('Name') {|dept| link_to dept.name, admin_academic_department_path(dept)}
-     column ('Description') {|dept| dept.description }
+     id_column
+     column :name, sortable: :name do |resource| 
+       editable_text_column resource, "academic_department", :name, true
+     end
+     column :description do |resource| 
+       editable_text_column resource, "academic_department", :description, false
+     end     
      actions
   end   
    

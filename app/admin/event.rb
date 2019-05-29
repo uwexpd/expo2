@@ -35,7 +35,7 @@ ActiveAdmin.register Event do
     semantic_errors *f.object.errors.keys
     f.inputs do
       f.input :title, required: true
-      f.input :description, :input_html => { :class => "tinymce", :rows => 5 }
+      f.input :description, :input_html => { class: "tinymce", rows: 10 }
       #f.input :capacity, :input_html => { :style => 'width:25%;' }
       f.input :unit, label: 'Sponsor', as: :select, include_blank: false, required: true
       f.input :event_type_id, as: :select, collection: EventType.all.sort

@@ -5,8 +5,8 @@
 		<%= f.search_field :person_full_name_cont, :placeholder => "firstname lastname" %>
 		
 	<label>Student Major</label>
-			<%= select_tag :student_major,  options_for_select([["Majors (#{@majors.size})", nil]] + @majors.map{|k,v| ["#{k} (#{v.size})", k]}.sort, 	params[:student_major]) %>								
-		
+			<%= select_tag :student_major,  options_for_select([["Majors (#{@majors.size})", nil]] + @majors.map{|k,v| ["#{k} (#{v.size})", k]}.sort, 	params[:student_major]), {class: 'browser-default'}  %>
+							
 	<label>Quarter Awarded</label>
 		<%= f.collection_select :offering_quarter_offered_id_in,  Offering.select("DISTINCT quarter_offered_id").where(unit_id: 2).map(&:quarter_offered).compact.sort_by{|q| [q.year, q.quarter_code]}.reverse, :id, :title , {include_blank: false}, {multiple: true, class: 'chosen-select'}  %>
 	

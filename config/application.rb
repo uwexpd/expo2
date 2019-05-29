@@ -24,9 +24,12 @@ module Expo2
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    # Be sure to have the adapter's gem in your Gemfile and follow the adapter's specific installation
+    config.active_job.queue_adapter = :delayed_job
     
     # Allow for models or class in subdirectories off models and expo lib
-    config.autoload_paths += Dir["#{config.root}/app/models/**/"]
+    config.autoload_paths += Dir["#{config.root}/app/models/**/"]    
     config.autoload_paths += Dir["#{config.root}/lib/expo/**/"]
     
     config.constants = config_for(:constants)

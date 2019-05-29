@@ -11,9 +11,12 @@ ActiveAdmin.register Scholarship do
   scope :upcoming
 
   index do
-    column 'Title', sortable: :title do |scholarship|
+    column :title, sortable: :title do |scholarship|
       link_to scholarship.title, admin_scholarship_path(scholarship)
-    end    
+    end
+    column :page_stub, :sortable => :page_stub do |scholarship|
+      editable_text_column scholarship, "scholarship", :page_stub, false      
+    end
     column 'National', sortable: :is_national do |scholarship| 
         status_tag scholarship.is_national?, class: 'small'
     end
@@ -133,8 +136,8 @@ ActiveAdmin.register Scholarship do
               f.input :page_stub
               f.input :website_name        
               f.input :website_url
-              f.input :description, :input_html => { :class => "tinymce", :rows => 10 }
-              f.input :blurb, :input_html => { :class => "tinymce", :rows => 10 }
+              f.input :description, :input_html => { class: "tinymce", rows: 15 }
+              f.input :blurb, :input_html => { class: "tinymce", rows: 15 }
           end
         end
         
@@ -144,11 +147,11 @@ ActiveAdmin.register Scholarship do
               f.input :male, as: :boolean
               f.input :female, as: :boolean
               f.input :gpa
-              f.input :history, :input_html => { :class => "tinymce", :rows => 10 }
-              f.input :eligibility, :input_html => { :class => "tinymce", :rows => 10 }
-              f.input :procedure, :input_html => { :class => "tinymce", :rows => 10 }
-              f.input :service_agreement, :input_html => { :class => "tinymce", :rows => 10 }
-              f.input :contact_info, :input_html => { :class => "tinymce", :rows => 10 }
+              f.input :history, :input_html => { class: "tinymce", rows: 15 }
+              f.input :eligibility, :input_html => { class: "tinymce", rows: 15 }
+              f.input :procedure, :input_html => { class: "tinymce", rows: 15 }
+              f.input :service_agreement, :input_html => { class: "tinymce", rows: 15 }
+              f.input :contact_info, :input_html => { class: "tinymce", rows: 15 }
            end
         end   
         
@@ -213,7 +216,7 @@ ActiveAdmin.register Scholarship do
              disability.input :disability_id, as: :select, :collection => Disability.all
           end        
           f.has_many :ethnicities, heading: 'Ethnicities', allow_destroy: true do |ethnicity|
-             ethnicity.input :ethnicity_id, as: :select, :collection => Ethnicity.all
+             ethnicity.input :ethnicity_id, as: :select, :collection => OmsfaEthnicity.all
           end
                                 
         end 
@@ -224,13 +227,13 @@ ActiveAdmin.register Scholarship do
   
   filter :title, as: :string
   filter :title_or_description_or_history_or_eligibility_cont, as: :string, label: "Keyword (title/description/history/eligibility)"
-  filter :male_true, label: 'male', as: :select, collection: [["Yes", "true"], ["No", "false"]]
-  filter :female_true, label: 'female', as: :select, collection: [["Yes", "true"], ["No", "false"]]
+  filter :male_true, label: 'Male', as: :select, collection: [["Yes", "true"], ["No", "false"]]
+  filter :female_true, label: 'Female', as: :select, collection: [["Yes", "true"], ["No", "false"]]
   filter :us_citizen_true, label: 'US Citizen', as: :select, collection: [["Yes", "true"], ["No", "false"]]
   filter :permanent_resident_true, label: 'Permanent Resident', as: :select, collection: [["Yes", "true"], ["No", "false"]]
   filter :other_visa_status_true, label: 'International or Other Visa Status', as: :select, collection: [["Yes", "true"], ["No", "false"]]
   filter :hb_1079_true, label: 'Undocumented', as: :select, collection: [["Yes", "true"], ["No", "false"]]
-  filter :resident_true, label: 'resident', as: :select, collection: [["Yes", "true"], ["No", "false"]]
+  filter :resident_true, label: 'Resident', as: :select, collection: [["Yes", "true"], ["No", "false"]]
   filter :need_based_true, label: 'Need based', as: :select, collection: [["Yes", "true"], ["No", "false"]]
   filter :is_national_true, label: 'National', as: :select, collection: [["Yes", "true"], ["No", "false"]]
   

@@ -1,7 +1,7 @@
 ActiveAdmin.register Student do 
 actions :index, :show
 batch_action :destroy, false
-menu parent: 'People'
+menu parent: 'Groups'
 
   index pagination_total: false do    
     column 'Name' do |student|

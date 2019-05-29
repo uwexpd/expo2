@@ -1,13 +1,18 @@
 ActiveAdmin.register Organization do
   actions :all, :except => [:destroy]
   batch_action :destroy, false
+  config.per_page = [30, 50, 100, 200]
   config.sort_order = 'name_asc'
   menu parent: 'Tools'
   
   permit_params :name, :parent_organization_id, :mailing_line_1, :mailing_line_2, :mailing_city, :mailing_city, :website_url, :main_phone, :mission_statement, :approved, :inactive, :does_service_learning, :does_pipeline, :target_school, :next_active_quarter_id, :school_type_id, :multiple_quarter
   
   index do
-    column ('Name') {|org| link_to org.name, admin_organization_path(org)}
+    id_column
+    column :name, sortable: :name do |resource| 
+       editable_text_column resource, "organization", :name, true
+     end
+    # column ('Name') {|org| link_to org.name, admin_organization_path(org)}
     column ('Approved') {|org| org.approved  }
     column ('Archived') {|org| org.archive if org.archive }
     actions
