@@ -3,7 +3,7 @@ ActiveAdmin.register ResearchOpportunity do
   config.sort_order = 'created_at_desc'
   menu parent: 'Tools'
 
-  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted
+  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location
   
   member_action :queue, :method => :post do
     @opportunity = ResearchOpportunity.find(params[:id])
@@ -28,26 +28,40 @@ ActiveAdmin.register ResearchOpportunity do
      # column 'Removed', sortable: :removed do |opportunity| 
      #    status_tag opportunity.removed?, class: 'small'
      # end
-     column 'Submit Date', sortable: :created_at do |opportunity|
-       opportunity.created_at.strftime("%F")
+     column 'Submit Date', sortable: :submitted_at do |opportunity|
+       opportunity.submitted_at.strftime("%F") if opportunity.submitted_at
      end
     actions
   end
    
   show :title => proc{|opportunity|opportunity.title} do
-    attributes_table do
-      row :title
-      row ('Contact Name'){|opportunity| opportunity.name}
-      row ('Contact Email'){|opportunity| opportunity.email}
-      row ('Department/Other Affiliation'){|opportunity| opportunity.department}
-      row ('Description'){|opportunity| raw(opportunity.description)}
-      row ('Minimum Requirements'){|opportunity| raw(opportunity.requirements) } 
-      row ('Auto-remove date'){|opportunity| opportunity.end_date.try(:to_date) }
-      row ('Research Area 1'){|opportunity| ResearchArea.find(opportunity.research_area1).name if opportunity.research_area1 && opportunity.research_area1 > 0}
-      row ('Research Area 2'){|opportunity| ResearchArea.find(opportunity.research_area2).name if opportunity.research_area2 && opportunity.research_area2 > 0}
-      row ('Research Area 3'){|opportunity| ResearchArea.find(opportunity.research_area3).name if opportunity.research_area3 && opportunity.research_area3 > 0}
-      row ('Research Area 4'){|opportunity| ResearchArea.find(opportunity.research_area4).name if opportunity.research_area4 && opportunity.research_area4 > 0}
-    end
+    tabs do
+      tab 'Overview' do
+        attributes_table do
+          row :title
+          row ('Contact Name'){|opportunity| opportunity.name}
+          row ('Contact Email'){|opportunity| opportunity.email}
+          row ('Department/Other Affiliation'){|opportunity| opportunity.department}
+          row ('Description'){|opportunity| raw(opportunity.description)}
+          row ('Minimum Requirements'){|opportunity| raw(opportunity.requirements) } 
+        end
+      end
+      tab 'Area & More' do
+          attributes_table do
+            row ('Auto-remove date'){|opportunity| opportunity.end_date.try(:to_date) }
+            row ('Research Area 1'){|opportunity| ResearchArea.find(opportunity.research_area1).name if opportunity.research_area1 && opportunity.research_area1 > 0}
+            row ('Research Area 2'){|opportunity| ResearchArea.find(opportunity.research_area2).name if opportunity.research_area2 && opportunity.research_area2 > 0}
+            row ('Research Area 3'){|opportunity| ResearchArea.find(opportunity.research_area3).name if opportunity.research_area3 && opportunity.research_area3 > 0}
+            row ('Research Area 4'){|opportunity| ResearchArea.find(opportunity.research_area4).name if opportunity.research_area4 && opportunity.research_area4 > 0}
+            row :submitted
+            row ('Submitted At'){|opportunity| opportunity.submitted_at}
+            row ('Submitted Person'){|opportunity| opportunity.submitted_person}
+            row :paid
+            row :work_study
+            row :location
+          end
+      end
+    end              
   end
 
   sidebar "Status", only: [:show, :edit] do
@@ -60,19 +74,33 @@ ActiveAdmin.register ResearchOpportunity do
   
   form do |f|
     semantic_errors *f.object.errors.keys
-    f.inputs do
-      f.input :title, required: true
-      # f.input :active, label: 'Active?', as: :boolean      
-      f.input :name, label: 'Contact Name', required: true
-      f.input :email, label: 'Contact Email', required: true
-      f.input :department, label: 'Department/Other Affiliation', required: true    
-      f.input :description, label: 'Description', required: true, :input_html => { class: "tinymce", rows: 15}
-      f.input :requirements, label: 'Minimum Requirements', required: true, :input_html => { class: "tinymce", rows: 15 }
-      f.input :end_date, label: 'Auto-remove date', as: :datepicker, required: true, :input_html => { :style => 'width:50%;' }
-      f.input :research_area1, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, required: true, input_html: { class: "select2" }
-      f.input :research_area2, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }
-      f.input :research_area3, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }
-      f.input :research_area4, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }
+    tabs do
+      tab 'basic info' do
+        f.inputs do
+          f.input :title, required: true
+          # f.input :active, label: 'Active?', as: :boolean      
+          f.input :name, label: 'Contact Name', required: true
+          f.input :email, label: 'Contact Email', required: true
+          f.input :department, label: 'Department/Other Affiliation', required: true    
+          f.input :description, label: 'Description', required: true, :input_html => { class: "tinymce", rows: 15}
+          f.input :requirements, label: 'Minimum Requirements', required: true, :input_html => { class: "tinymce", rows: 15 }          
+        end
+      end
+      tab 'area & more' do
+        f.inputs do
+          f.input :end_date, label: 'Auto-remove date', as: :datepicker, required: true, :input_html => { :style => 'width:50%;' }
+          f.input :research_area1, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, required: true, input_html: { class: "select2" }
+          f.input :research_area2, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }
+          f.input :research_area3, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }
+          f.input :research_area4, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }
+          f.input :submitted, as: :boolean
+          f.input :submitted_at, as: :date_time_picker, required: true
+          f.input :submitted_person_id, label: "Submitted EXPO Person ID"
+          f.input :paid, as: :boolean
+          f.input :work_study, as: :boolean
+          f.input :location
+        end
+      end
     end
     f.actions
   end
@@ -84,7 +112,9 @@ ActiveAdmin.register ResearchOpportunity do
   filter :name_or_email_or_description_cont, as: :string, label: "Research Mentor/Contact (name, email, and description)"
   filter :active, as: :boolean
   filter :removed, as: :boolean
-  filter :created_at, label: 'Submit Date', as: :date_range
+  filter :paid, as: :boolean
+  filter :work_study, as: :boolean  
+  filter :submitted_at, label: 'Submit Date', as: :date_range
 
 
 end

@@ -10,6 +10,7 @@
 <% show_grid_view ||= false %>
 <% show_list_view ||= false %>
 
+<!-- Grid view -->
 <div class="col s4 <%=  show_grid_view ? 'show_block' : 'hide_block' %> <%= 'selected_position' if selected_position %>">
     <div class="card medium sticky-action hoverable <%= "filled" if filled %>">        
           <% if position.picture %>
@@ -75,6 +76,7 @@
 
 
 
+<!-- List view -->
 <ul class="collection hoverable <%=  show_list_view ? 'show_block' : 'hide_block' %> <%= 'z-depth-1 hightlight selected_position' if selected_position %>">
     <li class="collection-item avatar <%= "filled" if filled %>">
       <i class="material-icons circle green">business</i>

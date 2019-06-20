@@ -1,0 +1,26 @@
+<h5><i class="material-icons vertical_top">add_circle_outline</i> Actions</h5>
+
+<% unless @research_opportunity.submitted? %>
+	<%= form_for @research_opportunity, :url => { :action => 'form' } do |f| %>
+
+	<%= f.button class: 'btn waves-effect waves-light', type: :submit do %>
+				Edit<i class="material-icons right">edit</i>
+		<% end %>
+	<% end %>
+
+	<p class="separator"> – or – </p>
+
+<% end %>
+
+<%= form_for @research_opportunity, :url => { :action => 'submit' } do |f| %>
+
+	<%= f.button class: 'btn waves-effect waves-light', type: :submit, data: { confirm: 'Are you sure to submit?', disable_with: 'Submitting the opportunity...' } do %>
+				<%= @research_opportunity.submitted? ? "Re-submit opportunity" : "Submit opportunity" %><i class="material-icons right">send</i>
+		<% end %>
+<% end %>
+
+<% if @research_opportunity.submitted? %>
+	<p class='smaller'><i class="material-icons middle_align">info_outline</i> This re-sbumission will deactivate the position until URP staff approves it.</p>
+<% end %>
+
+

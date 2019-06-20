@@ -72,6 +72,8 @@ gem 'materialize-sass', '~> 1.0.0'
 # backport from Rails 5 for Rails 4.2
 gem 'where-or'
 
+gem 'invisible_captcha'
+
 group :production do  
   gem 'omniauth-shibboleth'
 end

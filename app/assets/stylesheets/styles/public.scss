@@ -53,6 +53,10 @@ ul.list_style {
 	padding-left: 45px;
 }
 
+#sidebar ul.list_style {
+	padding-left: 25px;
+}
+
 ul.list_style li {
 	list-style-type: circle;
 }
@@ -68,8 +72,17 @@ abbr[title="required"]{
     margin-left: 4px;
 }
 
-i.align{
+// Align matieral-icons with text
+i.material-icons.align, i.material-icons.bottom_align {
 	vertical-align: bottom;
+}
+
+i.material-icons.middle_align{
+	vertical-align: middle;
+}
+
+i.material-icons.top_align, i.material-icons.vertical_top {
+	vertical-align: top;
 }
 
 // EXPO Header
@@ -255,10 +268,6 @@ tbody th{
 
 /*****  end *****/
 
-.vertical_top{
-	vertical-align: top;
-}
-
 ul.pagination{
 	padding-top: 20px;
 }
@@ -302,8 +311,8 @@ ul.pagination{
 	padding: 15px 0;
 }
 
-#sidebar h5 .material-icons{
-	font-size: 28px;
+#sidebar h5 .material-icons, .card h5 .material-icons {
+	font-size: 2rem;
 }	
 
 #sidebar .chosen-container {
@@ -354,10 +363,6 @@ ul.pagination{
 	font-size:1rem;
 	color: gray;
 	padding-left: 0.75rem;
-}
-
-.close-button{
-	top: 0.2rem;
 }
 
 
@@ -661,4 +666,44 @@ div.restriction.failed h1 {
 .chosen-container-single .chosen-search input[type="text"] {
 	padding: 4px 0px 4px 5px;
 	width: 97%;
+}
+
+.card .actions {
+	border-top: 1px solid #ddd;
+    padding: 1rem;
+    margin-top: 3rem;
+    text-align: center;
+}
+
+form ul.error {
+	background-color: #f44336;
+	color: white;
+	padding: 15px;
+}
+
+form ul.error li {
+	margin-left: 20px;	
+}
+
+form .alert.error {
+	margin-bottom: 1rem;
+}
+
+// From Validation error display
+input:not([type]).error,
+input[type=text]:not(.browser-default).error,
+input[type=password]:not(.browser-default).error,
+input[type=email]:not(.browser-default).error,
+input[type=url]:not(.browser-default).error,
+input[type=time]:not(.browser-default).error,
+input[type=date]:not(.browser-default).error,
+input[type=datetime]:not(.browser-default).error,
+input[type=datetime-local]:not(.browser-default).error,
+input[type=tel]:not(.browser-default).error,
+input[type=number]:not(.browser-default).error,
+input[type=search]:not(.browser-default).error,
+textarea.materialize-textarea.error {
+	border-bottom: 1px solid #F44336;
+    -webkit-box-shadow: 0 1px 0 0 #F44336;
+    box-shadow: 0 1px 0 0 #F44336;	
 }

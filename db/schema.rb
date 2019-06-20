@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181218204609) do
+ActiveRecord::Schema.define(version: 20190614210350) do
 
   create_table "academic_departments", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -2473,22 +2473,27 @@ ActiveRecord::Schema.define(version: 20181218204609) do
   end
 
   create_table "research_opportunities", force: :cascade do |t|
-    t.string   "name",           limit: 255
-    t.string   "email",          limit: 255
-    t.string   "department",     limit: 255
-    t.string   "title",          limit: 255
-    t.text     "description",    limit: 65535
-    t.text     "requirements",   limit: 65535
-    t.integer  "research_area1", limit: 4
-    t.integer  "research_area2", limit: 4
-    t.integer  "research_area3", limit: 4
-    t.integer  "research_area4", limit: 4
+    t.string   "name",                limit: 255
+    t.string   "email",               limit: 255
+    t.string   "department",          limit: 255
+    t.string   "title",               limit: 255
+    t.text     "description",         limit: 65535
+    t.text     "requirements",        limit: 65535
+    t.integer  "research_area1",      limit: 4
+    t.integer  "research_area2",      limit: 4
+    t.integer  "research_area3",      limit: 4
+    t.integer  "research_area4",      limit: 4
     t.date     "end_date"
     t.boolean  "active"
     t.boolean  "removed"
     t.boolean  "submitted"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "submitted_at"
+    t.integer  "submitted_person_id", limit: 4
+    t.boolean  "paid"
+    t.boolean  "work_study"
+    t.string   "location",            limit: 255
   end
 
   create_table "rights", force: :cascade do |t|

@@ -1,0 +1,95 @@
+<% title "Faculty/Mentor Research Opportunity Form | University of Washington" %>
+
+<div class="card content">
+	<h5 class="uw_purple"><i class="material-icons top_align">assignment</i> UW Faculty/Mentor Research Opportunity Form</h5>
+	<p class="gray smaller">Please see the instrudtion on the right sidebar. Any problems or questions about this research opportunities form should be sent to <%= auto_link(Unit.find_by_abbreviation('urp').email) %>.</p>
+</div>
+
+<div class="card content">
+  
+<%= form_for @research_opportunity, :url => { :action => 'form' } do |f| %>      
+  
+  <% if @research_opportunity.errors.any? %>
+    <div class="alert error no_close">
+      <strong><%= pluralize(@research_opportunity.errors.count, "error") %> prevented this record from being saved:</strong>
+      <ul class="list_style">
+        <% @research_opportunity.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    
+    <div class="input-field col s6">
+      <i class="material-icons prefix">account_circle</i>          
+      <%= f.text_field :name, id: "contact_name", class: "validate", required:"", 'aria-required': "true" %>
+      <label class="active" for="contact_name">Contact Name<abbr title="required">*</abbr></label>
+      
+    </div>
+    <div class="input-field col s6">
+      <i class="material-icons prefix">email</i>
+      <%= f.text_field :email, id: "contact_email", class: "validate", required:"", 'aria-required': "true" %>
+      <label class="active" for="contact_email">Contact Email<abbr title="required">*</abbr></label>
+    </div>
+
+    <div class="input-field col s12">
+    	<%= f.text_field :department, id: "department", class: "validate", required:"", 'aria-required': "true" %>
+    	<label class="active" for="department">Department<abbr title="required">*</abbr></label>
+    </div>
+    <div class="input-field col s12">
+    	<%= f.text_field :title, id: "title", class: "validate", required:"", 'aria-required': "true" %>
+    	<label class="active" for="title">Research / Project Name<abbr title="required">*</abbr></label>
+    </div>
+    <div class="input-field col s12">
+    	<%= f.text_area :description, id: "description", class: "materialize-textarea validate", required:"", 'aria-required': "true" %>
+    	<label class="active" for="description">Description<abbr title="required">*</abbr></label>
+      <span class="helper-text">Insert your research project description or indicate your willingness to develop a project with interested students in your field.</span>
+    </div>
+    <div class="input-field col s12">
+    	<%= f.text_area :requirements, id: "requirements", class: "materialize-textarea validate", required:"", 'aria-required': "true" %>
+    	<label class="active" for="requirements">Minimum Requirements<abbr title="required">*</abbr></label>
+    </div>              
+    <div class="input-field col s12">
+    	<%= f.text_field :end_date, id: "end_date", class: "datepicker validate", required:"", 'aria-required': "true" %>
+    	<label class="active" for="end_date">Auto-remove Date<abbr title="required">*</abbr></label>
+    </div>
+    <div class="input-field col s12">
+      <p>
+        <label>
+          <%= f.check_box :paid, class: 'filled-in' %>
+          <span>Paid?</span>
+        </label>
+        <label style="margin-left:2rem">
+          <%= f.check_box :work_study, class: 'filled-in' %>
+          <span>Work_study?</span>
+        </label>
+      </p>
+    </div>    
+    <div class="col s12">
+			<label>Research Area 1 <abbr title="required">*</abbr></label>
+    	<%= f.collection_select :research_area1, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'chosen-select'} %>        
+	  </div>
+    <div class="col s12">
+      <label>Research Area 2</label>
+      <%= f.collection_select :research_area2, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'chosen-select'} %>        
+    </div>
+    <div class="col s12">
+      <label>Research Area 3</label>
+      <%= f.collection_select :research_area3, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'chosen-select'} %>        
+    </div>
+    <div class="col s12">
+      <label>Research Area 4</label>
+      <%= f.collection_select :research_area4, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'chosen-select'} %>        
+    </div>
+
+  </div>
+  <div class="actions"><%= submit_tag "Next", :class => "btn" %></div>  
+      
+<% end %>
+</div>
+
+
+<% sidebar :instruction %>
+

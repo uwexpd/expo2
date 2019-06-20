@@ -6,7 +6,7 @@
 		<thead>
 			<tr>
 				<th><%= sort_link(@search, :title, default_order: :desc) %></th>
-				<th>Submitted At<th>
+				<th>Submitted At</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -18,7 +18,7 @@
 
 			<tr>
 				<td><%= link_to opportunity.title, opportunity_path(opportunity) rescue opportunity.title %></td>
-				<td><%= opportunity.created_at.to_date %></td>			
+				<td><%= opportunity.submitted_at.to_date %></td>			
 			</tr>
 
 		<% end %>

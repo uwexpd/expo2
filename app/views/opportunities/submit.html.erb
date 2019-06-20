@@ -1,0 +1,20 @@
+<% title "Faculty/Mentor Research Opportunity Submission | University of Washington" %>
+
+<div class="card content">
+	<h5 class="uw_purple"><i class="material-icons top_align">assignment</i> UW Faculty/Mentor Research Opportunity Submission
+		<% if @research_opportunity.active?
+				status = "Active Listing"
+		   elsif @research_opportunity.submitted?
+		   		status = "Submitted"
+		   end
+		%>
+		<% if status %>
+		   <span class="status_tag info"><%= status %></span>
+		<% end %>
+	</h5>
+	<p class="gray smaller">Any problems or questions about this research opportunities submission should be sent to <%= auto_link(Unit.find_by_abbreviation('urp').email) %>.</p>
+</div>
+
+<%= render :partial => "fields", :locals => { :faculty => true } %>
+
+<% sidebar :actions %>
