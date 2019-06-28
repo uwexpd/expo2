@@ -9,7 +9,7 @@
 		   end
 		%>
 		<% if status %>
-		   <span class="status_tag info"><%= status %></span>
+		   <span class="status_tag info right"><%= status %></span>
 		<% end %>
 	</h5>
 	<p class="gray smaller">Any problems or questions about this research opportunities submission should be sent to <%= auto_link(Unit.find_by_abbreviation('urp').email) %>.</p>

@@ -17,6 +17,7 @@ $(document).on('turbolinks:load', function() {
   // Initialization for materializecss javascript components
   $('.tabs').tabs();
   $('.datepicker').datepicker();
+  $('select.material').formSelect();
   // End
 });
 

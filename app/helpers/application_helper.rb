@@ -99,5 +99,10 @@ module ApplicationHelper
     klass = "selectable_time #{options[:class]} #{"selected" if selected}"
     "<td id=\"#{id}\" onMousedown=\"#{onMouseDown}\" class=\"#{klass}\">#{options[:body]}</td>".html_safe
   end
+
+  def status_tag(boolean)
+    value = boolean ? 'YES' : 'NO'
+    "<span class='status_tag #{value.downcase}'>" + value + "</span>"
+  end
   
 end

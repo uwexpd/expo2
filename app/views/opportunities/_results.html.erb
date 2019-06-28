@@ -18,7 +18,7 @@
 
 			<tr>
 				<td><%= link_to opportunity.title, opportunity_path(opportunity) rescue opportunity.title %></td>
-				<td><%= opportunity.submitted_at.to_date %></td>			
+				<td><%= opportunity.submitted_at.to_date if opportunity.submitted_at %></td>			
 			</tr>
 
 		<% end %>

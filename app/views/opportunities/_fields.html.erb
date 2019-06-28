@@ -41,12 +41,16 @@
 				</tr>
 			<% end %>
 			<tr>
+				<th>Location</th>
+				<td><%= @research_opportunity.location %></td>
+			</tr>
+			<tr>
 				<th>Paid</th>
-				<td><%= @research_opportunity.paid? %></td>
+				<td><%= raw status_tag(@research_opportunity.paid?) %></td>
 			</tr>
 			<tr>
 				<th>Work Study</th>
-				<td><%= @research_opportunity.work_study? %></td>
+				<td><%= raw status_tag(@research_opportunity.work_study?) %></td>
 			</tr>
 		</tbody>
 	</table>
