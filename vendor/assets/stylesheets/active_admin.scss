@@ -904,3 +904,7 @@ body.active_admin .progress .bar{
 	cursor: help;
 }
 
+body.edit #main_content > form .email_preview .row th {
+	text-align: left;
+	width: 10%;
+}

@@ -98,7 +98,7 @@ ActiveAdmin.register ResearchOpportunity do
           f.input :submitted_person_id, label: "Submitted EXPO Person ID"
           f.input :paid, as: :boolean
           f.input :work_study, as: :boolean
-          f.input :location
+          f.input :location, as: :select, collection: ['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other']
         end
       end
     end
@@ -113,8 +113,8 @@ ActiveAdmin.register ResearchOpportunity do
   filter :active, as: :boolean
   filter :removed, as: :boolean
   filter :paid, as: :boolean
-  filter :work_study, as: :boolean  
+  filter :work_study, as: :boolean
+  filter :location, as: :select, collection: ['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other']
   filter :submitted_at, label: 'Submit Date', as: :date_range
-
 
 end

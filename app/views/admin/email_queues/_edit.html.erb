@@ -1,0 +1,45 @@
+
+<%= form_for([:admin, @email_queue]) do |f| %>
+
+	<fieldset class="inputs">
+		<div class="email_preview string input">
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tbody>
+					<tr class="row">
+						<th>From</th>
+						<td><%= text_field_tag "email_queue[email][from]", @email_queue.email.from.join(',') %></td>
+					</tr>
+					<tr class="row">
+						<th>Subject</th>
+						<td><%= text_field_tag "email_queue[email][subject]", @email_queue.email.subject %></td>
+					</tr>
+					<tr class="row">
+						<th>To</th>
+						<td><%= text_field_tag "email_queue[email][to]", @email_queue.email.to.join(',') %></td>
+					</tr>
+					<tr class="row">
+						<th>Cc</th>
+						<td><%= text_field_tag "email_queue[email][cc]", @email_queue.email.cc %></td>
+					</tr>
+					<tr class="row">
+						<th>Bcc</th>
+						<td><%= text_field_tag "email_queue[email][bcc]", @email_queue.email.bcc %></td>
+					</tr>
+					<tr class="row text input">
+						<th>Body</th>
+						<td><%= text_area_tag "email_queue[email][body]", @email_queue.email.body.to_s,:rows => 25, :cols => 145 %></td>
+					</tr>
+				</tbody>				
+			</table>
+		</div>
+	</fieldset>
+
+	<fieldset class="actions">
+		<ol><li class="action input_action " id="email_queue_submit_action">
+				<%= f.submit "Update Email Queue" %>			
+			</li>
+			<li class="cancel"><%= link_to 'Cancel', admin_email_queue_path(@email_queue) %></li>
+		</ol>
+	</fieldset>
+
+<% end %>

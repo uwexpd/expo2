@@ -1,0 +1,35 @@
+<div class='panel'>	
+	<h3>Email Details</h3>
+	<div class='panel_contents'>
+		<div class="attributes_table email_queue"> 
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tbody>
+					<tr class="row">
+						<th>To</th>
+						<td><%= email.to.join(',') || "" %></td>
+					</tr>
+					<tr class="row">
+						<th>From</th>
+						<td><%= email.from.join(',') || "" %></td>
+					</tr>
+					<tr class="row">
+						<th>Subject</th>
+						<td><%= email.subject || "" %></td>
+					</tr>
+					<tr class="row">
+						<th>Cc</th>
+						<td><%= email.cc.join(',') || "" %></td>
+					</tr>
+					<tr class="row">
+						<th>Bcc</th>
+						<td><%= email.bcc.join(',') || "" %></td>
+					</tr>
+					<tr class="row">
+						<th>Body</th>
+						<td><%= simple_format(email.body.to_s) %></td>
+					</tr>
+				</tbody>				
+			</table>
+		</div>		
+	</div>
+</div>		

@@ -2,12 +2,17 @@ class EmailQueue < ActiveRecord::Base
   stampable
   # EmailQueue.partial_updates = false # disable partial_updates so that serialized columns get saved
   
-  belongs_to :person  
+  belongs_to :person
+  serialize  :email
   belongs_to :application_status
   belongs_to :original, :class_name => "ContactHistory", :foreign_key => "original_contact_history_id"
-  serialize :email
   belongs_to :contactable, :polymorphic => true
   
+  # for activeadmin breadcrumb title display
+  def display_name
+    "#{id}"
+  end
+
   # Adds a message to the queue.
   def self.queue(person, mail_object, application_status = nil, command_after_delivery = nil, original_contact_history = nil, contactable = nil)
     EmailQueue.create :person_id => person, 
