@@ -1,0 +1,10 @@
+<% if target.errors.any? %>
+    <div class="alert error no_close">
+      <strong><%= pluralize(target.errors.count, "error") %> prevented this record from being saved:</strong>
+      <ul class="errors list_style">
+        <% target.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+<% end %>

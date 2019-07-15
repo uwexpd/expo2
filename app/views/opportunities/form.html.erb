@@ -9,16 +9,7 @@
   
 <%= form_for @research_opportunity, :url => { :action => 'form' } do |f| %>      
   
-  <% if @research_opportunity.errors.any? %>
-    <div class="alert error no_close">
-      <strong><%= pluralize(@research_opportunity.errors.count, "error") %> prevented this record from being saved:</strong>
-      <ul class="list_style">
-        <% @research_opportunity.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%= render "shared/error_messages", :target => @research_opportunity %>
 
   <div class="row">
     

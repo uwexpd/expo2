@@ -1,4 +1,4 @@
-<div id="login_header"></div>
+<div class="login_header"></div>
 
 <div id="account-nav">
 	<% if logged_in? %>
@@ -43,7 +43,8 @@
 
 	  	 </table>
 
-	 	 <p><%= submit_tag 'Log in' %></p>
+		<p><%= submit_tag 'Log in' %></p><br>
+		<p><%= link_to "Create a new expo account", signup_path %></p>
 	<% end %>
 
 	<div id="login_footer">

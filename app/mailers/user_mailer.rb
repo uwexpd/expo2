@@ -1,6 +1,5 @@
 class UserMailer < ActionMailer::Base
   
-
   # def password_reminder(user, sent_at = Time.now)
   #   subject    'Password Reminder'
   #   recipients user.email
@@ -18,12 +17,12 @@ class UserMailer < ActionMailer::Base
   #   body       :users => users        
   # end
 
-  # def welcome_signup(user, sent_at = Time.now)
-  #   subject    'Welcome to UW EXPO online system'
-  #   recipients user.email
-  #   from       CONSTANTS[:system_help_email]
-  #   sent_on    sent_at
-  #   body       :user => user
-  # end
+  def welcome_signup(user)
+    @user = user
+    mail(to: user.email, 
+         subject: 'Welcome to UW EXPO online system',
+         from: Rails.configuration.constants['system_help_email'],
+         date: Time.now)
+  end
 
 end

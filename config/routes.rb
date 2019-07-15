@@ -24,10 +24,12 @@ Rails.application.routes.draw do
     # end
     
     # User and Sessions    
-    resources :sessions
+    resources :sessions    
+    get 'signup',  to: 'users#new'
     get 'login',  to: 'sessions#new'
-    match 'logout', to: 'sessions#destroy', via: [:get, :delete]    
+    match 'logout', to: 'sessions#destroy', via: [:get, :delete]
     get 'remove_vicarious_login', :to => 'application#remove_vicarious_login'
+    resources :users, only: [:create, :update]
 
     # RSVP for events
     get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event

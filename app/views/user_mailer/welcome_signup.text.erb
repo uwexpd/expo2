@@ -1,0 +1,13 @@
+Dear <%= @user.person.fullname rescue "EXPO user" %>,
+
+Welcome to UW EXPO system! Thanks for signing up.
+
+Your username is: <%= @user.login %>
+
+If you have any questions about this email, please contact our staff by replying to this message.
+
+Thank you,
+
+EXP-Online Staff
+<%= Rails.configuration.constants['center_name'] %>
+<%= Rails.configuration.constants['university_name'] %>

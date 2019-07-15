@@ -1,10 +1,11 @@
 class Person < ActiveRecord::Base  
-
+  model_stamper
   belongs_to :department
   belongs_to :institution
   belongs_to :class_standing, :class_name => "ClassStanding", :foreign_key => "class_standing_id"
   
   has_many :users
+  accepts_nested_attributes_for :users
   has_many :application_for_offerings do
     def past
       all.select{|a| a.offering.past? }
@@ -85,8 +86,8 @@ class Person < ActiveRecord::Base
             :through => :service_learning_course_extra_enrollees,
             :source => :service_learning_course
 
-  validates :firstname, presence: true, if: [ :require_validations?, :require_name_validations? ]
-  validates :lastname,  presence: true, if: [ :require_validations?, :require_name_validations? ]
+  validates :firstname, presence: true, if: ->{ :require_validations? ||  :require_name_validations?}
+  validates :lastname,  presence: true, if: ->{ :require_validations? ||  :require_name_validations?}
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i}, if: :require_validations?  
   validates :address1, presence: true, if: :require_address_validations?
   validates :city, presence: true, if: :require_address_validations?

@@ -1,0 +1,46 @@
+<div class="login_header"></div>
+
+<div id="signup">
+	<h2><i class="material-icons" style="vertical-align: sub">perm_identity</i> Create New Account</h2>
+	<p class="smaller"><i class="material-icons uw_purple">info_outline</i> If you are a UW member, NO need to create any accounts and <a href="/auth/shibboleth">log in with your UW NetID</a>.</p>
+
+	<%= form_for :user, :url => { :action => 'create' } do |f| %>
+
+	<%= render "shared/error_messages", :target => @user %>
+
+		<table>
+			<tr>
+		  		<td><label for="username">Username <abbr title="required">*</abbr></label></td>
+		  		<td><%= f.text_field :login %></td>
+			</tr>
+			<tr>
+	  			<td><label for="password">Password <abbr title="required">*</abbr></label></td>
+				<td><%= f.password_field :password %></td>
+	  		</tr>
+	  		<tr>
+		  		<td><label for="username">Confirm password <abbr title="required">*</abbr></label></td>
+		  		<td><%= f.password_field :password_confirmation %></td>
+			</tr>
+
+			<%= fields_for "user[person_attributes]", (@user.person || Person.new) do |person_fields| %>
+			<%= render :partial => "shared/person_fields", 
+					   :object => person_fields,
+					   :locals => { :show_address_fields => :false, :show_title_field => :false, :show => [] } %>
+			<% end %>
+
+	  	 </table>
+	  	 <p><%= f.submit 'Sign up' %></p>
+	  <% end %>
+	  
+	
+
+	<div id="login_footer">
+		<div id="footer">
+			<p id="copyright">
+				Copyright &copy; 2007&ndash;<%= Time.now.year %> <a href="http://www.washington.edu" target="_blank">University of Washington</a>.
+				Managed by the <a href="http://expd.uw.edu" target="_blank">Center for Experiential Learning &amp; Diversity</a>, a unit of 
+				<a href="http://www.washington.edu/uaa/" target="_blank">Undergraduate Academic Affairs</a>.				
+			</p>			
+		</div>
+	</div>
+</div>

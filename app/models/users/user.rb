@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   include ActiveModel::ForbiddenAttributesProtection
   model_stamper
   
-  belongs_to :person
+  belongs_to :person  
   has_many :roles, :class_name => "UserUnitRole", :foreign_key => "user_id" do
       def for(unit_id); find(:all, :conditions => { :unit_id => unit_id }); end
   end
