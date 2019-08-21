@@ -3,7 +3,7 @@ ActiveAdmin.register ResearchOpportunity do
   config.sort_order = 'created_at_desc'
   menu parent: 'Tools'
 
-  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location
+  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit
   
   member_action :queue, :method => :post do
     @opportunity = ResearchOpportunity.find(params[:id])
@@ -24,10 +24,7 @@ ActiveAdmin.register ResearchOpportunity do
         status_tag opportunity.active?, class: 'small'
      end
      # toggle_bool_column 'Active', :active, success_message: "Research opportunity updated active successfully!"
-     toggle_bool_column 'Removed', :removed, success_message: "Research opportunity updated removed field successfully!"
-     # column 'Removed', sortable: :removed do |opportunity| 
-     #    status_tag opportunity.removed?, class: 'small'
-     # end
+     # toggle_bool_column 'Removed', :removed, success_message: "Research opportunity updated removed field successfully!"     
      column 'Submit Date', sortable: :submitted_at do |opportunity|
        opportunity.submitted_at.strftime("%F") if opportunity.submitted_at
      end
@@ -43,6 +40,7 @@ ActiveAdmin.register ResearchOpportunity do
           row ('Contact Email'){|opportunity| opportunity.email}
           row ('Department/Other Affiliation'){|opportunity| opportunity.department}
           row ('Description'){|opportunity| raw(opportunity.description)}
+          row ('Student Learning Benefit'){|opportunity| raw(opportunity.learning_benefit)}
           row ('Minimum Requirements'){|opportunity| raw(opportunity.requirements) } 
         end
       end
@@ -83,6 +81,7 @@ ActiveAdmin.register ResearchOpportunity do
           f.input :email, label: 'Contact Email', required: true
           f.input :department, label: 'Department/Other Affiliation', required: true    
           f.input :description, label: 'Description', required: true, :input_html => { class: "tinymce", rows: 15}
+          f.input :learning_benefit, label: 'Student Learning Benefit', required: true, :input_html => { class: "tinymce", rows: 15}
           f.input :requirements, label: 'Minimum Requirements', required: true, :input_html => { class: "tinymce", rows: 15 }          
         end
       end
@@ -111,10 +110,11 @@ ActiveAdmin.register ResearchOpportunity do
   filter :title_or_department_or_description_cont, as: :string, label: "Keyword (title, department, and description)"
   filter :name_or_email_or_description_cont, as: :string, label: "Research Mentor/Contact (name, email, and description)"
   filter :active, as: :boolean
-  filter :removed, as: :boolean
+  # filter :removed, as: :boolean
   filter :paid, as: :boolean
   filter :work_study, as: :boolean
   filter :location, as: :select, collection: ['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other']
+  # filter :end_date, label: 'End Date', as: :date_range
   filter :submitted_at, label: 'Submit Date', as: :date_range
 
 end

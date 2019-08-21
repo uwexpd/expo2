@@ -18,11 +18,11 @@
 					</tr>
 					<tr class="row">
 						<th>Cc</th>
-						<td><%= email.cc.join(',') || "" %></td>
+						<td><%= email.cc.join(',') rescue "" %></td>
 					</tr>
 					<tr class="row">
 						<th>Bcc</th>
-						<td><%= email.bcc.join(',') || "" %></td>
+						<td><%= email.bcc.join(',') rescue "" %></td>
 					</tr>
 					<tr class="row">
 						<th>Body</th>

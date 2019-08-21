@@ -7,7 +7,7 @@ class OpportunitiesController < ApplicationController
   	before_action :student_login_required_if_possible, :only => ['index', 'show'] # make sure first check if student role
   	before_action :check_if_uwnetid, :only => ['index', 'show']
 
-  	def index	    
+  def index	    
 	    @search = ResearchOpportunity.active.ransack(params[:q])
 	    @research_opportunities = @search.result.page(params[:page]).uniq.order('created_at DESC, name ASC')
 	    
@@ -15,8 +15,9 @@ class OpportunitiesController < ApplicationController
 	end
 
 	def show
-		@search = ResearchOpportunity.active.ransack(params[:q])
-		add_breadcrumb "Research Opportunities Search", opportunities_path
+    add_breadcrumb "Research Opportunities Search", opportunities_path
+		
+    @search = ResearchOpportunity.active.ransack(params[:q])		
 
 		@research_opportunity = ResearchOpportunity.find(params[:id])
 		if @research_opportunity
@@ -31,37 +32,58 @@ class OpportunitiesController < ApplicationController
     	end	
 	end
 
-    def form
-      add_breadcrumb "Research Opportunities Form", opportunity_form_path
+  def research
+    add_breadcrumb "Research Opportunities Posting", opportunity_research_path
 
-      @research_opportunity = (ResearchOpportunity.find(params[:id]) if params[:id]) || ResearchOpportunity.new
-    
-      if @research_opportunity.submitted?
-        flash[:notice] = "This research opportunity has been submitted."
-        redirect_to :action => "submit", :id => @research_opportunity.id and return
+    @research_postings = ResearchOpportunity.where( submitted_person_id: current_user.person.id).order(:active)
+    redirect_to :action => 'form' if @research_postings.blank?
+
+  end
+
+  def form
+    add_breadcrumb "Research Opportunities Posting", opportunity_research_path
+    add_breadcrumb "Research Opportunities Form"
+
+    @research_opportunity = (ResearchOpportunity.find(params[:id]) if params[:id]) || ResearchOpportunity.new
+  
+    if @research_opportunity.submitted?
+      flash[:notice] = "This research opportunity has been submitted."
+      redirect_to :action => "submit", :id => @research_opportunity.id and return
+    end
+  
+    if params[:research_opportunity]
+      if @research_opportunity.update(opportunity_params)
+         redirect_to :action => "submit", :id => @research_opportunity.id
       end
+    end
+
+  end  
+  
+  def submit
+    add_breadcrumb "Research Opportunities Posting", opportunity_research_path
+    add_breadcrumb "Research Opportunities Submission"
+    @research_opportunity ||= ResearchOpportunity.find(params[:id])
     
-      if params[:research_opportunity]
-        if @research_opportunity.update(opportunity_params)
-           redirect_to :action => "submit", :id => @research_opportunity.id
+    if request.patch?
+      if params['method'] == "remove"
+        if @research_opportunity.update(:active => nil)
+          urp_template = EmailTemplate.find_by_name("research opportunity deactivate notification")
+          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
+          flash[:notice] = "Successfully deactivated the opportunity and notified URP staff" and return
+        else
+          flash[:error] = "Something went wrong. Unable to deactivate research opportunity. Please try again."
         end
       end
 
-    end  
-  
-    def submit
-      add_breadcrumb "Research Opportunities Form", opportunity_form_path
-      @research_opportunity ||= ResearchOpportunity.find(params[:id])         
-      
-      if request.patch?
-	      if @research_opportunity.update(:submitted => true, :active => nil, :submitted_at => Time.now, :submitted_person_id => current_user.person.id)
-	           flash[:notice] = "Successfully submitted a research opportunity and pleasa wait for URP staff approval."	         
-	           urp_template = EmailTemplate.find_by_name("research oppourtunity approval request")
-	           urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
-	      else
-	        flash[:error] = "Something went wrong. Unable to submit research opportunity. Please try again."
-	      end
-       end
+      if @research_opportunity.update(:submitted => true, :active => nil, :submitted_at => Time.now, :submitted_person_id => current_user.person.id)
+        
+          flash[:notice] = "Successfully submitted a research opportunity and pleasa wait for URP staff approval."
+          urp_template = EmailTemplate.find_by_name("research opportunity approval request")
+          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now              
+      else
+        flash[:error] = "Something went wrong. Unable to submit research opportunity. Please try again."
+      end
+     end
   end
 
 	protected
@@ -77,7 +99,7 @@ class OpportunitiesController < ApplicationController
   	private
 
   	def opportunity_params
-  		params.require(:research_opportunity).permit(:name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :paid, :work_study, :location)
+  		params.require(:research_opportunity).permit(:name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :paid, :work_study, :location, :learning_benefit)
   	end
 
 end

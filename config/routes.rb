@@ -49,6 +49,7 @@ Rails.application.routes.draw do
     resources :mge_scholars, only: [:show, :index]
 
     # OMSFA Scholarship Sesarch
+    get 'opportunities/research', to: 'opportunities#research', as: :opportunity_research
     match 'opportunities/form', to: 'opportunities#form', via: [:get, :post, :put, :patch], as: :opportunity_form
     match 'opportunities/form/:id', to: 'opportunities#form', via: [:get, :post, :put, :patch]
     resources :opportunities, only: [:show, :index]

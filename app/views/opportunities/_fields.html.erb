@@ -20,7 +20,7 @@
 	</table>
 	
 	<table class="responsive-table highlight attributes_table">
-		<thead><tr><th colspan='2'>Project Information</th></tr></thead>
+		<thead><tr><th colspan='2'>Research Information</th></tr></thead>
 		<tbody>
 			<tr>
 				<th>Research/Project Name</th>
@@ -29,6 +29,10 @@
 			<tr>
 				<th>Project Description</th>
 				<td><%= raw @research_opportunity.description %></td>
+			</tr>
+			<tr>
+				<th>Student Learning Benefit</th>
+				<td><%= raw @research_opportunity.learning_benefit %></td>
 			</tr>
 			<tr>
 				<th>Minimum Requirements</th>

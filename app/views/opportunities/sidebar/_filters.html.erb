@@ -6,10 +6,19 @@
 		<%= f.collection_select :research_area1_or_research_area2_or_research_area3_or_research_area4_in, ResearchArea.order(:name), :id, :name , {include_blank: 'Any'}, {class: 'chosen-select'} %>
 
 	<label>Keyword</label>
-		<%= f.search_field :title_or_department_or_description_cont, :placeholder => "Title, department, etc" %>
+		<%= f.search_field :title_or_department_or_description_cont, :placeholder => "Title, department, description" %>
 		
 	<label>Research Mentor/Contact</label>
 		<%= f.search_field :name_or_email_or_description_cont, :placeholder => "Name or email" %>
+
+	<label>Paid?</label>
+		<%= f.select :paid_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.paid_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
+
+	<label>Work study?</label>
+		<%= f.select :work_study_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.work_study_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
+
+	<label>Location</label>
+		<%= f.select :location_in, options_for_select(['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other'], @search.location_in), {include_blank: 'Any'}, {class: 'browser-default'} %>				
 
 	<br><br>
 	<%= f.submit 'Filter', :class => 'btn' %>

@@ -1,0 +1,37 @@
+<% title "Faculty/Mentor Research Opportunity Posting | University of Washington" %>
+
+<div class="card content">
+	<h5 class="uw_purple">
+		<i class="material-icons top_align">assignment</i> UW Faculty/Mentor Research Opportunity Posting 
+		<span class="right smaller"><%= link_to 'Add New Post', opportunity_form_path, class: 'waves-effect waves-light btn' %>
+		</span>
+	</h5>	
+	<p class="gray smaller">Any problems or questions about this research opportunities posting should be sent to <%= auto_link(Unit.find_by_abbreviation('urp').email) %>.</p>
+</div>
+
+<% @research_postings.reverse.each do |posting| %>	
+	<ul class="collection hoverable">
+	    <li class="collection-item avatar">
+	      <i class="material-icons circle green">school</i>
+	      <div class="title">	      	
+	        <%= link_to posting.title, :action => "submit", :id => posting.id %>
+	        <% if posting.active? %>
+	        	<span class="status_tag info"><%= "Active listing" %></span>
+	        <% else %>
+				<span class="status_tag warning"><%= "Deactivated" %></span>
+	        <% end %>
+	      </div>
+	      <div style="width: 80%; padding-top: 0.5rem" class="smaller">            
+            <ul>
+            	<li>Department: <%= posting.department %></li>
+            	<li>Contact name: <%= posting.name %></li>
+          		<li>Submitted at: <%= posting.submitted_at.to_date %></li>
+            </ul>            
+            <p style="border-top: 1px dotted #999; margin-top: 5px; padding: 5px 0;"><%= truncate(posting.description, length: 250, escape: false) %></p>
+      	  </div>
+	      <div class="secondary-content smaller">
+	        <%= link_to "Manage posting", { :action => 'submit', :id => posting.id }, class: 'waves-effect waves-light btn small' %>
+	      </div>            
+	    </li>
+	</ul>
+<% end %>

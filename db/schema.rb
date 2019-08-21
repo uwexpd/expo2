@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190614210350) do
+ActiveRecord::Schema.define(version: 20190719184051) do
 
   create_table "academic_departments", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -2494,6 +2494,7 @@ ActiveRecord::Schema.define(version: 20190614210350) do
     t.boolean  "paid"
     t.boolean  "work_study"
     t.string   "location",            limit: 255
+    t.text     "learning_benefit",    limit: 65535
   end
 
   create_table "rights", force: :cascade do |t|
