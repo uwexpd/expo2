@@ -46,7 +46,7 @@ class OpportunitiesController < ApplicationController
 
     @research_opportunity = (ResearchOpportunity.find(params[:id]) if params[:id]) || ResearchOpportunity.new
   
-    if @research_opportunity.submitted?
+    if @research_opportunity.submitted? && !@research_opportunity.active?
       flash[:notice] = "This research opportunity has been submitted."
       redirect_to :action => "submit", :id => @research_opportunity.id and return
     end
@@ -66,7 +66,7 @@ class OpportunitiesController < ApplicationController
     
     if request.patch?
       if params['method'] == "remove"
-        if @research_opportunity.update(:active => nil)
+        if @research_opportunity.update(:submitted => nil, :active => nil)
           urp_template = EmailTemplate.find_by_name("research opportunity deactivate notification")
           urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
           flash[:notice] = "Successfully deactivated the opportunity and notified URP staff" and return
