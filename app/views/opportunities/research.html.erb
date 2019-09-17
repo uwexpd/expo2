@@ -14,11 +14,15 @@
 	    <li class="collection-item avatar">
 	      <i class="material-icons circle green">school</i>
 	      <div class="title">	      	
-	        <%= link_to posting.title, :action => "submit", :id => posting.id %>
-	        <% if posting.active? %>
-	        	<span class="status_tag info"><%= "Active listing" %></span>
-	        <% else %>
-				<span class="status_tag warning"><%= "Deactivated" %></span>
+	        <%= link_to posting.title,{:action => "submit", :id => posting.id}, {style: "padding-right:6px"} %>
+			<% if posting.active? %>
+				<span class="status_tag green">Active listing</span>
+			<% else %>
+				<% if posting.submitted? %>
+					<span class="status_tag info">Submitted</span>
+			<% else %>
+					<span class="status_tag warning">Deactivated</span>
+				<% end %>
 	        <% end %>
 	      </div>
 	      <div style="width: 80%; padding-top: 0.5rem" class="smaller">            

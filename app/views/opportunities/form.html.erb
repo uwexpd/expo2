@@ -86,7 +86,7 @@
     </div>
 
   </div>
-  <div class="actions"><%= submit_tag "Next", :class => "btn" %></div>  
+  <div class="actions"><%= submit_tag "#{@research_opportunity.submitted? ? 'Submit' : 'Next'}", :class => "btn" %></div>
       
 <% end %>
 </div>

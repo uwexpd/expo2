@@ -81,5 +81,34 @@
 		</tbody>
 	</table>
 	
+	<div class="actions">
+
+	<% if !@research_opportunity.submitted? || @research_opportunity.active? %>
+		<%= form_for @research_opportunity, :url => { :action => 'form' } do |f| %>
+			<p><%= f.button class: 'btn waves-effect waves-light', type: :submit do %>
+						Edit<i class="material-icons right">edit</i>
+				<% end %></p>
+		<% end %>
+	<% end %>
+
+	<% if !@research_opportunity.submitted? %>
+		<%= form_for @research_opportunity, :url => { :action => 'submit' } do |f| %>
+			<%= f.button class: 'btn waves-effect waves-light', type: :submit, data: { confirm: 'Are you sure?', disable_with: 'Submitting the opportunity...' } do %>Submit opportunity<i class="material-icons right">send</i>
+				<% end %>
+			<p class='smaller'><i class="material-icons middle_align">info_outline</i> This opportunity will be activated after URP staff approves it.</p>
+		<% end %>
+
+	<% end %>
+
+	<% if @research_opportunity.active? %>
+		<%= form_for @research_opportunity, :url => { :action => 'submit', :method => 'remove' } do |f| %>
+			<%= f.button class: 'btn waves-effect waves-light', type: :submit do %>
+							Deactivate opportunity<i class="material-icons right">delete_forever</i>
+					<% end %>
+		<% end %>
+		<p class='smaller'><i class="material-icons middle_align">info_outline</i> This will deactivate the opportunity and notify URP staff.</p>
+
+	<% end %>
+	</div>
 
 </div>

@@ -1,24 +1,23 @@
 <h5><i class="material-icons vertical_top">add_circle_outline</i> Actions</h5>
 
 <% if !@research_opportunity.submitted? || @research_opportunity.active? %>
-<p>
 	<%= form_for @research_opportunity, :url => { :action => 'form' } do |f| %>
-		<%= f.button class: 'btn waves-effect waves-light', type: :submit do %>
+		<p><%= f.button class: 'btn waves-effect waves-light', type: :submit do %>
 					Edit<i class="material-icons right">edit</i>
-		<% end %>
-	<% end %>	
-</p><br>
+			<% end %></p>
+	<% end %>
+<% end %>
+
+<% if !@research_opportunity.submitted? %>
 	<%= form_for @research_opportunity, :url => { :action => 'submit' } do |f| %>
-		<%= f.button class: 'btn waves-effect waves-light', type: :submit, data: { confirm: 'Are you sure?', disable_with: 'Submitting the opportunity...' } do %>
-					<%= @research_opportunity.submitted? ? "Renew opportunity" : "Submit opportunity" %><i class="material-icons right">send</i>
+		<%= f.button class: 'btn waves-effect waves-light', type: :submit, data: { confirm: 'Are you sure?', disable_with: 'Submitting the opportunity...' } do %>Submit opportunity<i class="material-icons right">send</i>
 			<% end %>
+		<p class='smaller'><i class="material-icons middle_align">info_outline</i> This opportunity will be activated after URP staff approves it.</p>
 	<% end %>
 
 <% end %>
 
 <% if @research_opportunity.active? %>
-	<p class='smaller'><i class="material-icons middle_align">info_outline</i> This re-sbumission will deactivate the opportunity until URP staff approves it.</p>
-	<br>
 	<%= form_for @research_opportunity, :url => { :action => 'submit', :method => 'remove' } do |f| %>
 		<%= f.button class: 'btn waves-effect waves-light', type: :submit do %>
 						Deactivate opportunity<i class="material-icons right">delete_forever</i>

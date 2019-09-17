@@ -3,6 +3,7 @@ class Person < ActiveRecord::Base
   belongs_to :department
   belongs_to :institution
   belongs_to :class_standing, :class_name => "ClassStanding", :foreign_key => "class_standing_id"
+  before_create :generate_token
   
   has_many :users
   accepts_nested_attributes_for :users
@@ -86,14 +87,14 @@ class Person < ActiveRecord::Base
             :through => :service_learning_course_extra_enrollees,
             :source => :service_learning_course
 
-  validates :firstname, presence: true, if: ->{ :require_validations? ||  :require_name_validations?}
-  validates :lastname,  presence: true, if: ->{ :require_validations? ||  :require_name_validations?}
-  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i}, if: :require_validations?  
-  validates :address1, presence: true, if: :require_address_validations?
-  validates :city, presence: true, if: :require_address_validations?
-  validates :state, presence: true, if: :require_address_validations?
-  validates :zip, presence: true, if: :require_address_validations?
-  validate :student_validations, :if => :require_student_validations?
+  validates :firstname, presence: true, if: ->{ :require_validations? ||  :require_name_validations?}, on: :update
+  validates :lastname,  presence: true, if: ->{ :require_validations? ||  :require_name_validations?}, on: :update
+  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i}, if: :require_validations?, on: :update
+  validates :address1, presence: true, if: :require_address_validations?, on: :update
+  validates :city, presence: true, if: :require_address_validations?, on: :update
+  validates :state, presence: true, if: :require_address_validations?, on: :update
+  validates :zip, presence: true, if: :require_address_validations?, on: :update
+  validate :student_validations, :if => :require_student_validations?, on: :update
 
   scope :non_student, -> { where(type: nil) }
 
@@ -189,9 +190,9 @@ class Person < ActiveRecord::Base
       department.nil? ? other_department : department.department_full_name
   end
     
-  # def generate_token
-  #   @attributes['token'] = Base64.encode64(Digest::SHA1.digest("#{rand(1<<64)}/#{Time.now.to_f}/#{Process.pid}/#{object_id}"))[0..7]
-  # end
+  def generate_token
+    write_attribute :token, Base64.encode64(Digest::SHA1.digest("#{rand(1<<64)}/#{Time.now.to_f}/#{Process.pid}/#{object_id}"))[0..7]
+  end
   
   def phone=(number)
     write_attribute :phone, number.to_s.gsub(/\D/,"")

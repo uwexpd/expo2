@@ -24,7 +24,7 @@ ActiveAdmin.register User do
       user.identity_type || "Standard User"
     end
     column 'Person' do |user|
-      link_to user.person.fullname, admin_person_path(user.person), :target => '_blank'
+      link_to user.person.fullname, admin_person_path(user.person), :target => '_blank' rescue nil
     end
     column 'Last Login' do |user|
       "#{time_ago_in_words user.logins.last.created_at} ago" rescue "never"

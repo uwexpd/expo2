@@ -53,6 +53,17 @@ class OpportunitiesController < ApplicationController
   
     if params[:research_opportunity]
       if @research_opportunity.update(opportunity_params)
+         if params['commit'] == "Submit"
+           if @research_opportunity.update(:active => true, :submitted_at => Time.now, :submitted_person_id => current_user.person.id)
+          flash[:notice] = "Successfully resubmitted this research opportunity and notify URP staff."
+          urp_template = EmailTemplate.find_by_name("research opportunity resubmitted notification")
+          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
+           else
+              flash[:error] = "Something went wrong. Unable to submit research opportunity. Please try again."
+           end
+         else
+            flash[:notice] = "Successfully save research opportunity and please make sure submit it."
+         end
          redirect_to :action => "submit", :id => @research_opportunity.id
       end
     end
@@ -76,10 +87,9 @@ class OpportunitiesController < ApplicationController
       end
 
       if @research_opportunity.update(:submitted => true, :active => nil, :submitted_at => Time.now, :submitted_person_id => current_user.person.id)
-        
-          flash[:notice] = "Successfully submitted a research opportunity and pleasa wait for URP staff approval."
+          flash[:notice] = "Successfully submitted a research opportunity. You will receive URP staff approval shortly."
           urp_template = EmailTemplate.find_by_name("research opportunity approval request")
-          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now              
+          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
       else
         flash[:error] = "Something went wrong. Unable to submit research opportunity. Please try again."
       end
