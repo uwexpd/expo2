@@ -15,10 +15,6 @@ class ResearchOpportunity < ActiveRecord::Base
 
   def area_name(area_id)
     ResearchArea.find(area_id).name rescue nil
-  end 
-
-  def active_status
-    active? ? "activated" : "deactivated"
   end
   
   private 

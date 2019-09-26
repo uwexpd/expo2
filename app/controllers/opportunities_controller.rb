@@ -2,10 +2,10 @@ class OpportunitiesController < ApplicationController
 	add_breadcrumb 'URP Home', Unit.find_by_abbreviation('urp').home_url
 	
 	invisible_captcha only: [:form], timestamp_enabled: false
-
-  	before_action :login_required
+  	
   	before_action :student_login_required_if_possible, :only => ['index', 'show'] # make sure first check if student role
-  	before_action :check_if_uwnetid, :only => ['index', 'show']
+    before_action :login_required
+    before_action :check_if_uwnetid, :only => ['index', 'show']
 
   def index	    
 	    @search = ResearchOpportunity.active.ransack(params[:q])

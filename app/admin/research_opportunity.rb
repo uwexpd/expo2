@@ -7,9 +7,9 @@ ActiveAdmin.register ResearchOpportunity do
   
   member_action :queue, :method => :post do
     @opportunity = ResearchOpportunity.find(params[:id])
-
-    faculty_template = EmailTemplate.find_by_name("research oppourtunity activate and deactivate notification")
-     link = @opportunity.active? ? "https://#{Rails.configuration.constants['base_app_url']}/opportunities/#{@opportunity.id}" : "https://#{Rails.configuration.constants['base_app_url']}/opportunities/submit/#{@opportunity.id}"
+    template_name = @opportunity.active? ? "research opportunity activate notification for faulty" : "research opportunity deactivate notification for faulty"
+    faculty_template = EmailTemplate.find_by_name(template_name)
+    link = "https://#{Rails.configuration.constants['base_app_url']}/opportunities/submit/#{@opportunity.id}"
 
     EmailQueue.queue(nil, faculty_template.create_email_to(@opportunity, link, @opportunity.email).message) if faculty_template
 
