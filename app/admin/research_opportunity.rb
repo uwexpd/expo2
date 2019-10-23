@@ -7,6 +7,7 @@ ActiveAdmin.register ResearchOpportunity do
   
   member_action :queue, :method => :post do
     @opportunity = ResearchOpportunity.find(params[:id])
+    @opportunity.reload
     template_name = @opportunity.active? ? "research opportunity activate notification for faulty" : "research opportunity deactivate notification for faulty"
     faculty_template = EmailTemplate.find_by_name(template_name)
     link = "https://#{Rails.configuration.constants['base_app_url']}/opportunities/submit/#{@opportunity.id}"
@@ -23,7 +24,7 @@ ActiveAdmin.register ResearchOpportunity do
      column 'Active', sortable: :active do |opportunity| 
         status_tag opportunity.active?, class: 'small'
      end
-     # toggle_bool_column 'Active', :active, success_message: "Research opportunity updated active successfully!"
+     # toggle_bool_column 'Active', :active, success_message: "Successfully update research opportunity status!"
      # toggle_bool_column 'Removed', :removed, success_message: "Research opportunity updated removed field successfully!"     
      column 'Submit Date', sortable: :submitted_at do |opportunity|
        opportunity.submitted_at.strftime("%F") if opportunity.submitted_at

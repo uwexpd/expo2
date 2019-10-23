@@ -17,11 +17,11 @@ class ApplicationMentor < ActiveRecord::Base
   #   delegate :mentor_questions, :to => :offering
   # validates_associated :answers, :message => "to additional questions are not valid", :if => :require_validations?
 
-  # belongs_to :mentor_type, :class_name => "ApplicationMentorType", :foreign_key => "application_mentor_type_id"
+  belongs_to :mentor_type, :class_name => "ApplicationMentorType", :foreign_key => "application_mentor_type_id"
   
   # validates_presence_of :application_for_offering_id
   # 
-  #   # before_create :generate_token
+  before_create :generate_token
   #   
   #   validates_size_of :letter, :maximum => 2000000, 
   #                     :message => "is too big; it must be smaller than 2 MB. Please upload a smaller file.",
@@ -33,17 +33,16 @@ class ApplicationMentor < ActiveRecord::Base
   #after_save :send_invite_email_if_needed
 
   #serialize :task_completion_status_cache
-  #serialize :academic_department
+  serialize :academic_department
   # has_many :task_completion_statuses, :as => :taskable, :class_name => "OfferingAdminPhaseTaskCompletionStatus"
-  #   before_save :update_task_completion_status_cache!
-  
-  #after_create :set_default_send_invite_email
+  #   before_save :update_task_completion_status_cache!  
 
-  # attr_accessor :should_destroy
-  #   attr_accessor :require_validations
-  #   attr_accessor :send_invite_email_now
+  attr_accessor :should_destroy
+  attr_accessor :require_validations
+  attr_accessor :send_invite_email_now
 #  attr_accessor :email_confirmation
   
+  scope :with_name, -> { where.not(firstname: [nil, ""]) }
 
   # PLACEHOLDER_CODES = %w(login_link fullname firstname lastname email department)
   # PLACEHOLDER_ASSOCIATIONS = %w(person application_for_offering mentee)
@@ -52,9 +51,9 @@ class ApplicationMentor < ActiveRecord::Base
   def mentor; self; end
   
   # Alias for #application_for_offering.person
-  # def mentee
-  #     application_for_offering.person
-  #   end  
+  def mentee
+      application_for_offering.person
+  end  
   
   # acts_as_soft_deletable
   # upload_column :letter, :root_dir => File.join(RAILS_ROOT, 'files')
@@ -125,8 +124,8 @@ class ApplicationMentor < ActiveRecord::Base
   #         EmailQueue.queue mentor.person_id, ApplyMailer.create_mentor_status_update(self, email_template, self.email, nil, link)
   #       end
   #     end
-  #   end
-  
+  #   end    
+
   def type_title
     primary == true ? "Mentor" : "Secondary Mentor"
   end
@@ -158,6 +157,11 @@ class ApplicationMentor < ActiveRecord::Base
   
   def fullname
     "#{firstname} #{lastname}"
+  end
+
+  # for activeadmin breadcrumb title display
+  def display_name
+    "#{fullname}"
   end
 
   def firstname
@@ -257,22 +261,22 @@ class ApplicationMentor < ActiveRecord::Base
   end
 
   # Sends the invite e-mail to this mentor using the template specified in the Offering's +early_mentor_invite_email_template_id+ attribute.
-  # def deliver_invite_email(template = offering.early_mentor_invite_email_template)
-  #     link = mentor_offering_map_url(:host => CONSTANTS[:base_url_host], :offering_id => offering.id, :mentor_id => id, :token => token)
-  #     #mentor_map_url(:host => CONSTANTS[:base_url_host], :mentor_id => id, :token => token)
-  #     
-  #     if EmailContact.log(person_id, ApplyMailer.deliver_mentor_status_update(self, template, email, nil, link), application_for_offering.status)
-  #       update_attribute(:invite_email_sent_at, Time.now)
-  #     end
-  #   end
+  def deliver_invite_email(template = offering.early_mentor_invite_email_template)
+      link = mentor_offering_map_url(:host => CONSTANTS[:base_url_host], :offering_id => offering.id, :mentor_id => id, :token => token)
+      #mentor_map_url(:host => CONSTANTS[:base_url_host], :mentor_id => id, :token => token)
+      
+      if EmailContact.log(person_id, ApplyMailer.deliver_mentor_status_update(self, template, email, nil, link), application_for_offering.status)
+        update_attribute(:invite_email_sent_at, Time.now)
+      end
+  end
 
   # Checks to see if the +send_invite_email_now+ attribute is set to true, and invokes the deliver_invite_email method if necessary.
-  # def send_invite_email_if_needed
-  #     if send_invite_email_now == "1" && application_for_offering.page_passes_validations?(application_for_offering.current_page.offering_page)
-  #       self.send_invite_email_now = false
-  #       deliver_invite_email    
-  #     end
-  #   end
+  def send_invite_email_if_needed
+      if send_invite_email_now == "1" && application_for_offering.page_passes_validations?(application_for_offering.current_page.offering_page)
+        self.send_invite_email_now = false
+        deliver_invite_email    
+      end
+  end
 
   # Returns true if there is a date in the +mentor_letter_sent_at+ field.
   def mentor_letter_sent?

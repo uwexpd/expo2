@@ -20,7 +20,7 @@ $(function() {
    // Enable chosen js
    $(".chosen-select").chosen({
       allow_single_deselect: true,
-    no_results_text: 'No results matched'
+      no_results_text: 'No results matched'
    });
 
    // Append a button after action_items that will toggle the sidebar’s visibility. On page load, we are not hiding the sidebar if filters are in use. https://medium.com/@mekdigital/activeadmin-add-a-button-toggle-the-sidebars-visibility-to-save-real-restate-708d89cb5972
