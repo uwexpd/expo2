@@ -113,7 +113,7 @@ GEM
       sshkit (~> 1.2)
     capitalize-names (1.0.6)
       activesupport (>= 3)
-    chartkick (3.0.2)
+    chartkick (3.3.0)
     chosen-rails (1.8.7)
       coffee-rails (>= 3.2)
       railties (>= 3.0)
