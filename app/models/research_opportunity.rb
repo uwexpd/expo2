@@ -8,6 +8,7 @@ class ResearchOpportunity < ActiveRecord::Base
   validate :end_date_cannot_be_in_the_past, if: ->{ :require_validations? }
   
   scope :active, -> { where('active = 1 AND (ISNULL(end_date) OR end_date > CURDATE())')}
+  scope :expired, -> { where('active = 1 AND (ISNULL(end_date) OR end_date <= CURDATE())') }
 
   def require_validations?
     require_validations

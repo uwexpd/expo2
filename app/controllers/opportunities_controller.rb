@@ -9,7 +9,7 @@ class OpportunitiesController < ApplicationController
 
   def index	    
 	    @search = ResearchOpportunity.active.ransack(params[:q])
-	    @research_opportunities = @search.result.page(params[:page]).uniq.order('created_at DESC, name ASC')
+	    @research_opportunities = @search.result.page(params[:page]).uniq.order('submitted_at DESC, name ASC')
 	    
 	    add_breadcrumb "Research Opportunities Search"
 	end
