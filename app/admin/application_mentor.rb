@@ -54,7 +54,8 @@ ActiveAdmin.register ApplicationMentor, as: 'mentors' do
     	f.input :relationship, :input_html => { :style => 'width:50%;' }
     	f.input :mentor_type, as: :select, collection: f.object.offering.mentor_types
     	f.input :waive_access_review_right, as: :boolean
-    	f.input :academic_department, as: :tags, collection: AcademicDepartment.all.collect(&:name).sort
+		# f.input :academic_department, as: :tags, collection: AcademicDepartment.all.collect(&:name).sort
+		f.input :academic_department, as: :select, collection: AcademicDepartment.all.collect(&:name).sort, :input_html => { multiple: true, class: "chosen-select", :style => 'width: 50%' }
     	f.input :approval_response, as: :select, collection: %w(revise approved)
   		f.input :approval_comments, as: :text, :input_html => { :class => 'autogrow', :rows => 5, :cols => 40  }
 		f.input :approval_at, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
@@ -65,5 +66,6 @@ ActiveAdmin.register ApplicationMentor, as: 'mentors' do
   filter :firstname, as: :string
   filter :lastname, as: :string
   filter :email, as: :string
+  filter :application_for_offering_id, as: :number
 
 end 

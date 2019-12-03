@@ -29,7 +29,7 @@
             <ul>
             	<li>Department: <%= posting.department %></li>
             	<li>Contact name: <%= posting.name %></li>
-          		<li>Submitted at: <%= posting.submitted_at.to_date %></li>
+				<li>Submitted at: <%= posting.submitted_at.to_date rescue "No submitted date" %></li>
             </ul>            
             <p style="border-top: 1px dotted #999; margin-top: 5px; padding: 5px 0;"><%= truncate(posting.description, length: 250, escape: false) %></p>
       	  </div>

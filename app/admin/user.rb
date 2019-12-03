@@ -86,6 +86,7 @@ ActiveAdmin.register User do
   form do |f|
     f.semantic_errors *f.object.errors.keys
     f.inputs "Edit #{user.login}" do
+      f.input :email, as: :string
       f.input :admin, label: 'User can access admin aera', as: :boolean
     end
     f.actions do

@@ -1,6 +1,6 @@
 ActiveAdmin.register ResearchOpportunity do
   batch_action :destroy, false
-  config.sort_order = 'created_at_desc'
+  config.sort_order = 'submitted_at_desc'
   menu parent: 'Tools'
 
   permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit
@@ -115,7 +115,7 @@ ActiveAdmin.register ResearchOpportunity do
   filter :paid, as: :boolean
   filter :work_study, as: :boolean
   filter :location, as: :select, collection: ['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other']
-  # filter :end_date, label: 'End Date', as: :date_range
   filter :submitted_at, label: 'Submit Date', as: :date_range
+  filter :end_date, label: 'End Date (auto-remove)', as: :date_range
 
 end
