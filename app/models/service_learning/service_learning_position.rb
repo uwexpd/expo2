@@ -145,7 +145,7 @@ class ServiceLearningPosition < ActiveRecord::Base
   
   validates_presence_of :organization_quarter_id, :message => "is invalid. You must choose the UW unit that you're working with.", :if => :require_validations?
   validates_presence_of :supervisor_person_id, :message => "must be identified.", :if => :require_validations?
-  validates_presence_of :ideal_number_of_slots, :if => :require_ideal_number_of_slots?, :if => :require_validations?
+  validates_presence_of :ideal_number_of_slots, :if => [:require_ideal_number_of_slots?, :require_validations?]
   validate :title_is_not_blank
   def title_is_not_blank
     errors.add(:title, "cannot be blank") if read_attribute(:title).blank?

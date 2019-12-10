@@ -32,8 +32,8 @@ gem 'activeadmin_addons'
 gem 'composite_primary_keys', '>=8.1.1'
 
 # adapter for ms sql server 2012
-gem 'tiny_tds', '~> 0.7.0'
-gem 'activerecord-sqlserver-adapter', '~> 4.2.0'
+gem 'tiny_tds'
+gem 'activerecord-sqlserver-adapter'
 
 # Connect to UW Student Web Service
 gem 'activeresource', require: 'active_resource'
