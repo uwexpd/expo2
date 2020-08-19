@@ -1,4 +1,4 @@
-class OfferingApplicationType < ActiveRecord::Base
+class OfferingApplicationType < ApplicationRecord
   stampable
   belongs_to :offering
   belongs_to :application_type

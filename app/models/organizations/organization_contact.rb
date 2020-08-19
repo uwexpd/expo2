@@ -1,5 +1,5 @@
 # An Organization can have multiple OrganizationContacts, which links a Person record to an Organization. Note that this model overrides the #destroy methods so that, by default, an organization contact is simply marked as +current = false+ so that they still show up when looking at historical records.
-class OrganizationContact < ActiveRecord::Base
+class OrganizationContact < ApplicationRecord
   stampable
   #nclude Comparable
   

@@ -1,4 +1,4 @@
-class ApplicationAnswer < ActiveRecord::Base
+class ApplicationAnswer < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   belongs_to :offering_question

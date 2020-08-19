@@ -1,5 +1,5 @@
 # Stores some extra information about departments that isn't available in the SDB, such as chair name and emails, and department names that are suitable for printing.
-class DepartmentExtra < ActiveRecord::Base
+class DepartmentExtra < ApplicationRecord
   belongs_to :department, :foreign_key => :dept_code
 
   # has_many :accountability_coordinator_authorizations, 

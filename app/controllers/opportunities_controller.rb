@@ -1,7 +1,5 @@
 class OpportunitiesController < ApplicationController
 	add_breadcrumb 'URP Home', Unit.find_by_abbreviation('urp').home_url
-	
-	invisible_captcha only: [:form], timestamp_enabled: false
   	
   	before_action :student_login_required_if_possible, :only => ['index', 'show'] # make sure first check if student role
     before_action :login_required
@@ -28,7 +26,7 @@ class OpportunitiesController < ApplicationController
       		add_breadcrumb @research_opportunity.title
     	else
       		flash[:error] = "Cannot find research opportunity id"
-      		redirect_to :back
+      		redirect_back(fallback_location: opportunities_path)
     	end	
 	end
 

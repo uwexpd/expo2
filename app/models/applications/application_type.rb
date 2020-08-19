@@ -1,4 +1,4 @@
-class ApplicationType < ActiveRecord::Base
+class ApplicationType < ApplicationRecord
   stampable
   has_many :application_for_offerings
   

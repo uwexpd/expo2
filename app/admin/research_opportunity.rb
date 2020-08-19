@@ -88,6 +88,7 @@ ActiveAdmin.register ResearchOpportunity do
       end
       tab 'area & more' do
         f.inputs do
+          f.input :active, as: :boolean
           f.input :end_date, label: 'Auto-remove date', as: :datepicker, required: true, :input_html => { :style => 'width:50%;' }
           f.input :research_area1, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, required: true, input_html: { class: "select2" }
           f.input :research_area2, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }

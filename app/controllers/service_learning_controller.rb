@@ -175,7 +175,7 @@ class ServiceLearningController < ApplicationController
             end            
          else
             flash[:error] = "Sorry, but we could not save your information. Please try submitting again."
-            redirect_to :back
+            redirect_to redirect_back(fallback_location: {action: 'self_placement'})
          end                       
     end # request.put?              
     

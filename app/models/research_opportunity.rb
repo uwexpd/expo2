@@ -1,4 +1,4 @@
-class ResearchOpportunity < ActiveRecord::Base
+class ResearchOpportunity < ApplicationRecord
   self.per_page = 20
   belongs_to :submitted_person, :class_name => "Person", :foreign_key => "submitted_person_id"
 

@@ -479,6 +479,16 @@ ul.pagination{
 	margin-bottom: 1rem;
 }
 
+.tabs .tab a {
+	background-color: rgba(246, 178, 181, 0.2);
+	font-weight: bold;
+	font-size: 13px;
+}
+
+.tabs .tab a:hover, .tabs .tab a.active, .tabs .tab a:focus, .tabs .tab a:focus.active {
+	background-color: #ffe6e9;
+}
+
 dl.inline-definitions {
 	// margin-top: 2em;
 }

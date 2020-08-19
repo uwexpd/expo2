@@ -1,5 +1,5 @@
 # An ApplicationForOffering may be sponsored by one or more ApplicationMentors.
-class ApplicationMentor < ActiveRecord::Base
+class ApplicationMentor < ApplicationRecord
   # include ActionController::UrlWriter
   stampable
   belongs_to :application_for_offering

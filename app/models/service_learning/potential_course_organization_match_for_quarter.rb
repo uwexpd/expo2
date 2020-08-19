@@ -1,5 +1,5 @@
 # Used to match an Organization to a Course during the Service Learning development process. These relationships are only used during the planning process; the true relationships between Organization and Course are facilitated through the ServiceLearningPositions and subsequent ServiceLearningPlacements which allocate volunteer slots to each course or program that is involved in Service Learning for the given quarter.
-class PotentialCourseOrganizationMatchForQuarter < ActiveRecord::Base
+class PotentialCourseOrganizationMatchForQuarter < ApplicationRecord
   stampable
   belongs_to :organization_quarter
   belongs_to :service_learning_course

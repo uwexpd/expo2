@@ -1,5 +1,5 @@
 # Models a moderated session that can be associated with an Offering. This was first created to support moderated sessions at the Undergraduate Research Symposium, where multiple ApplicationForOfferings can be assigned to a moderated session along with a Moderator that is pulled from the Offering's moderators committee (defined by +moderator_committee_id+).
-class OfferingSession < ActiveRecord::Base
+class OfferingSession < ApplicationRecord
   stampable
   belongs_to :offering
   belongs_to :moderator, :class_name => "CommitteeMember", :foreign_key => "moderator_id"

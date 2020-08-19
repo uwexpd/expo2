@@ -1,4 +1,4 @@
-class CommitteeMember < ActiveRecord::Base
+class CommitteeMember < ApplicationRecord
   stampable
   belongs_to :committee
   belongs_to :person

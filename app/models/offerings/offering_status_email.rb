@@ -1,4 +1,4 @@
-class OfferingStatusEmail < ActiveRecord::Base
+class OfferingStatusEmail < ApplicationRecord
   stampable
   belongs_to :offering_status
   belongs_to :email_template

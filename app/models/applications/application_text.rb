@@ -1,5 +1,5 @@
 # An ApplicationForOffering can have many ApplicationTexts, which can really be any block of text. Originally it was designed for research abstracts, which are designed to be typed directly into the web form rather than be uploaded like an ApplicationFile is. Every ApplicationText is versioned so that you can always restore to a previous version or view change history. The +body+ and +body=+ methods automatically get and set the body text of new or current versions, so the versioning happens in the background.
-class ApplicationText < ActiveRecord::Base
+class ApplicationText < ApplicationRecord
   stampable
   
   belongs_to :application_for_offering

@@ -1,4 +1,4 @@
-class OfferingInterview < ActiveRecord::Base
+class OfferingInterview < ApplicationRecord
   stampable
   belongs_to :offering
   has_many :interviewers, :class_name => "OfferingInterviewInterviewer", :dependent => :nullify

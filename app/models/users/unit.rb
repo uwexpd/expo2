@@ -1,4 +1,4 @@
-class Unit < ActiveRecord::Base
+class Unit < ApplicationRecord
   has_many :user_unit_roles do
        def for_user(user); find(:all, :conditions => { :user_id => user.id }); end
   end

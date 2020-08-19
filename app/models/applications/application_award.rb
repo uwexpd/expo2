@@ -17,7 +17,7 @@
 #   the attribute that should be used for future reporting purposes.
 # [+disbersement_type_id+]
 #   The type of disbersement for the award.  Usually one of either +cash+ or +tuition+.  This value may be changed by the financial aid office.
-class ApplicationAward < ActiveRecord::Base
+class ApplicationAward < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   validates_presence_of :application_for_offering_id

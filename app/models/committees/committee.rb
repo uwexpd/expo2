@@ -1,7 +1,7 @@
 # A Committee is a group of people, typically associated with an activity. Using committees allows us to track these groups across quarters, for example, of online applications like the Mary Gates Endowment research scholarhips. A Committee has multiple CommitteeMembers who can be on the committee and be marked active or inactive for many Quarters.
 # 
 # Offerings use Committees to track the potential list of reviewers and interviewers for each award process.
-class Committee < ActiveRecord::Base
+class Committee < ApplicationRecord
   stampable
   has_many :members, :class_name => "CommitteeMember" do
     def active

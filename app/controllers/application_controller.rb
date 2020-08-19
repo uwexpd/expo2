@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
 
   rescue_from ::ExpoException, :with => :expo_exception
-  rescue_from ::ActionController::RedirectBackError, :with => :redirect_exception
+  # rescue_from ::ActionController::RedirectBackError, :with => :redirect_exception # this has been deprecated in Rails 5
 
   before_action :login_required, :except => :remove_vicarious_login
   before_action :save_user_in_current_thread
@@ -86,11 +86,11 @@ class ApplicationController < ActionController::Base
     render :template => "exceptions/expo_exception", :status => 200
   end
 
-  def redirect_exception(exception)
-    flash[:error] = "EXPO tried to redirect you back to the previous page, but there's no previous 
-                     page to redirect you back to. You're going to have to find your own way from here."
-    redirect_to root_url and return
-  end
+  # def redirect_exception(exception)
+  #   flash[:error] = "EXPO tried to redirect you back to the previous page, but there's no previous 
+  #                    page to redirect you back to. You're going to have to find your own way from here."
+  #   redirect_to root_url and return
+  # end
 
   def add_to_session_history     
      ::SessionHistory.create(:session_id => session.id,

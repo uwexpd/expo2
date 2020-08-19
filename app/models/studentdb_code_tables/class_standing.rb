@@ -1,6 +1,6 @@
 # Simple mapping of class_standing codes to full titles (e.g., Freshman, Sophomore, ...).
 # - This table was created because it does not exist in the UWSDB.  The codes contained within is based off the code table at the Data Warehouse website and is assumed to be constant.
-class ClassStanding < ActiveRecord::Base
+class ClassStanding < ApplicationRecord
   has_one :student_record, :class_name => "StudentRecord", :foreign_key => "class"
   
   scope :undergraduate, -> { where('id <= 7') }

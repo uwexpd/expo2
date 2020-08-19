@@ -1,4 +1,4 @@
-class ApplicationGroupMember < ActiveRecord::Base
+class ApplicationGroupMember < ApplicationRecord
   #include ActionController::UrlWriter
   stampable
   

@@ -1,5 +1,5 @@
 # A ServiceLearningCourse has one or more ServiceLearningCourseInstructors. See note at ServiceLearningCourse.
-class ServiceLearningCourseInstructor < ActiveRecord::Base
+class ServiceLearningCourseInstructor < ApplicationRecord
   stampable
   belongs_to :service_learning_course
   belongs_to :person

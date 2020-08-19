@@ -1,5 +1,5 @@
 # An Organization can be active for any specific Quarter. This object models this relationship. A record in this table implies that an Organization is active for the specified Quarter.
-class OrganizationQuarter < ActiveRecord::Base
+class OrganizationQuarter < ApplicationRecord
   stampable
   belongs_to :organization
   belongs_to :quarter

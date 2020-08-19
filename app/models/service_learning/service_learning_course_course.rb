@@ -1,5 +1,5 @@
 # Models the relationship between a ServiceLearningCourse and a Course from the Student DB Time Schedule.
-class ServiceLearningCourseCourse < ActiveRecord::Base
+class ServiceLearningCourseCourse < ApplicationRecord
   stampable
   belongs_to :service_learning_course
   belongs_to :course, :class_name => "Course", :foreign_key => %w(ts_year ts_quarter course_branch course_no dept_abbrev section_id)

@@ -45,7 +45,7 @@ ServiceLearningCourses also have one pipeline_course_filter
   This allows you to apply filters to a service learning course from that admin side that are forced on the student side
 =end
 
-class ServiceLearningPosition < ActiveRecord::Base
+class ServiceLearningPosition < ApplicationRecord
 
   default_scope {order('service_learning_positions.title')}
   

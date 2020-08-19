@@ -128,7 +128,7 @@ Any time duplicates are removed, a Duplicates Report or Discrepancy Report is ge
 Duplication processing details appear below.
 
 =end
-class AccountabilityReport < ActiveRecord::Base
+class AccountabilityReport < ApplicationRecord
   #extend ActiveSupport::Memoizable # Memoizable is deprecated in Rails 3.2. Use memoist gem instead then
     
   # Makes sure that we only count EXPO's service-learning courses for public service reports

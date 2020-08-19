@@ -1,7 +1,7 @@
 # Models someone (or something) that has been invited to an event. The person is not necessarily attending the event if they have a record in this table. They are only attending if +attending+ is +true+. This allows you to keep track of people who RSVP "no" and collect other useful information from non-attendees, like comments.
 # 
 #   This object is modeled with a polymporphic association so that any object can be invited to and attend an Event. Usually this will be a Person, but it could also be other Person-related objects like an OrganizationContact (or an entire Organization, potentially) or an ApplicationForOffering.
-class EventInvitee < ActiveRecord::Base
+class EventInvitee < ApplicationRecord
   stampable
   belongs_to :event_time
   belongs_to :invitable, :polymorphic => true

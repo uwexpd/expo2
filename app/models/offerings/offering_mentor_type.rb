@@ -1,4 +1,4 @@
-class OfferingMentorType < ActiveRecord::Base
+class OfferingMentorType < ApplicationRecord
   stampable
   belongs_to :application_mentor_type
   belongs_to :offering

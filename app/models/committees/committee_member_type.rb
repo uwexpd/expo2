@@ -1,4 +1,4 @@
-class CommitteeMemberType < ActiveRecord::Base
+class CommitteeMemberType < ApplicationRecord
   stampable
   belongs_to :committee
   validates_presence_of :name

@@ -1,7 +1,7 @@
 # An ApplicationForOffering object is a representation of a person's application for a specific Offering managed by EXPo
 # (The model is named _ApplicationForOffering_ not only to be descriptive but also to avoid Rails' limitations on the reserved word
 # _application_.  Related models begin only with Application for brevity).
-class ApplicationForOffering < ActiveRecord::Base
+class ApplicationForOffering < ApplicationRecord
   stampable
   include Rails.application.routes.url_helpers
   #include ActionView::Helpers::NumberHelper

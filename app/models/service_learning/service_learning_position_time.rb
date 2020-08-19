@@ -1,5 +1,5 @@
 # Models a timeslot that is valid for a ServiceLearningPosition. A ServiceLearningPosition might have multiple time slots per week, or only one. Times may also be flexible, in which case a student can arrive anytime within the selected times to get work done.
-class ServiceLearningPositionTime < ActiveRecord::Base
+class ServiceLearningPositionTime < ApplicationRecord
   stampable
   belongs_to :service_learning_position
   

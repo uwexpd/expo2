@@ -1,3 +1,3 @@
-class QuarterCode < ActiveRecord::Base
+class QuarterCode < ApplicationRecord
   stampable
 end

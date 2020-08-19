@@ -1,4 +1,4 @@
-class ApplicationStatus < ActiveRecord::Base
+class ApplicationStatus < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   belongs_to :application_status_type

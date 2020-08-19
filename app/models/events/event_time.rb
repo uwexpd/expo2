@@ -1,5 +1,5 @@
 # Models a single time instance of an Event. See details at Event for details of this relationship.
-class EventTime < ActiveRecord::Base
+class EventTime < ApplicationRecord
   stampable
   belongs_to :event
   belongs_to :location

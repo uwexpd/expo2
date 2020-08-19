@@ -1,5 +1,5 @@
 # Holds the possible options that can be selected for an OrganizationQuarter's status.
-class OrganizationQuarterStatusType < ActiveRecord::Base
+class OrganizationQuarterStatusType < ApplicationRecord
   stampable
   has_many :organization_quarter_statuses
   has_many :organization_quarters, :through => :organization_quarter_statuses

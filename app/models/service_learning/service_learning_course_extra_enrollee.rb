@@ -1,4 +1,4 @@
-class ServiceLearningCourseExtraEnrollee < ActiveRecord::Base
+class ServiceLearningCourseExtraEnrollee < ApplicationRecord
   stampable
   belongs_to :service_learning_course
   belongs_to :person

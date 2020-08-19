@@ -1,5 +1,5 @@
 # Models a location object, representing a location in reality. Each location stores information such as address and directions, and also tracks a site supervisor (if applicable).
-class Location < ActiveRecord::Base
+class Location < ApplicationRecord
   stampable
   #has_many :service_learning_positions
   #has_many :service_learning_orientations

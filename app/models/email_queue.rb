@@ -1,4 +1,4 @@
-class EmailQueue < ActiveRecord::Base
+class EmailQueue < ApplicationRecord
   stampable
   # EmailQueue.partial_updates = false # disable partial_updates so that serialized columns get saved
   

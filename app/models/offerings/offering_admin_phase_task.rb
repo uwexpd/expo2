@@ -1,4 +1,4 @@
-class OfferingAdminPhaseTask < ActiveRecord::Base
+class OfferingAdminPhaseTask < ApplicationRecord
   stampable
   belongs_to :offering_admin_phase
   has_many :extra_fields, :class_name => "OfferingAdminPhaseTaskExtraField" 

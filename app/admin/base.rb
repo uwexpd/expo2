@@ -2,7 +2,7 @@ ActiveAdmin.register_page "Base" do
   menu false
 
   controller do  	  
-  	  skip_before_filter :login_required, :only => :remove_vicarious_login
+  	  skip_before_action :login_required, :only => :remove_vicarious_login
 
 	  def vicarious_login
 	    if params[:vicarious_login]
@@ -32,7 +32,7 @@ ActiveAdmin.register_page "Base" do
 	    session[:original_user] = nil
 	    session[:vicarious_token] = nil
 	    session[:vicarious_user] = nil
-	    redirect_to :back
+	    redirect_back(fallback_location: root_path)
 	  end
 
 	  protected

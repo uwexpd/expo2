@@ -1,5 +1,5 @@
 # An ApplicationForOffering may be reviewed by one or more OfferingReviewers. The ApplicationReviewer table keeps the scores that the OfferingReviewer has given to the associated ApplicationForOffering.
-class ApplicationReviewer < ActiveRecord::Base
+class ApplicationReviewer < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   belongs_to :offering_reviewer

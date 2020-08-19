@@ -1,5 +1,5 @@
 # Since the SDB is dumb, we have to store some extra information about majors, such as a title that is suitable for printing! ARGH!
-class MajorExtra < ActiveRecord::Base
+class MajorExtra < ApplicationRecord
   #set_primary_keys :major_branch, :major_pathway, :major_last_yr, :major_last_qtr, :major_abbr
   belongs_to :major, :foreign_key => [:major_branch, :major_pathway, :major_last_yr, :major_last_qtr, :major_abbr]
   belongs_to :discipline_category, :class_name => "DisciplineCategory", :foreign_key => "discipline_category_id"

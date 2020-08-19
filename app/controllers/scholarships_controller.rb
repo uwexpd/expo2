@@ -17,7 +17,7 @@ class ScholarshipsController < ApplicationController
     end    
     @search = Scholarship.active.ransack(params[:q])
     @search = Scholarship.upcoming.ransack(params[:q]) if params[:scope] == 'upcoming'
-    @scholarships = @search.result.includes(:scholarship_deadlines).page(params[:page]).uniq.order('scholarships.title')
+    @scholarships = @search.result(distinct: true).includes(:scholarship_deadlines).page(params[:page]).order('scholarships.title')
     
     add_breadcrumb "Scholarships Search"
   end

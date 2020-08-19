@@ -1,6 +1,6 @@
 # Keeps track of the different status types through which an ApplicationForOffering can go.  The model stores a unique name and an optional description.  The +description_pretty+ method can be used to provide a pretty version of the name or description automatically.
 # More details at ApplicationStatus.
-class ApplicationStatusType < ActiveRecord::Base
+class ApplicationStatusType < ApplicationRecord
   stampable
   has_many :application_statuses
   has_many :offering_statuses

@@ -1,7 +1,7 @@
 # Places a restriciton on the associated Offering record.  Subclasses of this class override the three methods in the model.  The primary method, allows?, takes an ApplicationForOffering object and executes code to make sure that the given ApplicationForOffering is allowed to continue.
 # A common OfferingRestriction would be the PastDeadlineRestriction, which disallows an application to continue if the deadline for the Offering has passed.  Another example is the FulltimeStudentRestriction, which checks that a student is enrolled in enough credits to be eligible for the associated Offering.
 # Also see OfferingRestrictionExemption.
-class OfferingRestriction < ActiveRecord::Base
+class OfferingRestriction < ApplicationRecord
   stampable
   belongs_to :offering
   has_many :exemptions, :class_name => "OfferingRestrictionExemption"

@@ -1,4 +1,4 @@
-class OfferingDashboardItem < ActiveRecord::Base
+class OfferingDashboardItem < ApplicationRecord
   stampable
   belongs_to :offering
   belongs_to :dashboard_item

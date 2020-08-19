@@ -1,4 +1,4 @@
-class TextTemplate < ActiveRecord::Base
+class TextTemplate < ApplicationRecord
   stampable
   
   validates_presence_of :name

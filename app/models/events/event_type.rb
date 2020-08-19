@@ -1,4 +1,4 @@
-class EventType < ActiveRecord::Base
+class EventType < ApplicationRecord
 
 	has_many :events, :class_name => "Event", :foreign_key => "event_type_id"
 

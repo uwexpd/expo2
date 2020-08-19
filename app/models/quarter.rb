@@ -1,4 +1,4 @@
-class Quarter < ActiveRecord::Base
+class Quarter < ApplicationRecord
   #include Comparable
   stampable
   

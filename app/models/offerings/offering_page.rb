@@ -1,5 +1,5 @@
 # Each Offering organizes the application process into one or more pages.  This is also used when displaying the application details in an admin context.
-class OfferingPage < ActiveRecord::Base
+class OfferingPage < ApplicationRecord
   stampable
   belongs_to :offering
   has_many :offering_questions, -> { order('ordering') }, :dependent => :destroy

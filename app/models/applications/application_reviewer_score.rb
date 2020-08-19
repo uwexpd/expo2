@@ -1,5 +1,5 @@
 # Holds the score and comments that an ApplicationReviewer has assigned to a specific ApplicationForOffering.
-class ApplicationReviewerScore < ActiveRecord::Base
+class ApplicationReviewerScore < ApplicationRecord
   stampable
   belongs_to :offering_review_criterion
   belongs_to :application_reviewer

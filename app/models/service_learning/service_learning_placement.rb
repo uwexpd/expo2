@@ -1,7 +1,7 @@
 # Represents a possible allocated service learning opportunity that a student can sign up for. Staff users allocate position slots to each ServiceLearningCourse by creating ServiceLearningPlacement records. Until a student signs up for the course, the placement is open (or, still considered an "opportunity"). Once a student has signed up, it becomes filled. 
 # 
 # For example, consider a ServiceLearningPosition called "Urban Planner Assistant" with 10 possible slots. Staff users decide to split up these spots between two courses: 8 slots to CEP 200 and 2 slots to AES 151. In that scenario, there will be 8 ServiceLearningPlacement records tied to CEP 200 and 2 ServiceLearningPlacement records tied to AES 151.
-class ServiceLearningPlacement < ActiveRecord::Base
+class ServiceLearningPlacement < ApplicationRecord
   #include ActionController::UrlWriter
   
   stampable

@@ -1,5 +1,5 @@
 # Handles the updating of the ServiceLearningCourse.students field
-class ServiceLearningCourseSweeper < ActiveRecord::Base
+class ServiceLearningCourseSweeper < ApplicationRecord
 
   self.abstract_class = true
   

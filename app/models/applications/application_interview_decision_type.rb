@@ -1,4 +1,4 @@
-class ApplicationInterviewDecisionType < ActiveRecord::Base
+class ApplicationInterviewDecisionType < ApplicationRecord
   stampable
   belongs_to :offering
   

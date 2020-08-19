@@ -1,4 +1,4 @@
-class OfferingQuestionOption < ActiveRecord::Base
+class OfferingQuestionOption < ApplicationRecord
   stampable
   belongs_to :offering_question
 

@@ -24,3 +24,5 @@
 /config/certs
 /config/uwca.crt
 /config/email.yml
+/config/secrets.yml
+

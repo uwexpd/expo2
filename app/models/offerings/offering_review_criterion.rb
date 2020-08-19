@@ -1,5 +1,5 @@
 # When an Offering uses a formal review process, this model is used to define the criteria on which an ApplicationForOffering should be scored. Each ApplicationReviewer will submit a score and comments for each OfferingReviewCriterion for an application.
-class OfferingReviewCriterion < ActiveRecord::Base
+class OfferingReviewCriterion < ApplicationRecord
   stampable
   belongs_to :offering
   

@@ -34,7 +34,7 @@ class RsvpController < ApplicationController
         flash[:error] = "Something went wrong. Please try again."
       end
     end
-    redirect_to params[:return_to] || :back
+    redirect_to params[:return_to] || fallback_location: {action: "index"}
   end
 
   def unattend
@@ -47,7 +47,7 @@ class RsvpController < ApplicationController
         flash[:error] = "Something went wrong. Please try again."
       end
     end
-    redirect_to params[:return_to] || :back
+    redirect_to params[:return_to] || fallback_location: {action: "index"}
   end
 
 

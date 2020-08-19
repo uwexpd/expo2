@@ -1,5 +1,5 @@
 # An ApplicationForOffering may be reviewed by one or more OfferingInterviewers.
-class ApplicationInterviewer < ActiveRecord::Base
+class ApplicationInterviewer < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   belongs_to :offering_interviewer

@@ -1,5 +1,5 @@
 # An "Offering" in EXPo is anything that a student (or other user, potentially) can apply for.  Common examples would be scholarships, fellowships, programs (like a summer program), internships, courses that require an application process, etc. test
-class Offering < ActiveRecord::Base
+class Offering < ApplicationRecord
   stampable
   
   scope :sorting, -> { 

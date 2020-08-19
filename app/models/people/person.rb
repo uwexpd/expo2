@@ -1,4 +1,4 @@
-class Person < ActiveRecord::Base  
+class Person < ApplicationRecord  
   model_stamper
   belongs_to :department
   belongs_to :institution

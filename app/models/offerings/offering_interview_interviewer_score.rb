@@ -1,4 +1,4 @@
-class OfferingInterviewInterviewerScore < ActiveRecord::Base
+class OfferingInterviewInterviewerScore < ApplicationRecord
   stampable
   belongs_to :offering_interview_interviewer
   belongs_to :offering_review_criterion

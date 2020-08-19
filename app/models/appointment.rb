@@ -1,5 +1,5 @@
 # Models an appointment (scheduled or drop-in) between a staff person and a student.
-class Appointment < ActiveRecord::Base
+class Appointment < ApplicationRecord
   
   belongs_to :staff_person, :class_name => "Person", :foreign_key => "staff_person_id"
   belongs_to :student, :class_name => "Student", :foreign_key => "student_id"

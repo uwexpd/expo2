@@ -1,7 +1,7 @@
 # Defines a question that is asked of applicants during an application process. Questions are organized into OfferingPage objects, which allow you to group questions together on separate pages to display to applicants. An OfferingQuestion defines every aspect of how the question should be displayed and validated. This is accomplished through a combination of boolean and other attributes on the object itself, as well as associated OfferingQuestionOption and OfferingQuestionValidation associations.
 # 
 # Answers to questions are usually stored in "first-class" attributes on the ApplicationForOffering object or associated models; i.e., the answer controls an actual column in the database table as defined by the +attribute_to_update+ field. When there is no need for answers to be stored in first-class attributes, however, this question can define the +dynamic_answer+ boolean to true, which will result in answers being stored in the ApplicationAnswer associations instead. In this case, it may be harder to compare or analyze applications, so this should only be used for answers that are unique to this application process or do not need to be acted upon otherwise.
-class OfferingQuestion < ActiveRecord::Base
+class OfferingQuestion < ApplicationRecord
   stampable
   belongs_to :offering_page
   has_many :offering_question_options, :dependent => :destroy

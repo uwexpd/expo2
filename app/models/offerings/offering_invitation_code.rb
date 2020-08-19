@@ -1,5 +1,5 @@
 # If we need to restrict access to apply for an Offering to only certain individuals, we can create InvitationCodes that people can use to bypass a certain restriction, like the MustBeStudentRestriction.
-class OfferingInvitationCode < ActiveRecord::Base
+class OfferingInvitationCode < ApplicationRecord
   stampable
   belongs_to :offering
   belongs_to :application_for_offering

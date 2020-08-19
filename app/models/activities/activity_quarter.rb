@@ -1,4 +1,4 @@
-class ActivityQuarter < ActiveRecord::Base
+class ActivityQuarter < ApplicationRecord
   validates_presence_of :quarter_id
   
   belongs_to :quarter

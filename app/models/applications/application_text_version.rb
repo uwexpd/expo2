@@ -1,4 +1,4 @@
-class ApplicationTextVersion < ActiveRecord::Base
+class ApplicationTextVersion < ApplicationRecord
   stampable
   
   validates_presence_of :application_text_id

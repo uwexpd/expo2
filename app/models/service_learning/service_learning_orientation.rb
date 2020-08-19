@@ -1,5 +1,5 @@
 # Each ServiceLearningPosition is supposed to have an Orientation for students. In some cases, the Orientation is flexible, meaning that the times are not rigid; this does _not_ mean that the orientation is optional.
-class ServiceLearningOrientation < ActiveRecord::Base
+class ServiceLearningOrientation < ApplicationRecord
   stampable
   belongs_to :orientation_location, :class_name => "Location", :foreign_key => "location_id"
   belongs_to :orientation_contact, :class_name => "OrganizationContact", :foreign_key => "organization_contact_id"

@@ -3,7 +3,7 @@
 # ServiceLearningCourses also each have many ServiceLearningCourseInstructors. Since the instructor data in the SDB is unreliable, we maintain this list on our own. This also allows us to track additional course instructors or TA's, both of which are often not listed in the SDB.
 # 
 # Finally, a ServiceLearningCourse has a ServiceLearningCourseStatus which is used during the Course Development process. See notes at ServiceLearningCourseStatus.
-class ServiceLearningCourse < ActiveRecord::Base
+class ServiceLearningCourse < ApplicationRecord
   stampable
   after_update :save_courses
   attr_accessor :new_extra_enrollee

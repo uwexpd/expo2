@@ -1,5 +1,5 @@
 # An ApplationMentor's answer to a specific OfferingMentorQuestion.
-class ApplicationMentorAnswer < ActiveRecord::Base
+class ApplicationMentorAnswer < ApplicationRecord
   stampable
   belongs_to :question, :class_name => "OfferingMentorQuestion", :foreign_key => "offering_mentor_question_id"
   delegate :offering, :to => :question

@@ -1,4 +1,4 @@
-class ApplicationOtherAward < ActiveRecord::Base
+class ApplicationOtherAward < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   belongs_to :offering_other_award_type

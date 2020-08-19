@@ -1,5 +1,5 @@
 # Each ApplicationForOffering object can have multiple ApplicationFiles attached to it.  In many cases this will be in the form of an actual attached file, such as a Word document, a PDF, or an image.  In some cases, the "file" will be stored as plain text, such as a simple letter or a student's essay that needs to be easily transferred or indexed; this is the purpose of the +text_version+ attribute.
-class ApplicationFile < ActiveRecord::Base
+class ApplicationFile < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   belongs_to :offering_question

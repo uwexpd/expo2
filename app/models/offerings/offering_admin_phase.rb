@@ -1,5 +1,5 @@
 # Helps coordinate the backend work of managing an Offering. An OfferingAdminPhase basically allows us to display segmented management functions on the Admin::Apply controller.
-class OfferingAdminPhase < ActiveRecord::Base
+class OfferingAdminPhase < ApplicationRecord
   stampable
   belongs_to :offering
   has_many :tasks, :class_name => "OfferingAdminPhaseTask" do

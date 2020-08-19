@@ -6,7 +6,7 @@
   
   TODO: All placements created by the shared unit will have the shared units id attached
 =end
-class ServiceLearningPositionShare < ActiveRecord::Base
+class ServiceLearningPositionShare < ApplicationRecord
   belongs_to :unit
   belongs_to :service_learning_position
   

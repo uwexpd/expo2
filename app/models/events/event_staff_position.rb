@@ -1,5 +1,5 @@
 # Models a position that an EventStaff can sign up for. For example, "Session Assistant" or "Greeter" or something similar. Each Position can have multiple "shifts," modeled by the EventStaffPositionShift object. These shifts allow a person to choose one or multiple shifts to work. If the +require_all_shifts+ boolean is true, then users must sign up for _all_ shifts, not just one.
-class EventStaffPosition < ActiveRecord::Base
+class EventStaffPosition < ApplicationRecord
   stampable
   belongs_to :event
   belongs_to :training_session_event, :class_name => "Event", :foreign_key => "training_session_event_id"

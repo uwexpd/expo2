@@ -1,4 +1,4 @@
-class ApplicationPage < ActiveRecord::Base
+class ApplicationPage < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   belongs_to :offering_page

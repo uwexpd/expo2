@@ -1,5 +1,5 @@
 # Each Event can have staff members (often volunteers). If a Person has a record in this table, then they have signed up to be an EventStaff for this Event. This association happens via EventStaffPositionShift, which identifies the possible different positions someone can sign up for.
-class EventStaff < ActiveRecord::Base
+class EventStaff < ApplicationRecord
   stampable
   belongs_to :shift, :class_name => "EventStaffPositionShift", :foreign_key => "event_staff_position_shift_id"
   belongs_to :person

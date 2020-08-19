@@ -1,4 +1,4 @@
-class UserUnitRole < ActiveRecord::Base
+class UserUnitRole < ApplicationRecord
   belongs_to :user
   belongs_to :role
   belongs_to :unit

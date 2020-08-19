@@ -1,5 +1,5 @@
 # Tracks the possible status types for ServiceLearningCourseStatus.
-class ServiceLearningCourseStatusType < ActiveRecord::Base
+class ServiceLearningCourseStatusType < ApplicationRecord
   stampable
   has_many :service_learning_course_statuses
   

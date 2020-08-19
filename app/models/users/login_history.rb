@@ -1,4 +1,4 @@
-class LoginHistory < ActiveRecord::Base
+class LoginHistory < ApplicationRecord
   stampable
   belongs_to :user
   # has_many :session_histories, :class_name => "SessionHistory", :primary_key => "session_id", :foreign_key => "session_id"

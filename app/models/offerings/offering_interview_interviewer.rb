@@ -1,4 +1,4 @@
-class OfferingInterviewInterviewer < ActiveRecord::Base
+class OfferingInterviewInterviewer < ApplicationRecord
   stampable
   belongs_to :offering_interview
   belongs_to :offering_interviewer

@@ -1,7 +1,7 @@
 # git_source(:github) { |repo| "https://github.com/#{repo}.git" } # Didn't work in production...TODO: try to fix this later
 source 'https://rubygems.org'
 
-gem 'rails', '~> 4.2', '> 4.2.8'
+gem 'rails', '~> 5.2', '>= 5.2.4.3'
 gem 'sass-rails'
 gem 'coffee-rails'
 # Use Uglifier as compressor for JavaScript assets
@@ -20,26 +20,26 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'autoprefixer-rails'
 
 # Active Admin
-gem 'activeadmin'
-gem 'ransack' # successor of meta search for rails 4
-gem 'active_material', github: 'vigetlabs/active_material'
+gem 'activeadmin', '~> 2.7'
+gem 'ransack', '~> 2.3', '>= 2.3.2'
+gem 'active_material', github: 'vigetlabs/active_material', tag: 'v1.5.0'
 gem 'activeadmin_addons'
 
 # hardens your app against XSS attack
-#gem 'secure_headers', '>= 2.1.0'
+gem 'secure_headers'
 
 # handle multiple primary keys in UWSDB tables: Since many UWSDB tables have multiple primary keys and Rails doesn't really "do" composite PK's
-gem 'composite_primary_keys', '>=8.1.1'
+gem 'composite_primary_keys', '~> 11.3', '>= 11.3.1'
 
 # adapter for ms sql server 2012
 gem 'tiny_tds'
-gem 'activerecord-sqlserver-adapter'
+gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
 
 # Connect to UW Student Web Service
-gem 'activeresource', require: 'active_resource'
+gem 'activeresource', '~> 5.1', '>= 5.1.1'
 
 gem 'mysql2', '~> 0.4.0'
-gem 'activerecord-userstamp'
+gem 'activerecord-userstamp', github: 'lowjoel/activerecord-userstamp'
 gem 'tinymce-rails'
 gem 'will_paginate', '~> 3.1.6'
 gem 'will_paginate-materialize', github: 'harrybournis/will_paginate-materialize'
@@ -48,10 +48,10 @@ gem 'rails_autolink'
 # for chosen
 gem 'chosen-rails'
 
-gem 'breadcrumbs_on_rails'
-#gem 'paranoia', github: 'rubysherpas/paranoia', branch: 'rails4'
+gem 'breadcrumbs_on_rails', '~> 4.0'
+#gem 'paranoia' TODO
 gem 'json'
-gem 'activesupport-json_encoder'
+# gem 'activesupport-json_encoder' TODO check if still needed this
 gem 'nokogiri'
 gem 'spreadsheet'
 
@@ -70,21 +70,21 @@ gem 'material_icons'
 gem 'materialize-sass', '~> 1.0.0'
 
 # backport from Rails 5 for Rails 4.2
-gem 'where-or'
+# gem 'where-or' #TODO comment out this since upgrade to rails 5
 
-gem 'invisible_captcha'
+gem 'byebug'
 
 group :production do  
   gem 'omniauth-shibboleth'
 end
 
-group :development, :test do
-  gem 'byebug'
+group :development, :test do  
   gem 'awesome_print'
   gem "rspec-rails"
 end
 
 group :development do
+  gem 'puma'
   gem 'web-console', '~> 2.0'
   gem 'spring'
   gem 'capistrano', '~> 3.1'
@@ -92,14 +92,12 @@ group :development do
   gem 'capistrano-passenger'
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'
-  gem 'annotate'
-  gem 'thin', :require => false
+  gem 'annotate'  
   gem 'brakeman', :require => false
   gem 'uw_sws'
   gem 'rack-mini-profiler', require: false
   gem 'spring-commands-rspec'  
+  #gem 'gas_load_tester'  
 end
 
   
-
-

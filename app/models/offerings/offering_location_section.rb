@@ -1,4 +1,4 @@
-class OfferingLocationSection < ActiveRecord::Base
+class OfferingLocationSection < ApplicationRecord
   stampable
   belongs_to :offering
   has_many :presenters, :class_name => "ApplicationForOffering", :foreign_key => 'location_section_id'

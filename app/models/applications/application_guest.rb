@@ -1,5 +1,5 @@
 # Applicants and group members can invite guests to an associated event, such as the research symposium or a scholarship awards dinner. This models that association. Note that this model is NOT connected to any true Event objects.
-class ApplicationGuest < ActiveRecord::Base
+class ApplicationGuest < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   belongs_to :group_member, :class_name => "ApplicationGroupMember", :foreign_key => "group_member_id"

@@ -1,4 +1,4 @@
-class ApplicationFinalDecisionType < ActiveRecord::Base
+class ApplicationFinalDecisionType < ApplicationRecord
   stampable  
   belongs_to :offering
 end

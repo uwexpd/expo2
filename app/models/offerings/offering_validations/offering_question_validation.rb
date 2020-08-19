@@ -1,4 +1,4 @@
-class OfferingQuestionValidation < ActiveRecord::Base
+class OfferingQuestionValidation < ApplicationRecord
   stampable
   belongs_to :offering_question
   validates_uniqueness_of :offering_question_id, :scope => "type"

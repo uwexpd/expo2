@@ -1,5 +1,5 @@
 # Users can have multiple email addresses that they use to send mass e-mails from. Users can create as many as they want, and set a default one as well.
-class UserEmailAddress < ActiveRecord::Base
+class UserEmailAddress < ApplicationRecord
   belongs_to :user
   validates_presence_of :user_id, :email
   validates_uniqueness_of :email, :scope => :user_id

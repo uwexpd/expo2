@@ -1,4 +1,4 @@
-class Role < ActiveRecord::Base
+class Role < ApplicationRecord
   has_and_belongs_to_many :rights
   has_many :user_unit_roles
   has_many :users, :through => :user_unit_roles

@@ -1,4 +1,4 @@
-class DisciplineCategory < ActiveRecord::Base
+class DisciplineCategory < ApplicationRecord
 	has_many :major_extras, :class_name => "MajorExtra", :foreign_key => "discipline_category_id"
 	
 	default_scope { order(:name) }

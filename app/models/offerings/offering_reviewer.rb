@@ -1,5 +1,5 @@
 # An OfferingReviewer is a person who has been identified as a reviewer for a certain Offering. An OfferingReviewer record connects a Person with an Offering so that staff can assign an OfferingReviewer to each ApplicationForOffering.
-class OfferingReviewer < ActiveRecord::Base
+class OfferingReviewer < ApplicationRecord
   stampable
   belongs_to :person
   belongs_to :offering

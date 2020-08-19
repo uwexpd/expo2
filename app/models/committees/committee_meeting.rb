@@ -1,4 +1,4 @@
-class CommitteeMeeting < ActiveRecord::Base
+class CommitteeMeeting < ApplicationRecord
   stampable
   belongs_to :committee
   has_many :committee_member_meetings, :dependent => :destroy do

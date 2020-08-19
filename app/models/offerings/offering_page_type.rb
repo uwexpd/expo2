@@ -1,3 +1,3 @@
-class OfferingPageType < ActiveRecord::Base
+class OfferingPageType < ApplicationRecord
   stampable
 end

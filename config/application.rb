@@ -22,8 +22,8 @@ module Expo2
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = false
 
-    # Do not swallow errors in after_commit/after_rollback callbacks.
-    config.active_record.raise_in_transactional_callbacks = true
+    # Do not swallow errors in after_commit/after_rollback callbacks. # This is deprecated in rails 5
+    # config.active_record.raise_in_transactional_callbacks = true
 
     # Be sure to have the adapter's gem in your Gemfile and follow the adapter's specific installation
     config.active_job.queue_adapter = :delayed_job
@@ -49,5 +49,6 @@ module Expo2
       config.dsn = "https://1201e893bd9f46a3a7487bbef67f62f1:ba372b40539a4d4d902fd6afeba23ee2@sentry.io/207047"
       config.environments = ['staging', 'production']
     end
+
   end
 end

@@ -1,4 +1,4 @@
-class OfferingAdminPhaseTaskExtraField < ActiveRecord::Base
+class OfferingAdminPhaseTaskExtraField < ApplicationRecord
   #include ActionController::UrlWriter
   include ActionView::Helpers::DateHelper
   include ActionView::Helpers::NumberHelper

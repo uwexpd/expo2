@@ -11,8 +11,8 @@ ActiveAdmin.register_page "Apply" do
 
   controller do 
   	
-  	before_filter :fetch_offering
-  	before_filter :fetch_apps
+  	before_action :fetch_offering
+  	before_action :fetch_apps
 
   	def manage
   		@phase = @offering.current_offering_admin_phase

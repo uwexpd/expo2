@@ -1,4 +1,4 @@
-class CommitteeQuarter < ActiveRecord::Base
+class CommitteeQuarter < ApplicationRecord
   stampable
   belongs_to :committee
   belongs_to :quarter

@@ -1,5 +1,5 @@
 # An OfferingInterviewer is a person who has been identified as an interviewer for a certain Offering. An OfferingInterviewer record connects a Person with an Offering so that staff can assign an OfferingInterviewer to each ApplicationForOffering.
-class OfferingInterviewer < ActiveRecord::Base
+class OfferingInterviewer < ApplicationRecord
   stampable
   belongs_to :person_record, :class_name => "Person", :foreign_key => "person_id"
   belongs_to :offering

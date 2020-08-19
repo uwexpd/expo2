@@ -1,4 +1,4 @@
-class ContactHistory < ActiveRecord::Base
+class ContactHistory < ApplicationRecord
   stampable
   
   belongs_to :person

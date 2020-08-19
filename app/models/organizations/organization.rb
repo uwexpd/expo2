@@ -1,5 +1,5 @@
 # An Organization is an operating entity outside of the university. This could be a business, a non-profit, another educational institution, or a community group. In the context of EXPo, an Organization is any entity that can sponsor a project or program, such as a service learning course. An Organization can belong to one parent organization which has some administrative control over the Organization, and can also belong to one or more Coalitions (see note at Coalition about this difference).
-class Organization < ActiveRecord::Base
+class Organization < ApplicationRecord
   stampable
   
   #include ChangeLogged

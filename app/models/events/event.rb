@@ -1,5 +1,5 @@
 # An Event is anything that could be attended by another object in EXPO, such as a workshop, a meeting, or a conference. Each Event can have multiple EventTimes, allowing you to break down an event into different sections or different options. For example, let's say you offer abstract writing workshops to students. You want to setup 10 different workshop dates, all of which are essentially the same event. You create an Event called "Abstract Writing Workshop," and then for each of the ten dates, you create separate EventTimes. This also allows you to restrict attendees to only attend one of the workshop times by setting the +allow_multiple_times_per_attendee+ to +false+.
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   stampable
   has_many :times, -> { where(type: nil) }, :class_name => "EventTime", :dependent => :destroy do 
     def future; -> { where("start_time > NOW()") }; end
