@@ -1,4 +1,3 @@
-# git_source(:github) { |repo| "https://github.com/#{repo}.git" } # Didn't work in production...TODO: try to fix this later
 source 'https://rubygems.org'
 
 gem 'rails', '~> 5.2', '>= 5.2.4.3'
