@@ -72,6 +72,8 @@ gem 'materialize-sass', '~> 1.0.0'
 # gem 'where-or' #TODO comment out this since upgrade to rails 5
 
 gem 'byebug'
+gem 'delayed_job', '~> 4.1', '>= 4.1.8'
+gem 'delayed_job_active_record', '~> 4.1', '>= 4.1.4'
 
 group :production do  
   gem 'omniauth-shibboleth'
