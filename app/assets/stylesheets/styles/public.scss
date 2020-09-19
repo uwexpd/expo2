@@ -420,7 +420,7 @@ ul.pagination{
 	color: whitesmoke;
 }
 
-.status_tag {        
+.status_tag, .tag {
     background-color: rgba(0,0,0,0.54);
     font-size: 12px;
     font-size: 0.75rem;
@@ -455,6 +455,10 @@ ul.pagination{
 
 .status_tag.yes {
     background-color: #4b2e83;
+}
+
+.pending.tag {
+	background-color: #68defc
 }
 
 #sidebar .filters :not(.circle-clipper) > .circle {

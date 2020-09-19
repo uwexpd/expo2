@@ -1,5 +1,5 @@
 class RsvpController < ApplicationController
-  skip_before_action :login_required
+  skip_before_action :login_required, raise: false
   before_action :student_login_required_if_possible
 
   def index
@@ -34,7 +34,7 @@ class RsvpController < ApplicationController
         flash[:error] = "Something went wrong. Please try again."
       end
     end
-    redirect_to params[:return_to] || fallback_location: {action: "index"}
+    redirect_to params[:return_to] || redirect_back(fallback_location: {action: "index"})
   end
 
   def unattend
@@ -47,7 +47,7 @@ class RsvpController < ApplicationController
         flash[:error] = "Something went wrong. Please try again."
       end
     end
-    redirect_to params[:return_to] || fallback_location: {action: "index"}
+    redirect_to params[:return_to] || redirect_back(fallback_location: {action: "index"})
   end
 
 

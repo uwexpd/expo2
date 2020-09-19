@@ -82,9 +82,9 @@
       <i class="material-icons circle green">business</i>
       <div class="title" style="width: 77%;">
         <% if is_your_position %>
-          <%= link_to position.title, :action => "my_position", :id => position.id %>
+          <%= link_to sanitize(position.title), :action => "my_position", :id => position.id %>
         <% else %>
-          <%= link_to_if show_links, position.title, :action => "position", :id => position.id %>
+          <%= link_to_if show_links, sanitize(position.title), :action => "position", :id => position.id %>
         <% end %>
         <span class="smaller">at <%= position.organization.name %></span>
       </div>

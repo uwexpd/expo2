@@ -1,8 +1,8 @@
-class MgeScholarsController < ApplicationController
+, raise: falseclass MgeScholarsController < ApplicationController
 
   add_breadcrumb 'MGE Home', Unit.find_by_abbreviation('mge').home_url
   
-  skip_before_action :login_required, :add_to_session_history
+  skip_before_action :login_required, :add_to_session_history, raise: false
   before_action :fetch_mge_awardees, :fetch_majors, :fetch_mentor_departments
   
   

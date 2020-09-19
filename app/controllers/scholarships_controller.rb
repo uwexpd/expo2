@@ -2,7 +2,7 @@ class ScholarshipsController < ApplicationController
 
   add_breadcrumb 'OSMFA Home', Unit.find_by_abbreviation('omsfa').home_url
   
-  skip_before_action :login_required, :add_to_session_history
+  skip_before_action :login_required, :add_to_session_history, raise: false
   
   def index
     if params[:q]
@@ -15,8 +15,8 @@ class ScholarshipsController < ApplicationController
         params[:q][:scholarship_categories_category_id_in] = categories_with_sub
       end
     end    
-    @search = Scholarship.active.ransack(params[:q])
-    @search = Scholarship.upcoming.ransack(params[:q]) if params[:scope] == 'upcoming'
+    @search = Scholarship.ransack(params[:q]).active
+    @search = Scholarship.ransack(params[:q]).upcoming if params[:scope] == 'upcoming'
     @scholarships = @search.result(distinct: true).includes(:scholarship_deadlines).page(params[:page]).order('scholarships.title')
     
     add_breadcrumb "Scholarships Search"

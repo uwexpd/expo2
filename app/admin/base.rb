@@ -2,7 +2,7 @@ ActiveAdmin.register_page "Base" do
   menu false
 
   controller do  	  
-  	  skip_before_action :login_required, :only => :remove_vicarious_login
+	  skip_before_action :login_required, :only => :remove_vicarious_login, raise: false
 
 	  def vicarious_login
 	    if params[:vicarious_login]

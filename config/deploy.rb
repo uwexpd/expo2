@@ -3,6 +3,8 @@ set :stage, :production
 set :deploy_to, '/usr/local/apps/expo2'
 set :repo_url,  'git@github.com:uwexpd/expo2.git'
 set :branch, 'master'
+set :rails_env, :production
+set :bundle_flags, "--quiet"
 set :deploy_user, 'joshlin'
 server 'new.expo.uw.edu', user: 'joshlin', roles: %w{web app db}, primary: true
 # set :rvm_ruby_version, '2.5.1' # set up which rvm ruby to use in server
@@ -16,7 +18,7 @@ set :ssh_options, {
 set :keep_releases, 10
 
 # files we want symlinking to specific entries in shared.
-set :linked_files, %w{config/email.yml config/database.yml config/database_scholarships.yml}
+set :linked_files, %w{config/email.yml config/database.yml config/database_scholarships.yml config/master.key}
 
 # dirs we want symlinking to shared
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system config/certs public/expo/error_images}

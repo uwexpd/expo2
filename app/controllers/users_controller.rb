@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_action :login_required  
+  skip_before_action :login_required, raise: false
   
   layout 'active_admin_logged_out'
   

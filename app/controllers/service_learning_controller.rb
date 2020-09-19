@@ -3,9 +3,9 @@
 =end
 class ServiceLearningController < ApplicationController
 
-  add_breadcrumb 'Carlson Center Home', Unit.find_by_abbreviation('carlson').home_url
+  add_breadcrumb  "Community-Engaged Learning Home" , Unit.find_by_abbreviation('carlson').home_url
 
-  skip_before_action :login_required
+  skip_before_action :login_required, raise: false
   before_action :student_login_required
   before_action :fetch_quarter
   before_action :check_if_student, :fetch_student
@@ -23,7 +23,7 @@ class ServiceLearningController < ApplicationController
 
   def index
     session[:type] = nil # clean session so it won't redirect to self_placement action    
-    add_breadcrumb "Service-Learning Registration"
+    add_breadcrumb "Community-Engaged Learning Registration"
   end
 
   def positions
@@ -31,12 +31,12 @@ class ServiceLearningController < ApplicationController
 
   def position
     @timecodes = @position.times.collect(&:timecodes).flatten
-    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Community-Engaged Learning Registration", community_engaged_path
     add_breadcrumb "Position Details"
   end
 
   def which
-    add_breadcrumb "Service-Learning Registration"
+    add_breadcrumb "Community-Engaged Learning Registration"
     if params[:course]
       session[:course] = params[:course]
       if session[:type] == "self_placement"
@@ -57,7 +57,7 @@ class ServiceLearningController < ApplicationController
   def my_position
     @placements ||= @student.service_learning_placements.for(@quarter,nil)
     redirect_to :action => "index" if @placements.empty?
-    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Community-Engaged Learning Registration", community_engaged_path
     add_breadcrumb "My Position Details"
   end
 
@@ -74,11 +74,11 @@ class ServiceLearningController < ApplicationController
       @old_placement.update_attribute(:person_id, nil)
       # TODO: change place_into to the place_into(position, course, unit) format when the student side it set up to use units
       @student.place_into(@new_position, @service_learning_course)
-      flash[:success] = "You are now registered into your new service-learning position."
+      flash[:success] = "You are now registered into your new community-engaged-learning position."
       redirect_to :action => "complete"
     end
 
-    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Community-Engaged Learning Registration", community_engaged_path
     add_breadcrumb "Change Position"
   end
 
@@ -96,7 +96,7 @@ class ServiceLearningController < ApplicationController
       redirect_to :action => "risk", :id => @position
       # end
     end
-    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Community-Engaged Learning Registration", community_engaged_path
     add_breadcrumb "Update Contact"
   end
 
@@ -107,10 +107,10 @@ class ServiceLearningController < ApplicationController
         @student.update_attribute :service_learning_risk_date_extention, true if @service_learning_course.unit.abbreviation == 'carlson'
         # TODO: change place_into to the place_into(position, course, unit) format when the student side it set up to use units
         @student.place_into(@position, @service_learning_course)
-        flash[:success] = "Service-learning registration complete."
+        flash[:success] = "Community-Engaged Learning registration complete."
         redirect_to :action => "complete"      
     end
-    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Community-Engaged Learning Registration", community_engaged_path
     add_breadcrumb "Update Contact", service_learning_action_path(action: :contact, id: @position)
     add_breadcrumb "Finish Registeration"
   end
@@ -121,7 +121,7 @@ class ServiceLearningController < ApplicationController
     if !@placements.empty? && @placements.first.position.unit.abbreviation == 'bothell'
       return render :template => 'service_learning/complete_bothell'
     end
-    add_breadcrumb "Service-Learning Registration", service_learning_path
+    add_breadcrumb "Community-Engaged Learning Registration", community_engaged_path
     add_breadcrumb "Registeration Complete"
   end
 
@@ -164,7 +164,7 @@ class ServiceLearningController < ApplicationController
                 return @position.errors.add(field, "cannot be blank.") if params[:service_learning_position][field].blank?
             end                    
             if @position.times.empty? && (params[:service_learning_position][:new_times].blank? || params[:service_learning_position][:new_times] == "clear")
-              return @position.errors.add_to_base "Please select a time for service learning schedule." 
+              return @position.errors.add_to_base "Please select a time for community-engaged learning learning schedule." 
             end            
             
             @self_placement.self_placement_validations = true
@@ -238,7 +238,7 @@ class ServiceLearningController < ApplicationController
   
   def check_if_student
     unless @current_user.person.is_a? Student      
-      raise ServiceLearningException.new("You aren't a student.", "In order to register for a service-learning opportunity, you must be a registered student at the University of Washington.")
+      raise ServiceLearningException.new("You aren't a student.", "In order to registerlfor a community-engaged learninc opportunity, you must be a registered student at the University of Washington.")
     end    
   end
   
@@ -263,7 +263,7 @@ class ServiceLearningController < ApplicationController
   
   def check_enrolled_service_learning_courses
     if @enrolled_service_learning_courses.empty?      
-      raise ServiceLearningException.new("You don't appear to be enrolled in any service-learning courses.", "Often, this is because you recently added a class and the change has not yet appeared in our system. If you think this is an error, please contact the Carlson Center staff at serve@uw.edu immediately.")
+      raise ServiceLearningException.new("You don't appear to be enrolled in any community-engaged learning courses.", "Often, this is because you recently added a class and the change has not yet appeared in our system. If you think this is an error, please contact the Carlson Center staff at serve@uw.edu immediately.")
     
       # if session[:non_enrolled_course].nil?
       #   redirect_to :action => "select_non_enrolled_course" and return
@@ -289,13 +289,13 @@ class ServiceLearningController < ApplicationController
     if @student.sdb.age < 18 && !@student.valid_service_learning_waiver_on_file?
       flash[:error] = "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk
                         form on your behalf <strong>before</strong> you can register for a service learning position. Please
-                        visit the Carlson Center office in Mary Gates Hall as soon as possible."
+                        visit the Community-Engaged Courses office in Mary Gates Hall as soon as possible."
     end
   end
 
   def require_waiver_if_minor
     if @student.sdb.age < 18 && !@student.valid_service_learning_waiver_on_file?      
-      raise ServiceLearningException.new("You must have an Acknowledgement of Risk on file.", "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk form on your behalf <strong>before</strong> you can register for a service learning position. Please visit the Carlson Center office in Mary Gates Hall as soon as possible.")
+      raise ServiceLearningException.new("You must have an Acknowledgement of Risk on file.", "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk form on your behalf <strong>before</strong> you can register for a community-engaged learning position. Please visit the Carlson Center office in Mary Gates Hall as soon as possible.")
     end
   end
 
@@ -330,14 +330,14 @@ class ServiceLearningController < ApplicationController
   
   def check_if_registration_open
     unless @service_learning_course.open?      
-      raise ServiceLearningException.new("Service-learning registration is closed.")
+      raise ServiceLearningException.new("Community-Engaged Learning registration is closed.")
     end
   end
   
   def check_if_registered_with_same_course
     # Stop this method if find student has a service learning placement that is already confirmed for same course
     if @student.service_learning_placements.select{|p| p.course == @service_learning_course && p.position.quarter == @quarter }.size > 0
-      flash[:error] = "You already have a placement for #{@service_learning_course.title}. Please contact Carlson Center staff for self placement request."
+      flash[:error] = "You already have a placement for #{@service_learning_course.title}. Please contact Community-Engaged Courses staff for self placement request."
       redirect_to :action => 'index'
     end
   end  

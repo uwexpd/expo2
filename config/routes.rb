@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     get 'remove_vicarious_login', :to => 'application#remove_vicarious_login'
     resources :users, only: [:create, :update]
 
+
     # RSVP for events
     get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event
     get 'rsvp/attend/:id', to: 'rsvp#attend', as: :rsvp_attend
@@ -56,12 +57,15 @@ Rails.application.routes.draw do
     match 'opportunities/:action/:id', to: 'opportunities#:action', via: [:get, :post, :put, :patch]
 
     # Service Learning
-    #match 'service_learning/:quarter_abbrev', to: 'service_learning#index', via: [:get, :post, :put, :patch]
-    #match 'service_learning/:quarter_abbrev/:action', to: 'service_learning#:action', via: [:get, :post, :put, :patch]
-    match 'service_learning', to: 'service_learning#index', via: [:get, :post], :quarter_abbrev => 'current', as: :service_learning    
+    # Name change from service_learning to community_engaged
+    match 'community_engaged', to: 'service_learning#index', via: [:get, :post], :quarter_abbrev => 'current', as: :community_engaged
+    match 'community_engaged/:action', to: 'service_learning#:action', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
+    match 'community_engaged/:action/:id', to: 'service_learning#:action', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current', as: :community_engaged_action
+    #################################################################
+    match 'service_learning', to: 'service_learning#index', via: [:get, :post
+    ], :quarter_abbrev => 'current', as: :service_learning
     match 'service_learning/:action', to: 'service_learning#:action', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
     match 'service_learning/:action/:id', to: 'service_learning#:action', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current', as: :service_learning_action
-
   end
   
   # Redirect to Sub URI only when it doesn't match '/expo/' in the request URLs

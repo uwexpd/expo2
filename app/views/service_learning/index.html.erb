@@ -1,7 +1,7 @@
-<% title("Service-Learning Registration", @quarter.title) %>
+<% title("Community-Engaged Learning Registration", @quarter.title) %>
 
 <div class="card content">
-	<h5><%= link_to "UW Service-Learning Registration", service_learning_path %>
+	<h5><%= link_to "UW Community-Engaged Learning Registration", community_engaged_path %>
 		<span class="status_tag info right"><%= @quarter.title %></span>
 	</h5>
 
@@ -9,7 +9,7 @@
 
 	<%= render :partial => "your_position", :locals => { :service_learning_course => @service_learning_course, :position => @current_position, :hide_change_button => true } if @placements && !@placements.empty? %>
 
-	<p>You are currently enrolled in the following <%= pluralize @enrolled_service_learning_courses.size, "service-learning course" %>: 
+	<p>You are currently enrolled in the following <%= pluralize @enrolled_service_learning_courses.size, "Community Engaged Learning course" %>: 
 		<%= link_to "(Switch to another course)", :action => 'which' if @enrolled_service_learning_courses.size > 1 %>
 		<ul class="list_style">
 			<% @enrolled_service_learning_courses.each do |course| %>

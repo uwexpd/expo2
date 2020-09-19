@@ -1,7 +1,7 @@
 # This controller handles the login/logout function of the site.  
 class SessionsController < ApplicationController
   
-  skip_before_action :login_required, :add_to_session_history
+  skip_before_action :login_required, :add_to_session_history, raise: false
   
   layout 'active_admin_logged_out'
 
