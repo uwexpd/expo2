@@ -1,4 +1,4 @@
-, raise: falseclass MgeScholarsController < ApplicationController
+class MgeScholarsController < ApplicationController
 
   add_breadcrumb 'MGE Home', Unit.find_by_abbreviation('mge').home_url
   

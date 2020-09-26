@@ -4,7 +4,17 @@
 
 <%= render :partial => "your_position", :locals => { :service_learning_course => @service_learning_course, :position => @position } %>
 
-<h5>Acknowledgement of Risk</h5>
+<center><h5>
+  <p>University of Washington </p>
+  <% if @service_learning_course.unit.abbreviation == 'bothell' %>
+    <p>Community Based Learning and Research<p/> 
+    <p>Community-Engaged Learning Acknowledgement of Risk Form<p/>    
+  <% else %>
+    <p>Community Engagement and Leadership Education (CELE) Center<p/> 
+    <p>Community Engaged Courses Acknowledgement of Risk Form<p/>
+  <% end %>
+</h5></center><br />
+<h6>Acknowledgement of Risk and Consent for Treatment for Students Age 18 and Over</h6 >
 
 <%= form_for @student, :url => { :action => 'risk', :id => @position } do |f| -%>
 
