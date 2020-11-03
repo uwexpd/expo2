@@ -122,7 +122,7 @@ ActiveAdmin.register Offering do
             admin_users = User.admin.pluck(:login, :id)
             f.input :dean_approver_id, label: 'Dean', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}
             f.input :financial_aid_approver_id, label: 'Financial aid', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}
-            f.input :disbersement_approver_id, label: 'Disbersement', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}:q
+            f.input :disbersement_approver_id, label: 'Disbersement', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}
         end
       end
 
