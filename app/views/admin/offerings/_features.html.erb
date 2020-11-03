@@ -1,0 +1,115 @@
+<div class='panel_contents'>
+	<div class='content-block'>
+		<p>Enable or disable certain features for this offering.</p>
+		<table class="borderless">
+			<tr>
+				<th style="width:30%">Awards</th>
+				<td>
+					<div class="toggle-bool-switches-container">
+						<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+						<%= link_to({:id => offering.id}, :remote => true) do %>
+							<span id="toggle-offering-<%= offering.id %>-uses_awards" class="toggle-bool-switch <%= "on" if offering.uses_awards? %>" data-model="offering" data-object_id="<%= offering.id %>" data-field="uses_awards" <%= "data-value=true" if offering.uses_awards? %> data-url="/expo/admin/offerings/<%= offering.id %>">
+						</span>
+						<% end %>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Group Members</th>
+				<td>
+					<div class="toggle-bool-switches-container">
+						<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+						<%= link_to({:id => offering.id}, :remote => true) do %>
+							<span id="toggle-offering-<%= offering.id %>-uses_group_members" class="toggle-bool-switch <%= "on" if offering.uses_group_members? %>" data-model="offering" data-object_id="<%= offering.id %>" data-field="uses_group_members" <%= "data-value=true" if offering.uses_group_members? %> data-url="/expo/admin/offerings/<%= offering.id %>">
+						</span>
+						<% end %>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Mentors</th>
+				<td>
+					<div class="toggle-bool-switches-container">
+						<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+						<%= link_to({:id => offering.id}, :remote => true) do %>
+							<span id="toggle-offering-<%= offering.id %>-uses_mentors" class="toggle-bool-switch <%= "on" if offering.uses_mentors? %>" data-model="offering" data-object_id="<%= offering.id %>" data-field="uses_mentors" <%= "data-value=true" if offering.uses_mentors? %> data-url="/expo/admin/offerings/<%= offering.id %>">
+						</span>
+						<% end %>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Interviews</th>
+				<td>
+					<div class="toggle-bool-switches-container">
+						<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+						<%= link_to({:id => offering.id}, :remote => true) do %>
+							<span id="toggle-offering-<%= offering.id %>-uses_interviews" class="toggle-bool-switch <%= "on" if offering.uses_interviews? %>" data-model="offering" data-object_id="<%= offering.id %>" data-field="uses_interviews" <%= "data-value=true" if offering.uses_interviews? %> data-url="/expo/admin/offerings/<%= offering.id %>">
+						</span>
+						<% end %>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Moderators</th>
+				<td>
+					<div class="toggle-bool-switches-container">
+						<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+						<%= link_to({:id => offering.id}, :remote => true) do %>
+							<span id="toggle-offering-<%= offering.id %>-uses_moderatorsuses_moderators" class="toggle-bool-switch <%= "on" if offering.uses_moderators? %> notify-success" data-model="offering" data-object_id="<%= offering.id %>" data-field="uses_mentors" <%= "data-value=true" if offering.uses_moderators? %> data-url="/expo/admin/offerings/<%= offering.id %>">
+						</span>
+						<% end %>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Confirmation</th>
+				<td>
+					<div class="toggle-bool-switches-container">
+						<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+						<%= link_to({:id => offering.id}, :remote => true) do %>
+							<span id="toggle-offering-<%= offering.id %>-uses_confirmation" class="toggle-bool-switch <%= "on" if offering.uses_confirmation? %>" data-model="offering" data-object_id="<%= offering.id %>" data-field="uses_confirmation" <%= "data-value=true" if offering.uses_confirmation? %> data-url="/expo/admin/offerings/<%= offering.id %>" >
+						</span>
+						<% end %>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Award Acceptance</th>
+				<td>
+					<div class="toggle-bool-switches-container">
+						<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+						<%= link_to({:id => offering.id}, :remote => true) do %>
+							<span id="toggle-offering-<%= offering.id %>-uses_award_acceptance" class="toggle-bool-switch <%= "on" if offering.uses_award_acceptance? %>" data-model="offering" data-object_id="<%= offering.id %>" data-field="uses_award_acceptance" <%= "data-value=true" if offering.uses_award_acceptance? %> data-url="/expo/admin/offerings/<%= offering.id %>">
+						</span>
+						<% end %>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Lookup Tool</th>
+				<td>
+					<div class="toggle-bool-switches-container">
+						<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+						<%= link_to({:id => offering.id}, :remote => true) do %>
+							<span id="toggle-offering-<%= offering.id %>-uses_lookup" class="toggle-bool-switch <%= "on" if offering.uses_lookup? %>" data-model="offering" data-object_id="<%= offering.id %>" data-field="uses_lookupuses_lookup" <%= "data-uses_lookupuses_lookup=true" if offering.uses_lookup? %> data-url="/expo/admin/offerings/<%= offering.id %>">
+						</span>
+						<% end %>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Online Proceedings</th>
+				<td>
+					<div class="toggle-bool-switches-container">
+						<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+						<%= link_to({:id => offering.id}, :remote => true) do %>
+							<span id="toggle-offering-<%= offering.id %>-uses_proceedings" class="toggle-bool-switch <%= "on" if offering.uses_proceedings? %>" data-model="offering" data-object_id="<%= offering.id %>" data-field="uses_proceedings" <%= "data-value=true" if offering.uses_proceedings? %> data-url="/expo/admin/offerings/<%= offering.id %>">
+						</span>
+						<% end %>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

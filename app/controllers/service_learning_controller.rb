@@ -263,7 +263,7 @@ class ServiceLearningController < ApplicationController
   
   def check_enrolled_service_learning_courses
     if @enrolled_service_learning_courses.empty?      
-      raise ServiceLearningException.new("You don't appear to be enrolled in any community-engaged learning courses.", "Often, this is because you recently added a class and the change has not yet appeared in our system. If you think this is an error, please contact the Carlson Center staff at serve@uw.edu immediately.")
+      raise ServiceLearningException.new("You don't appear to be enrolled in any community-engaged learning courses.", "Often, this is because you recently added a class and the change has not yet appeared in our system. If you think this is an error, please contact the Community engaged courses staff at serve@uw.edu immediately.")
     
       # if session[:non_enrolled_course].nil?
       #   redirect_to :action => "select_non_enrolled_course" and return
@@ -295,7 +295,7 @@ class ServiceLearningController < ApplicationController
 
   def require_waiver_if_minor
     if @student.sdb.age < 18 && !@student.valid_service_learning_waiver_on_file?      
-      raise ServiceLearningException.new("You must have an Acknowledgement of Risk on file.", "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk form on your behalf <strong>before</strong> you can register for a community-engaged learning position. Please visit the Carlson Center office in Mary Gates Hall as soon as possible.")
+      raise ServiceLearningException.new("You must have an Acknowledgement of Risk on file.", "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk form on your behalf <strong>before</strong> you can register for a community-engaged learning position. Please visit the Community engaged courses office in Mary Gates Hall as soon as possible.")
     end
   end
 

@@ -29,8 +29,8 @@ module Expo2
     config.active_job.queue_adapter = :delayed_job
     
     # Allow for models or class in subdirectories off models and expo lib
-    config.autoload_paths += Dir["#{config.root}/app/models/**/"]    
-    config.autoload_paths += Dir["#{config.root}/lib/expo/**/"]
+    config.eager_load_paths += Dir["#{config.root}/app/models/**/"]
+    config.eager_load_paths += Dir["#{config.root}/lib/expo/**/"]
     
     config.constants = config_for(:constants)
     

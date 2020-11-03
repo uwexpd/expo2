@@ -1,5 +1,5 @@
 ActiveAdmin.register Appointment do  
-  actions :all, :except => [:destroy]
+  actions :all
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   menu parent: 'Modules', :priority => 15
@@ -7,6 +7,7 @@ ActiveAdmin.register Appointment do
   scope 'Today', :today
   scope 'Tomorrow', :tomorrow
   scope 'Yesterday', :yesterday
+  active_admin_import template: 'admin/appointments/import'
 
   permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type
   
@@ -36,14 +37,14 @@ ActiveAdmin.register Appointment do
       # end
     #end
     attributes_table do
-      row (:start_time) {|appointment| appointment.start_time.to_s(:date_pretty)}
-      #row :student      
+      row (:start_time) {|appointment| appointment.start_time.to_s(:date_pretty)}            
       row :unit
       row :staff_person
       row :drop_in
       row (:check_in_time) {|appointment| appointment.check_in_time.to_s(:date_pretty) if appointment.check_in_time}
       row :front_desk_notes
       row :notes
+      row :source
     end
   end
 

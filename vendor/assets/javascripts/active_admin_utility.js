@@ -30,6 +30,12 @@ $(function() {
    // if(!window.location.search.includes('Filter')){ $('div#sidebar').hide(); $('a#toggle_filters').removeClass('epon') }
    $('a#toggle_filters').click(function(){ $('div#sidebar').toggle(); $(this).toggleClass('epon') })
 
+
+   $(".select2.minimum_input").select2({    
+          placeholder: 'Start entering characters',
+          minimumInputLength: 2    
+    });
+
 });
 
 

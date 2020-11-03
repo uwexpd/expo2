@@ -74,6 +74,7 @@ gem 'materialize-sass', '~> 1.0.0'
 gem 'byebug'
 gem 'delayed_job', '~> 4.1', '>= 4.1.8'
 gem 'delayed_job_active_record', '~> 4.1', '>= 4.1.4'
+gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
 
 group :production do  
   gem 'omniauth-shibboleth'

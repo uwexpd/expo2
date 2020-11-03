@@ -7,8 +7,9 @@ class Offering < ApplicationRecord
     order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC") 
   }
 
-  #scope :current, -> { where("`offerings`.`quarter_offered_id`") }
-  #scope :past. ->{ where() }
+
+  scope :current, -> { joins(:quarter_offered).where("first_day >= ?", Quarter.current_quarter.first_day) }
+  scope :past, -> { joins(:quarter_offered).where("first_day < ?", Quarter.current_quarter.first_day) }
   
   belongs_to :unit  
   has_many :application_for_offerings, 

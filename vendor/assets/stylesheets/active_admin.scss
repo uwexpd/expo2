@@ -91,6 +91,10 @@ br.clear {
 	clear: both;
 }
 
+table.borderless {
+	border-spacing: 0;
+}
+
 body.active_admin {
 	padding-bottom: 0px;
 	
@@ -111,7 +115,6 @@ abbr[title="required"] {
 	color: #d45f53;
 }
 
-/* To fix input textarea cols and rows not working for foundaiton*/
 .input.text textarea {
     height: auto;
 	width: auto;
@@ -528,11 +531,6 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
 
 #sidebar .select select:not([multiple]) {
 	max-width: 280px;
-}
-
-#sidebar table.borderless {	
-    border-collapse: collapse;
-    border-spacing: 0px;
 }
 
 #sidebar table .toggle-bool-switches-container {
@@ -978,5 +976,13 @@ div.alert.error {
 
 .input.boolean > label > input{
 	font-size: 16px;	
+}
+
+#search_status_sidebar_section .panel_contents {
+	padding-left: 16px;
+}
+
+li#offering_final_decision_weight_ratio_input label{
+	margin-left: -90px;
 }
 
