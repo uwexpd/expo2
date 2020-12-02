@@ -90,12 +90,12 @@ ActiveAdmin.register ResearchOpportunity do
         f.inputs do
           f.input :active, as: :boolean
           f.input :end_date, label: 'Auto-remove date', as: :datepicker, required: true, :input_html => { :style => 'width:50%;' }
-          f.input :research_area1, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, required: true, input_html: { class: "select2" }
-          f.input :research_area2, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }
-          f.input :research_area3, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }
-          f.input :research_area4, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2" }
+          f.input :research_area1, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, required: true, input_html: { class: "select2", :style => 'width:50%;' }
+          f.input :research_area2, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2", :style => 'width:50%;' }
+          f.input :research_area3, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2", :style => 'width:50%;' }
+          f.input :research_area4, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2", :style => 'width:50%;' }
           f.input :submitted, as: :boolean
-          f.input :submitted_at, as: :date_time_picker, required: true
+          f.input :submitted_at, as: :datetime_picker, required: true
           f.input :submitted_person_id, label: "Submitted EXPO Person ID"
           f.input :paid, as: :boolean
           f.input :work_study, as: :boolean

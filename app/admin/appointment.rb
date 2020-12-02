@@ -55,14 +55,14 @@ ActiveAdmin.register Appointment do
   form do |f|
     semantic_errors *f.object.errors.keys
     f.inputs do
-      f.input :start_time, as: :date_time_picker, required: true, :input_html => { :style => 'width:50%;' }
-      f.input :end_time, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
+      f.input :start_time, as: :datetime_picker, required: true, :input_html => { :style => 'width:50%;' }
+      f.input :end_time, as: :datetime_picker, :input_html => { :style => 'width:50%;' }
       f.input :unit, as: :select, include_blank: false, required: true
       f.input :staff_person_id, as: :select, required: true,
                collection: User.admin.reject{|u| u.person.firstname.nil?}.sort_by{|u| u.person.firstname}.map{|u| [u.fullname, u.person_id]}, 
-               include_blank: false, :input_html => { :class => 'chosen-select', :style => 'width:34%;' }
+               include_blank: false, input_html: { class: "select2", style: "width: 50%"}
       f.input :student_id, label: 'Student EXPO ID', :input_html => { :style => 'width:50%;' }
-      f.input :check_in_time, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
+      f.input :check_in_time, as: :datetime_picker, :input_html => { :style => 'width:50%;' }
       f.input :drop_in
       f.input :contact_type_id, as: :select, collection: ContactType.all
       f.input :front_desk_notes, :input_html => { :rows => 3, :style => 'width:50%;' }

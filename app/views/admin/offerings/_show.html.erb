@@ -1,12 +1,10 @@
 <div class='panel'>	
 	<div class='panel_contents'>
 		<div class='content-block offering'>
-			<h1><%= offering.name %>
+			<h2><%= offering.title rescue offering.name %>
 				<span class="status_tag right <%= 'green' if offering.open? %>"><%= offering.open? ? "Open" : "Closed" %></span>
-			</h1>
-
+			</h2>
 			<ul class="welcome-links">
-
 				<li class="status">
 					<i class='material-icons md-36'>public</i>
 					Application URL (applicants use this link to access the application process):					
@@ -27,7 +25,7 @@
 							<li class="for_uses_interviews"><%= link_to "Interviews", edit_admin_offering_path(offering, :anchor => "interviews") %></li>
 							<li class="for_uses_moderators"><%= link_to "Moderators", edit_admin_offering_path(offering, :anchor => "moderators") %></li>
 							<li class="for_uses_confirmation"><%= link_to "Confirmation Process", edit_admin_offering_path(offering, :anchor => "confirmation") %></li>
-							<li class="for_uses_award_acceptance"><%= link_to "Award Acceptance", edit_admin_offering_path(offering, :anchor => "award_acceptance") %></li>
+							<li class="for_uses_award_acceptance"><%= link_to "Award Acceptance", edit_admin_offering_path(offering, :anchor => "award-acceptance") %></li>
 							<li class="for_uses_proceedings"><%= link_to "Online Proceedings", edit_admin_offering_path(offering, :anchor => "proceedings") %></li>
 							</ul>
 						<br class="clear">

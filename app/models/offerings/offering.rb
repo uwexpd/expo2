@@ -86,6 +86,9 @@ class Offering < ApplicationRecord
   has_many :award_types, :through => :offering_award_types
   belongs_to :activity_type
   
+  accepts_nested_attributes_for :mentor_types, :mentor_questions, :review_criterions, :allow_destroy => true
+
+
   after_create :create_starting_statuses, :create_starting_restrictions
   
   validates_presence_of :name, :unit_id
@@ -105,7 +108,7 @@ class Offering < ApplicationRecord
   PLACEHOLDER_ASSOCIATIONS = %w(quarter_offered unit)
   
   OFFERINGS_CACHE = FileStoreWithExpiration.new("tmp/cache/offerings")
-  
+
   def <=>(o)
      quarter_offered <=> o.quarter_offered rescue 0
    end
@@ -127,6 +130,11 @@ class Offering < ApplicationRecord
   def title
     title = "#{name}"
     title << " #{quarter_offered.title}" if quarter_offered
+    title
+  end
+
+  # for activeadmin breadcrumb title display
+  def display_name
     title
   end
   

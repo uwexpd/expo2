@@ -325,6 +325,10 @@ form ul.errors li {
 	margin-left: 20px;	
 }
 
+fieldset.inputs > legend {
+	font-weight: 800
+}
+
 fieldset.inputs label.section {
 	margin-left: 16px;
 }
@@ -335,6 +339,30 @@ fieldset.inputs .indent {
 
 fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
 	color: white;
+}
+
+fieldset.inputs div.label {
+	padding: 10px 8px 0 16px;
+}
+
+fieldset.inputs div.instruction {
+	padding: 15px 8px 0 16px;
+}
+
+fieldset.inputs div.caption {
+	padding: 10px 8px 0 16px;
+	font-size: 80%;
+	color: #999;
+	margin-top: -13px;
+}
+
+fieldset.inputs .columns {
+	padding: 8px 16px;
+	position: relative;
+}
+
+fieldset.inputs .columns .column {
+	float:left;
 }
 
 .inline-errors{
@@ -359,14 +387,6 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
 	min-width: 110px;
 }
 
-.columns {
-	padding:15px;
-}
-
-.columns .column {
-	float:left;
-}
-
 #index_table_units .col-unit, #index_table_units .col-email, #index_table_units .col-phone, #index_table_offerings .col-unit, #index_table_offerings .col-quarter {
 	white-space: nowrap;
 }
@@ -380,7 +400,6 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
 	background-color: #4b2e83;
 }
 
-
 /* @Panel style */
 #search-status-_sidebar_section .panel_contents {
     padding: 0px 16px 5px;
@@ -389,6 +408,12 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
 .panel_contents h1{
 	font-size: 1.3rem;
 	padding: 0.3rem 0rem;
+}
+
+.panel_contents h2{
+	font-size: 1rem;
+	font-weight: bold;
+    padding: 1.5rem 1rem 1rem;
 }
 
 .panel_contents .content-block {
@@ -429,13 +454,6 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
 
 .chosen-container-single .chosen-search {
 	background: none;
-}
-
-.caption {
-	font-size: 80%;
-	color: #999;
-	margin-top: -13px;
-	padding: 0 8px 0 16px;
 }
 
 .intro {
@@ -983,6 +1001,13 @@ div.alert.error {
 }
 
 li#offering_final_decision_weight_ratio_input label{
-	margin-left: -90px;
+	margin-left: -85px;
 }
 
+.placeholder_text {
+	color: inherit;
+	border-bottom: 1px solid #c5dafd;
+	background: #e5f4ff;
+	margin: 5px .5em 0 0;
+	padding: .1em .5em;
+}
