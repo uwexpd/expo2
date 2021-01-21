@@ -144,7 +144,7 @@ ActiveAdmin.register Offering do
           f.input :revise_abstract_instructions, :input_html => { :class => "tinymce", :rows => 7 }
           div "These instructions are shown to applicants on the 'Revise Abstract' page.", class: 'caption'
           if offering.uses_group_members?
-            f.input :group_member_validation_email_template_id, label: 'Group Member Validation E-mail Template', as: :select, collection: email_templates, include_blank: 'None', input_html: { class: 'select2'}
+            f.input :group_member_validation_email_template_id, label: 'Group Member Validation E-mail Template', as: :select, collection: email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 100%'}
             div "Choose the email template that should be sent to group members to validate their participation in a group.", class: 'caption'
           end
         end
@@ -305,7 +305,6 @@ ActiveAdmin.register Offering do
           f.input :guest_invitation_instructions, :input_html => { :class => "tinymce", :rows => 10 }
           f.input :guest_postcard_layout, :input_html => { :class => "tinymce", :rows => 7 }
             div 'Note that leave blank here will remove guest invitation section from the confirmation process.', class: 'caption'
-          f.input :guest_postcard_layout, :input_html => { :class => "tinymce", :rows => 7 }
           f.input :nomination_instructions, :input_html => { :class => "tinymce", :rows => 10 }
           f.input :theme_response_title, as: :string
             div 'Leave blank here will remove theme section from the confirmation process.', class: 'caption'
@@ -336,7 +335,6 @@ ActiveAdmin.register Offering do
           f.input :proceedings_welcome_text, :input_html => { :class => "tinymce", :rows => 30 }
         end
       end
-
     end
     f.actions
   end

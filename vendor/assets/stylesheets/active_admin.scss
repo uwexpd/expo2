@@ -313,6 +313,13 @@ body.logged_out h2 {
 }
 
 /* end login page style */
+.columns {
+	padding:15px;
+}
+
+.columns .column {
+	float:left;
+}
 
 /* @Form style */
 form ul.errors {
