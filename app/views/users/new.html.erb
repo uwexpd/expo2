@@ -30,7 +30,8 @@
 
 	  	 </table>
 	  	 
-	  	 <div class="form-group"> <%= recaptcha_tags site_key: ENV["RECAPTCHA_V2_CHECKBOX_SITE_KEY"] %> </div>
+		<%= invisible_captcha :topic %>
+		<!-- <div class="form-group"> <%#= recaptcha_tags site_key: ENV["RECAPTCHA_V2_CHECKBOX_SITE_KEY"] %> </div> -->
 	 
 	  	 <p><%= f.submit 'Sign up' %></p>
 	  <% end %>

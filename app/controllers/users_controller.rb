@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :login_required, raise: false
-  before_action :check_recaptcha_v2, only: [:create]
+  # before_action :check_recaptcha_v2, only: [:create]
+   invisible_captcha only: [:create], honeypot: :topic
 
   layout 'active_admin_logged_out'
   
@@ -62,13 +63,13 @@ class UsersController < ApplicationController
       params.require(:user).permit(:login, :password, :password_confirmation, person_attributes: [:salutation, :firstname, :lastname, :email])
   end
 
-  def check_recaptcha_v2
-    valid = verify_recaptcha secret_key: ENV["RECAPTCHA_V2_CHECKBOX_SECRET_KEY"]
+  # def check_recaptcha_v2
+  #   valid = verify_recaptcha secret_key: ENV["RECAPTCHA_V2_CHECKBOX_SECRET_KEY"]
 
-    if not valid
-      flash[:error] = "Recaptcha fails. Please let us know you are not a robot."
-      redirect_to :action => 'new'
-    end
-  end  
+  #   if not valid
+  #     flash[:error] = "Recaptcha fails. Please let us know you are not a robot."
+  #     redirect_to :action => 'new'
+  #   end
+  # end
 
 end

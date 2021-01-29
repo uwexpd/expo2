@@ -78,6 +78,8 @@ gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
 
 gem 'dotenv-rails'
 gem 'recaptcha'
+gem 'invisible_captcha', '~> 1.1'
+
 
 group :production do  
   gem 'omniauth-shibboleth'
