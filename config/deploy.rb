@@ -18,7 +18,7 @@ set :ssh_options, {
 set :keep_releases, 10
 
 # files we want symlinking to specific entries in shared.
-set :linked_files, %w{config/email.yml config/database.yml config/database_scholarships.yml config/master.key}
+set :linked_files, %w{config/email.yml config/database.yml config/database_scholarships.yml config/master.key .env.production}
 
 # dirs we want symlinking to shared
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system config/certs public/expo/error_images}

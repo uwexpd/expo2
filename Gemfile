@@ -76,13 +76,16 @@ gem 'delayed_job', '~> 4.1', '>= 4.1.8'
 gem 'delayed_job_active_record', '~> 4.1', '>= 4.1.4'
 gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
 
+gem 'dotenv-rails'
+gem 'recaptcha'
+
 group :production do  
   gem 'omniauth-shibboleth'
 end
 
 group :development, :test do  
   gem 'awesome_print'
-  gem "rspec-rails"
+  gem 'rspec-rails'  
 end
 
 group :development do
