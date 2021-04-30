@@ -1,0 +1,6 @@
+<ul class="link-list">
+	<% @page.questions.order('ordering ASC').each do |question| %>
+		<li <%= "class=active" if offering_question == question %>><%= link_to "<small class='light'>#{question.ordering}</small> #{question.short_question_title}".html_safe, edit_admin_offering_page_question_path(@offering, @page, question) %></li>
+	<% end %>
+	
+</ul>

@@ -9,7 +9,7 @@ ActiveAdmin.register_page "Apply" do
   	]
   end
 
-  controller do 
+  controller do
   	
   	before_action :fetch_offering
   	before_action :fetch_apps
@@ -27,15 +27,16 @@ ActiveAdmin.register_page "Apply" do
 
   	private
   
-	def fetch_offering
-	    if params[:offering]
-	      @offering = Offering.find params[:offering]
-	    end
-	end
-	  
-	 def fetch_apps
-	    @apps ||= @offering.application_for_offerings
-	 end
+    def fetch_offering
+        if params[:offering]
+          @offering = Offering.find params[:offering]
+          require_user_unit @offering.unit
+        end
+    end
+
+    def fetch_apps
+      @apps ||= @offering.application_for_offerings
+    end
 	  
   end 
   

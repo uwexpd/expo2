@@ -165,6 +165,7 @@ ActiveAdmin.register Scholarship do
         
         tab 'Qualifications' do                     
            f.inputs 'Student Type' do
+              hr
               f.input :freshman, as: :boolean
               f.input :sophomore, as: :boolean
               f.input :junior, as: :boolean
@@ -173,25 +174,30 @@ ActiveAdmin.register Scholarship do
               f.input :graduate, as: :boolean
            end
            f.inputs 'Citizen Type' do
+              hr
               f.input :us_citizen, as: :boolean
               f.input :permanent_resident, as: :boolean
               f.input :other_visa_status, as: :boolean
               f.input :hb_1079, label: "Undocumented", as: :boolean
            end
            f.inputs 'Redisent Type' do
+              hr
               f.input :resident , as: :boolean
               f.input :non_resident, as: :boolean
            end
            f.inputs 'Financial Need' do
+              hr
               f.input :need_based, as: :boolean
            end
            f.inputs 'Scholarship Type' do
+              hr
               f.input :veteran, as: :boolean
               f.input :gap_year, as: :boolean
               f.input :graduate_school, as: :boolean
               f.input :lgbtqi_community, as: :boolean
            end
            f.inputs 'Statu Type' do
+              hr
               f.input :is_national, as: :boolean
               f.input :is_active , as: :boolean
            end

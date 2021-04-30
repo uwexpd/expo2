@@ -1,0 +1,6 @@
+<ul class="link-list">
+	<% offering.pages.order('ordering ASC').each do |page| %>
+		<li <%= "class=active" if offering_page == page %>><%= link_to "<small class='light'>#{page.ordering}</small> #{page.title}".html_safe, admin_offering_page_path(offering, page) %></li>
+	<% end %>
+	
+</ul>

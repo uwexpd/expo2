@@ -9,9 +9,8 @@
 	<!-- <i class='material-icons md-32'>view_list</i> See All -->
 <%# end %>
 
-<table class="borderless">	
+<ul class="link-list">
 	<% event.times.sort.each do |time| %>
-		<tr><td><%= link_to time.time_detail, admin_event_time_path(event, time) %></td></tr>
-	<% end -%>
-	
-</table>
+		<li><%= link_to time.time_detail, admin_event_time_path(event, time) %></li>
+	<% end %>
+</ul>

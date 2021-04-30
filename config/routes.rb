@@ -16,12 +16,19 @@ Rails.application.routes.draw do
     get 'admin/base/remove_vicarious_login', :to => 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
     ActiveAdmin.routes(self)
     # namespace :admin do
-    #   resources :offering do
-    #     resources :offering_admin_phase do
-    #       resources :offering_admin_phase_task
+    #   resources :offerings do
+    #     resources :offering_admin_phases do
+    #       resources :offering_admin_phase_tasks
     #     end
     #   end    
     # end
+    namespace :admin do
+      resources :offerings do
+        resources :pages do
+            resources :questions
+            end
+        end
+    end
     
     # User and Sessions    
     resources :sessions    

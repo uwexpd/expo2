@@ -1,11 +1,13 @@
 ActiveAdmin.register User do  
-  actions :all, :except => [:destroy]
+  actions :all, :except => [:new, :destroy]
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   menu parent: 'Groups'
   
   permit_params :admin
-  
+
+  before_action -> { check_permission("user_manager") }
+
   member_action :session_history, :method => :get do
     @requests = SessionHistory.where("session_id = ? ", params[:id]).order(:created_at)
     @start_time = @requests.first.created_at

@@ -17,6 +17,11 @@ class OfferingQuestion < ApplicationRecord
 
   QUESTION_TYPES_NOT_REQUIRING_ATTRIBUTE_TO_UPDATE = %w(awards mentors other_awards group_members files)
 
+  # for activeadmin breadcrumb title display
+  def display_name
+    short_question_title
+  end
+
   # Users must define an +attribute_to_update+ or they must mark this question as a dynamic answer. Otherwise the question
   # is not valid.
   def attribute_to_update_is_valid?

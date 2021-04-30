@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/activeadmin-plugins/active_admin_import.git
+  remote: https://github.com/activeadmin-plugins/active_admin_import.git
   revision: 1c7601fcccff35bb4217430e3fd0626312f64f2f
   specs:
     active_admin_import (4.2.0)
@@ -9,23 +9,22 @@ GIT
       rubyzip (>= 1.2)
 
 GIT
-  remote: git://github.com/harrybournis/will_paginate-materialize.git
+  remote: https://github.com/harrybournis/will_paginate-materialize.git
   revision: 86e86a9ea3b21636e685b0fafb5b4b1681ff9dbd
   specs:
     will_paginate-materialize (0.1.2)
       will_paginate (~> 3.1.3)
 
 GIT
-  remote: git://github.com/lowjoel/activerecord-userstamp.git
+  remote: https://github.com/lowjoel/activerecord-userstamp.git
   revision: 752f1e30ed8a2f0b09408bcdfa2c2dad1e5523c4
   specs:
     activerecord-userstamp (3.0.5)
       rails (>= 4.1)
 
 GIT
-  remote: git://github.com/vigetlabs/active_material.git
-  revision: 22f8aa0654e62229ba9d23a1a7db94dacc0463c1
-  tag: v1.5.0
+  remote: https://github.com/vigetlabs/active_material.git
+  revision: e91faafcb016477637330ea593673cd521c60aa9
   specs:
     active_material (1.4.1)
 
@@ -86,7 +85,7 @@ GEM
       activemodel (= 5.2.4.3)
       activesupport (= 5.2.4.3)
       arel (>= 9.0)
-    activerecord-import (1.0.7)
+    activerecord-import (1.0.8)
       activerecord (>= 3.2)
     activerecord-sqlserver-adapter (5.2.1)
       activerecord (~> 5.2.0)

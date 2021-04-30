@@ -33,7 +33,8 @@ class ApplicationController < ActionController::Base
       session[:original_user] = nil
       session[:vicarious_token] = nil
       session[:vicarious_user] = nil      
-      redirect_to :redirect_root
+      # redirect_to :redirect_root
+      redirect_back(fallback_location: root_path)
   end
 
   # Add return_to to session if it's been requested
@@ -65,6 +66,33 @@ class ApplicationController < ActionController::Base
     args = options.map { |n, v| "#{n.to_s.upcase}='#{v}'" }
     system "rake #{task} #{args.join(' ')} --trace 2>&1 >> #{RAILS_ROOT}/log/#{log_file}.log"
     exit! 127
+  end
+
+
+  protected
+
+  def check_ferpa_reminder_date
+    if session[:vicarious_user].blank? && (@current_user.ferpa_reminder_date.nil? || @current_user.ferpa_reminder_date < 3.months.ago)
+      redirect_to admin_ferpa_reminder_url(:return_to => request.request_uri) and return
+    end
+  end
+
+  def check_permission(role)
+    unless @current_user.has_role?(role)
+      @role = role.to_s.titleize
+      # return render :template => "exceptions/permission_denied", :status => :unauthorized
+      flash[:error] = "You are not authorized to view this page. You must be assigned the #{@role} role."
+      redirect_to root_path
+    end
+  end
+
+  def require_user_unit(unit)
+    unless @current_user.in_unit?(unit)
+      @unit = unit
+      # return render :template => "exceptions/wrong_unit", :status => :unauthorized
+      flash[:error] = "You don't belong to the #{@unit.name} unit, so you can't view this item."
+      redirect_to root_path
+    end
   end
 
   private

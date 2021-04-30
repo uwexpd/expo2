@@ -29,11 +29,10 @@
 			<% end %>
 
 	  	 </table>
-	  	 
-		<%= invisible_captcha :topic %>
+
+		<%= f.invisible_captcha :phone %>
 		<!-- <div class="form-group"> <%#= recaptcha_tags site_key: ENV["RECAPTCHA_V2_CHECKBOX_SITE_KEY"] %> </div> -->
-	 
-	  	 <p><%= f.submit 'Sign up' %></p>
+		<p><%= f.submit 'Sign up' %></p>
 	  <% end %>
 	  
 	

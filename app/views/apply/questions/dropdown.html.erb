@@ -1,0 +1,13 @@
+<li>
+		<%= qf.label(question.attribute_to_update, question.question) %>
+		
+		<%= qf.collection_select(question.attribute_to_update, 
+								 question.options.sort_by{|o|o.ordering || o.title},
+								:value,
+								:title,
+								{:prompt => true, :selected => @user_application.get_answer(question.id).to_s }
+								) %>
+		
+		<%= content_tag('em', '*', :class => 'required') if question.required? %>	
+		<%= display_computed_caption(question.caption) if question.caption? %>
+</li>

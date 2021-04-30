@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :login_required, raise: false
   # before_action :check_recaptcha_v2, only: [:create]
-   invisible_captcha only: [:create], honeypot: :topic
+   invisible_captcha only: [:create], honeypot: :phone
 
   layout 'active_admin_logged_out'
   

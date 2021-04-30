@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'rails', '~> 5.2', '>= 5.2.4.3'
 gem 'sass-rails'
@@ -21,7 +22,7 @@ gem 'autoprefixer-rails'
 # Active Admin
 gem 'activeadmin', '~> 2.7'
 gem 'ransack', '~> 2.3', '>= 2.3.2'
-gem 'active_material', github: 'vigetlabs/active_material', tag: 'v1.5.0'
+gem 'active_material', github: 'vigetlabs/active_material'#, tag: 'v1.5.0'
 gem 'activeadmin_addons'
 
 # hardens your app against XSS attack

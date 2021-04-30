@@ -1,15 +1,28 @@
 ActiveAdmin.register Offering do
-  batch_action :destroy, false    
-  config.sort_order = '' # Use blank to override the default sort by id in activeadmin
+  batch_action :destroy, false
   menu parent: 'Modules', label: 'Online Apps', :priority => 25
-  
-  scope 'All', :sorting, default: true
-  scope 'Current Offerings', :current
-  scope 'Past Offerings', :past
+  config.sort_order = '' # Use blank to override the default sort by id in activeadmin
+  config.per_page = [30, 50, 100, 200]
+
+  scope 'Current Offerings', :sorting_current, default: true
+  scope 'Past Offerings', :sorting_past
+  scope 'All', :sorting
 
   permit_params :name, :unit_id, :open_date, :deadline, :description, :contact_name, :notify_email, :quarter_offered_id, :year_offered, :destroy_by, :notes, :activity_type_id, :count_method_for_accountability, :accountability_quarter_id, :uses_awards, :uses_group_members, :uses_mentors, :uses_interviews, :uses_moderators, :uses_confirmation, :uses_award_acceptance, :uses_lookup, :uses_proceedings, :number_of_awards, :default_award_amount, :min_number_of_awards, :max_number_of_awards, :first_eligible_award_quarter_id, :max_quarters_ahead_for_awards, :award_basis, :final_decision_weight_ratio, :dean_approver_id, :financial_aid_approver_id, :disbersement_approver_id, :allow_students_only, :require_invitation_codes_from_non_students, :disable_signature, :ask_applicant_to_waive_mentor_access_right, :ask_for_mentor_relationship, :ask_for_mentor_title, :final_text, :alternate_welcome_page_title, :revise_abstract_instructions, :group_member_validation_email_template_id, :max_number_of_mentors, :min_number_of_mentors, :mentor_deadline, :deny_mentor_access_after_mentor_deadline, :allow_hard_copy_letters_from_mentors, :allow_early_mentor_submissions, :require_all_mentor_letters_before_complete, :mentor_mode, :alternate_mentor_title, :early_mentor_invite_email_template_id, :mentor_thank_you_email_template_id, :review_committee_id, :min_number_of_reviews_per_applicant, :uses_non_committee_review, :review_committee_submits_committee_score, :allow_to_review_mentee, :reviewer_instructions, :interview_committee_id, :interview_time_for_applicants, :interview_time_for_interviewers, :uses_scored_interviews, :interview_committee_submits_committee_score, :interviewer_help_text, :interviewer_instructions, :enable_award_acceptance, :accepted_offering_status_id, :declined_offering_status_id, :acceptance_yes_text, :acceptance_no_text, :acceptance_question1, :acceptance_question2, :acceptance_question3, :acceptance_instructions, :moderator_committee_id, :moderator_instructions, :moderator_criteria, :disable_confirmation, :confirmation_deadline, :confirmation_instructions, :confirmation_yes_text, :guest_invitation_instructions, :guest_postcard_layout, :nomination_instructions, :theme_response_title, :theme_response_instructions, :theme_response_type, :theme_response_word_limit, :theme_response2_instructions, :theme_response2_type, :theme_response2_word_limit, :special_requests_text, :proceedings_welcome_text,
     # for has_many
     mentor_types_attributes: [:id, :offering_id, :application_mentor_type_id, :meets_minimum_qualification, :_destroy], mentor_questions_attributes: [:id, :offering_id, :question, :required, :must_be_number, :display_as, :size, :_destroy], review_criterions_attributes: [:id, :offering_id, :title, :max_score, :description, :sequence, :_destroy]
+
+  controller do
+    before_action :check_user_unit, :except => [ :index, :new, :create ]
+
+    protected
+
+    def check_user_unit
+      @offering = Offering.find(params[:offering_id] || params[:id])
+      require_user_unit @offering.unit
+    end
+
+  end
 
   index do
     column ('Name') {|offering| link_to(offering.name, admin_offering_path(offering)) }
@@ -26,7 +39,7 @@ ActiveAdmin.register Offering do
   
   sidebar "Applications", only: :show do
     div class: "information" do
-      i 'view_list', class: 'material-icons md-32'
+      span 'view_list', class: 'material-icons md-32'
       span link_to "Manage student applications (#{offering.valid_status_applications.size})", admin_apply_manage_path(offering)
     end
   end
@@ -342,6 +355,6 @@ ActiveAdmin.register Offering do
   filter :name, as: :string
   filter :open_date, as: :date_range
   filter :deadline, as: :date_range
-  filter :unit_id, as: :select, collection: Unit.all.pluck(:abbreviation, :id)
+  filter :unit_id, as: :select, collection: Unit.all.pluck(:abbreviation, :id), if: proc {@current_user.has_role?("user_manager")}
 
 end

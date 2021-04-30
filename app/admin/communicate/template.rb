@@ -1,4 +1,4 @@
-ActiveAdmin.register TextTemplate, as: 'templates'  do  
+ActiveAdmin.register TextTemplate, as: 'template'  do
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   config.per_page = [30, 50, 100, 200]

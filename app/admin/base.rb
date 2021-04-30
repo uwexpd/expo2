@@ -1,7 +1,7 @@
 ActiveAdmin.register_page "Base" do  
   menu false
 
-  controller do  	  
+  controller do
 	  skip_before_action :login_required, :only => :remove_vicarious_login, raise: false
 
 	  def vicarious_login
@@ -26,26 +26,6 @@ ActiveAdmin.register_page "Base" do
 	      return redirect_to root_path
 	    end
 	  end
-
-	  def remove_vicarious_login
-	    session[:user] = session[:original_user]
-	    session[:original_user] = nil
-	    session[:vicarious_token] = nil
-	    session[:vicarious_user] = nil
-	    redirect_back(fallback_location: root_path)
-	  end
-
-	  protected
-
-	  def check_permission(role)
-    	unless @current_user.has_role?(role)
-      	@role = role.to_s.titleize
-        return render :template => "exceptions/permission_denied", :status => :unauthorized
-      end
-
-  end
-
-
   end
 
 end

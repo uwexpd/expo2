@@ -66,7 +66,7 @@ ActiveAdmin.register Event do
   end
 
   sidebar "Times", only: [:show, :edit] do  
-        render "times", { event: event }
+    render "times", { event: event }
   end
   # sidebar "Event Times", only: [:show, :edit] do
   #     table do

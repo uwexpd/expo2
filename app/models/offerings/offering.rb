@@ -2,15 +2,17 @@
 class Offering < ApplicationRecord
   stampable
   
-  scope :sorting, -> { 
-    joins("LEFT JOIN `quarters` ON `quarters`.`id` = `offerings`.`quarter_offered_id`").
+  scope :sorting, -> {
+    left_outer_joins(:quarter_offered).
+    where("unit_id in (?)", current_user.units.collect(&:id)).
     order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC") 
   }
 
+  scope :current, -> { left_outer_joins(:quarter_offered).where("quarters.first_day >= ? OR offerings.year_offered >= ?", Quarter.current_quarter.first_day, Time.now.year)}
+  scope :past, -> { left_outer_joins(:quarter_offered).where("quarters.first_day < ? OR offerings.year_offered < ?", Quarter.current_quarter.first_day, Time.now.year) }
+  scope :sorting_current, -> { sorting.current}
+  scope :sorting_past, -> { sorting.past}
 
-  scope :current, -> { joins(:quarter_offered).where("first_day >= ?", Quarter.current_quarter.first_day) }
-  scope :past, -> { joins(:quarter_offered).where("first_day < ?", Quarter.current_quarter.first_day) }
-  
   belongs_to :unit  
   has_many :application_for_offerings, 
                   -> { includes( :person, 
@@ -108,6 +110,11 @@ class Offering < ApplicationRecord
   PLACEHOLDER_ASSOCIATIONS = %w(quarter_offered unit)
   
   OFFERINGS_CACHE = FileStoreWithExpiration.new("tmp/cache/offerings")
+
+
+  def self.current_user
+    Thread.current['user']
+  end
 
   def <=>(o)
      quarter_offered <=> o.quarter_offered rescue 0

@@ -16,10 +16,11 @@ $am-theme-primary: #4b2e83;
 $am-theme-accent: #b7a57a;
 @import 'activeadmin_addons/all';
 @import 'activeadmin_addons/material';
-@import "active_material";
+@import 'active_material';
 
-@import "chosen";
-@import "material_icons";
+@import 'chosen';
+@import 'material_icons';
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
 
 
 /* Active Admin CSS for Customization */
@@ -115,9 +116,20 @@ abbr[title="required"] {
 	color: #d45f53;
 }
 
+em.required {
+	font-style: normal;
+	font-weight: bold;
+	color: #d45f53;
+
+}
+
 .input.text textarea {
     height: auto;
 	width: auto;
+}
+
+.input > label, .input .label > label {
+	font: 600 0.8rem/16px "RobotoDraft", sans-serif;
 }
 
 a:link, a:visited {
@@ -390,6 +402,7 @@ fieldset.inputs .columns .column {
 	min-width: 250px;
 }
 
+/* @index table column width size */
 #index_table_scholarships .col-title, #index_table_scholarships .col-deadlines {
 	min-width: 110px;
 }
@@ -402,6 +415,11 @@ fieldset.inputs .columns .column {
 #index_table_offerings .col-quarter { min-width: 120px; }
 #index_table_events .col-type { min-width: 110px; }
 #index_table_organizations .col-id { min-width: 75px; }
+#index_table_pages .col-title { min-width: 180px; }
+#show_table_offering_questions .col- {min-width: 50px;}
+#show_table_offering_questions .col-type {min-width: 100px;}
+#show_table_offering_questions .col-functions {min-width: 115px;}
+/* end index table column width */
 
 #q_submit {
 	background-color: #4b2e83;
@@ -554,6 +572,7 @@ fieldset.inputs .columns .column {
 	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
+/* @group Sidebar */
 #sidebar .select select:not([multiple]) {
 	max-width: 280px;
 }
@@ -562,12 +581,53 @@ fieldset.inputs .columns .column {
 	text-align: left;
 }
 
+ul.link-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul.link-list li {	
+	font-size: 0.8125rem;
+	border-bottom: 1px solid #efefef;	
+	padding: 10px 16px;
+}
+
+ul.link-list li.active {
+	font-weight: bold;
+	color: #eee;
+	background-color: #eee;
+}
+
+ul.link-list li a {
+	padding: 10px 16px;
+	margin: -10px -16px;
+	display: block;
+}
+
+ul.link-list li a small {
+	padding-right: 10px;
+}
+
+ul.link-list li a:hover,  ul.link-list li:hover {
+	background-color: #efefef;
+	text-decoration: none;
+}
+
+// #sidebar ul.link-list {
+// 	padding-left: 0;
+// 	margin: -10px;
+// }
+
+/* END @group Sidebar */
+
+
 #index_table_events tbody .col-sponsor, #index_table_offerings tbody .col-unit {
 	font-variant: small-caps;
 }
 
-#sidebar .material-icons:hover {
-	opacity: 0.8;
+.material-icons:hover {
+	opacity: 0.6;
 }
 
 .material-icons.md-20, .mi.md-20 {
@@ -1018,3 +1078,5 @@ li#offering_final_decision_weight_ratio_input label{
 	margin: 5px .5em 0 0;
 	padding: .1em .5em;
 }
+
+
