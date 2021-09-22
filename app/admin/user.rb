@@ -4,7 +4,7 @@ ActiveAdmin.register User do
   config.sort_order = 'created_at_desc'
   menu parent: 'Groups'
   
-  permit_params :admin
+  permit_params :admin, :email
 
   before_action -> { check_permission("user_manager") }
 

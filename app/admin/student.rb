@@ -12,7 +12,7 @@ menu parent: 'Groups'
   end
 
   show do
-    render "admin/students/student_header", { student: student, mode: :info } 
+    render "admin/students/student_header", { student: student, mode: :info }
     div :class => 'tabsview' do
       tabs do
          tab 'Student Info' do
@@ -22,25 +22,39 @@ menu parent: 'Groups'
               row ('Minor(s)') {|student| raw(student.sdb.minors_list(true, "<br>")) }
               row ('Current credits') do |student|
                   span student.current_credits(Quarter.current_quarter)
-                  span "(#{Quarter.current_quarter.title})", :class => 'light smaller'
-                  status_tag 'full-time', class: 'ok small' if student.full_time?(Quarter.current_quarter)
+                  span "(#{Quarter.current_quarter.title})", class: 'light smaller'
+                  status_tag 'full-time', class: 'small' if student.full_time?(Quarter.current_quarter)
               end
               row ('Gpa') {|student| student.sdb.gpa}
-              row ('Gender') {|student| student.sdb.gender}
+              row ('Gender') do |student|
+                span "#{student.sdb.gender}"
+                span "(#{student.sws.pronouns})", class: 'light' if student.sws.pronouns
+              end
               row ('Age') do |student| 
                 span student.sdb.age
                 span :class => 'minor warning' if student.sdb.age < 18
               end
-              row ('Birthday') {|student| student.sdb.birth_date}
+              row ('Birthday') {|student| student.sdb.birth_date.to_s}
               row ('Local phone') do |student| 
                 span "#{student.phone_formatted}"
-                span "(input by student)", :class => 'light smaller'
+                span "(input by student)", class: 'light smaller'
               end
               row :email
             end
          end
          
-         tab "Applications (#{student.application_for_offerings.size})" do           
+         tab "Applications (#{student.application_for_offerings.size})" do
+          panel '' do
+            div :class => 'content-block' do
+              h3 'Online Application History'
+              hr
+              table_for student.application_for_offerings do |app|
+                column ('Created At') {|app| app.created_at.to_s(:short_at_time12)}
+                column ('Offering title') {|app| link_to app.offering.title, admin_apply_manage_path(app.offering) }
+                # column ('Application title') {|app| link_to (strip_tags(app.project_title) || "(no title)"), } 
+              end
+            end
+          end
          end
          tab "Service Learning" do         
          end

@@ -14,7 +14,7 @@ ActiveAdmin.register EventTime, as: 'times' do
       span "(#{number_to_percentage((event_time.attended.size.to_f / event_time.attendees.size.to_f) * 100, :precision => 1)})", class: 'smaller light'
     end
     column 'Notes' do |event_time|
-      event_time.full? ? (status_tag 'FULL', :red, class: 'small') : (status_tag 'OPEN', :green, class: 'small')
+      event_time.full? ? (status_tag 'FULL', class: 'red small') : (status_tag 'OPEN', class: 'green small')
     end
     actions
   end
@@ -31,7 +31,7 @@ ActiveAdmin.register EventTime, as: 'times' do
     panel 'Invitees' do
        table_for times.invitees.joins(:person).order((params[:order] ? params[:order] : 'lastname asc').gsub('_asc', ' asc').gsub('_desc', ' desc')), sortable: true do
          column('Name', sortable: 'lastname') {|invitee| invitee.person.is_a?(Student) ? (link_to invitee.person.fullname, admin_user_path(invitee)) : (invitee.person.fullname rescue invitee.fullname rescue "#error") }
-         column('Expected?', sortable: 'attending') {|invitee| invitee.attending? ? (status_tag 'Yes', :green, class: 'small') : (status_tag 'No', class: 'red small') }
+         column('Expected?', sortable: 'attending') {|invitee| invitee.attending? ? (status_tag 'Yes', class: 'green small') : (status_tag 'No', class: 'red small') }
          column('Attended?', sortable: 'checkin_time') {|invitee| invitee.checked_in? ? (status_tag 'Yes', class: 'ok small') : (status_tag 'No', class: 'red small') }         
        end
     end

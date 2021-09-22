@@ -105,4 +105,9 @@ module ApplicationHelper
     "<span class='status_tag #{value.downcase}'>" + value + "</span>"
   end
   
+  # Creates a separator
+  def separator(text = "or")
+    "<span class=\"separator\"> &ndash; #{text} &ndash; </span>"
+  end
+
 end

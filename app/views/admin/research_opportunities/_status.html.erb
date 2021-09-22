@@ -8,7 +8,7 @@
 		<td>
 			<div class="toggle-bool-switches-container">
 				<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
-				<%= link_to({:action => :queue, :id => opportunity.id}, :remote => true, method: :post) do %>
+				<%= link_to({:action => :email_queue, :id => opportunity.id}, method: :put) do %>
 					<span id="toggle-research_opportunity-<%= opportunity.id %>-active" class="toggle-bool-switch <%= "on" if opportunity.active? %> notify-success" data-model="research_opportunity" data-object_id="<%= opportunity.id %>" data-field="active" <%= "data-value=true" if opportunity.active? %> data-url="/expo/admin/research_opportunities/<%= opportunity.id %>" data-success_message="Update research opportunity status successfully!">
 				</span>
 				<% end %>

@@ -1,0 +1,6 @@
+<ul class="link-list">
+	<% offering.statuses.order('sequence asc').each do |status| %>
+		<li <%= "class=active" if offering_status == status %>><%= link_to "<small class='light'>#{status.sequence}</small> #{status.private_title}".html_safe, admin_offering_status_path(offering, status) %></li>
+	<% end %>
+	
+</ul>

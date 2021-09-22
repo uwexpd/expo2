@@ -55,5 +55,20 @@ class StudentResource < WebServiceResult
   def legalname
     CapitalizeNames.capitalize(self.RegisteredName) rescue self.RegisteredName
   end
-    
+
+  def pronouns
+    self.Pronouns rescue nil
+  end
+
+  def class_level
+    CapitalizeNames.capitalize(self.CurrentEnrollment["ClassLevel"]) rescue self.CurrentEnrollment["ClassLevel"]
+  end
+
+  def majors
+    self.CurrentEnrollment["Majors"].collect{|m| CapitalizeNames.capitalize(m["MajorName"])} rescue self.CurrentEnrollment["Majors"].collect{|m|m["MajorName"]}
+  end
+
+  def campus
+     self.CurrentEnrollment["Majors"].collect{|m|m["Campus"]}
+  end
 end

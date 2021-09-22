@@ -22,7 +22,8 @@ gem 'autoprefixer-rails'
 # Active Admin
 gem 'activeadmin', '~> 2.7'
 gem 'ransack', '~> 2.3', '>= 2.3.2'
-gem 'active_material', github: 'vigetlabs/active_material'#, tag: 'v1.5.0'
+# gem 'active_material', github: 'vigetlabs/active_material', tag: 'v1.5.0'
+gem 'active_material', '~> 1.5', '>= 1.5.2'
 gem 'activeadmin_addons'
 
 # hardens your app against XSS attack
@@ -38,7 +39,7 @@ gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
 # Connect to UW Student Web Service
 gem 'activeresource', '~> 5.1', '>= 5.1.1'
 
-gem 'mysql2', '~> 0.4.0'
+gem 'mysql2', '~> 0.5.0'
 gem 'activerecord-userstamp', github: 'lowjoel/activerecord-userstamp'
 gem 'tinymce-rails'
 gem 'will_paginate', '~> 3.1.6'
@@ -81,6 +82,7 @@ gem 'dotenv-rails'
 gem 'recaptcha'
 gem 'invisible_captcha', '~> 1.1'
 
+gem 'multiverse'
 
 group :production do  
   gem 'omniauth-shibboleth'

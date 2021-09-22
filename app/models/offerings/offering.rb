@@ -13,7 +13,8 @@ class Offering < ApplicationRecord
   scope :sorting_current, -> { sorting.current}
   scope :sorting_past, -> { sorting.past}
 
-  belongs_to :unit  
+  belongs_to :unit
+  has_many :applications, :class_name => "ApplicationForOffering"
   has_many :application_for_offerings, 
                   -> { includes( :person, 
                                 { current_application_status: :application_status_type }, 
@@ -39,7 +40,6 @@ class Offering < ApplicationRecord
   end
 
   has_many :valid_status_applications, -> { includes({:current_application_status => :application_status_type }).where('current_application_status_id is not null')}, :class_name => "ApplicationForOffering"
-              
   has_many :application_group_members, :through => :application_for_offerings, :source => :group_members
   has_many :people, :through => :application_for_offerings
   has_many :pages, -> { order(:ordering) }, :class_name => "OfferingPage", :dependent => :destroy

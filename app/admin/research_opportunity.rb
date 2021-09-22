@@ -5,18 +5,21 @@ ActiveAdmin.register ResearchOpportunity do
 
   permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit
   
-  member_action :queue, :method => :post do
+  member_action :email_queue, :method => :put do
     @opportunity = ResearchOpportunity.find(params[:id])
     @opportunity.reload
+    # logger.debug "Debug active => #{@opportunity.active?}"
     template_name = @opportunity.active? ? "research opportunity activate notification for faulty" : "research opportunity deactivate notification for faulty"
     faculty_template = EmailTemplate.find_by_name(template_name)
     link = "https://#{Rails.configuration.constants['base_app_url']}/opportunities/submit/#{@opportunity.id}"
 
-    EmailQueue.queue(nil, faculty_template.create_email_to(@opportunity, link, @opportunity.email).message) if faculty_template
+    if faculty_template
+      EmailQueue.queue(nil, faculty_template.create_email_to(@opportunity, link, @opportunity.email).message)
+    else
+      redirect_to admin_research_opportunity_path(@opportunity.id), notice: "Something went wrong and not able to queue email to faculty"
+    end
 
-     respond_to do |format|
-       format.js
-     end    
+    redirect_to admin_research_opportunity_path(@opportunity.id), notice: "Successfully queued an e-mail to  #{@opportunity.name}"
   end  
 
   index do

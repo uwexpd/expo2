@@ -9,9 +9,11 @@ Rails.application.routes.draw do
   scope 'expo' do
     
     root 'admin/dashboard#index'
-    # Custom active admin routes        
+    ##### Custom active admin routes ##############
+    # DEPRECATION WARNING: Using a dynamic :action: get 'admin/apply/:offering/:action', to: 'admin/apply#:action', as: :admin_apply_action
     get 'admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
-    get 'admin/apply/:offering/:action', to: 'admin/apply#:action', as: :admin_apply_action
+    get 'admin/apply/:offering/list', to: 'admin/apply#list', as: :admin_apply_list
+    get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
     post 'admin/base/vicarious_login', :to => 'admin/base#vicarious_login', as: :admin_vicarious_login
     get 'admin/base/remove_vicarious_login', :to => 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
     ActiveAdmin.routes(self)
@@ -24,10 +26,17 @@ Rails.application.routes.draw do
     # end
     namespace :admin do
       resources :offerings do
+        resources :applications
         resources :pages do
-            resources :questions
-            end
+          resources :questions do
+            resources :validations
+            resources :options
+          end
         end
+        resources :statuses do
+          resources :emails
+        end
+      end
     end
     
     # User and Sessions    
@@ -46,7 +55,7 @@ Rails.application.routes.draw do
     get 'rsvp', to: 'rsvp#index'
 
     # Online Applications
-    get 'apply/:offering/:action', to: 'apply#:action', :requirements => { :offering => /\d+/ }, as: :apply_action
+    # get 'apply/:offering/:action', to: 'apply#:action', :requirements => { :offering => /\d+/ }, as: :apply_action
     get 'apply/:offering/', to: 'apply#index', :requirements => { :offering => /\d+/ }, as: :apply
 
 
@@ -60,8 +69,8 @@ Rails.application.routes.draw do
     get 'opportunities/research', to: 'opportunities#research', as: :opportunity_research
     match 'opportunities/form', to: 'opportunities#form', via: [:get, :post, :put, :patch], as: :opportunity_form
     match 'opportunities/form/:id', to: 'opportunities#form', via: [:get, :post, :put, :patch]
+    match 'opportunities/submit/:id', to: 'opportunities#submit', via: [:get, :post, :put, :patch]
     resources :opportunities, only: [:show, :index]
-    match 'opportunities/:action/:id', to: 'opportunities#:action', via: [:get, :post, :put, :patch]
 
     # Service Learning
     # Name change from service_learning to community_engaged

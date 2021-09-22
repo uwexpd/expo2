@@ -39,8 +39,10 @@
 					<span class="sub-links">
 						<ul class="inline">
 						<% for page in offering.pages %>
-							<li><%= link_to "#{page.title} (#{page.questions.size})", admin_offering_page_path(offering, page) %></li>
-						<% end %>
+						   <li><%= link_to page.title, admin_offering_page_path(@offering, page) %>
+				<%= link_to "(#{page.questions.size})", admin_offering_page_questions_path(@offering, page) %>
+					       </li>
+					    <% end %>
 						</ul>
 						<br class="clear">
 					</span>
@@ -53,7 +55,7 @@
 					<span class="sub-links">
 						<ul class="inline">
 						<% for status in offering.statuses %>
-							<li><%= link_to "#{status.private_title} (#{status.emails.size})", admin_offering_status_path(offering, status) %></li>
+							<li><%= link_to "#{status.private_title}", admin_offering_status_path(offering, status) %> <%= link_to "(#{status.emails.size})", admin_offering_status_emails_path(offering, status) %></li>
 						<% end %>
 						</ul>
 						<br class="clear">

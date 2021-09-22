@@ -21,9 +21,20 @@ ActiveAdmin.register_page "Apply" do
   	def list  
   	end
 
-  	def awardees
+    # def awardees
   		
-  	end
+    # end
+
+    def show
+      @app = @offering.application_for_offerings.find params[:id]
+
+      if params['section']
+        respond_to do |format|
+          format.html { return redirect_to :action => :show, :anchor => params[:section] }
+          format.js   { return render :partial => "admin/apply/section/#{params[:section]}", :locals => { :admin_view => true } }
+        end
+      end
+    end
 
   	private
   

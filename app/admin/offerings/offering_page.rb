@@ -1,15 +1,21 @@
-ActiveAdmin.register OfferingPage, as: 'pages' do	
+ActiveAdmin.register OfferingPage, as: 'pages' do
 	belongs_to :offering
 	batch_action :destroy, false
 	menu false
 	config.sort_order = 'ordering_asc'
 	config.filters = false
 
+	permit_params :title, :description, :introduction, :hide_in_admin_view, :hide_in_reviewer_view
+
+	member_action :form_builder, :method => :get do
+
+	end
+
 	index do
 		column ('Order') {|page| page.ordering}
 		column ('Title') {|page| link_to page.title, admin_offering_page_path(offering, page)}
 	    column ('Questions') {|page| link_to page.questions.count, admin_offering_page_questions_path(offering, page)}
-	    column ('Question Titles') {|page| page.questions.collect{|q| link_to q.short_question_title, admin_offering_page_question_path(offering, page, q)}}
+	    column ('Question Titles') {|page| page.questions.collect{|q| link_to q.short_question_title, edit_admin_offering_page_question_path(offering, page, q)}}
 	    actions
 	end
 
@@ -27,8 +33,7 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 			span ' = required field'
 			table_for pages.questions.order('ordering ASC'), id: 'show_table_offering_questions' do
               column ('#') {|question| question.ordering }
-              column ('Questions') {|question| (link_to question.short_question_title,admin_offering_page_question_path(offering, pages, question)) + (content_tag(:em, " *", :class => 'required') if question.required?)
-              }
+              column ('Questions') {|question| (link_to question.short_question_title,admin_offering_page_question_path(offering, pages, question)) + (content_tag(:em, " *", :class => 'required') if question.required?) }
               column ('Type'){|question| question.display_as.titleize}
               column ('Data Storage'){|question|
 					if OfferingQuestion::QUESTION_TYPES_NOT_REQUIRING_ATTRIBUTE_TO_UPDATE.include?(question.display_as)
@@ -39,9 +44,9 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 						content_tag(:code, (question.full_attribute_name))
 					end}
 			  column ('Functions'){|question|
-						span link_to '<span class="material-icons">visibility</span>'.html_safe, admin_offering_page_question_path(offering, pages, question)
-						span link_to '<span class="material-icons">edit</span>'.html_safe, edit_admin_offering_page_question_path(offering, pages, question)
-						span link_to '<span class="material-icons">delete</span>'.html_safe, admin_offering_page_question_path(offering, pages, question), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete'
+						span link_to '<span class="material-icons">visibility</span>'.html_safe, admin_offering_page_question_path(offering, pages, question), class: 'action_icon'
+						span link_to '<span class="material-icons">edit</span>'.html_safe, edit_admin_offering_page_question_path(offering, pages, question), class: 'action_icon'
+						span link_to '<span class="material-icons">delete</span>'.html_safe, admin_offering_page_question_path(offering, pages, question), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon'
 			         }
 			end
 		end
@@ -50,6 +55,9 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 
 	sidebar "Offering Settings", only: :index do  
         
+  	end 
+	sidebar "Form Builder", only: [:show, :edit] do
+  	   link_to 'Use Form Builder', form_builder_admin_offering_page_path, class: 'information'
   	end
 	sidebar "Pages", only: [:show, :edit] do
         render "pages", { offering: offering, offering_page: pages }

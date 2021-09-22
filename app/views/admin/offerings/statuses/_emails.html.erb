@@ -1,0 +1,6 @@
+<ul class="link-list">
+	<% status.emails.each do |email| %>
+		<li <%= "class=active" if status_email == email %>><%= link_to "#{email.send_to.titleize}: #{email.email_template.title}", admin_offering_status_email_path(status.offering, status, email) %></li>
+	<% end %>
+	
+</ul>

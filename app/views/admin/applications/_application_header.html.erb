@@ -1,0 +1,54 @@
+<div class="panel">
+  <div class="panel_contents">	 
+		<div class="content-block" style="padding-top: 12px">
+			<strong><%= student.lastname_first %> </strong>
+				<span class="right light smaller">
+					<%= "Student #: <span class='highlight'>#{student.student_no}</span>".html_safe if student.student_no %>
+					&bull;
+					EXPO <%= student.class %> ID: <span class="highlight"><%= student.id %></span>
+					&bull;
+					Application ID: <span class="highlight"><%= app.id %></span>
+					</span>
+					<h3 style="margin-top: 0;">
+				  <%= app.project_title.blank? ? "<font class=grey>(no title)</font>".html_safe : strip_tags(app.project_title) %></h3>
+				  
+
+					<span class="light right smaller" id="composite_report_maker_button">
+						<%#= render :partial => "reviewer/composite_report_maker" %>
+					</span>
+
+					<span id="application_status">						
+						<%#= render :partial => "application_status" %>
+						Status: <strong><%= raw(print_status(app)) %></strong>
+						<small class="grey"> - The student sees "<%= print_public_status(app) %>."
+						<%= link_to('(change)', {remote: true}, data: { link_toggle: "#assign_new_status"}, id: 'change_status_link')	%></small>
+						
+						<%#= link_to_function "(change)", "Effect.BlindDown('assign_new_status', {duration: 0.25});
+														  $('change_status_link').hide();
+														  if($('composite_report_maker_button')) { $('composite_report_maker_button').hide()}",
+														  :id => "change_status_link" %>
+
+						<div id="assign_new_status" style="display:none">
+							<%= form_for :applications, :url => { :action => 'update', :id => app } do |f| %>
+								<small>New Status: <%= f.collection_select :new_status, 
+														app.offering.statuses.order('sequence ASC'),
+														:application_status_name,
+														:application_status_title,
+														:prompt => true %>
+								Note: <%= f.text_field :new_status_note %>
+
+								<%= f.submit "Assign Status", class: 'small' %>
+								<%#= separator.html_safe %>
+								<%#= link_to_function "Cancel", "Effect.BlindUp('assign_new_status', {duration: 0.25});
+																$('change_status_link').show();
+																if($('composite_report_maker_button')) { $('composite_report_maker_button').show()}",
+																:class => 'cancel button' %>
+								</small>
+							<% end %>
+						</div>
+
+					</span>
+
+	  </div>
+	</div>
+</div>

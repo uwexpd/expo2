@@ -2,7 +2,7 @@ class EmailTemplate < TextTemplate
 
   validates_presence_of :from
 
-  default_scope { order("LOWER(name)") } 
+  default_scope { order(Arel.sql('LOWER(name)')) }
   
   # Creates an email or emails based on this EmailTemplate. If passed an array, then call this method on each of the array's members
   # and return an array of Mail objects. Otherwise, just return the one Mail object created.

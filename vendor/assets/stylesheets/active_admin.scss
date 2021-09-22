@@ -22,7 +22,6 @@ $am-theme-accent: #b7a57a;
 @import 'material_icons';
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
 
-
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.
 For example, to change the default status-tag color: */
@@ -88,6 +87,10 @@ For example, to change the default status-tag color: */
 	color: #4b2e83;
 }
 
+.highlight {
+	background: #fef5d4;
+}
+
 br.clear {
 	clear: both;
 }
@@ -134,6 +137,79 @@ em.required {
 
 a:link, a:visited {
 	color: #08d;
+}
+
+// link_to button and material icon style
+a.button {
+	font-size: 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 0.75rem;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.7);
+    background: transparent;
+    border-radius: 2px;
+    border: 0;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 18px;
+    margin: 0px;
+    padding: 12px 8px;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.25s all;
+    user-select: none;
+    vertical-align: middle;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    background-color: #4b2e83;
+    color: white;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.15);
+    font-weight: 600;
+    min-width: 88px;
+}
+
+a.button.small {
+	line-height: 6px;
+}
+
+//https://github.com/google/material-design-icons/issues/206
+// .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, #signup .material-icons
+.material-icons {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+}
+
+a.button .material-icons {
+	display: inline-flex;
+    align-items: center;
+    vertical-align: bottom;
+}
+
+a.button:hover {
+	text-decoration: none;
+	color: white;
+	opacity: 0.8;
+}
+
+a.action_icon:hover, a .material-icons:hover {
+	opacity: 0.6;
+	text-decoration: none;
+}
+
+.material-icons.md-20, .mi.md-20 {
+	font-size: 20px;
+}
+
+.material-icons.md-16, .mi.md-16 {
+	font-size: 16px;
+}
+
+input[type="submit"].small, input[type="reset"].small, input[type="button"].small {
+	padding: 6px 8px;
 }
 
 form fieldset.inputs ol li.text div.mce-tinymce {
@@ -361,7 +437,7 @@ fieldset.actions .cancel a:hover, .buttons .cancel a:hover {
 }
 
 fieldset.inputs div.label {
-	padding: 10px 8px 0 16px;
+	padding: 16px 8px 0 16px;
 }
 
 fieldset.inputs div.instruction {
@@ -399,7 +475,7 @@ fieldset.inputs .columns .column {
 }
 
 .with_sidebar #sidebar {
-	min-width: 250px;
+	min-width: 275px;
 }
 
 /* @index table column width size */
@@ -432,7 +508,7 @@ fieldset.inputs .columns .column {
 
 .panel_contents h1{
 	font-size: 1.3rem;
-	padding: 0.3rem 0rem;
+	// padding: 0.3rem 0rem;
 }
 
 .panel_contents h2{
@@ -450,6 +526,10 @@ fieldset.inputs .columns .column {
 }
 
 /* @Tab style*/
+.nav-tabs {
+	padding: 0px;
+}
+
 .nav-tabs > li > a {
 	font: 400 13px/15px "RobotoDraft", sans-serif;
 	text-transform: capitalize;
@@ -624,14 +704,6 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 
 #index_table_events tbody .col-sponsor, #index_table_offerings tbody .col-unit {
 	font-variant: small-caps;
-}
-
-.material-icons:hover {
-	opacity: 0.6;
-}
-
-.material-icons.md-20, .mi.md-20 {
-	font-size: 20px;
 }
 
 .panel_contents .student_header {
@@ -826,14 +898,6 @@ div.admin_phase div.title {
 	margin-right: 0.4rem;
 }
 
-//https://github.com/google/material-design-icons/issues/206
-.welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, #signup .material-icons{
-    // vertical-align: middle !important;
-    display: inline-flex;
-    align-items: center; 
-    vertical-align: middle;
-}
-
 .sub-links {	
 	font-size: 80%;
 	display: block;	
@@ -931,17 +995,6 @@ div.admin_phase div.title {
 #create_appointment {
 	padding: 16px;
 	height: 48px;
-}
-
-#index_footer .pagination_per_page {
-	font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    line-height: 0.75rem;
-    padding: 16px;    
-    border-bottom: 1px solid #efefef;
-    float: right;
 }
 
 // Filter toggle

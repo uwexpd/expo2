@@ -1,0 +1,23 @@
+<h3><i class="material-icons">visibility</i> Template Preview
+		<%#= link_to "Edit Template <i class='material-icons md-16 right'>edit</i>".html_safe, edit_admin_template_path(template), target: '_blank', class: 'button right' %>
+		<%= link_to "Edit Template", edit_admin_template_path(template), target: '_blank', class: 'button small right' %>
+</h3>
+<br />
+<div class="attributes_table email_preview">	
+  <table class='borderless'>
+	<% if template.is_a? EmailTemplate %>	
+		<tr class="row"><th>To</th><td>(recipient's name)</td></tr>
+		<tr class="row"><th>From</th><td><%= template.from %></td></tr>
+		<tr class="row"><th>Subject</th><td><%= template.subject %></td></tr>			
+	<% else %>	
+		<tr class="row"><th>Font</th><td><%= template.font %></td></tr>
+		<tr class="row"><th>Margins</th><td><%= template.margins %></td></tr>
+	<% end %>
+	
+	<tr class="row">
+		<th>Body</th>
+		<td><%= simple_format(template.body.to_s) %></td>
+    </tr>
+	
+  </table>
+</div>

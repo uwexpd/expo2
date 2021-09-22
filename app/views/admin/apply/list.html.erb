@@ -10,13 +10,13 @@
 				</tr>
 
 
-				<% @apps.each do |a| %>
+				<% @apps.each do |app| %>
 					<tr>				
-						<td><%= link_to a.person.lastname_first, admin_student_path(a.person) %>
-							<br><small><%= auto_link a.person.email rescue "Unknown" %></small></td>
-							<td><%= a.project_title.blank? ? "View Application" : strip_tags(a.project_title) %>
+						<td><%= link_to app.person.lastname_first, admin_student_path(app.person) %>
+							<br><small><%= auto_link app.person.email rescue "Unknown" %></small></td>
+							<td><%= link_to app.project_title.blank? ? "View Application" : strip_tags(app.project_title), admin_offering_application_path(app.offering, app) %>
 							</td>
-							<td><%= raw(print_status(a)) %></td>
+							<td><%= raw(print_status(app)) %></td>
 					</tr>					
 				<% end -%>
 

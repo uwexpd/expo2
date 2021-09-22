@@ -17,14 +17,14 @@
 				<li>
 					<i class='material-icons md-36'>description</i>
 					
-					<%= link_to "All Applications", admin_apply_action_path(@offering, 'list') %>
+					<%= link_to "All Applications", admin_apply_list_path(@offering) %>
 					<div>There are currently <b><%= pluralize @offering.valid_status_applications.size, "application" %></b> in the system.</div>
 					
 				</li>
 				<% unless @offering.application_for_offerings.awarded.empty? %>
 					<li>
 						<i class='material-icons md-36'>starts</i>
-						<%= link_to "Awardees", admin_apply_action_path(@offering, 'awardees') %>
+						<%= link_to "Awardees", admin_apply_awardees_path(@offering) %>
 			<div><strong><%= pluralize @offering.application_for_offerings.awarded.size, "applicant" %></strong> have been awarded.</div>
 					</li>
 				<% end %>
