@@ -6,7 +6,14 @@
 <h5>Deadlines</h5>
 <ul>
 	<% @scholarship.scholarship_deadlines.each do |d| %>
-	<li><%= d.deadline.to_s %>: <%= d.title if d.title %></li>
+		<% if d.is_active? %>
+			<li><%= d.deadline.to_s %>: <%= d.title if d.title %></li>
+		<% end %>
+	<% end %>
+	<% @scholarship.scholarship_monthly_deadlines.each do |d| %>
+		<% if d.is_active? %>
+			<li><%= Date::MONTHNAMES[d.deadline_month] %>: <%= d.title if d.title %></li>
+		<% end %>
 	<% end %>
 </ul>
 

@@ -1,4 +1,4 @@
-class Disability < ScholarshipBase
+class Disability < ScholarshipRecord
   self.table_name = "disabilities"
   
   has_many :scholarship_disability

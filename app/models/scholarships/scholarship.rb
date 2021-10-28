@@ -1,4 +1,4 @@
-class Scholarship < ScholarshipBase
+class Scholarship < ScholarshipRecord
   self.table_name = "scholarships" 
   self.per_page = 20
   
@@ -7,8 +7,9 @@ class Scholarship < ScholarshipBase
   has_many :ethnicities, :class_name => "ScholarshipEthnicity", :foreign_key => "scholarship_id"
   has_many :types, :class_name => "OmsfaScholarshipType", :foreign_key => "scholarship_id"
   has_many :scholarship_deadlines
+  has_many :scholarship_monthly_deadlines
   
-  accepts_nested_attributes_for :scholarship_deadlines, :categories, :disabilities, :ethnicities, :types, allow_destroy: true
+  accepts_nested_attributes_for :scholarship_deadlines, :scholarship_monthly_deadlines, :categories, :disabilities, :ethnicities, :types, allow_destroy: true
   
   scope :active, -> { where(is_active: true) }
   scope :incoming, -> { where(is_incoming_student: true) }

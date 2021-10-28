@@ -3,7 +3,7 @@ ActiveAdmin.register Scholarship do
   batch_action :destroy, false
   menu parent: 'Tools'
 
-  permit_params :title, :description, :history, :eligibility, :procedure, :contact_info, :service_agreement, :website_name, :website_url, :created, :modified, :award_amount, :freshman, :sophomore, :junior, :senior, :graduate, :disability, :male, :female, :gpa, :us_citizen, :permanent_resident, :other_visa_status, :need_based, :ethnicity, :length_of_award, :num_awards, :is_active, :resident, :non_resident, :is_national, :type_id, :page_stub, :is_incoming_student, :is_departmental, :hb_1079, :veteran, :gap_year, :graduate_school, :blurb, :fifth_year, :lgbtqi_community, scholarship_deadlines_attributes: [:id, :title, :deadline, :is_active, :_destroy], categories_attributes: [:id, :category_id, :scholarship_id, :_destroy], disabilities_attributes: [:id, :disability_id, :scholarship_id, :_destroy], ethnicities_attributes: [:id, :ethnicity_id, :scholarship_id, :_destroy], types_attributes: [:id, :type_id, :scholarship_id, :_destroy]
+  permit_params :title, :description, :history, :eligibility, :procedure, :contact_info, :service_agreement, :website_name, :website_url, :created, :modified, :award_amount, :freshman, :sophomore, :junior, :senior, :graduate, :disability, :male, :female, :gpa, :us_citizen, :permanent_resident, :other_visa_status, :need_based, :ethnicity, :length_of_award, :num_awards, :is_active, :resident, :non_resident, :is_national, :type_id, :page_stub, :is_incoming_student, :is_departmental, :hb_1079, :veteran, :gap_year, :graduate_school, :blurb, :fifth_year, :lgbtqi_community, scholarship_deadlines_attributes: [:id, :title, :deadline, :is_active, :_destroy], categories_attributes: [:id, :category_id, :scholarship_id, :_destroy], disabilities_attributes: [:id, :disability_id, :scholarship_id, :_destroy], ethnicities_attributes: [:id, :ethnicity_id, :scholarship_id, :_destroy], types_attributes: [:id, :type_id, :scholarship_id, :_destroy], scholarship_monthly_deadlines_attributes: [:id, :title, :deadline_month, :is_active, :_destroy]
   
   scope :all, default: true
   scope :active
@@ -24,7 +24,9 @@ ActiveAdmin.register Scholarship do
         status_tag scholarship.is_active?, class: 'small'
     end
     column "Deadlines" do |scholarship|
-       scholarship.scholarship_deadlines.map{ |d| d.deadline }.compact.join("<br>").html_safe
+       span scholarship.scholarship_deadlines.map{ |d| d.deadline }.compact.join("<br>").html_safe
+       span "<br>".html_safe
+       span scholarship.scholarship_monthly_deadlines.map{ |d| Date::MONTHNAMES[d.deadline_month] }.join("<br>").html_safe
     end
     actions
   end  
@@ -121,6 +123,14 @@ ActiveAdmin.register Scholarship do
         column :title
       end
   end
+  sidebar "Monthly Deadlines", if: proc{!scholarship.scholarship_monthly_deadlines.blank?} ,only: :show do
+      monthly_deadlines = scholarship.scholarship_monthly_deadlines
+      table_for monthly_deadlines do
+        column ('deadline_month'){|monthly_deadline|Date::MONTHNAMES[monthly_deadline.deadline_month]}
+        column :title
+      end
+  end
+
   sidebar "Last update time", only: :show do
     attributes_table_for scholarship do
       row :updated_at
@@ -206,9 +216,15 @@ ActiveAdmin.register Scholarship do
         tab 'Deadlines & Catgories' do
            f.has_many :scholarship_deadlines, heading: 'Deadlines', allow_destroy: true do |deadline|
               deadline.input :title, as: :string
-              deadline.input :deadline, :start_year => Date.today.year - 3
+              deadline.input :deadline, as: :datepicker
+              # deadline.input :deadline, start_year: Date.today.year - 3              
               deadline.input :is_active, as: :boolean
-           end        
+           end
+           f.has_many :scholarship_monthly_deadlines, heading: 'Monthly Deadlines', allow_destroy: true do |deadline|
+              deadline.input :title, as: :string
+              deadline.input :deadline_month, as: :select, :collection => Date::ABBR_MONTHNAMES.compact.each_with_index.collect{|m, i| [m, i+1]}, include_blank: false
+              deadline.input :is_active, as: :boolean
+           end
            f.has_many :categories, heading: 'Categories', allow_destroy: true do |category|
               category.input :category_id, as: :select, :collection => Category.all
            end

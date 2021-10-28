@@ -1,5 +1,5 @@
 # Add 'Omsfa' prefix for the class name to avoid same class name with SDB ScholarshipType
-class OmsfaScholarshipType < ScholarshipBase
+class OmsfaScholarshipType < ScholarshipRecord
   self.table_name = "scholarship_types"
   
   belongs_to :scholarship

@@ -1,4 +1,4 @@
-class Category < ScholarshipBase
+class Category < ScholarshipRecord
   self.table_name = "categories"
   
   has_many :scholarship_category

@@ -56,9 +56,9 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 	sidebar "Offering Settings", only: :index do  
         
   	end 
-	sidebar "Form Builder", only: [:show, :edit] do
-  	   link_to 'Use Form Builder', form_builder_admin_offering_page_path, class: 'information'
-  	end
+	# sidebar "Form Builder", only: [:show, :edit] do
+ #  	   link_to 'Use Form Builder', form_builder_admin_offering_page_path, class: 'information'
+ #  	end
 	sidebar "Pages", only: [:show, :edit] do
         render "pages", { offering: offering, offering_page: pages }
   	end

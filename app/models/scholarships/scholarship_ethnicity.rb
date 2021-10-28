@@ -1,4 +1,4 @@
-class ScholarshipEthnicity < ScholarshipBase
+class ScholarshipEthnicity < ScholarshipRecord
   self.table_name = "scholarship_ethnicities"
   
   belongs_to :scholarship
