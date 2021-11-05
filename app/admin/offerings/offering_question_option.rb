@@ -5,6 +5,18 @@ ActiveAdmin.register OfferingQuestionOption, as: 'options' do
 
 	permit_params :title, :value
 
+	breadcrumb do
+  	[
+  		link_to('Expo', root_path),
+  		link_to('Offerings',admin_offerings_path ),
+  		link_to("#{controller.instance_variable_get(:@offering).title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}" ),
+  		link_to('Pages', admin_offering_pages_path),
+  		link_to("#{controller.instance_variable_get(:@page).title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}/pages/#{controller.instance_variable_get(:@page).id}" ),
+  		link_to('Tasks', admin_offering_page_questions_path),
+  		link_to("#{controller.instance_variable_get(:@question).short_question_title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}/pages/#{controller.instance_variable_get(:@page).id}/questions/#{controller.instance_variable_get(:@question).id}" )
+  	 ]
+	end
+
 	controller do
 		nested_belongs_to :offering, :page, :question
 		before_action :fetch_question
@@ -15,7 +27,7 @@ ActiveAdmin.register OfferingQuestionOption, as: 'options' do
 
 		    respond_to do |format|		    	
 		      format.html { redirect_to edit_admin_offering_page_question_path(offering, @page, @question, :anchor => 'response-options') }
-		      format.js
+		      format.js { render js: "$('.delete').bind('ajax:success', function() {$(this).closest('tr').fadeOut();});"}
 			end
 		end
 
@@ -37,10 +49,8 @@ ActiveAdmin.register OfferingQuestionOption, as: 'options' do
 	form do |f|
 	  f.semantic_errors *f.object.errors.keys
 	  f.inputs do
-	    f.input :title
-	    div 'The text displayed to the user.', class: 'caption'
-	    f.input :value
-	    div 'The value stored in the database. Leave this blank to just use the title as the value.', class: 'caption'
+	    f.input :title, hint: 'The text displayed to the user.'
+	    f.input :value, hint: 'The value stored in the database. Leave this blank to just use the title as the value.'
 	  end
 	  f.actions
 	end

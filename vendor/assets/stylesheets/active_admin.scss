@@ -175,6 +175,14 @@ a.button.small {
 	line-height: 6px;
 }
 
+a.button.add {
+	margin-top: 1rem;
+}
+
+a.button.has_many_add, a.button.has_many_remove {
+	margin: 0 1rem 1rem 1rem;
+}
+
 //https://github.com/google/material-design-icons/issues/206
 // .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, #signup .material-icons
 .material-icons {
@@ -401,6 +409,7 @@ body.logged_out h2 {
 }
 
 /* end login page style */
+
 .columns {
 	padding:15px;
 }
@@ -444,11 +453,12 @@ fieldset.inputs div.instruction {
 	padding: 15px 8px 0 16px;
 }
 
-fieldset.inputs div.caption {
+fieldset.inputs div.caption, fieldset.inputs p.caption {
 	padding: 10px 8px 0 16px;
 	font-size: 80%;
 	color: #999;
-	margin-top: -13px;
+	margin-top: -18px;
+	line-height: 0.75rem;
 }
 
 fieldset.inputs .columns {
@@ -462,6 +472,12 @@ fieldset.inputs .columns .column {
 
 .inline-errors{
 	font-size: 0.85rem;
+}
+
+form .inline-hints {
+	color: #999;
+	font-size: 80%;
+	font-weight: 400;
 }
 
 .scope.selected a {
@@ -495,6 +511,8 @@ fieldset.inputs .columns .column {
 #show_table_offering_questions .col- {min-width: 50px;}
 #show_table_offering_questions .col-type {min-width: 100px;}
 #show_table_offering_questions .col-functions {min-width: 115px;}
+#show_table_offering_tasks .col-functions {min-width: 115px;}
+#index_table_restrictions .col-type {min-width: 200px;}
 /* end index table column width */
 
 #q_submit {
@@ -523,6 +541,11 @@ fieldset.inputs .columns .column {
 
 .panel_contents .content-block div {
 	line-height: 1.75rem;	
+}
+
+.panel_contents .offering h1, .panel_contents .committee h1, .panel_contents .apply h1 {
+	font-weight: bold;
+	padding: 1.5rem 1rem 1rem;
 }
 
 /* @Tab style*/
@@ -776,42 +799,19 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 	background: url(image-path('app/minor_ok.gif')) no-repeat 0 bottom;
 }
 
-.content-topper {
-	margin: 0 -16px 0 -16px;
-	// margin-bottom: 15px;
-	background-color: #f3f8fd;
-	padding: 5px 10px 0 10px;	
-	border-bottom: 1px solid #9abadb;	
-}
-
-.content-topper h1 {
-	font-weight: bold;
-	margin: 0.75rem;
-}
-
-.panel_contents .offering h1, .panel_contents .committee h1 {
-	font-weight: bold;
-	padding: 1.5rem 1rem 1rem;
-}
-
-div.admin_phase {
-	margin: 10px 0;
-	padding: 5px;
-	background: #fff;
-	border: 1px solid #ddd;
-}
-
-div.admin_phase div.title {
-	padding: 0 5px;
-}
-
+// Admin phase
 .panel_contents table.admin_phases {
 	background: inherit;
 }
 
+.panel_contents table.admin_phases tr:hover {
+	border: none;
+	background: none;
+}
+
 .panel_contents table.admin_phases td {
 	text-align: center;
-	color: #b1b1b1;			
+	// color: #b1b1b1;
 	padding: 5px 5px 0px 15px;
 	border:none;
 }
@@ -821,18 +821,6 @@ div.admin_phase div.title {
 	font-size: 120%;
 	color: #b7d9f8;
 	padding-bottom: 5px;
-}
-
-.admin_phases .name {
-	font-size: 85%;
-}
-
-.panel_contents table.admin_phases tr:hover {
-	background: none;
-}
-
-.panel_contents table.admin_phases td:hover {
-	color: #5f5f5f;
 }
 
 .panel_contents table.admin_phases td.first {
@@ -847,16 +835,20 @@ div.admin_phase div.title {
 }
 
 .panel_contents table.admin_phases a:hover {
+	background-color: #d8dfea;
 	border: 1px solid #9abadb;
-	margin: -1px;
-	border-bottom: none;
+	color: #08d;
 	text-decoration: none;
+	// border: 1px solid #9abadb;
+	// margin: -1px;
+	// border-bottom: none;
+	// text-decoration: none;
 }
 
-.panel_contents table.admin_phases #viewing a, .panel_contents table.admin_phases .current a {
+.panel_contents table.admin_phases #viewing a, .panel_contents table.admin_phases .current a{
 	color: #006699;
 }
-
+// end admin phase
 
 .welcome-links {
 	list-style-type: none;
@@ -933,48 +925,6 @@ div.admin_phase div.title {
 #utility_nav > li a {    
     text-align: right;
 }
-// #utility_nav #expd_website {
-//   clip: rect(0, 0, 0, 0);
-//   opacity: 0;
-//   transition: 0.28s all;
-// }
-
-// #utility_nav:hover #expd_website {
-//   clip: initial;
-//   opacity: 1;
-// }
-
-// #current_user {
-//   height: 90px;
-// }
-
-// #expd_website {
-//   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
-//   background: #fff;
-//   border-top-right-radius: 2px;
-//   border-top-left-radius: 2px;
-//   padding: 16px;
-//   height: 56px;
-//   width: 200px;
-//   position: absolute;
-//   right: 0;
-//   top: 139px;
-// }
-
-// #expd_website:before {
-//   content: "";
-//   border: 7px solid transparent;
-//   border-bottom-color: #fff;
-//   top: -14px;
-//   right: 12px;
-//   position: absolute;
-// }
-
-// #logout {
-// 	top: 195px;
-// }
-
-/** end **/ 
 
 #vicarious_login .panel{
 	padding: 8px 16px;
@@ -1130,6 +1080,24 @@ li#offering_final_decision_weight_ratio_input label{
 	background: #e5f4ff;
 	margin: 5px .5em 0 0;
 	padding: .1em .5em;
+}
+
+.blue-background {
+	background-color: #e5f4ff;
+}
+
+.green-background {
+	background-color: #bec;
+}
+
+.red-background {
+	background: #FFEBEB;
+	color: #b11;
+}
+
+#offering_dashboard_item_status_lookup_method_input, #offering_dashboard_item_offering_status_id_input, #offering_dashboard_item_offering_application_type_id_input {
+	margin-top: -8px;
+	margin-left: -25px;
 }
 
 

@@ -1,0 +1,38 @@
+<ul class="link-list">
+
+	<li>
+		<%= link_to edit_admin_offering_path(offering) do %>
+		 	<i class='material-icons md-32'>settings</i>Parameters and Settings
+		<% end %>
+	</li>
+	<li>
+		<%= link_to admin_offering_pages_path(offering) do %>
+		 	<i class='material-icons md-32'>description</i>Pages and Questions (<%= offering.pages.size %>)
+		<% end %>
+	</li>
+
+	<li>
+		<%= link_to admin_offering_statuses_path(offering) do %>
+			<i class='material-icons md-32'>emails</i>Statuses and E-mails (<%= offering.statuses.size %>)
+		<% end %>
+	</li>
+
+	<li>
+		<%= link_to admin_offering_phases_path(offering) do %>
+			<i class='material-icons md-32'>assignment_turned_in</i>Admin Phases (<%= offering.phases.size %>) and Tasks (<%= offering.tasks.size %>)
+		<% end %>
+	</li>
+
+	<li>
+		<%= link_to admin_offering_dashboard_items_path(offering) do %>
+			<i class='material-icons md-32'>dashboard</i>Dashboard Items (<%= offering.dashboard_items.size %>)
+		<% end %>
+	</li>
+	
+	<li>
+		<%= link_to admin_offering_restrictions_path(offering) do %>
+			<i class='material-icons md-32'>remove_circle</i>Restrictions (<%= offering.restrictions.size %>) and Exemptions (<%= offering.exemptions.size %>)
+		<% end %>	
+	</li>
+
+</ul>

@@ -1,12 +1,22 @@
 ActiveAdmin.register OfferingStatusEmail, as: 'emails'  do	
 	batch_action :destroy, false
 	menu false
-	config.filters = false	
+	config.filters = false
 
 	permit_params :send_to, :email_template_id, :auto_send, :cc_to_feedback_person
+
+	breadcrumb do
+  	[
+  		link_to('Expo', root_path),
+  		link_to('Offerings',admin_offerings_path ),
+  		link_to("#{controller.instance_variable_get(:@offering).title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}" ),
+  		link_to('Statuses', admin_offering_statuses_path),  		
+  		link_to("#{controller.instance_variable_get(:@status).private_title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}/statues/#{controller.instance_variable_get(:@status).id}" )
+  	 ]
+  end
     
 	controller do
-		nested_belongs_to :offering, :status, polymorphic: true
+		nested_belongs_to :offering, :status
 		before_action :fetch_status
 
 		def destroy

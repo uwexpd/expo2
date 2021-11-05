@@ -7,5 +7,10 @@ class OfferingRestrictionExemption < ApplicationRecord
 
   belongs_to :person
   belongs_to :offering_restriction
-  
+
+  # for activeadmin breadcrumb title display
+  def display_name
+    person.try(:fullname)
+  end  
+
 end

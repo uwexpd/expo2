@@ -43,7 +43,7 @@ class OfferingAdminPhaseTask < ApplicationRecord
   
   # Parse the +application_status_types+ field and return an array of the associated ApplicationStatusTypes.
   # The field can be separated by +\n, |+, or space.
-  def application_status_types
+  def application_status_types_array
     raw = read_attribute(:application_status_types)
     return [] if raw.blank?
     arr = []
@@ -63,12 +63,12 @@ class OfferingAdminPhaseTask < ApplicationRecord
 
   # Parse the +email_templates+ field and return an array of the associated EmailTemplates.   
   # The field can be separated by +\n or |+.
-  def email_templates
+  def email_templates_array
     raw = read_attribute(:email_templates)
     return [] if raw.blank?
     arr = []
     raw.split(/[\n\|]/).each do |name| 
-      t = EmailTemplate.find_or_create_by_name(name)
+      t = EmailTemplate.find_or_create_by(name: name)
       t.update_attribute(:from, offering.contact_email) if t.from.blank?
       arr << t
     end
@@ -119,9 +119,9 @@ class OfferingAdminPhaseTask < ApplicationRecord
   # /views/admin/apply/phase directory. Each item in the array is a hash consisting of a :name and :title for each option --
   # :name should be the value stored in the record and :title can be used for display purposes.
   def self.display_as_options
-    Dir.glob("app/views/admin/apply/phase/*.rhtml").collect do |f|
-      { :name =>  f[/_(.*).rhtml/, 1],
-        :title => (f[/_(.*).rhtml/, 1].titleize rescue nil)
+    Dir.glob("app/views/admin/apply/phase/*.html.erb").collect do |f|
+      { :name =>  f[/_(.*).html.erb/, 1],
+        :title => (f[/_(.*).html.erb/, 1].titleize rescue nil)
       }
     end
   end

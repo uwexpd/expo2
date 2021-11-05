@@ -21,6 +21,11 @@ class OfferingStatus < ApplicationRecord
   def private_title
     application_status_title
   end
+
+  # for activeadmin breadcrumb title display
+  def display_name
+    private_title
+  end
   
   def <=>(o)
     sequence.to_f <=> o.sequence.to_f rescue 0

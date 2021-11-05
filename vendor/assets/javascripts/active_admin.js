@@ -8,3 +8,4 @@
 //= require chartkick
 //= require active_admin_utility
 //= require editable_text_column
+//= require activeadmin/dynamic_fields

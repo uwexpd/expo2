@@ -1,0 +1,16 @@
+<div class='panel'>
+	<h3></h3>
+	<div class='panel_contents'>
+		<div class='content-block'>
+			<div class="fb-editor"></div>
+		</div>
+	</div>	
+</div>
+
+<%= javascript_include_tag "https://formbuilder.online/assets/js/form-builder.min.js" %>
+
+<script type="text/javascript">
+	jQuery($ => {
+  		$('.fb-editor').formBuilder()
+	})	
+</script>

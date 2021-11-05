@@ -118,6 +118,9 @@ class ApplicationForOffering < ApplicationRecord
   else case when application_review_decision_type_id is null then 0 else review.yes_option end
   end")}
 
+  scope :current_status_awardees, -> { joins("LEFT OUTER JOIN application_statuses on application_for_offerings.id = application_statuses.application_for_offering_id and application_statuses.application_status_type_id = (select application_status_type_id from application_statuses where application_for_offering_id =  application_for_offerings.id order by updated_at desc LIMIT 1)
+        LEFT OUTER JOIN application_status_types on application_status_types.id = application_statuses.application_status_type_id").where("application_status_types.name = 'awarded'") }
+
 
   PLACEHOLDER_CODES = %w(login_link admin_link project_title stripped_project_title project_description easel_number mentor_department
                         current_status_name status_sequence submitted? award_list total_requested_award_amount mentor_letter_received?
@@ -1170,7 +1173,11 @@ class ApplicationForOffering < ApplicationRecord
 
   def self.mge_awardees
     Rails.cache.fetch('mge_awardees', :expires_in => 2.weeks) do
-      ApplicationForOffering.joins(:offering).where("unit_id=2 OR name = 'Summer Institute in the Arts and Humanities'").awardees
+      # TODO: active relation [OR] doesn't work here. See if rails 6 fix this: https://github.com/rails/rails/issues/24055
+      mge_awarded_ids = ApplicationForOffering.joins(:offering).where("unit_id=2").awardees.pluck(:id)
+      siah_awarded_ids = ApplicationForOffering.joins(:offering).where("offerings.name = 'Summer Institute in the Arts and Humanities'").current_status_awardees.pluck(:id)
+      awarded_ids = mge_awarded_ids + siah_awarded_ids
+      ApplicationForOffering.where(id: awarded_ids)
     end
   end
   

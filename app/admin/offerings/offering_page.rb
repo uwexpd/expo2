@@ -49,18 +49,19 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 						span link_to '<span class="material-icons">delete</span>'.html_safe, admin_offering_page_question_path(offering, pages, question), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon'
 			         }
 			end
+			div link_to '<span class="material-icons md-20">add</span>Add New Question'.html_safe, new_admin_offering_page_question_path(offering, pages), class: 'button add'
 		end
 	  end
 	end
 
-	sidebar "Offering Settings", only: :index do  
-        
-  	end 
+	sidebar "Offering Settings", only: :index do
+		render "admin/offerings/sidebar/settings", { offering: offering }
+  	end
 	# sidebar "Form Builder", only: [:show, :edit] do
  #  	   link_to 'Use Form Builder', form_builder_admin_offering_page_path, class: 'information'
  #  	end
 	sidebar "Pages", only: [:show, :edit] do
-        render "pages", { offering: offering, offering_page: pages }
+        render "admin/offerings/pages/pages", { offering: offering, offering_page: pages }
   	end
 
 	form do |f|

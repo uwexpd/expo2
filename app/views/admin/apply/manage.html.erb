@@ -1,12 +1,33 @@
-<div class='panel'>	
+<div class='panel'>
+	<div class='panel_contents'>
+		<div class='content-block apply'>
+			<h1><%= @offering.title %></h1>
+			<table class="admin_phases">
+			<tr>
+				<% first = true %>
+				<% for phase in @offering.admin_phases.sort %>
+
+					<% id=""; klass="" %>
+					<% id = "viewing" if @phase == phase %>
+					<% klass = "current" if phase == @offering.current_offering_admin_phase %> 
+					<% klass += " first" if first %> <% first=false %>
+
+					<td id="<%= id %>" class="<%= klass %>">
+						
+						<%= link_to raw("<div class='sequence'>#{phase.sequence}</div>
+							 <div class='name'>#{phase.name}</div>
+							 <div class='arrow'></div>"), admin_apply_manage_path(@offering) %>
+					</td>
+				<% end %>
+			</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class='panel'>
 	<div class='panel_contents'>
 		<div class='content-block'>
-
-			<div class="content-topper">
-				<h1><%= @offering.title %></h1>			
-				<%= render :partial => "phase_timeline" %>
-			</div>
-
 			<ul class="welcome-links">
 				<li>
 					<i class='material-icons md-36'>assignment_turned_in</i>
@@ -22,11 +43,11 @@
 					
 				</li>
 				<% unless @offering.application_for_offerings.awarded.empty? %>
-					<li>
+				<li>
 						<i class='material-icons md-36'>starts</i>
 						<%= link_to "Awardees", admin_apply_awardees_path(@offering) %>
-			<div><strong><%= pluralize @offering.application_for_offerings.awarded.size, "applicant" %></strong> have been awarded.</div>
-					</li>
+					<div><strong><%= pluralize @offering.application_for_offerings.awarded.size, "applicant" %></strong> have been awarded.</div>
+				</li>
 				<% end %>
 				<li>
 					<i class='material-icons md-36'>find_in_page</i>
@@ -39,8 +60,7 @@
 					<div>Change application questions, phases, tasks, and more.</div>
 
 				</li>
-
 			</ul>
-		</div>
-	</div>
-</div>		
+		</div>	
+	</div>	
+</div>

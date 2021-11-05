@@ -22,9 +22,9 @@ gem 'autoprefixer-rails'
 # Active Admin
 gem 'activeadmin', '~> 2.7'
 gem 'ransack', '~> 2.3', '>= 2.3.2'
-# gem 'active_material', github: 'vigetlabs/active_material', tag: 'v1.5.0'
 gem 'active_material', '~> 1.5', '>= 1.5.2'
 gem 'activeadmin_addons'
+gem 'activeadmin_dynamic_fields'
 
 # hardens your app against XSS attack
 gem 'secure_headers'
@@ -82,6 +82,7 @@ gem 'dotenv-rails'
 gem 'recaptcha'
 gem 'invisible_captcha', '~> 1.1'
 
+# for mutliple database
 gem 'multiverse'
 
 group :production do  

@@ -1,0 +1,6 @@
+<ul class="link-list">
+	<% offering.restrictions.order('type').each do |restriction| %>
+		<li <%= "class=active" if offering_restriction == restriction %>><%= link_to "#{restriction.type} <small>(#{pluralize restriction.exemptions.count, 'exemption'})</small>".html_safe, admin_offering_restriction_path(offering, restriction) %></li>
+	<% end %>
+	
+</ul>

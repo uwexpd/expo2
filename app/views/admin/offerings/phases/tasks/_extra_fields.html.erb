@@ -1,0 +1,6 @@
+<ul class="link-list">
+	<% phase.tasks.each do |task| %>
+		<li <%= "class=active" if phase_task == task %>><%= link_to "#{task.title} <small>(#{pluralize task.extra_fields.size, 'extra fields'})</small>".html_safe, admin_offering_phase_task_extra_fields_path(phase.offering, phase, task) %></li>
+	<% end %>
+	
+</ul>

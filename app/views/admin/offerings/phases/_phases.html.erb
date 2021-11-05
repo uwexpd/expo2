@@ -1,0 +1,6 @@
+<ul class="link-list">
+	<% offering.phases.order('sequence asc').each do |phase| %>
+		<li <%= "class=active" if offering_phase == phase %>><%= link_to "<small class='light'>#{phase.sequence}</small> #{phase.name} <small>(#{pluralize phase.tasks.size, 'task'})</small>".html_safe, admin_offering_phase_path(offering, phase) %></li>
+	<% end %>
+	
+</ul>

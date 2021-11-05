@@ -5,6 +5,18 @@ ActiveAdmin.register OfferingQuestionValidation, as: 'validations' do
 
 	permit_params :type, :custom_error_text
 
+	breadcrumb do
+  	[
+  		link_to('Expo', root_path),
+  		link_to('Offerings',admin_offerings_path ),
+  		link_to("#{controller.instance_variable_get(:@offering).title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}" ),
+  		link_to('Pages', admin_offering_pages_path),
+  		link_to("#{controller.instance_variable_get(:@page).title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}/pages/#{controller.instance_variable_get(:@page).id}" ),
+  		link_to('Tasks', admin_offering_page_questions_path),
+  		link_to("#{controller.instance_variable_get(:@question).short_question_title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}/pages/#{controller.instance_variable_get(:@page).id}/questions/#{controller.instance_variable_get(:@question).id}" )
+  	 ]
+	end
+
 	controller do
 		nested_belongs_to :offering, :page, :question
 		before_action :fetch_question
@@ -15,7 +27,7 @@ ActiveAdmin.register OfferingQuestionValidation, as: 'validations' do
 
 		    respond_to do |format|		    	
 		      format.html { redirect_to edit_admin_offering_page_question_path(offering, @page, @question, :anchor => 'validation') }
-		      format.js
+		      format.js { render js: "$('.delete').bind('ajax:success', function() {$(this).closest('tr').fadeOut();});"}
 			end
 		end
 

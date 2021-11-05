@@ -14,9 +14,9 @@ ActiveAdmin.register OfferingStatus, as: 'statuses' do
       actions
     end
 
-    sidebar 'Offering Settings', only: :index do
-
-    end
+    sidebar "Offering Settings", only: :index do
+			render "admin/offerings/sidebar/settings", { offering: offering }
+  	end
     sidebar 'Statuses', only: [:show, :edit] do
       render "admin/offerings/statuses/statuses", { offering: offering, offering_status: statuses }
     end
@@ -35,14 +35,14 @@ ActiveAdmin.register OfferingStatus, as: 'statuses' do
 					table_for statuses.emails do
 		              column ('To') {|email| email.send_to.titleize }
 		              column ('Template') {|email| link_to email.email_template.title, admin_offering_status_email_path(offering, statuses, email) rescue "<span class='red'>Unknown</span>".html_safe }
-		              column ('Auto-send?'){|email| email.auto_send?}
+		              column 'Auto-send?', :auto_send
 					  column ('Functions'){|email|
 								span link_to '<span class="material-icons">visibility</span>'.html_safe, admin_offering_status_email_path(offering, statuses, email), class: 'action_icon'
 								span link_to '<span class="material-icons">edit</span>'.html_safe, edit_admin_offering_status_email_path(offering, statuses, email), class: 'action_icon'
 								span link_to '<span class="material-icons">delete</span>'.html_safe, admin_offering_status_email_path(offering, statuses, email), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon'
 					         }
 					end
-					div link_to '<span class="material-icons md-20">add</span>Aad New Email'.html_safe, new_admin_offering_status_email_path(offering, statuses), class: 'button'
+					div link_to '<span class="material-icons md-20">add</span>Add New Email'.html_safe, new_admin_offering_status_email_path(offering, statuses), class: 'button add'
 				end
 	    end
     end

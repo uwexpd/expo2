@@ -1,0 +1,6 @@
+<ul class="link-list">
+	<% offering.dashboard_items.each do |item| %>
+		<li <%= "class=active" if dashboard_item == item %>><%= link_to "#{item.title}", admin_offering_dashboard_item_path(offering, item) %></li>
+	<% end %>
+	
+</ul>

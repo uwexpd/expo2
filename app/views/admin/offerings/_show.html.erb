@@ -70,7 +70,7 @@
 						<ul class="inline">
 						<% for phase in offering.phases.sort %>
 							<li><%= link_to phase.name, admin_offering_phase_path(offering, phase) %>
-							<%#= link_to "(#{phase.tasks.size})", admin_offering_phase_tasks_path(offering, phase) %></li>
+							<%= link_to "(#{phase.tasks.size})", admin_offering_phase_tasks_path(offering, phase) %></li>
 						<% end %>
 						</ul>
 					<br class="clear">
