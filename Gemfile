@@ -5,7 +5,7 @@ gem 'rails', '~> 5.2', '>= 5.2.4.3'
 gem 'sass-rails'
 gem 'coffee-rails'
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier', '>= 4.2'
 
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
@@ -24,7 +24,7 @@ gem 'activeadmin', '~> 2.7'
 gem 'ransack', '~> 2.3', '>= 2.3.2'
 gem 'active_material', '~> 1.5', '>= 1.5.2'
 gem 'activeadmin_addons'
-gem 'activeadmin_dynamic_fields'
+# gem 'activeadmin_dynamic_fields'
 
 # hardens your app against XSS attack
 gem 'secure_headers'

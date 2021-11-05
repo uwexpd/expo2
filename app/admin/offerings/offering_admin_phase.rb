@@ -54,7 +54,9 @@ ActiveAdmin.register OfferingAdminPhase, as: 'phases' do
 	    f.input :sequence, input_html: {style: 'width: 5%'}
 	    f.input :notes, input_html: { rows: 4, style: 'width: 100%'}
 	    div 'Options', class: 'label'	    
-	    f.input :show_progress_completion, as: :boolean, input_html: { data: { if: 'not_checked', then: 'fade', target: '#relevant_field_for_show_progress_completion'} }, hint: 'Use columns to show the completion of progress when displaying this phase. If unchecked, then just task names are displayed.'
+	    f.input :show_progress_completion, as: :boolean, 
+	    # input_html: { data: { if: 'not_checked', then: 'fade', target: '#relevant_field_for_show_progress_completion'} }, 
+	    hint: 'Use columns to show the completion of progress when displaying this phase. If unchecked, then just task names are displayed.'
 	    div id: 'relevant_field_for_show_progress_completion' do
 		    f.input :in_progress_application_status_types, label: 'Action Required Statuses', input_html: { rows: 4, style: 'width: 40%; font-family: Consolas,Monaco,Lucida Console, Mono,DejaVu Sans Mono,Courier New;'}
 		    f.input :success_application_status_types, label: 'Moving Forward Statuses', input_html: { rows: 4, style: 'width: 40%; font-family: Consolas,Monaco,Lucida Console, Mono,DejaVu Sans Mono,Courier New;'}
