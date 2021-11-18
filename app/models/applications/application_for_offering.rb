@@ -1236,6 +1236,36 @@ class ApplicationForOffering < ApplicationRecord
     end
   end
 
+  # Creates (or restores from cache) a hash with keys of campus codes and values of arrays of application ID numbers.
+  def self.awardees_campus_mapping
+    Rails.cache.fetch('awardees_campus_mapping', :expires_in => 2.weeks) do
+      campus ||= {}
+      mge_awardees.each do |a|
+        if a.person
+          print "DEBUG person => #{a.person.id.to_s.ljust(10)}"
+          if a.person.is_a?(Student)
+            sk = a.person.system_key
+            rq = a.offering.quarter_offered || Quarter.find_by_date(a.offering.deadline)
+            t = StudentTranscript.find([sk, rq.year, rq.quarter_code_id]) rescue nil
+            t = (StudentTranscript.find([sk, rq.prev.year, rq.prev.quarter_code_id]) rescue nil) if t.nil?
+            ref_majors = t.nil? ? [] : t.majors
+          else
+            ref_majors = a.person.majors
+          end
+          #puts "DEBUG ref_majors => #{ref_majors.inspect}"
+          ref_majors.each do |major|
+            #puts "DEBUG major => #{major}"
+            campus_name = major.is_a?(StudentTranscriptMajor) ? major.branch_name : major.major_branch_name
+            campus[campus_name] = (campus[campus_name].nil? ? [a.app.id] : campus[campus_name] << a.app.id) unless campus_name.blank?
+            campus[campus_name] = campus[campus_name].uniq
+          end
+        end
+      end
+      #puts "DEBUG campus => #{campus.inspect}"
+      campus
+    end
+  end
+
   private
   
   # If an invalid application_category is still assigned, then reset it to nil. A category is invalid if it does not match the

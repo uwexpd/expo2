@@ -3,23 +3,26 @@
 <%= search_form_for @search, url: mge_scholars_path do |f| %>
 	<label>Student Name</label>
 		<%= f.search_field :person_full_name_cont, :placeholder => "firstname lastname" %>
-		
+	<br>
 	<label>Student Major</label>
-			<%= select_tag :student_major,  options_for_select([["Majors (#{@majors.size})", nil]] + @majors.map{|k,v| ["#{k} (#{v.size})", k]}.sort, 	params[:student_major]), {class: 'browser-default'}  %>
-							
+			<%= select_tag :student_major, options_for_select([["Majors (#{@majors.size})", nil]] + @majors.map{|k,v| ["#{k} (#{v.size})", k]}.sort, params[:student_major]), {class: 'browser-default'}  %>
+	<br>
 	<label>Quarter Awarded</label>
 		<%= f.collection_select :offering_quarter_offered_id_in,  Offering.select("DISTINCT quarter_offered_id").where(unit_id: 2).map(&:quarter_offered).compact.sort_by{|q| [q.year, q.quarter_code]}.reverse, :id, :title , {include_blank: false}, {multiple: true, class: 'chosen-select'}  %>
 	
 	<label>Type of Scholarship</label>
-		<%= f.select :offering_name_in,  options_for_select(Offering.select("DISTINCT name").where("unit_id=2 OR name = 'Summer Institute in the Arts and Humanities'").where.not(id: [427,215,220,247]).collect(&:name), @search.offering_name_in), {include_blank: false}, {multiple: true, class: 'chosen-select'}  %>
+		<%= f.select :offering_name_in, options_for_select(Offering.select("DISTINCT name").where("unit_id=2 OR name = 'Summer Institute in the Arts and Humanities'").where.not(id: [427,215,220,247]).collect(&:name), @search.offering_name_in), {include_blank: false}, {multiple: true, class: 'chosen-select'}  %>
 	
 	<label>Mentor Name</label>
 		<%= text_field_tag :mentor_name, params[:mentor_name], :placeholder => 'firstname lastname' %>		
-
+	<br><br>
 	<label>Mentor Department</label>
-		<%= select_tag :mentor_department,	options_for_select([["Departments (#{@mentor_departments.size})", nil]] + @mentor_departments.map{|k,v| ["#{k} (#{v.size})", k]}.sort,	params[:mentor_department]),  {class: 'browser-default'} %>
-
+		<%= select_tag :mentor_department, options_for_select([["Departments (#{@mentor_departments.size})", nil]] + @mentor_departments.map{|k,v| ["#{k} (#{v.size})", k]}.sort, params[:mentor_department]),  {class: 'browser-default'} %>
 	<br>
+	<label>Campus</label>
+	<%= select_tag :student_campus, options_for_select([["Campus (#{@campus.size})", nil]] + @campus.map{|k,v| ["#{k} (#{v.size})", k]}.sort, params[:student_campus]), {class: 'browser-default'}  %>
+		<%#= select_tag :campus_codes, options_for_select([["Seattle", 0], ["Bothell", 1], ["Tacoma", 2]], params[:campus_codes]), {multiple: true, class: 'chosen-select'} %>
+	<br><br>
 	<%= f.submit 'Filter', :class => 'btn' %>
 	<%= link_to "CLEAR FILTERS", mge_scholars_path, :class => 'clear_filter' %>
 

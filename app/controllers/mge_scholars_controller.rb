@@ -3,7 +3,7 @@ class MgeScholarsController < ApplicationController
   add_breadcrumb 'MGE Home', Unit.find_by_abbreviation('mge').home_url
   
   skip_before_action :login_required, :add_to_session_history, raise: false
-  before_action :fetch_mge_awardees, :fetch_majors, :fetch_mentor_departments
+  before_action :fetch_mge_awardees, :fetch_majors, :fetch_mentor_departments, :fetch_campus
   
   
   def index
@@ -14,31 +14,40 @@ class MgeScholarsController < ApplicationController
       params[:q][:id_in] = mentor_result
     end
 
-    if !params[:student_major].blank? && params[:mentor_department].blank?
-      if mentor_result.blank?        
-        params[:q][:id_in] = @majors.values_at(params[:student_major]).flatten.compact.map(&:to_s)
-      else
-        params[:q][:id_in] = @majors.values_at(params[:student_major]).flatten.compact.map(&:to_s) & mentor_result
-      end
+    major_result = @majors.values_at(params[:student_major]).flatten.compact.map(&:to_s) unless params[:student_major].blank?
+    dept_result = @mentor_departments.values_at(params[:mentor_department]).flatten.compact.map(&:to_s) unless params[:mentor_department].blank?
+    campus_result = @campus.values_at(params[:student_campus]).flatten.compact.map(&:to_s) unless params[:student_campus].blank?
+
+    if !params[:student_major].blank? && params[:mentor_department].blank? && params[:student_campus].blank?
+
+       params[:q][:id_in] = mentor_result.blank? ? major_result : major_result & mentor_result
+
+    elsif params[:student_major].blank? && !params[:mentor_department].blank? && params[:student_campus].blank?
+
+       params[:q][:id_in] = mentor_result.blank? ? dept_result : dept_result & mentor_result
+
+    elsif params[:student_major].blank? && params[:mentor_department].blank? && !params[:student_campus].blank?
+
+       params[:q][:id_in] = mentor_result.blank? ? campus_result : campus_result & mentor_result
+
+    elsif !params[:student_major].blank? && !params[:mentor_department].blank? && params[:student_campus].blank?
+
+       params[:q][:id_in] = mentor_result.blank? ? major_result & dept_result : major_result & dept_result & mentor_result
+
+    elsif !params[:student_major].blank? && params[:mentor_department].blank? && !params[:student_campus].blank?
+
+       params[:q][:id_in] = mentor_result.blank? ? major_result & campus_result : major_result & campus_result & mentor_result
+
+    elsif params[:student_major].blank? && !params[:mentor_department].blank? && !params[:student_campus].blank?
+
+       params[:q][:id_in] = mentor_result.blank? ? dept_result & campus_result : dept_result & campus_result & mentor_result
+
+    elsif !params[:student_major].blank? && !params[:mentor_department].blank? && !params[:student_campus].blank?
+
+       params[:q][:id_in] = mentor_result.blank? ? major_result & dept_result & campus_result : major_result & dept_result & campus_result & mentor_result
     end    
-    if !params[:mentor_department].blank? && params[:student_major].blank?
-      if mentor_result.blank? 
-        params[:q][:id_in] = @mentor_departments.values_at(params[:mentor_department]).flatten.compact.map(&:to_s)
-      else
-        params[:q][:id_in] = @mentor_departments.values_at(params[:mentor_department]).flatten.compact.map(&:to_s) & mentor_result
-      end
-    end    
-    if !params[:student_major].blank? && !params[:mentor_department].blank?
-      major_result = @majors.values_at(params[:student_major]).flatten.compact.map(&:to_s)
-      dept_result = @mentor_departments.values_at(params[:mentor_department]).flatten.compact.map(&:to_s)
-      if mentor_result.blank? 
-        params[:q][:id_in] = major_result & dept_result
-      else
-        params[:q][:id_in] = major_result & dept_result & mentor_result
-      end
-    end
     
-    if mentor_search && params[:q][:id_in].blank?
+    if (mentor_search || !params[:student_major].blank? || !params[:mentor_department].blank? || !params[:student_campus].blank?) && params[:q][:id_in].blank?
       params[:q][:id_in] = "0" # force rendering to no result page
     end
       
@@ -63,6 +72,10 @@ class MgeScholarsController < ApplicationController
   
   def fetch_mentor_departments
     @mentor_departments = ApplicationForOffering.mentor_departments_mapping
+  end
+
+  def fetch_campus
+    @campus = ApplicationForOffering.awardees_campus_mapping
   end
   
   private 

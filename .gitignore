@@ -17,6 +17,7 @@
 
 # Ignore results of `rake assets:precompile`.
 /public/assets/
+/public/expo/assets/
 
 # Security
 /config/database.yml

@@ -24,9 +24,9 @@ ActiveAdmin.register Scholarship do
         status_tag scholarship.is_active?, class: 'small'
     end
     column "Deadlines" do |scholarship|
-       span scholarship.scholarship_deadlines.map{ |d| d.deadline }.compact.join("<br>").html_safe
+       span scholarship.scholarship_deadlines.map{ |d| d.deadline if d.is_active? }.compact.join("<br>").html_safe
        span "<br>".html_safe
-       span scholarship.scholarship_monthly_deadlines.map{ |d| Date::MONTHNAMES[d.deadline_month] }.join("<br>").html_safe
+       span scholarship.scholarship_monthly_deadlines.map{ |d| Date::MONTHNAMES[d.deadline_month] if d.is_active? }.join("<br>").html_safe
     end
     actions
   end  

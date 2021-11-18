@@ -21,7 +21,7 @@ class Student < Person
    # email information.
    def sdb_update(attr_group)
      valid_length = SDB_CACHE_VALIDITY_LENGTH[attr_group]
-     # self.fetch_sdb_updates if valid_length.nil? || sdb_update_at.nil? || Time.now - sdb_update_at > valid_length
+     self.fetch_sdb_updates if valid_length.nil? || sdb_update_at.nil? || Time.now - sdb_update_at > valid_length
    end
    
    def fetch_sdb_updates
@@ -291,7 +291,11 @@ class Student < Person
   def major_branch_list(join_string = ", ")
     sdb.majors.collect(&:major_branch_name).uniq.join(join_string)
   end
-    
+
+  # 0 => Seattle, 1=> Bothell, 2 => Tacoma
+  # def campus_codes
+  #   sdb.majors.collect(&:branch).uniq
+  # end
   
   protected
   

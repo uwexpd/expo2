@@ -5,7 +5,7 @@ ActiveAdmin.register_page "Apply" do
   	[
   		link_to('Expo', "/expo"), 
   		link_to('Online Applications', '/expo/admin/offerings'),
-  		link_to("#{controller.instance_variable_get(:@offering).title}", "/expo/admin/apply/#{controller.instance_variable_get(:@offering).id}" )
+      link_to("#{controller.instance_variable_get(:@offering).title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}" )
   	]
   end
 

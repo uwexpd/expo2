@@ -12,8 +12,8 @@
 			<tr>
 				<th><%= sort_link(@search, :title, default_order: :desc) %></th>
 				<th>Class Standing</th>
-				<th><%= sort_link(@search, :gpa, default_order: :desc) %></th>
 				<th><%= sort_link(@search, :scholarship_deadlines_deadline, "Deadline", default_order: :desc) %></th>
+				<th><%= sort_link(@search, :scholarship_monthly_deadlines_deadline_month, "Deadline month", default_order: :desc) %></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -26,11 +26,17 @@
 			<tr>
 				<td width = "60%"><%= link_to scholarship.title, scholarship_path(scholarship.page_stub) rescue scholarship.title %></td>
 				<td width = "16%" ><%= scholarship.class_standings(", ") %></td>
-				<td width = "8%"><%= scholarship.gpa %></td>
-				<td width = "16%" >
+				<td width = "12%">
 					<ul>
 						<% scholarship.scholarship_deadlines.each do |d| %>
-						<li><%= d.deadline.to_s %></li>
+							<li><%= d.deadline.to_s if d.is_active? %></li>
+						<% end %>
+					</ul>
+				</td>
+				<td width = "12%">
+					<ul>
+						<% scholarship.scholarship_monthly_deadlines.each do |d| %>
+							<li><%= Date::MONTHNAMES[d.deadline_month] if d.is_active? %></li>
 						<% end %>
 					</ul>
 				</td>
