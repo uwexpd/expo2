@@ -1242,7 +1242,7 @@ class ApplicationForOffering < ApplicationRecord
       campus ||= {}
       mge_awardees.each do |a|
         if a.person
-          print "DEBUG person => #{a.person.id.to_s.ljust(10)}"
+          # print "DEBUG person => #{a.person.id.to_s.ljust(10)}"
           if a.person.is_a?(Student)
             sk = a.person.system_key
             rq = a.offering.quarter_offered || Quarter.find_by_date(a.offering.deadline)

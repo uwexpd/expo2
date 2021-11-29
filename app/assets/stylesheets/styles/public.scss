@@ -20,6 +20,14 @@ a:hover{
 	font-size: 115%;
 }
 
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
 .top-bar {
 	margin-bottom: 2em;
 }
@@ -758,4 +766,10 @@ select[required]{
 
 #new_research_opportunity label {
 	font-size: 1rem;
+}
+
+li.active .collapsible-header .material-icons.iconcollapse {
+  -ms-transform: rotate(180deg); /* IE 9 */
+  -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+  transform: rotate(180deg);
 }

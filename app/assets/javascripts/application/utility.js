@@ -10,15 +10,16 @@ $(document).ready(function(){
   // End
 });
 
- // Turbolinks fix: 
- // Refer to: https://stackoverflow.com/questions/18770517/rails-4-how-to-use-document-ready-with-turbo-links
- // https://codefor.life/turbolinks-5-rails-5-not-that-bad/
+// Turbolinks fix:
+// Refer to: https://stackoverflow.com/questions/18770517/rails-4-how-to-use-document-ready-with-turbo-links
+// https://codefor.life/turbolinks-5-rails-5-not-that-bad/
 $(document).on('turbolinks:load', function() {
-  // Initialization for materializecss javascript components
+  // Materializecss javascript components initialization
   $('.tabs').tabs();
   $('.datepicker').datepicker();
+  $('.collapsible').collapsible();
   $('select.material').formSelect();
-  // End
+  // End materializecss javascript initialization
 });
 
 $(document).on("click", "a[data-link-toggle]", function(){ 
@@ -37,4 +38,6 @@ function toggle_card(obj, display){
       $(obj).parent().hide();
   }
 }
+
+
 

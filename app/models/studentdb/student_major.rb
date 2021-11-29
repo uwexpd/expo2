@@ -30,7 +30,7 @@ class StudentMajor < StudentInfo
    elsif branch == 2
      "Tacoma Campus"
    else
-     "Unkown"
+     "Other Campus"
    end
   end
    
