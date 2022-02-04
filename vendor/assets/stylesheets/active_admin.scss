@@ -244,6 +244,7 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 	margin-top: 2.5rem;
     border-top: 1px dotted #E5E5E5;
 	background: url(image-path('uw-block-logo.gif')) no-repeat 0 2.1em;
+	line-height: 30px;
 	clear: both;
 }
 
@@ -513,6 +514,7 @@ form .inline-hints {
 #show_table_offering_questions .col-functions {min-width: 115px;}
 #show_table_offering_tasks .col-functions {min-width: 115px;}
 #index_table_restrictions .col-type {min-width: 200px;}
+#index_table_department_extras .col-id {min-width: 55px;}
 /* end index table column width */
 
 #q_submit {

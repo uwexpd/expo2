@@ -16,7 +16,7 @@ module AuthenticatedSystem
     
     # Store the given user in the session.
     def current_user=(new_user)
-      session[:user] = (new_user.nil? || new_user.is_a?(Symbol)) ? nil : new_user.id
+      session[:user] = (new_user.nil? || new_user.is_a?(Symbol) || new_user == false) ? nil : new_user.id
       # LoginHistory.login(new_user)
       @current_user = new_user
     end
@@ -160,7 +160,7 @@ module AuthenticatedSystem
       uwnetid, passwd = get_auth_data
       #logger.info "uwnetid #{uwnetid} detected in HTTP_AUTHORIZATION -- required identity: #{require_identity}" if uwnetid
       LoginHistory.login(PubcookieUser.authenticate(uwnetid, passwd, require_identity), (request.env["HTTP_X_FORWARDED_FOR"] || request.env["REMOTE_ADDR"]), session.id) if uwnetid
-      self.current_user = PubcookieUser.authenticate(uwnetid, passwd, require_identity) if uwnetid          
+      self.current_user = PubcookieUser.authenticate(uwnetid, passwd, require_identity) if uwnetid
     end
 
     # Called from #current_user.  Finally, attempt to login by an expiring token in the cookie.
