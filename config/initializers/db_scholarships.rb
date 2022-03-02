@@ -1,1 +1,0 @@
-DB_SCHOLARSHIPS = YAML::load(ERB.new(File.read(Rails.root.join("config","database_scholarships.yml"))).result)[Rails.env]

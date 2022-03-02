@@ -7,7 +7,7 @@ set :rails_env, :production
 set :bundle_flags, "--quiet"
 set :deploy_user, 'joshlin'
 server 'new.expo.uw.edu', user: 'joshlin', roles: %w{web app db}, primary: true
-# set :rvm_ruby_version, '2.5.1' # set up which rvm ruby to use in server
+set :rvm_ruby_version, '2.7.2' # set up which rvm ruby to use in server
 
 
 # Tell cap your own private keys for git and use agent forwarding with this command.

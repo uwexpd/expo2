@@ -33,7 +33,7 @@ ActiveAdmin.register DepartmentExtra do
       row ("SDB Department Name"){|dept_extra| dept_extra.department.dept_full_nm.strip.titleize.gsub("Of", "of") if dept_extra.dept_code}
       row :fixed_name
       row ("College Name"){|dept_extra| dept_extra.college.full_name if dept_extra.dept_code}
-      row ("College Campus"){|dept_extra| dept_extra.college.campus_name}
+      row ("College Campus"){|dept_extra| dept_extra.college.campus_name if dept_extra.dept_code}
       row :chair_name
       row :chair_email
       row :chair_title

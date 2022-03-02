@@ -39,14 +39,17 @@ gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
 # Connect to UW Student Web Service
 gem 'activeresource', '~> 5.1', '>= 5.1.1'
 
-gem 'mysql2', '~> 0.5.0'
+gem 'mysql2', '~> 0.5.3'
+gem 'mimemagic', '~> 0.4.3'
 gem 'activerecord-userstamp', github: 'lowjoel/activerecord-userstamp'
 gem 'tinymce-rails'
 gem 'will_paginate', '~> 3.1.6'
 gem 'will_paginate-materialize', github: 'harrybournis/will_paginate-materialize'
-gem 'rails_autolink'
 
-# for chosen
+# For smoothing the upgrade since auto_link and textilize are deprecated
+gem 'rails_autolink'
+gem 'textilize'
+
 gem 'chosen-rails'
 
 gem 'breadcrumbs_on_rails', '~> 4.0'
@@ -70,9 +73,6 @@ gem 'capitalize-names'
 gem 'material_icons'
 gem 'materialize-sass', '~> 1.0.0'
 
-# backport from Rails 5 for Rails 4.2
-# gem 'where-or' #TODO comment out this since upgrade to rails 5
-
 gem 'byebug'
 gem 'delayed_job', '~> 4.1', '>= 4.1.8'
 gem 'delayed_job_active_record', '~> 4.1', '>= 4.1.4'
@@ -89,15 +89,15 @@ group :production do
   gem 'omniauth-shibboleth'
 end
 
-group :development, :test do  
+group :development, :test do
   gem 'awesome_print'
-  gem 'rspec-rails'  
+  gem 'rspec-rails'
 end
 
 group :development do
   gem 'puma'
   gem 'web-console', '~> 2.0'
-  gem 'spring'
+  gem 'spring', '~> 3.1', '>= 3.1.1'
   gem 'capistrano', '~> 3.1'
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-passenger'

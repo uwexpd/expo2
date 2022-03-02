@@ -50,8 +50,8 @@
 		<label>Veterans</label>
 		<%= f.select :veteran_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.veteran_true), {include_blank: "Any"}, {class: 'browser-default'} %>
 			
-		<label>Women</label>
-		<%= f.select :female_true, options_for_select([['Yes', 'true' ]], @search.female_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
+		<!-- <label>Women</label> -->
+		<%#= f.select :female_true, options_for_select([['Yes', 'true' ]], @search.female_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 
 	<p><strong>Scholarship Type</strong></p>
 		<label>Are offered by UW</label>

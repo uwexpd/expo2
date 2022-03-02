@@ -1,4 +1,4 @@
-class Type < ScholarshipBase
+class Type < ScholarshipRecord
   self.table_name = "types"
   
   has_many :omsfa_scholarship_type

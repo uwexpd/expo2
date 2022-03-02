@@ -64,13 +64,22 @@ ActiveAdmin.register ApplicationForOffering, as: 'applications' do
          tab 'Transcript' do
 
          end
-         tab "Essay & Files" do
+         tab 'Essay & Files' do
 
          end
-         tab 'Student Info' do
+         tab 'Award Quarters' do
 
          end
-         tab 'Student Info' do
+         tab 'Mentors' do
+
+         end
+         tab 'Review' do
+
+         end
+         tab 'Application History' do
+
+         end
+         tab 'Notes & Feedback' do
 
          end
       end
