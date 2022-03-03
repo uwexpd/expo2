@@ -108,7 +108,10 @@ group :development do
   gem 'uw_sws'
   gem 'rack-mini-profiler', require: false
   gem 'spring-commands-rspec'  
-  #gem 'gas_load_tester'  
+  # net-ssh requires the following gems for ed25519 support:
+  gem 'ed25519', '>= 1.2', '< 2.0'
+  gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
+
 end
 
   
