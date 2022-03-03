@@ -5,8 +5,9 @@ Exp-Online(expo) is a web tool for managing the University of Washington's Cente
 
 * Integrate with active admin
 * UW student database and web service
-* [Scholarships database search](http://expd.uw.edu/expo/scholarships)
-* [MGE Scholars search](http://expd.uw.edu/expo/mge_scholars)
+* [Scholarships database search](https://expd.uw.edu/expo/scholarships)
+* [MGE Scholars search](https://expd.uw.edu/expo/mge_scholars)
+* [Research Opportunities search](https://new.expo.uw.edu/expo/opportunities)
 
 ## License
 
