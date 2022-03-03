@@ -14,10 +14,10 @@
 	
 	<h2 id="uw">UW Students, Faculty &amp; Staff</h2>
 
-	  <%= form_tag '/auth/shibboleth' do %>
+	  <%= form_tag '/auth/shibboleth/callback' do %>
 		<div id="uwnetid">				
 			<div id="login_button">	
-				<%= link_to image_tag('weblogin.png', :id => "weblogin_logo"), '/auth/shibboleth' %>
+				<%= link_to image_tag('weblogin.png', :id => "weblogin_logo"), '/auth/shibboleth/callback' %>
 				<p><%= submit_tag 'Sign In with UW NetID', :name => 'uwnetid_button', :id => "uwnetid_button" %></p>
 			</div>
 		</div>	
