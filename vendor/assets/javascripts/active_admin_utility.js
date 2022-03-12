@@ -4,7 +4,6 @@ tinyMCE.baseURL = '/expo/assets/tinymce/';
 $(function() {
   tinyMCE.init({
      selector: '.tinymce',
-     theme: 'silver',  
    plugins: [
       'advlist autolink lists link image charmap print preview anchor',
       'searchreplace visualblocks code fullscreen searchreplace wordcount',

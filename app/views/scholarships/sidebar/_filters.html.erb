@@ -65,7 +65,7 @@
 		<%= f.select :graduate_school_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_school_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 
 		
-	<br>	
+	<br /><br />
 	<%= f.submit 'Filter', :class => 'btn' %>
 	<%= link_to "CLEAR FILTERS", scholarships_path, :class => 'clear_filter' %>	
 
