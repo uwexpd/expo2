@@ -1,50 +1,50 @@
-<li <%= "id='associate_question_#{question.id}'" if OfferingQuestionOption.find_by_associate_question_id(question.id) %>>
+<br><div><%= question.question %>
+   <%= content_tag('em', '*', :class => 'required') if question.required? %>
+</div>
+
+<div <%= "id='associate_question_#{question.id}'" if OfferingQuestionOption.find_by_associate_question_id(question.id) %> class="file-field input-field">
 	<% question_file = @user_application.files.find_by_offering_question_id(question.id) %>
-	<% fields_for "user_application[file_attributes][]", question_file do |af| %>
 
-		<p><%= question.question %>
-			<%= content_tag('em', '*', :class => 'required') if question.required? %></p>
-		
-		<% if question_file.file.nil? %>
-			<%= upload_title(question_file) %>	<%= af.file_field :file %>												
+<% @user_application.files.each do |app_file| %>
+
+  <% if app_file.id == question_file.id %>
+ 
+   <%= f.fields_for :files, app_file do |af| %>
+			
+		<% if app_file.file.file.nil? %>
+		  <div class="btn">
+		  	 <i class="material-icons left">cloud_upload</i>
+			 <span><%= upload_title(app_file) %></span>
+			 <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
+		  </div>		  
+
 		<% else %>
-
-			<% version = question_file.file.valid_versions.include?(:pdf) ? :pdf : :original rescue :original %>
-			<div class="uploaded_file file <%= question_file.file.versions[version].ext %>">
-				<div class="small" style="float:right">
-					Replace this File:	<%= af.file_field :file %>
-				</div>
-
-				<!-- <%= image_tag "icons/filetypes/32/#{question_file.file.original.extension}.png" %>
-				<h3 class="filename"><%= question_file.file.original.filename %></h3>
-				<p class="description">
-					<small></small>
-					<br><%= question_file.file.original.content_type %> 
-					| <%= number_to_human_size(question_file.file.original.size) %></p>					 -->
-					
-					
-
-				<div class="file <%= question_file.file.versions[version].ext %>">
-					<%= image_tag "icons/filetypes/32/#{question_file.file.versions[version].ext}.png" %>
-					<div class="filename">
-						<%= link_to question_file.file.versions[version].public_filename,
-						 			:action => 'file',
-									:id => question_file,
-									:offering => @offering,
-									:version => version.to_s %>
-					</div>
-					<div class="details">
-						<b>Original filename:</b> <%= question_file.original_filename %>
-						<br><%= question_file.file.content_type << ", " if question_file.file.content_type %><%= number_to_human_size(question_file.file.versions[version].size) %>
-					</div>
-				</div>
-
-					
-			</div>
+				
+			<div class="btn">
+		  	  <i class="material-icons left">cloud_upload</i>
+			  <span>Replace this File:	</span>
+			  <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
+		  </div>				
 		<% end %>
+
+		<div class="file-path-wrapper">
+			 <% placeholder = question_file.file_identifier.nil? ? "Upload file" : question_file.file_identifier %>
+        	 <input class="file-path validate" type="text" placeholder= <%= placeholder %> >
+    	</div>    	
 
 		<%= hidden_field_tag "user_application[file_attributes][#{question_file.id}][title]", question.short_title.empty? ? question.question : question.short_title %>
 		
-	<% end %>
-	
-</li>
+	<% end %>	
+
+  <% end %>
+
+<% end %>	
+
+</div>
+
+<% unless question_file.file.file.nil? %>
+<b>Download original file:</b>
+<%= link_to question_file.public_filename, apply_file_path(@offering, question_file.id, question_file.file_identifier) unless question_file.file.file.nil? %>
+
+<span class='caption'>(<%= question_file.file.content_type + ", " if question_file.file.content_type %><%= number_to_human_size(question_file.file_size) %>)</span>
+<% end %>

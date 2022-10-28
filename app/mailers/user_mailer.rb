@@ -19,7 +19,7 @@ class UserMailer < ActionMailer::Base
 
   def welcome_signup(user)
     @user = user
-    mail(to: user.email, 
+    mail(to: @user.email, 
          subject: 'Welcome to UW EXPO online system',
          from: Rails.configuration.constants['system_help_email'],
          date: Time.now)

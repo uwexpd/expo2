@@ -34,7 +34,7 @@ class Scholarship < ScholarshipRecord
   
   def citizen_types(separator = nil)
     citizen_types = []
-    citizen_types << "Us Citizen" if us_citizen == 1
+    citizen_types << "US Citizen" if us_citizen == 1
     citizen_types << "Permanent Resident" if permanent_resident == 1
     citizen_types << "International or Other Visa Status" if other_visa_status == 1
     citizen_types << "Undocumented" if hb_1079 == 1

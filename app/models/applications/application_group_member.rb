@@ -133,7 +133,7 @@ class ApplicationGroupMember < ApplicationRecord
   # Generates a link that can be used to connect to the validation page
   def validation_link
     apply_group_member_validation_url(
-        :host => CONSTANTS[:base_url_host], 
+        :host => Rails.configuration.constants[:base_url_host], 
         :offering => offering,
         :group_member_id => self,
         :token => token.to_s)

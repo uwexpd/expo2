@@ -1,0 +1,32 @@
+<% 
+application_other_award = @user_application.other_awards.find_by_offering_other_award_type_id(other_award.id)
+checked = !application_other_award.nil?
+
+%>
+
+<p>
+<%= hidden_field_tag "user_application[other_award_attributes][#{other_award.id}][secured]", "0", :id => nil %>
+
+<label for="user_application_other_award_attributes_<%= other_award.id %>_secured">
+
+<%= check_box_tag "user_application[other_award_attributes][#{other_award.id}][secured]",
+					"1", checked,
+ 					:onclick => "$('#other_award_quarter_#{other_award.id}').toggle()",
+ 					id: "user_application_other_award_attributes_#{other_award.id}_secured",
+ 					class: 'filled-in' %>
+ 	<span><%= other_award.title %></span>
+</label>
+<span id="other_award_quarter_<%= other_award.id %>" <%= "style=display:none" unless checked %>>
+	<% if other_award.ask_for_award_quarter? %>
+		<small> : When were you awarded this scholarship?
+
+		<select name="user_application[other_award_attributes][<%= other_award.id %>][award_quarter_id]" class="browser-default" style="width: 25%;">
+			<option value="">Please select</option>
+			<%= options_from_collection_for_select Quarter.past_quarters.sort.reverse, 
+					:id, :title, 
+					(application_other_award.award_quarter_id if application_other_award) %>
+		</select>
+		</small>
+	<% end %>
+</span>
+</p>

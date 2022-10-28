@@ -1,0 +1,34 @@
+<% title(@offering.name, (@offering.quarter_offered.title rescue nil)) %>
+
+<div class="card">
+
+<%= form_with model: @user_application, url: { action: 'update', page: @page.ordering}, id: 'apply_form' do |f| %>
+
+	<div class="card-content">
+		<%= content_tag('strong', "Section #{@page.ordering.to_s} of #{@offering.pages.count}", :id => 'application_page_number') %>
+		<%= render :partial => 'time_left' %>
+		<%= content_tag('h5', @page.title, :id => 'application_page_title') %>
+		<%= content_tag('div', raw(@page.introduction), class: 'page_intro') %>
+		<%= content_tag('p', "Fields marked <abbr title='required'>*</abbr> are required.".html_safe, class: 'smaller gray') %>
+
+		
+		<% @application_page = ApplicationPage.find_by(offering_page_id: @page.id, application_for_offering_id:  @user_application.id)
+			if @application_page.started
+				if !@application_page.passes_validations? %>
+					<%= render :partial => "error_messages", :locals => { :errors => @application_page.errors } unless  @user_application.skip_validations %>
+				<% end
+			end
+		%>
+				
+		<div class="row offering_questions">
+			<%= render partial: 'question', collection: @page.questions, locals: { f: f, page: @application_page } %>
+		</div>
+	
+    </div>
+	
+	<div class="card-action"><%= render :partial => 'progress_nav_buttons' %></div>
+
+<% end %>
+	
+</div>
+<% sidebar :sidebar_nav %>

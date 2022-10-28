@@ -2,7 +2,7 @@ class OpportunitiesController < ApplicationController
 	add_breadcrumb 'URP Home', Unit.find_by_abbreviation('urp').home_url
     skip_before_action :login_required, raise: false
     before_action :student_login_required_if_possible, :only => ['index', 'show']
-    before_action :login_required, :only => ['research']
+    before_action :login_required, :only => ['research', 'form', 'submit']
     before_action :check_if_uwnetid, :only => ['index', 'show']
 
   def index	    

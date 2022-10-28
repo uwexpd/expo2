@@ -60,7 +60,9 @@ gem 'nokogiri'
 gem 'spreadsheet'
 
 # Error reporting
-gem 'sentry-raven'
+#gem 'sentry-raven'
+gem 'sentry-ruby'
+gem "sentry-rails"
 
 gem 'chartkick'
 #gem 'groupdate'
@@ -74,16 +76,21 @@ gem 'material_icons'
 gem 'materialize-sass', '~> 1.0.0'
 
 gem 'byebug'
-gem 'delayed_job', '~> 4.1', '>= 4.1.8'
-gem 'delayed_job_active_record', '~> 4.1', '>= 4.1.4'
+# gem 'delayed_job', '~> 4.1', '>= 4.1.8'
+# gem 'delayed_job_active_record', '~> 4.1', '>= 4.1.4'
 gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
+gem 'redis'
+gem "sidekiq", "~> 6.5"
 
 gem 'dotenv-rails'
 gem 'recaptcha'
 gem 'invisible_captcha', '~> 1.1'
 
-# for mutliple database
+# Mutliple database
 gem 'multiverse'
+
+gem 'carrierwave', '~> 2.0'
+gem 'mini_magick'
 
 group :production do  
   gem 'omniauth-shibboleth'
@@ -103,12 +110,13 @@ group :development do
   gem 'capistrano-passenger'
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'
+  gem 'capistrano-rake', require: false
   gem 'annotate'  
   gem 'brakeman', :require => false
   gem 'uw_sws'
   gem 'rack-mini-profiler', require: false
   gem 'spring-commands-rspec'  
-  #gem 'gas_load_tester'  
+  #gem 'gas_load_tester'
+  gem 'ed25519', '>= 1.2', '< 2.0'
+  gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
 end
-
-  

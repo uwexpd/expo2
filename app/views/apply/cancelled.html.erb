@@ -1,0 +1,7 @@
+<% title(@offering.name, (@offering.quarter_offered.title rescue nil)) %>
+
+<div class="card content confirm_cancel">
+	<%= content_tag('h4', "Your Application has been Cancelled") %>
+	<p>If you would like to start a new application over, click the button below.</p>
+	<%= link_to "Start a new application", apply_path, {class: 'btn'} %>
+</div>

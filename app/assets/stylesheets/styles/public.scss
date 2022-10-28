@@ -12,6 +12,10 @@ a:hover{
 	color: #b7a57a;
 }
 
+.bold {
+	font-weight: bold;
+}
+
 .smaller {
 	font-size: 85%;
 }
@@ -36,6 +40,10 @@ a:hover{
 	color: gray;
 }
 
+.required {	
+    color: #d45f53;    
+}
+
 .uw_purple {
 	color: #4b2e83;
 }
@@ -51,6 +59,10 @@ a:hover{
 .caption {
 	font-size: 80%;
 	color: #999;	
+}
+
+.clear {
+	clear: both;
 }
 
 span.hightlight{
@@ -85,6 +97,9 @@ abbr[title="required"]{
     margin-left: 4px;
 }
 
+[type="checkbox"] + span:not(.lever) {
+	line-height: 20px;
+}
 // Align matieral-icons with text
 i.material-icons.align, i.material-icons.bottom_align {
 	vertical-align: bottom;
@@ -169,13 +184,17 @@ nav .nav-wrapper a:hover{
 
 thead th, tbody td, tbody th{
 	font-size: 0.9em;
-	border-bottom: solid 1px #ddd;	
+	// border-bottom: solid 1px #ddd;
 	padding: 15px;
 }
 
 tbody th{ 
 	color: rgba(0, 0, 0, 0.54);
 	font-weight: 600;
+}
+
+table.borderless tr, table.borderless td {
+	border-bottom: none;
 }
 
 .attributes_table tbody tr th {
@@ -457,7 +476,7 @@ ul.pagination{
 	background-color: #26A699;
 }
 
-.status_tag.warning, .status_tag.error {
+.status_tag.warning, .status_tag.error, .status_tag.red {
 	background-color: red;
 }
 
@@ -773,3 +792,19 @@ li.active .collapsible-header .material-icons.iconcollapse {
   -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
   transform: rotate(180deg);
 }
+
+.card-action .cancel-button {
+	margin-top: -35px;
+	color: gray !important; 
+}
+
+.card-action .cancel-button:hover {	
+	opacity: 0.5;
+}
+
+.welcome-links li li{
+	padding-left: 1em;
+    list-style-type: disc;
+    margin-left: 2em;
+}
+

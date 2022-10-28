@@ -1,15 +1,7 @@
-<li>
+<div class="input-field col s12">
+	<%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %>
 
-	<fieldset>
-		<legend><%= question.question %>
-			<%= content_tag('em', '*', :class => 'required') if question.required? %>
-		</legend>
-	
-		<div class="question_block" id="other_awards">
-			<table class="highlightless borderless">
-				<%= render :partial => 'apply/other_award', :collection => @offering.other_award_types.sort %>
-			</table>
-		</div>
-	</fieldset>
-	
-</li>
+	<div class="question_block" id="other_awards">		
+		<%= render :partial => 'apply/other_award', :collection => @offering.other_award_types.sort %>
+	</div>	
+</div>

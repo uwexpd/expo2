@@ -102,7 +102,7 @@ class Student < Person
     current_credits(quarter) >= Rails.configuration.constants['credits_required_for_full_time']
   end
 
-  # Returns true if this student is an undergraduate at the University. A student is considered undergraduate if his or her
+  # Returns true if this student is an undergraduate at the University. A student is considered undergraduate if their
   # +class_standing+ is <= 5.
   def undergrad?
     sdb.class_standing <= 5
@@ -118,7 +118,7 @@ class Student < Person
   def valid_service_learning_waiver_on_file?
     return false if service_learning_risk_paper_date.nil?
     return false if Time.now - service_learning_risk_paper_date < 0 # in the future
-    return false if Time.now - service_learning_risk_paper_date > ((eval(CONSTANTS[:service_learning_risk_lifetime]) rescue nil) || 3.months)
+    return false if Time.now - service_learning_risk_paper_date > ((eval(Rails.configuration.constants[:service_learning_risk_lifetime]) rescue nil) || 3.months)
     true
   end
 
@@ -126,7 +126,7 @@ class Student < Person
   # age 18, they must have a valid paper waiver on file. If not, check if the +service_learning_risk_date+ is within the lifetime
   # for service-learning risk waivers as defined by the +service_learning_risk_lifetime+ EXPo constant.
   def valid_service_learning_waiver?(unit = nil)
-    valid_lifetime = ((eval(CONSTANTS[:service_learning_risk_lifetime]) rescue nil) || 3.months)
+    valid_lifetime = ((eval(Rails.configuration.constants[:service_learning_risk_lifetime]) rescue nil) || 3.months)
     return valid_service_learning_waiver_on_file? if sdb.age < 18
     return false if service_learning_risk_date.nil? and service_learning_risk_paper_date.nil?
     unless service_learning_risk_date.nil?

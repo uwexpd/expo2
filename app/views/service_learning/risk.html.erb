@@ -23,16 +23,16 @@
 	<%#= error_messages_for :student %>
 
 	<div class="row z-depth-2 hightlight">
-        <div class="col s12">
-          <strong>Electronic Signature:</strong>
-          <div class="input-field inline" style="width: 50%">
-          	<i class="material-icons prefix">create</i>
-          	<%= f.text_field :electronic_signature, id: "electronic_signature", class: "validate", required:"", 'aria-required': "true" %>
-            <label class="active" for="electronic_signature">Type your full legal name<abbr title="required">*</abbr></label>
-          </div>
-          <span style="margin-left: 3rem"><strong>Date:</strong> <%= Time.now.to_date.to_s(:long) %></span>
+     <div class="col s12">
+        <strong>Electronic Signature:</strong>
+        <div class="input-field inline" style="width: 50%">
+        	<i class="material-icons prefix">create</i>
+        	<%= f.text_field :electronic_signature, id: "electronic_signature", class: "validate", required:true, 'aria-required': "true" %>
+          <label class="active" for="electronic_signature">Type your full legal name<abbr title="required">*</abbr></label>
         </div>
-  	</div>			
+        <span style="margin-left: 3rem"><strong>Date:</strong> <%= Time.now.to_date.to_s(:long) %></span>
+    </div>
+  </div>			
 <br>
 <p class="final_submit">
 	Click the button below to complete your service learning registration.</p>

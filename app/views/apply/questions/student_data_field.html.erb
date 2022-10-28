@@ -1,11 +1,11 @@
-<li>
+<div <%= "class= non_input_field" if @user_application.person.is_a?(Student) %>>
 	<%= qf.label('', question.question) %>
 
 	<% if @user_application.person.is_a?(Student) %>
-
-		<%= eval "@user_application.person.sdb.#{question.attribute_to_update}" rescue "--" %>
-
-	<% else -%>
+		<div class="inline">
+			<%= eval "@user_application.person.sdb.#{question.attribute_to_update}" rescue "--" %>
+		</div>
+	<% else %>
 	
 		<% if question.attribute_to_update == "fullname" %>
 				First: <%= qf.text_field :firstname, :size => question.width %>
@@ -21,7 +21,7 @@
 				<br>Major 2: <%= qf.text_field :major_2, :size => question.width %>
 				<br>Major 3: <%= qf.text_field :major_3, :size => question.width %>
 			</div>
-		<% end -%>
+		<% end %>
 
 		<% if question.attribute_to_update == "class_standing_description" %>
 			<%= qf.collection_select :class_standing_id, ClassStanding.undergraduate, :id, :description, :prompt => true %>
@@ -41,11 +41,10 @@
 		
 		<% if question.attribute_to_update == "student_no" %>
 			<span class="light">n/a</span>
-		<% end -%>
+		<% end %>
 			
 
-	<% end -%>
+	<% end %>
 	
 	<%= display_computed_caption(question.caption) if question.caption? %>
-
-</li>
+</div>

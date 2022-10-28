@@ -1,9 +1,6 @@
 <% display_column = question.option_column.nil? ? 1 : question.option_column %>
-<li>	
-	<fieldset>
-		<legend><%= question.question %>
-			<%= content_tag('em', '*', :class => 'required') if question.required? %>
-		</legend>
+<div class="input-field col s12">
+		<%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %>
 	
 		<div <%= "class='question_block'" if display_column < 3 %>>
 			<table class="highlightless borderless">
@@ -11,16 +8,18 @@
 			    <tr class="highlightless">
 					<% group.compact.each do |checkbox| %>		
 						  <td>
-						    <%= hidden_field_tag "user_application[#{question.attribute_to_update}_#{checkbox.id}]", false %>				
-							<%= check_box_tag "user_application[#{question.attribute_to_update}_#{checkbox.id}]", "#{checkbox.value}", 
-													  @user_application.get_answer(checkbox.offering_question_id ,checkbox.id) %>
-							<%= checkbox.title %>
+						  	 <label>
+							    <%= hidden_field_tag "user_application[#{question.attribute_to_update}_#{checkbox.id}]", false %>
+								<%= check_box_tag "user_application[#{question.attribute_to_update}_#{checkbox.id}]", "#{checkbox.value}", 
+														  @user_application.get_answer(checkbox.offering_question_id ,checkbox.id),
+									class: 'filled-in' %>
+								<span><%= checkbox.title %></span>
+							 </label>
 						  </td>
-					<% end -%>
+					<% end %>
 				</tr>
-			<% end -%>
+			<% end %>
 			</table>
 		</div>
-		<%= display_computed_caption(question.caption) if question.caption? %>
-	</fieldset>
-</li>
+		<%= display_computed_caption(question.caption) if question.caption? %>	
+</div>

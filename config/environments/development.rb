@@ -1,3 +1,5 @@
+Rails.application.routes.default_url_options = { host: 'localhost', port: 8888 }
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -46,9 +48,13 @@ Rails.application.configure do
   # ActionMailer Config
   config.action_mailer.perform_deliveries = false # Set it to true to send the email in dev mode  
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.default_url_options = { :host => "localhost:3000" }
+  config.action_mailer.default_url_options = { :host => "localhost:8888" }
   config.action_mailer.smtp_settings = YAML.load_file("#{Rails.root}/config/email.yml")[Rails.env].symbolize_keys
 
   # Setting this option to false tells Rails to show error pages, rather than the stack traces it normally shows in development mode
   # config.consider_all_requests_local = false # this is only for testing
+
+  # Store files locally.
+  config.active_storage.service = :local
+
 end

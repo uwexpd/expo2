@@ -17,7 +17,7 @@ class OfferingRestriction < ApplicationRecord
   end
   
   def exempt?(application_for_offering)
-    exemption = OfferingRestrictionExemption.find_last_by_person_id_and_offering_restriction_id(application_for_offering.person.id, self.id)
+    exemption = OfferingRestrictionExemption.where(person_id: application_for_offering.person.id, offering_restriction_id: self.id).last
     !exemption.nil? && exemption.valid_until > Time.now
   end
   

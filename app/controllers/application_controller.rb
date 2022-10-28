@@ -14,8 +14,8 @@ class ApplicationController < ActionController::Base
   before_action :save_return_to
   before_action :add_to_session_history
   before_action :verify_uwsdb_connection
-  # before_action :check_if_contact_info_blank
-  
+  before_action :check_if_contact_info_blank
+
   def authenticate_admin_user!
     unless current_admin_user
       flash[:error] = "Access denied! Please make sure you have admin permission."
@@ -95,7 +95,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  private
+  private  
 
   def save_user_in_current_thread
     Thread.current[:user] = @current_user
@@ -104,7 +104,7 @@ class ApplicationController < ActionController::Base
   # Overwrite set_stamper in activereocrd-userstamp gem:
   # https://github.com/lowjoel/activerecord-userstamp/blob/master/lib/active_record/userstamp/controller_additions.rb
   # changed current_user to instance variable because otherwise student_login_required breaks
-  def set_stamper
+  def set_stamper    
     @_userstamp_stamper = ActiveRecord::Userstamp.config.default_stamper_class.stamper
     ActiveRecord::Userstamp.config.default_stamper_class.stamper = @current_user # current_user
   end
@@ -127,21 +127,21 @@ class ApplicationController < ActionController::Base
 
   end
 
-  # def check_if_contact_info_is_current
-  #   if current_user && !current_user.person.contact_info_updated_since(12.months.ago)
-  #     flash[:notice] = "You haven't updated your contact information for awhile. Please confirm your contact information below."
-  #     return redirect_to profile_path(:return_to => request.url)
-  #   end
-  # end
+  def check_if_contact_info_is_current
+    if @current_user && !@current_user.person.contact_info_updated_since(12.months.ago)
+      flash[:notice] = "You haven't updated your contact information for awhile. Please confirm your contact information below."
+      return redirect_to profile_path(:return_to => request.url)
+    end
+  end
 
-  # # This is only for UW Standard users since EXPO updates student info via Student Web Service directly
-  # # No need for external expo users since they need to fill contact information when creating accounts.
-  # def check_if_contact_info_blank
-  #   if current_user && current_user.user_type == "UW Standard user" && current_user.person.contact_info_updated_at.blank?
-  #     flash[:notice] = "Please update your contact information."
-  #     return redirect_to profile_path(:return_to => request.url)
-  #   end
-  # end
+  # This is only for UW Standard users since EXPO updates student info via Student Web Service directly
+  # No need for external expo users since they need to fill contact information when creating accounts.
+  def check_if_contact_info_blank
+    if @current_user && @current_user.user_type == "UW Standard user" && @current_user.person.contact_info_updated_at.blank?
+      flash[:notice] = "Please update your contact information."
+      return redirect_to profile_path(:return_to => request.url)
+    end
+  end
 
       
 end

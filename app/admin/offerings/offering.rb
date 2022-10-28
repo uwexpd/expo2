@@ -143,7 +143,7 @@ ActiveAdmin.register Offering do
           f.input :mentor_deadline, as: :datetime_picker, input_html: { style: "width:50%;"}, hint: 'Specify a time by which mentors should complete their task (as defined by the Mentor Mode, below). This is blank by default and has no binding effect unless the "Deny mentor access after mentor deadline" checkbox is marked below. Otherwise, this is just used to provide an informational deadline for mentors when they log in.'
           f.input :deny_mentor_access_after_mentor_deadline, as: :boolean, hint: 'If this box is checked, mentors cannot get in to the mentor interface after the deadline defined above. If you leave this box unchecked, mentors can still get in after the deadline.'
           f.input :allow_hard_copy_letters_from_mentors, as: :boolean, hint: 'By default, we expect mentors to upload their letters using our online form. If your application process demands that mentors be allowed to submit letters in a different form, check this box. Applicants will be presented with a check box that says: "If your mentor cannot access the Internet and will need to submit a hard copy letter, please check here."'
-          f.input :allow_early_mentor_submissions, as: :boolean, hint: 'If this box is checked, applicants can choose to request a letter from their mentor before they have submitted their application. By default, mentors are not notified to submit a letter until after the application is submitted. If an applicant chooses to invite a mentor to submit early (even if the mentor does not submit until later), the applicant is not allowed to remove that mentor from his or her application.'
+          f.input :allow_early_mentor_submissions, as: :boolean, hint: 'If this box is checked, applicants can choose to request a letter from their mentor before they have submitted their application. By default, mentors are not notified to submit a letter until after the application is submitted. If an applicant chooses to invite a mentor to submit early (even if the mentor does not submit until later), the applicant is not allowed to remove that mentor from their application.'
           f.input :require_all_mentor_letters_before_complete, as: :boolean, hint: 'If this box is unchecked, the system will consider an application complete as soon as just one mentor submits a letter or approves the application.'
           f.input :mentor_mode, as: :select, collection: ["abstract_approve", "no_interaction"], include_blank: "default", hint: "<strong>default:</strong> Mentors are asked to submit a letter of support through the online system. <strong>abstract_approve:</strong> Mentors approve the student's abstract instead of submitting a letter. <strong>no_interaction:</strong> Mentors do not interact with the online system (i.e., mentors are involved in a separate process, or only included on the application for informational purposes).".html_safe
           f.input :alternate_mentor_title, input_html: {style: 'width:50%'}, hint: 'If you call your mentors something else (e.g., "Letter Writers") enter the singular form of the alternate title here (e.g., "Letter Writer").'
@@ -151,8 +151,8 @@ ActiveAdmin.register Offering do
 
         f.inputs 'E-mail Templates' do
         hr
-          f.input :early_mentor_invite_email_template_id, label: 'Early Invite', as: :select, collection:email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}, hint: "Sent to a mentor before an applicant has submitted his or her application."
-          f.input :mentor_thank_you_email_template_id, label: 'Thank you', as: :select, collection: email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}, hint: "Sent to every mentor after he or she submits his or her letter."
+          f.input :early_mentor_invite_email_template_id, label: 'Early Invite', as: :select, collection:email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}, hint: "Sent to a mentor before an applicant has submitted their application."
+          f.input :mentor_thank_you_email_template_id, label: 'Thank you', as: :select, collection: email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}, hint: "Sent to every mentor after they submits their letter."
         end
 
         f.inputs 'Mentor Instructions' do
@@ -224,7 +224,7 @@ ActiveAdmin.register Offering do
         end
         f.inputs 'Interviewer Instructions' do
           hr
-          f.input :interviewer_instructions, label: "This text is displayed to an interviewer when he or she is looking at an applicant's information.", input_html: { class: "tinymce", rows: 20 }
+          f.input :interviewer_instructions, label: "This text is displayed to an interviewer when they are looking at an applicant's information.", input_html: { class: "tinymce", rows: 20 }
           end
       end
       tab 'Award Acceptance' do
@@ -232,8 +232,8 @@ ActiveAdmin.register Offering do
           hr
           div 'The award acceptance process is used to allow students to accept or decline an award before they receive it. Only students who have been awarded by the awarding committee will be allowed to go through the award acceptance process.', class: 'instruction'
           f.input :enable_award_acceptance, as: :boolean, hint: 'This allows applicants who have been awarded (based on award_basis) to accept or decline their awards.'
-          f.input :accepted_offering_status_id, label: 'If applicant accepts:', as: :select, collection: offering.statuses.sort.map{|s|[s.private_title, s.id]} , include_blank: 'None', input_html: { class: 'select2', style: 'width: 30%'}, hint: "The applicant's status will be set to this as soon as he/she accepts his/her award."
-          f.input :declined_offering_status_id, label: 'If applicant declines:', as: :select, collection: offering.statuses.sort.map{|s|[s.private_title, s.id]} , include_blank: 'None', input_html: { class: 'select2', style: 'width: 30%'}, hint: "The applicant's status will be set to this as soon as he/she declines his/her award. Additionally, students who decline will no longer show as being awarded the scholarship."
+          f.input :accepted_offering_status_id, label: 'If applicant accepts:', as: :select, collection: offering.statuses.sort.map{|s|[s.private_title, s.id]} , include_blank: 'None', input_html: { class: 'select2', style: 'width: 30%'}, hint: "The applicant's status will be set to this as soon as they accepts their award."
+          f.input :declined_offering_status_id, label: 'If applicant declines:', as: :select, collection: offering.statuses.sort.map{|s|[s.private_title, s.id]} , include_blank: 'None', input_html: { class: 'select2', style: 'width: 30%'}, hint: "The applicant's status will be set to this as soon as they declines their award. Additionally, students who decline will no longer show as being awarded the scholarship."
           div 'Option text', class: 'label'
           f.input :acceptance_yes_text, label: "Accept option text:", as: :string
           f.input :acceptance_no_text, label: "Decline option text:", as: :string, hint: 'These two text blocks are displayed right next to the bullets for accepting or declining on the award acceptance screen. HTML tags are allowed here. An example might be "<strong>Yes!</strong>, I accept this award."'.html_safe

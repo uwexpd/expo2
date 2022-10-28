@@ -1,14 +1,11 @@
-<li>
-	<fieldset>
-		<legend><%= question.question %>
-				<%= content_tag('em', '*', :class => 'required') if question.required? %>
-				</legend>
-		
-		<label><%= qf.radio_button(question.attribute_to_update, "local") %> 
-				My Local Address (<%= @user_application.person.sdb.address.full_local_address('text', ', ') rescue "#error" %>)</label>
-				
-		<label><%= qf.radio_button(question.attribute_to_update, "permanent") %> 
-				My Permanent Address (<%= @user_application.person.sdb.address.full_permanent_address('text', ', ') rescue "#error" %>)</label>
-		
-	</fieldset>
-</li>
+<div class="input-field col s12">
+	<%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %>
+	<p>
+		<label><%= qf.radio_button(question.attribute_to_update, "local", {class: "with-gap"}) %>
+				<span>My Local Address (<%= @user_application.person.sdb.address.full_local_address('text', ', ') rescue "#error" %>)</span>
+		</label>			
+		<label><%= qf.radio_button(question.attribute_to_update, "permanent", {class: "with-gap"}) %> 
+				<span>My Permanent Address (<%= @user_application.person.sdb.address.full_permanent_address('text', ', ') rescue "#error" %>)</span>
+		</label>
+	</p>
+</div>

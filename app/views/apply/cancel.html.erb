@@ -1,0 +1,10 @@
+<% title(@offering.name, (@offering.quarter_offered.title rescue nil)) %>
+<%= render :partial => 'time_left' %>
+
+<div class="card content confirm_cancel">
+	<%= content_tag('h4', "Cancel Your Application") %>
+	<p>Are you sure you want to cancel your application? This operation cannot be undone.</p>
+	<%= button_to "Yes, please cancel my application", {:action => :cancel}, {:name => 'confirm_cancel', :id => 'confirm_cancel_button', class: 'btn'} %>
+</div>
+
+<% sidebar :sidebar_nav %>

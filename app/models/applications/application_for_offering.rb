@@ -26,7 +26,7 @@ class ApplicationForOffering < ApplicationRecord
   has_many :notes, :as => "notable", :dependent => :destroy
   has_many :texts, :class_name => "ApplicationText", :dependent => :destroy
   # has_many :interviewers, :class_name => "ApplicationInterviewer", :dependent => :destroy
-  has_many :mentors, :class_name => "ApplicationMentor", :dependent => :destroy
+  has_many :mentors, :class_name => "ApplicationMentor", :dependent => :destroy    
   belongs_to :nominated_mentor, :class_name => "ApplicationMentor", :foreign_key => "nominated_mentor_id"
   has_many :other_awards, :class_name => "ApplicationOtherAward", :dependent => :destroy
   has_many :pages, :class_name => "ApplicationPage", :dependent => :destroy
@@ -65,6 +65,7 @@ class ApplicationForOffering < ApplicationRecord
   before_save :update_task_completion_status_cache!
   
   # attr_protected :offering_id, :person_id
+  accepts_nested_attributes_for :mentors, :awards, :files, :texts, :other_awards, :group_members,  allow_destroy: true
   
   attr_accessor :new_status_note
   attr_accessor :skip_validations
@@ -208,8 +209,8 @@ class ApplicationForOffering < ApplicationRecord
   # Otherwise, add this type to the list of statuses for this application and make it current.
   def set_status(name, deliver_emails_now = true, options = {})
     name = name.to_s if name.is_a?(Symbol)
-    @type = ApplicationStatusType.find_or_create_by_name(name)
-    @status = self.application_statuses.find_by_application_status_type_id(@type, :order => 'updated_at DESC')
+    @type = ApplicationStatusType.find_or_create_by(name: name)
+    @status = self.application_statuses.order('updated_at DESC').find_by(application_status_type_id: @type)
     if @status.nil? || @status != self.current_status || options[:force] == true
       @status = self.application_statuses.create :application_status_type_id => @type.id
       @status.update_attribute(:note, options[:note]) unless options[:note].blank?
@@ -240,10 +241,10 @@ class ApplicationForOffering < ApplicationRecord
   def get_answer(offering_question_id, offering_question_option_id=nil)
     question = offering.questions.find(offering_question_id)
     if offering_question_option_id.nil? && !question.display_as.include?("checkbox_options")
-      answer = answers.find_or_create_by_offering_question_id(offering_question_id).answer
+      answer = answers.find_or_create_by(offering_question_id: offering_question_id).answer
       self.class.send :define_method, "dynamic_answer_#{offering_question_id.to_s}=", Proc.new {|argv| set_answer(offering_question_id, argv)}
     else
-      option_answer = answers.find_by_offering_question_option_id(offering_question_option_id)
+      option_answer = answers.find_by(offering_question_option_id: offering_question_option_id)
       answer = option_answer.nil? ? "false" : option_answer.answer
       self.class.send :define_method, "dynamic_answer_#{offering_question_id.to_s}_#{offering_question_option_id.to_s}=",
                                              Proc.new {|argv| set_answer(offering_question_id, argv, offering_question_option_id)}
@@ -255,16 +256,9 @@ class ApplicationForOffering < ApplicationRecord
   def set_answer(offering_question_id, answer, offering_question_option_id=nil)
     question = offering.questions.find(offering_question_id)
     if offering_question_option_id.nil?
-      if question.display_as.include?("date")
-        if answer["year"].empty? || answer["month"].empty? || answer["day"].empty?
-          answer = nil
-        else
-          answer = answer["year"]+"-"+answer["month"]+"-"+answer["day"]
-        end
-      end      
-      answers.find_or_create_by_offering_question_id(offering_question_id).update_attribute(:answer, answer)
+      answers.find_or_create_by(offering_question_id: offering_question_id).update_attribute(:answer, answer)
     else
-      option_answer = answers.find_or_create_by_offering_question_option_id(offering_question_option_id)
+      option_answer = answers.find_or_create_by(offering_question_option_id: offering_question_option_id)
       option_answer.update_attribute(:answer, answer)
       option_answer.update_attribute(:offering_question_id, offering_question_id)
     end    
@@ -356,20 +350,20 @@ class ApplicationForOffering < ApplicationRecord
   def send_status_update(email, deliver_emails_now = true, status = nil)
     if email.send_to == "applicant"
       cc_to_feedback_person = email.cc_to_feedback_person?
-      email_object = ApplyMailer.create_status_update(self, email.email_template, self.person.email, Time.now, 
-                                                      apply_url(:host => CONSTANTS[:base_url_host], 
+      email_object = ApplyMailer.status_update(self, email.email_template, self.person.email, Time.now, 
+                                                      apply_url(:host => Rails.configuration.constants["base_url_host"], 
                                                                 :offering => offering),
-                                                      apply_url(:host => CONSTANTS[:base_url_host], 
+                                                      apply_url(:host => Rails.configuration.constants["base_url_host"], 
                                                                 :offering => offering) + "/availability",
                                                       cc_to_feedback_person)
       if deliver_emails_now
-        EmailContact.log self.person.id, ApplyMailer.deliver(email_object), status
+        EmailContact.log self.person.id, email_object.deliver_now, status
       else
         EmailQueue.queue self.person.id, email_object, status
       end
     elsif email.send_to == "staff"
       if deliver_emails_now
-        ApplyMailer.deliver_status_update(self, email.email_template, self.offering.notify_email || self.offering.contact_email) # don't log messages to staff
+        ApplyMailer.status_update(self, email.email_template, self.offering.notify_email || self.offering.contact_email).deliver_now # don't log messages to staff
       end
     elsif email.send_to == "group_members"
       self.group_members.verified.each do |group_member|
@@ -381,7 +375,7 @@ class ApplicationForOffering < ApplicationRecord
         mentor.reload
         unless (mentor.letter_received? && status.name == "submitted") || mentor.invite_email_sent? # don't send the "please submit a letter" email if submitted
           if mentor.no_email
-            ApplyMailer.deliver_mentor_no_email_warning(mentor, self.offering.notify_email)
+            ApplyMailer.mentor_no_email_warning(mentor, self.offering.notify_email).deliver_now
           else
             self.send_mentor_status_update(mentor,email, deliver_emails_now, status)
           end
@@ -404,9 +398,9 @@ class ApplicationForOffering < ApplicationRecord
 
   # Sends status update to mentor
   def send_mentor_status_update(mentor, email, deliver_emails_now = true, status = nil)
-    link = mentor_offering_map_url(:host => CONSTANTS[:base_url_host], :offering_id => offering.id, :mentor_id => mentor.id, :token => mentor.token)
+    link = mentor_offering_map_url(:host => Rails.configuration.constants["base_url_host"], :offering_id => offering.id, :mentor_id => mentor.id, :token => mentor.token)
     if deliver_emails_now
-      EmailContact.log mentor.person_id, ApplyMailer.deliver_mentor_status_update(mentor, email.email_template, mentor.email, nil, link), status
+      EmailContact.log mentor.person_id, ApplyMailer.mentor_status_update(mentor, email.email_template, mentor.email, nil, link).deliver_now, status
     else
       EmailQueue.queue mentor.person_id, ApplyMailer.create_mentor_status_update(mentor, email.email_template, mentor.email, nil, link), status
     end
@@ -414,9 +408,9 @@ class ApplicationForOffering < ApplicationRecord
   
   # Sends status update to group member
   def send_group_member_status_update(group_member, email, deliver_emails_now = true, status = nil)
-    link = apply_url(:host => CONSTANTS[:base_url_host], :offering => offering)
+    link = apply_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering)
     if deliver_emails_now
-      EmailContact.log group_member.person_id, ApplyMailer.deliver_group_member_status_update(group_member, email.email_template, group_member.email, nil, link), status
+      EmailContact.log group_member.person_id, ApplyMailer.group_member_status_update(group_member, email.email_template, group_member.email, nil, link).deliver_now, status
     else
       EmailQueue.queue group_member.person_id, ApplyMailer.create_group_member_status_update(group_member, email.email_template, group_member.email, nil, link), status
     end
@@ -430,15 +424,15 @@ class ApplicationForOffering < ApplicationRecord
   #   mentor.person = p; mentor.save
   #   if User.find_by_person_id(mentor.person.id).nil?
   #     # this is a new user
-  #     link = mentor_url(:host => CONSTANTS[:base_url_host], :pid => mentor.person.id, :token => mentor.person.token)
+  #     link = mentor_url(:host => Rails.configuration.constants["base_url_host"], :pid => mentor.person.id, :token => mentor.person.token)
   #   else
-  #     link = mentor_url(:host => CONSTANTS[:base_url_host])
+  #     link = mentor_url(:host => Rails.configuration.constants["base_url_host"])
   #   end
   #   EmailContact.log mentor.person.id, ApplyMailer.deliver_mentor_status_update(mentor, email.email_template, mentor.email, nil, link)
   # end
 
   def save_person
-    person.save(false)
+    person.save(validate: false)
   end
 
   def extra_attributes=(extra_attributes)
@@ -462,10 +456,10 @@ class ApplicationForOffering < ApplicationRecord
   def other_award_attributes=(other_award_attributes)
     other_award_attributes.each do |offering_other_award_type_id, ow_attributes|
       if ow_attributes[:secured] == "1"
-        n = other_awards.find_or_create_by_offering_other_award_type_id(offering_other_award_type_id)
+        n = other_awards.find_or_create_by(offering_other_award_type_id: offering_other_award_type_id)
         n.update_attributes(ow_attributes)
       else
-        d = other_awards.find_by_offering_other_award_type_id(offering_other_award_type_id)
+        d = other_awards.find_by(offering_other_award_type_id: offering_other_award_type_id)
         other_awards.delete(d) if d
       end
     end
@@ -500,7 +494,7 @@ class ApplicationForOffering < ApplicationRecord
       if a.should_destroy?
         a.destroy
       else
-        a.save(false)
+        a.save(validate: false)
       end
     end
   end
@@ -510,7 +504,7 @@ class ApplicationForOffering < ApplicationRecord
       if m.should_destroy?
         m.destroy
       else
-        m.save(false)
+        m.save(validate: false)
       end
     end
   end
@@ -520,7 +514,7 @@ class ApplicationForOffering < ApplicationRecord
       # if m.should_destroy?
       #   m.destroy
       # else
-        m.save(false)
+        m.save(validate: false)
       # end
     end
   end
@@ -534,21 +528,21 @@ class ApplicationForOffering < ApplicationRecord
       if a.should_destroy?
         a.destroy
       else
-        a.save(false)
+        a.save(validate: false)
       end
     end
   end
   
   def save_files
     files.each do |f|
-      f.save(false)
+      f.save(validate: false)
 #      f.convert_to_pdf unless f.file.mime_type == 'application/pdf'
     end
   end
   
   def award_attributes=(award_attributes)
-    award_attributes.each do |attributes|
-      award = awards.detect { |a| a.id == attributes[:id].to_i }
+    award_attributes.each do |award_id, attributes|
+      award = awards.detect { |a| a.id == award_id.to_i }
       award.attributes = attributes
     end
   end
@@ -558,8 +552,8 @@ class ApplicationForOffering < ApplicationRecord
       if file_id.blank? || file_id.to_i == 0
         files.build(attributes)
       else
-        file = files.detect { |f| f.id == file_id.to_i }        
-        file.attributes = attributes  
+        file = files.detect { |f| f.id == file_id.to_i }
+        file.file = attributes[:file]
       end
     end
   end
@@ -625,14 +619,14 @@ class ApplicationForOffering < ApplicationRecord
   end
 
   def build_files
-    offering.questions.find(:all, :conditions => "display_as = 'files'").each do |q|
+    offering.questions.where(display_as: 'files').each do |q|
       self.files.build :offering_question_id => q.id, :title => q.short_question_title
     end
     self.save
   end
   
   def build_mentors
-    offering.min_number_of_mentors.to_i.times { self.mentors.create(:primary => true) }
+    offering.min_number_of_mentors.to_i.times { self.mentors.create(primary: true) }
   end
   
   # Returns true if the current number of mentors created for this application is still less than the +max_number_of_mentors+ 
@@ -683,9 +677,7 @@ class ApplicationForOffering < ApplicationRecord
     return false if in_status?(:cancelled) && !include_cancelled
     s = s.to_s if s.is_a?(Symbol)
     if respect_sequence
-      offering_status = offering.statuses.find(:first, 
-        :joins => :application_status_type, 
-        :conditions => { "application_status_types.name" => s})
+      offering_status = offering.statuses.joins(:application_status_type).where("application_status_types.name" => s).first
       return false if offering_status && status_sequence < offering_status.sequence
     end
     statuses.collect(&:name).include?(s)
@@ -980,7 +972,7 @@ class ApplicationForOffering < ApplicationRecord
   # Finds or creates an associated ApplicationText object using the supplied +title+ parameter.
   def text(title)
     title = title.to_s if title.is_a?(Symbol)
-    texts.find_or_create_by_title(title)
+    texts.find_or_create_by(title: title)
   end
   
   # If any of the +other_awards+ associated with this application include an award number restriction, this method will return
@@ -1057,7 +1049,7 @@ class ApplicationForOffering < ApplicationRecord
 
   # Returns the primary mentor's department. Often used for sorting applications into groups. You can override this by
   # setting a new value in the +mentor_department+ attribute of the record. This might be useful if the primary mentor
-  # is mentoring a student outside of his/her discipline and you don't want to group them in a weird way.
+  # is mentoring a student outside of their discipline and you don't want to group them in a weird way.
   def mentor_department
     return read_attribute(:mentor_department) unless read_attribute(:mentor_department).blank?
     primary_mentor.department.try(:strip) if primary_mentor
@@ -1116,12 +1108,12 @@ class ApplicationForOffering < ApplicationRecord
   
   # Returns the login_link for the primary applicant
   def login_link
-    apply_url(:host => CONSTANTS[:base_url_host], :offering => offering)
+    apply_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering)
   end
 
   # Returns the link that admin users can use to get directly to this application
   def admin_link
-    admin_app_url(:host => CONSTANTS[:base_url_host], :offering => offering, :id => self)
+    admin_app_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering, :id => self)
   end
 
   def update_offering_session_counts
@@ -1138,15 +1130,19 @@ class ApplicationForOffering < ApplicationRecord
   # the attributes hash from OfferingAdminPhaseTaskCompletionStatus as values. If you just want to reset the cache
   # for a specific set of tasks, pass the task as a parameter.
   def update_task_completion_status_cache!(tasks = nil)
-    self.task_completion_status_cache ||= {}
-    tasks ||= offering.tasks.find(:all, :conditions => "context = 'applicant' AND completion_criteria != ''")
-    tasks = [tasks] unless tasks.is_a?(Array)
+    self.task_completion_status_cache ||= {}    
+    tasks ||= offering.tasks.where("context = 'applicant' AND completion_criteria != ''")
+    tasks = tasks.to_a unless tasks.is_a?(Array)
     for task in tasks
-      tcs = task_completion_statuses.find_or_create_by_task_id(task.id)
+      tcs = task_completion_statuses.find_or_initialize_by(task_id: task.id)
       tcs.result = self.instance_eval(task.completion_criteria.to_s)
       tcs.complete = tcs.result == true
       tcs.save
-      self.task_completion_status_cache[task.id] = tcs.attributes
+      # Covert time object to string in attributes in order to be compatible with ruby 1.8
+      tcs_attr = tcs.attributes
+      tcs_attr["created_at"] = tcs_attr["created_at"].to_s if tcs_attr["created_at"]
+      tcs_attr["updated_at"] = tcs_attr["updated_at"].to_s if tcs_attr["updated_at"]
+      self.task_completion_status_cache[task.id] = tcs_attr
     end
     task_completion_status_cache
   end
@@ -1163,11 +1159,15 @@ class ApplicationForOffering < ApplicationRecord
   def complete_task(task)
     self.task_completion_status_cache ||= {}
     task = OfferingAdminPhaseTask.find(task) unless task.is_a?(OfferingAdminPhaseTask)
-    tcs = task_completion_statuses.find_or_create_by_task_id(task.id)
+    tcs = task_completion_statuses.find_or_initialize_by(task_id: task.id)
     tcs.result = true
     tcs.complete = true
     tcs.save
-    self.task_completion_status_cache[task.id] = tcs.attributes
+    # Covert time object to string in attributes in order to be compatible with ruby 1.8
+    tcs_attr = tcs.attributes
+    tcs_attr["created_at"] = tcs_attr["created_at"].to_s if tcs_attr["created_at"]
+    tcs_attr["updated_at"] = tcs_attr["updated_at"].to_s if tcs_attr["updated_at"]
+    self.task_completion_status_cache[task.id] = tcs_attr    
     tcs
   end
 

@@ -3,8 +3,6 @@
 =end
 class ServiceLearningController < ApplicationController
 
-  add_breadcrumb  "Community-Engaged Learning Home" , Unit.find_by_abbreviation('carlson').home_url
-
   skip_before_action :login_required, raise: false
   before_action :student_login_required
   before_action :fetch_quarter
@@ -20,6 +18,8 @@ class ServiceLearningController < ApplicationController
   before_action :check_if_registration_open, :only => [:choose, :contact, :risk, :change]
   before_action :check_if_registered_with_same_course, :only => [:self_placement]
   before_action :fetch_self_placement, :only => [:self_placement]
+
+  add_breadcrumb  "Community-Engaged Learning Home" , Unit.find_by_abbreviation('carlson').home_url
 
   def index
     session[:type] = nil # clean session so it won't redirect to self_placement action    
@@ -111,7 +111,7 @@ class ServiceLearningController < ApplicationController
         redirect_to :action => "complete"      
     end
     add_breadcrumb "Community-Engaged Learning Registration", community_engaged_path
-    add_breadcrumb "Update Contact", service_learning_action_path(action: :contact, id: @position)
+    add_breadcrumb "Update Contact", action: :contact, id: @position
     add_breadcrumb "Finish Registeration"
   end
 
@@ -213,11 +213,11 @@ class ServiceLearningController < ApplicationController
                ServiceLearningMailer.deliver_templated_message(instrutor.person, 
                          EmailTemplate.find_by_name("self placement position approval request"),
                                                     instrutor.person.email,
-                                                    "https://#{CONSTANTS[:base_url_host]}/faculty/service_learning/#{@quarter.abbrev}/self_placement_approval/#{@self_placement.id}",
+                                                    "https://#{Rails.configuration.constants[:base_url_host]}/faculty/service_learning/#{@quarter.abbrev}/self_placement_approval/#{@self_placement.id}",
                                                     { :student => @student,
                                                       :quarter => @quarter, 
                                                       :self_placement => @self_placement,
-                                                      :faculty_link => "https://#{CONSTANTS[:base_url_host]}/faculty/service_learning/#{@quarter.abbrev}/students"})
+                                                      :faculty_link => "https://#{Rails.configuration.constants[:base_url_host]}/faculty/service_learning/#{@quarter.abbrev}/students"})
                                                    )
            end
 
