@@ -1,0 +1,255 @@
+.sidebar_nav{
+	padding:0;
+}
+
+.sidebar_nav .collection a.collection-item{
+    color: #039be5;
+}
+
+.sidebar_nav .collection .collection-item.active {
+	// background-color: #4b2e83;
+	color: #eafaf9;
+}
+
+.sidebar_nav .collection.with-header .collection-header {
+	font-weight: 600;
+}
+
+.sidebar_nav ul.collection li a.collection-item {
+	padding-left: 3rem;
+}
+
+.sidebar_nav .collection a.collection-item i.material-icons {
+	margin-left: -1.2em;
+}
+
+
+#apply_form label {
+	color: rgba(0, 0, 0, 0.87);
+}
+
+#apply_form .input-field .helper-text {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+#apply_form input[type=text]:not(.browser-default):disabled {
+  color: rgba(0, 0, 0, 0.5);
+  border-bottom: 2.5px dotted rgba(0, 0, 0, 0.42);
+}
+
+label.truncate {
+  max-width: 100%;
+}
+
+span.heading_inline {
+	font-size: 50%;
+	font-weight: normal;
+	color: #b3b3b3;
+	display: inline;
+}
+
+/* @group Time Left */
+#time_left {	
+	font-size: 90%;		
+	color: #999;
+}
+
+#time_left strong {
+	color: #6a717c;
+}
+
+#time_left a {
+	color: inherit;
+}
+
+#time_left.three.days strong {
+	color: #999;
+}
+#time_left.one.day strong {
+	color: #999;
+}
+#time_left.six.hours strong {
+	color: #fc8017;
+}
+#time_left.ninety.minutes strong {
+	color: #fc8017;
+}
+#time_left.thirty.minutes, #time_left.thirty.minutes strong {
+	font-size: 100%;
+	color: red;
+}
+#time_left.ten.minutes, #time_left.ten.minutes strong {
+	color: red;
+	font-size: 110%;
+}
+#time_left.five.minutes, #time_left.five.minutes strong {
+	color: red;
+	font-size: 120%;
+}
+/* @end */
+
+.page_intro {
+	font-size: 110%;
+}
+
+#errorExplanation {
+	background: #bec;
+	color: #031;
+	border-color: #8DA;
+	padding: 10px;
+	border: 1px solid;
+	margin-bottom: 10px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+}
+
+#errorExplanation {
+	background: #fdd;
+	border-color: #fbb;
+	color: #700;
+	font-size:smaller;
+}
+
+div.fieldWithErrors {
+	display: inline;
+	clear: none;
+}
+
+// div.questionWithError input, div.questionWithError textarea,
+// div.questionWithError select, 
+// div.questionWithError .mceLayout,
+// div.fieldWithErrors input, div.fieldWithErrors textarea,
+// div.fieldWithErrors select
+//  {
+// 	background: #fdd;
+// 	color: #700;
+// 	border: 2px solid red;
+// }
+
+#review_page_link {
+	border-bottom: none;
+	border-top: 1px solid #e0e0e0;
+}
+
+.page_list ul.collection {
+	border: none;
+	margin: 1rem 0 0 0;
+}
+
+div.progress_nav_buttons {
+	text-align: center;
+}
+
+input#prev_button, input#welcome_button, .progress_nav_buttons .prev_button {
+	float: left;	
+}
+
+input#next_button, input#review_button, .progress_nav_buttons .next_button {
+	float: right;
+}
+
+div.mentor {
+	margin: 0 50px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	background: #f7f7f7;
+}
+
+div .non_input_field {
+	padding-left: 0.75rem;
+	padding-bottom: 1rem;
+}
+
+table#mentors td {
+	padding: 1em 2em;
+	border: 1px solid #b7d9f8;
+	vertical-align: top;
+}
+
+table#mentors td.title {
+	font-size: 110%;
+	font-weight: bold;
+	padding: 15px 2em 0 1em;
+	color: #07b;
+	background: #b7d9f8;
+	border-bottom: 2px solid #fff;
+}
+
+.warning.box {
+	background: #fdfbce;
+	margin: 20px 0;
+	padding: 10px;
+	padding-top: 5px;
+	border: 1px solid #fde496;
+}
+
+.warning.box h4 {
+	background-color: #fde496;
+	margin: -10px;
+	margin-top: -5px;
+	padding: 5px;
+	padding-left: 30px !important;
+	background-position: 5px 5px;
+	margin-bottom: 10px;
+}
+
+.question_block {
+	padding-top: 1rem;
+}
+
+.award .select-wrapper {
+	height: 3rem;
+}
+
+.hightlight .digital_signature {
+	padding-bottom: 1rem;
+}
+
+.digital_signature li {
+	padding-left: 2rem;
+}
+
+table.application_review td.page_status{
+	width: 25%;
+}
+
+tr.completed td.page_status span.status_tag{
+	background-color: #4CAF50;
+}
+
+tr.incomplete td.page_status span.status_tag {
+	background-color: red;
+}
+
+table.application_review .question_review_title {
+	font-weight: bold;
+}
+
+table.application_review li {
+	padding-left: 1rem;
+	padding-bottom: 3px;
+}
+
+.card-content ul.welcome-links li b {
+	padding: 5px;
+}
+
+.card-content ul.welcome-links li div {
+	padding-left: 3.1rem;
+}
+
+.card-content ul.welcome-links li table {
+	width: 75%;
+}
+
+.welcome-links li.application li{
+	padding-left: 1em;
+  list-style-type: disc;
+  margin-left: 4em;
+}
+
+.card-content .col, .card-content .row {
+	margin-left:0;
+	margin-right:0;
+}

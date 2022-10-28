@@ -1,0 +1,47 @@
+<% title(@offering.name, (@offering.quarter_offered.title rescue nil)) %>
+
+<div class="card content">
+	<h5>		
+		<%= link_to @offering.name, apply_path %>
+		<span class="status_tag right"><%= @offering.quarter_offered.title %></span>
+	</h5>
+	<h6><%= welcome_line %>
+		<span class="heading_inline">Not <%= current_user.person.firstname %>? <%= link_to "Click here", logout_url %>.</span>
+		
+	</h6>	
+	<%= render :partial => 'time_left', locals: { float_right: :false} %></span>
+	<%= render :partial => "switch" if @application_count > 1 %>
+</div>
+
+<% unless @user_application.submitted? %>
+<ul class="collapsible">
+  <li>
+	<div class="collapsible-header"><i class="material-icons uw_purple">accessible</i>Need additional access and/or assistance in the completion and submission of this application/form? <i class="material-icons iconcollapse right">expand_more</i></div>
+  <div class="collapsible-body">		
+				The University of Washington is committed to providing access and reasonable accommodation in its services, programs, activities, education and employment for individuals with disabilities. If you need additional access and/or assistance in the completion and submission of this application/form please contact <a href="mailto:expohelp@uw.edu">expohelp@uw.edu</a>.	 
+  </div>
+  </li>
+</ul>
+<% end %>
+
+<div class="card">
+  <div class="card-content">
+	<ul class="welcome-links">
+		<li class="application status">
+			<i class='material-icons md-36 middle_align uw_purple'>assignment</i>
+			<b>Your Current Application Status:</b>
+		 		<span class='status_tag info'><%= @user_application.status.public_title %></span>			
+				<div class='message'><%= auto_link(simple_format(@user_application.status.message)) %></div>
+		</li>
+	</ul>
+		<%= render :partial => "dashboard_items" %>
+  </div>	
+  <div class="card-action">
+	 <span><%= button_to start_button_text + " →", {action: :page, page: page_to_start}, {:class => "btn"} unless @offering.pages.empty? %>
+	 	<%= link_to raw("<i class='material-icons md-24 align'>delete_forever</i>Cancel My Application"), {:action => :cancel}, class:'right cancel-button' unless @offering.past_deadline? %></span>
+  </div>
+</div>
+
+
+<% sidebar :sidebar_nav %>
+<%#= render :partial => "apply/confirmation/sidebar", :locals => { :hide_welcome_link => true } if @user_application.passed_status?("fully_accepted") || @user_application.passed_status?("fully_accepted_vad") %>

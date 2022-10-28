@@ -71,7 +71,7 @@ ActiveAdmin.register Scholarship do
           end
           panel "Citizen Type" do
             table_for scholarship do
-                column ('Us Citizen') { |s| status_tag s.us_citizen? }
+                column ('US Citizen') { |s| status_tag s.us_citizen? }
                 column ('Permanent Resident') { |s| status_tag s.permanent_resident? }
                 column ('Other Visa Status') { |s| status_tag s.other_visa_status? }
                 column ('Undocumented') { |s| status_tag s.hb_1079? }

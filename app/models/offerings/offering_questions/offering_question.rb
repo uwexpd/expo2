@@ -26,7 +26,7 @@ class OfferingQuestion < ApplicationRecord
   # is not valid.
   def attribute_to_update_is_valid?
     if attribute_to_update.blank? && !dynamic_answer? && !QUESTION_TYPES_NOT_REQUIRING_ATTRIBUTE_TO_UPDATE.include?(display_as)
-      errors.add_to_base "You must specify the attribute to update, or mark this question as a 'dynamic answer'"
+      errors.add(:base, "You must specify the attribute to update, or mark this question as a 'dynamic answer'")
     end
   end
 
@@ -96,12 +96,12 @@ class OfferingQuestion < ApplicationRecord
 
   def add_error_message(page, message = nil)
     if message.nil?
-      page.errors.add_to_base error_message
+      page.errors.add(:base, error_message)
       message = " is required"
     else
-      page.errors.add_to_base "#{short_question_title} #{message}"
+      page.errors.add(:base, "#{short_question_title} #{message}")
     end
-    page.errors.add "q#{self.id}", message
+    # page.errors.add "q#{self.id}", message
   end
   
   def add_required_error(page)
@@ -220,7 +220,7 @@ class OfferingQuestion < ApplicationRecord
         blanks = true
       end
       # check if any quarters are out of order
-      if last_qtr && award.requested_quarter && award.requested_quarter < last_qtr
+      if last_qtr && award.requested_quarter && award.requested_quarter.id < last_qtr.id
         out_of_order = true
       end
       last_qtr = award.requested_quarter
@@ -250,32 +250,32 @@ class OfferingQuestion < ApplicationRecord
       required_fields.each do |field|
         if mentor.read_attribute(field).blank?
           mentor.errors.add field, "can't be blank"
-          page.errors.add_to_base "You left some of your mentor's name blank."
+          page.errors.add(:base, "You left some of your mentor's name blank.") 
         end
       end
       if mentor.waive_access_review_right.nil? && offering.ask_applicant_to_waive_mentor_access_right?
-        page.errors.add_to_base "You must choose whether or not to waive your record access rights for this application."
+        page.errors.add(:base, "You must choose whether or not to waive your record access rights for this application.") 
       end
       if !mentor.no_email && (mentor.email.blank? || !MustBeValidEmailAddressValidation::valid_email_address(mentor.email))
-        page.errors.add_to_base "You must enter a valid e-mail address for your mentor."
+        page.errors.add(:base, "You must enter a valid e-mail address for your mentor.")
       end
 #      if !mentor.no_email && (mentor.email_confirmation.blank? || mentor.email != mentor.email_confirmation )
       if !mentor.no_email && !mentor.person && mentor.email != mentor.email_confirmation
-        page.errors.add_to_base "The two e-mail addresses you type must match."
+        page.errors.add(:base, "The two e-mail addresses you type must match.")
       end
     end
     if offering.has_minimum_mentor_qualification? && !user_application.mentors_meet_minimum_qualification?
       required_mentor_types = offering.mentor_types.select{|t| t.meets_minimum_qualification?}.collect(&:title)
-      page.errors.add_to_base "At least one of your mentors must be of the following types: #{required_mentor_types.join(', ')}"
+      page.errors.add(:base, "At least one of your mentors must be of the following types: #{required_mentor_types.join(', ')}")
     end
   end
 
   def add_files_errors(page)
     user_application = page.application_for_offering
-    file = user_application.files.find_by_offering_question_id(self)
+    file = user_application.files.find_by(offering_question_id: self)
     add_error_message(page) if required? && file && file.file.nil?
     unless file.nil? || file.file.nil?
-      add_error_message(page, "must be uploaded with PDF file. Your current file format is \"#{file.file.extension}\".") unless ["pdf","jpg","png","gif","xls","xlsx"].include?(file.file.extension)
+      add_error_message(page, "must be uploaded with PDF file. Your current file format is \"#{file.extension}\".") unless ["pdf","jpg","png","gif","xls","xlsx"].include?(file.extension)
     end
   end
   

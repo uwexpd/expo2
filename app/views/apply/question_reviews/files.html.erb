@@ -1,0 +1,15 @@
+<% question_file = @user_application.files.find_by_offering_question_id(question.id) %>
+
+<% unless question_file.nil? || question_file.file.nil? %>
+	
+	<%# version = question_file.file.valid_versions.include?(:pdf) ? :pdf : :original rescue :original %>
+	<% if @full_view == true %>
+		<% unless @download == true %>			
+			<%= link_to question_file.public_filename, apply_file_path(@offering, question_file.id, question_file.file_identifier) unless question_file.file.file.nil? %>
+		<% end %>
+	<% else %>
+		<%= question_file.public_filename %>
+	<% end %>
+	<!-- (<%#= question_file.file_content_type << ", " if question_file.file.content_type %><%#= number_to_human_size(question_file.file.versions[version].size) %>) -->
+	<span class='caption'>(<%= question_file.file.content_type + ", " if question_file.file.content_type %><%= number_to_human_size(question_file.file_size) %>)</span>	
+<% end %>

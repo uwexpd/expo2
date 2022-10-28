@@ -1,0 +1,53 @@
+<% 	klass = "not started" if !page_review.started
+	klass = "started " if page_review.started
+	klass = "completed " if page_review.started && page_review.complete && page_review.passes_validations?
+	klass = "incomplete " if page_review.started && !page_review.passes_validations?
+	
+	links ||= true
+	admin_view ||= false
+ %>
+<tr class="<%= klass %>">
+	<td class="page_title">
+		<% unless links == :false %>
+		<a href="<%= url_for :action => :page, :page => page_review.offering_page.ordering %>" title="<%= page_review.offering_page.title %>">
+		<% end %>
+			<h6 class="title_block"><%= page_review.offering_page.title %></h6>
+			<% if admin_view %>
+				<% 
+					question_types = page_review.offering_page.questions.collect(&:display_as).uniq.to_set 
+					attribute_types = page_review.offering_page.questions.collect(&:attribute_to_update).uniq.to_set
+				%>
+				<% unless (!question_types.include?("radio_logic_toggle") && ["files","mentors","application_type","application_category"].any? {|type| question_types.include?(type)}) || ["Abstract"].any? {|attribute| attribute_types.include?(attribute)} %>
+					<span class="small">
+					<%= link_to "(Edit section)", admin_apply_edit_path(:offering => @offering, :id => @app, 
+																		:anchor => page_review.offering_page.title.parameterize.underscore.to_sym ), 
+																		:style => "background: none"  %>
+			        </span>
+				<% end -%>
+			<% end %>			
+		<% unless links == :false %></a><% end %>
+			
+			<% if page_review.started %>
+				<ul>
+				<%
+				    if !current_user.admin? && @reviewer == true
+						questions = page_review.offering_page.questions.reject{|q| q.hide_in_reviewer_view? }
+					else
+						questions = page_review.offering_page.questions
+				    end
+				%>
+				<%= render 	:partial => "apply/question_review",
+							:collection => questions,
+							:locals => { :page => page_review } %>
+				</ul>
+			<% end %>
+			
+		</td>
+		
+	<td class="page_status">
+		<span class="status_tag"><%= klass.titleize %></span>
+		<% if page_review.started && !page_review.passes_validations? %>
+			<br>(<%#= page_review.errors.on_base.size %>errors found)
+		<% end %>
+	</td>		
+</tr>

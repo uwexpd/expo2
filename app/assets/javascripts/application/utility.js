@@ -15,11 +15,19 @@ $(document).ready(function(){
 // https://codefor.life/turbolinks-5-rails-5-not-that-bad/
 $(document).on('turbolinks:load', function() {
   // Materializecss javascript components initialization
-  $('.tabs').tabs();
+  $('.tabs').tabs();  
   $('.datepicker').datepicker();
+  $('.timepicker').timepicker();
   $('.collapsible').collapsible();
   $('select.material').formSelect();
+  $('.input-field .charcounter').characterCounter();  
   // End materializecss javascript initialization
+  
+  M.updateTextFields(); // Materializecss: Prefilling Text Inputs
+  if (!$.trim($('.materialize-textarea').val()).length < 1) {
+    M.textareaAutoResize($('.materialize-textarea'));
+  }
+  
 });
 
 $(document).on("click", "a[data-link-toggle]", function(){ 

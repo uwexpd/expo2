@@ -132,7 +132,7 @@
 
 <% if show_student_fields && obj.is_a?(Student) %>	
 	<dt>university</dt>
-	<dd><%= CONSTANTS[:university_name] %></dd>
+	<dd><%= Rails.configuration.constants[:university_name] %></dd>
 								
 	<dt>majors</dt>
 	<dd><%= obj.majors_list rescue "#error" %></dd>

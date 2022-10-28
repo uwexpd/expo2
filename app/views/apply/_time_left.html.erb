@@ -1,0 +1,11 @@
+<% float_right ||= true %>
+
+<% unless @user_application.submitted? %>
+
+	<% if @offering.deadline < Time.now %>
+		<%= render :partial => "time_left_past_deadline" %>
+	<% else %>
+		<%= render :partial => "time_left_before_deadline", locals: { float_right: float_right} %>
+	<% end %>
+	
+<% end %>

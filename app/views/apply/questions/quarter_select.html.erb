@@ -1,14 +1,13 @@
-<li>
-		
-		<%= qf.label(question.attribute_to_update, question.question) %>
-		
-		<%= qf.collection_select(question.attribute_to_update, 
+<div class="input-field col s12 m6">
+	<%= qf.collection_select(question.attribute_to_update, 
 								Quarter.current_and_future_quarters(nil, Quarter.current_quarter), 
 								:id, 
 								:title, 
-								{:prompt => true }
+								{prompt: true },
+								required: true,
+								class: 'material validate'
 								) %>
+
+	<%= qf.label(question.attribute_to_update, (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe) %>
 		
-		<%= content_tag('em', '*', :class => 'required') if question.required? %>
-		
-</li>
+</div>

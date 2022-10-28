@@ -1,19 +1,24 @@
-<li>		
-		<% @answered_date = @user_application.get_answer(question.id).nil? ? nil : @user_application.get_answer(question.id).to_date %>
-		
-		<%= qf.label(question.attribute_to_update, question.question) %>		
-		<%= select_date(@answered_date, :prefix => "user_application[#{question.attribute_to_update}]", :order => [:day, :month, :year], 
-		:start_year => question.start_year||Time.now.year-5, :end_year => question.end_year||Time.now.year+5, :prompt => true) %>
-		
-		
-		<%#= date_select("user_application[#{question.attribute_to_update}]", "date_select",  :order => [:day, :month, :year],
-																							 :start_year => question.start_year||Time.now.year-5, 
-																							 :end_year => question.end_year||Time.now.year+5,
-																							 :default => @answered_date)
-        %>
-		
-		<%= content_tag('em', '*', :class => 'required') if question.required? %>
-		<%= display_computed_caption(question.caption) if question.caption? %>
-</li>
+<div class="input-field col s12">		
 
-   
+		<%= qf.text_field question.attribute_to_update, class: "datepicker" %>
+
+		<% if question.start_year && question.end_year %>
+			<script type="text/javascript">
+				var startYear = <%= question.start_year %>
+				var endYear = <%= question.end_year %>
+
+				$(document).ready(function() {
+				  $(".datepicker").datepicker({
+				    defaultDate: new Date(endYear-5,1,31),				    
+				    maxDate: new Date(endYear-5,12,31),
+				    yearRange: [startYear, endYear],
+				    format: "yyyy-mm-dd"    
+				  });
+				});				
+			</script>
+		<% end %>
+
+		<%= qf.label(question.attribute_to_update, (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe) %>
+
+		<%= display_computed_caption(question.caption) if question.caption? %>
+</div>

@@ -67,7 +67,7 @@ class ServiceLearningPlacement < ApplicationRecord
   end
   
   def update_placement_quarter_link
-    pipeline_update_placement_quarter_url(:host => CONSTANTS[:base_url_host], :id => id)
+    pipeline_update_placement_quarter_url(:host => Rails.configuration.constants[:base_url_host], :id => id)
   end
   
   def deep_clone!

@@ -2,11 +2,13 @@
 class ApplicationFile < ApplicationRecord
   stampable
   belongs_to :application_for_offering
-  belongs_to :offering_question
-  
+  belongs_to :offering_question  
+  mount_uploader :file, FileUploader
+  skip_callback :commit, :after, :remove_previously_stored_file
   #acts_as_soft_deletable
-
-  #validates_format_of :file, :with => %r{\.(pdf|gif|jpg|png|xls|xlsx)$}i, :message => ": File must be uploaded with PDF file." - Didn't work with nested active record for file. Add file validation in offeringQuestion model
+  
+  #Didn't work with nested active record for file. Add file validation in offeringQuestion model
+  #validates_format_of :file, :with => %r{\.(pdf|gif|jpg|png|xls|xlsx)$}i, :message => ": File must be uploaded with PDF file." 
   
   # Take away pdf conversion function, instead, force users to upload PDF
   # upload_column :file, 
@@ -25,20 +27,27 @@ class ApplicationFile < ApplicationRecord
 #  validates_integrity_of :file
                 
   # Supplies the filename to use when saving and retrieving this file to the filesystem
-  def filename(record, file)
-    original = "#{file.basename}.#{file.extension}"
-    write_attribute(:original_filename, original)
-    ext = file.suffix.nil? || file.suffix == :original ? file.extension : file.suffix
-    "#{application_for_offering.id.to_s}-#{title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/,'')}.#{ext}"
-  end
+  # def filename(record, file)
+  #   original = "#{file.basename}.#{file.extension}"
+  #   write_attribute(:original_filename, original)
+  #   ext = file.suffix.nil? || file.suffix == :original ? file.extension : file.suffix
+  #   "#{application_for_offering.id.to_s}-#{title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/,'')}.#{ext}"
+  # end
 
   # Supplies the filename to use when sending the file to the user's browser
-  def public_filename(record, file)
+  def public_filename
     filename = [application_for_offering.id.to_s] 
     filename << application_for_offering.person.fullname
     filename << title
-    ext = file.suffix.nil? || file.suffix == :original ? file.extension : file.suffix
-    filename.join(' ').gsub(/[^a-z0-9 \(\)]+/i,'') + ".#{ext}"
+    filename.join(' ').gsub(/[^a-z0-9 \(\)]+/i,'') + ".#{extension}"
+  end
+
+  def extension
+    if self.read_attribute(:file).blank?
+      self.read_attribute(:file)
+    else
+      File.extname(self.read_attribute(:file)).downcase.delete('.')      
+    end
   end
   
 end

@@ -74,13 +74,14 @@ class Quarter < ApplicationRecord
   
   def self.current_and_future_quarters(limit = nil, current_qtr = nil)
     first_day_cmp = !current_qtr.is_a?(Quarter) ? Time.now : current_qtr.first_day
-    Quarter.find(:all, :conditions => [ "first_day >= ?", first_day_cmp ], :limit => limit).sort
+    Quarter.where("first_day >= ?", first_day_cmp).limit(limit).sort
   end
   
-  def self.future_quarters(limit = nil, current_qtr = nil)
-    first_day_cmp = !current_qtr.is_a?(Quarter) ? Time.now : current_qtr.first_day
-    Quarter.find(:all, :conditions => [ "first_day >= ?", first_day_cmp ], :limit => limit).sort
-  end
+  # FIXME: Duplicated with above method; may change to not include current_quarter if needed 
+  # def self.future_quarters(limit = nil, current_qtr = nil)
+  #   first_day_cmp = !current_qtr.is_a?(Quarter) ? Time.now : current_qtr.first_day
+  #   Quarter.where("first_day >= ?", first_day_cmp).limit(limit).sort
+  # end
 
   # Returns an array of past quarters going back for as many quarters as requested (defaults to 10 quarters), excluding the current quarter.
   def self.past_quarters(limit = 10)

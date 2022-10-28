@@ -1,5 +1,6 @@
-<li class="inline" style="display:inline-block">
-	<%= question.question %>
-	<%= qf.text_field question.attribute_to_update, :size => question.width %>
-	<%= content_tag('em', '*', :class => 'required') if question.required? %>
-</li>
+<div class="col left">
+  	<div class="input-field">
+	 <%= qf.label(question.attribute_to_update, "#{question.question} #{content_tag('abbr', '*', title: "required") if question.required?}".html_safe) %>
+		<%= qf.text_field question.attribute_to_update, required: question.required? ? true : false, :size => question.width %>
+	 </div>	  
+</div>

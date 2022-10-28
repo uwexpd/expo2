@@ -52,7 +52,7 @@ class OrganizationContact < ApplicationRecord
 
   def login_url
     token.generate rescue create_token
-    "http://#{CONSTANTS[:base_system_url]}/community_partner/?map=#{id}&t=#{token.token}"
+    "http://#{Rails.configuration.constants[:base_system_url]}/community_partner/?map=#{id}&t=#{token.token}"
   end
 
   attr_accessor :new_token
