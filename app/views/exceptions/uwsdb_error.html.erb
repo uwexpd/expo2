@@ -1,35 +1,45 @@
-<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 	<title>Please Wait</title>
-
-	<link rel="stylesheet" type="text/css" href="/expo/stylesheets/error.css">
 	
+	<%= stylesheet_link_tag "application" %>
+	<%= csrf_meta_tags %>
+	<%= favicon_link_tag 'favicon.ico' %>	
 </head>
 
-<body class="error"> -->
+<body class="uwsdb_error">
 
-	<div id="header"><h1><%= link_to 'EXP-Online', root_path %></h1></div>
+	<div id="header">
+		<div id="w-patch"></div>
+		<ul class='menu'>
+			<li class='menu-text'><%= link_to 'EXPO', root_path %></li>
+		</ul>
+	</div>
 
-	<div class="error">
-		<h1>Updating Student Records...</h1>
-		<p><strong>We are currently updating our student records.</strong> This happens every day at 8pm and 3am, but sometimes happens at other times in the day. Please return to this page in a few minutes and try again. We apologize for the inconvenience.</p>
+	<div class="row">
+		<div class="restriction failed error">
+			<i class="material-icons uw_purple middle_align left">archive</i>
+			<div>
+				<h1>Updating Student Records...</h1>
+				<p><strong>We are currently updating our student records.</strong> This happens every day at 8pm and 3am, but sometimes happens at other times in the day. Please return to this page in a few minutes and try again. We apologize for the inconvenience.</p>
+			</div>
+			<div class="loading">&nbsp;</div>
+		</div>
+	</div>
+
+	<div class="row" id="footer-wrap">
+		<div class="footer">	
+			<p>
+				Copyright &copy; 2007&ndash;<%= Time.now.year %> <a href="https://www.washington.edu">University of Washington</a>. Managed by the <a href="https://expd.uw.edu">Center for Experiential Learning &amp; Diversity</a>.
+				Problems, questions or suggestions? Send an e-mail to <%= auto_link "#{Rails.configuration.constants['system_help_email']}" %>.		
+			</p>	
+		</div>
+	</div>	
 		
-		<div class="loading">&nbsp;</div>
-	</div>
 
-	<div id="footer">
-		<p>
-			Copyright &copy; 2007&ndash;<%= Time.now.year %> <a href="http://www.washington.edu">University of Washington</a>.
-			Problems, questions or suggestions? Send an e-mail to <%= auto_link "#{Rails.configuration.constants['system_help_email']}" %>.
-		</p>
-	</div>
-	
-
-<!-- </body>
+</body>
 </html>
- -->

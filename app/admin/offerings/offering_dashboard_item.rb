@@ -53,8 +53,8 @@ ActiveAdmin.register OfferingDashboardItem, as: 'dashboard_items' do
 	  f.semantic_errors *f.object.errors.keys
 	  f.inputs for: :dashboard_item do |item_form|
 	  	item_form.input :title
-	  	item_form.input :content, as: :text, input_html: { class:  "tinymce", rows: 8 }
-	  	# input_html: { rows: 5, style: 'width: 100%'}
+	  	item_form.input :content, as: :text, input_html: { rows: 5, style: 'width: 100%'}
+	  	# input_html: { class:  "tinymce", rows: 8 }
 	  	item_form.input :css_class, label: 'Style', input_html: { style: 'width: 50%'}, hint: "You can include multiple CSS classes here, separated by spaces."
 	  end
 	  f.inputs do	  	

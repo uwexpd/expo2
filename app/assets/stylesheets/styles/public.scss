@@ -669,33 +669,6 @@ dl.big.numbers dd i {
     text-align: center;
 }
 
-
-/* @group Restrictions */
-
-.restriction.failed {	
-	margin: 90px auto;
-	width: 70%;
-	background: #fff url(image-path('app/alert_large.png')) no-repeat 20px 15px;
-	padding: 30px;
-	padding-left: 170px;
-
-	border: 1px solid #ddd;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
-	border-radius:5px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.15);
-}
-
-.restriction.failed h1 {	
-	font-size: 2rem;
-	padding-bottom: 1rem;
-	font-weight: 600;
-}
-
-div.restriction.failed h1 {
-	margin: 0;
-}
-
 /* Custom Chosen style */
 .chosen-container-single .chosen-single {
 	height: 40px;

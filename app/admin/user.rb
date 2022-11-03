@@ -37,11 +37,11 @@ ActiveAdmin.register User do
   show do
     panel '' do      
       div :class => 'content-block' do
-        if user.picture.attached?
-          span class: "left", style: "margin-right: 1rem;" do
-            image_tag url_for(user.picture), size: "100x100"
-          end
-        end
+        # if user.picture.attached?
+        #   span class: "left", style: "margin-right: 1rem;" do
+        #     image_tag url_for(user.picture), size: "100x100"
+        #   end
+        # end
         h1 "User: #{user.login}" do
           span '(PubCookies User)', :class => 'light small' if user.is_a? PubcookieUser
           status_tag 'admin', class: 'admin small' if user.admin?

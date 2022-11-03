@@ -57,6 +57,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 	show do
 	  attributes_table do
         row :question
+        row :caption
         row :offering_page_id
 	  end
 	end
