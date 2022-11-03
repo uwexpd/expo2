@@ -1,0 +1,49 @@
+/* @group Restrictions */
+
+.restriction.failed {
+	margin: 90px auto;
+	width: 60%;
+	background: #fff url(image-path('app/alert_large.png')) no-repeat 20px 15px;
+	padding: 40px 30px;
+	padding-left: 170px;
+	border: 1px solid #ddd;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.15);
+}
+
+.restriction.failed h1 {	
+	font-size: 2rem;
+	padding-bottom: 1rem;
+	font-weight: 600;
+}
+
+div.restriction.failed h1 {
+	margin: 0;
+}
+
+/* UW SDB error page */ 
+.uwsdb_error #footer-wrap .footer {
+	padding-left: 2.5rem;
+	border-top: 1px solid #E5E5E5;	
+	background: url(image-path('uw-block-logo.gif')) no-repeat 0 1.1em;
+    clear: both;
+}
+
+div.loading {
+	margin-top: 3rem;
+	margin-left: -7rem;
+	background: url(image-path('bar-loader.gif')) no-repeat center bottom;
+}
+
+.restriction.failed.error { 
+	background: #fff;
+	margin-top: 150px;
+	padding-left: 150px;
+}
+
+.restriction.failed.error i { 
+ 	font-size: 5rem;
+ 	margin-left: -7rem;
+}

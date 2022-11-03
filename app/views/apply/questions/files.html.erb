@@ -13,7 +13,7 @@
 			
 		<% if app_file.file.file.nil? %>
 		  <div class="btn">
-		  	 <i class="material-icons left">cloud_upload</i>
+		  	 <i class="material-icons left">file_upload</i>
 			 <span><%= upload_title(app_file) %></span>
 			 <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
 		  </div>		  
@@ -21,7 +21,7 @@
 		<% else %>
 				
 			<div class="btn">
-		  	  <i class="material-icons left">cloud_upload</i>
+		  	  <i class="material-icons left">file_upload</i>
 			  <span>Replace this File:	</span>
 			  <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
 		  </div>				
@@ -45,6 +45,7 @@
 <% unless question_file.file.file.nil? %>
 <b>Download original file:</b>
 <%= link_to question_file.public_filename, apply_file_path(@offering, question_file.id, question_file.file_identifier) unless question_file.file.file.nil? %>
+<i class="material-icons middle_align uw_purple">file_download</i>
 
 <span class='caption'>(<%= question_file.file.content_type + ", " if question_file.file.content_type %><%= number_to_human_size(question_file.file_size) %>)</span>
 <% end %>
