@@ -31,7 +31,7 @@ class SessionsController < ApplicationController
     if logged_in?
       successful_login
     else
-      flash.now[:error] = "Authentication failed. The username and password are not matched."
+      flash.now[:error] = "Authentication failed. The username and password are not matched. Please try again."
       render :action => 'new'
     end
   end

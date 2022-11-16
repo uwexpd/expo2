@@ -24,6 +24,7 @@ gem 'activeadmin', '~> 2.7'
 gem 'ransack', '~> 2.3', '>= 2.3.2'
 gem 'active_material', '~> 1.5', '>= 1.5.2'
 gem 'activeadmin_addons'
+gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
 # gem 'activeadmin_dynamic_fields'
 
 # hardens your app against XSS attack
@@ -60,7 +61,6 @@ gem 'nokogiri'
 gem 'spreadsheet'
 
 # Error reporting
-#gem 'sentry-raven'
 gem 'sentry-ruby'
 gem "sentry-rails"
 
@@ -71,14 +71,10 @@ gem 'sanitize'
 gem 'capitalize-names'
 # gem 'auto_strip_atrributes'
 
-# material ui
 gem 'material_icons'
 gem 'materialize-sass', '~> 1.0.0'
 
-gem 'byebug'
-# gem 'delayed_job', '~> 4.1', '>= 4.1.8'
-# gem 'delayed_job_active_record', '~> 4.1', '>= 4.1.4'
-gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
+
 gem 'redis'
 gem "sidekiq", "~> 6.5"
 
@@ -86,11 +82,14 @@ gem 'dotenv-rails'
 gem 'recaptcha'
 gem 'invisible_captcha', '~> 1.1'
 
-# Mutliple database
-gem 'multiverse'
+gem 'multiverse' # Mutliple database
 
 gem 'carrierwave', '~> 2.0'
 gem 'mini_magick'
+
+gem 'hexapdf' # PDF generation, mauipulating, merging, etc
+gem 'wicked_pdf' # html to pdf
+
 
 group :production do  
   gem 'omniauth-shibboleth'
@@ -99,6 +98,7 @@ end
 group :development, :test do
   gem 'awesome_print'
   gem 'rspec-rails'
+  gem 'byebug'
 end
 
 group :development do

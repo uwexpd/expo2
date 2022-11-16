@@ -4,7 +4,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 	config.filters = false
 	config.sort_order = 'ordering_asc'
 
-	permit_params :offering_page_id, :question, :short_title, :ordering, :display_as, :dynamic_answer, :model_to_update, :attribute_to_update, :required, :character_limit, :word_limit, :caption, :error_text, :help_text, :help_link_text, :width, :height, :use_mce_editor
+	permit_params :offering_page_id, :question, :short_title, :ordering, :display_as, :dynamic_answer, :model_to_update, :attribute_to_update, :required, :character_limit, :word_limit, :caption, :error_text, :help_text, :help_link_text, :width, :height, :use_mce_editor, :hide_in_reviewer_view
 
 	# wordaround for nested_belongs_to breadcrumbs display incorrectly
 	breadcrumb do
@@ -56,9 +56,20 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 
 	show do
 	  attributes_table do
-        row :question
-        row :caption
+        row :question        
         row :offering_page_id
+        row :required
+        row :display_as
+        row :model_to_update
+        row :attribute_to_update
+        row :hide_in_reviewer_view        
+        row :character_limit
+        row :word_limit
+        row :caption
+        row :error_text
+        row :help_text
+        row :help_link_text
+        row :ordering
 	  end
 	end
 	
@@ -123,6 +134,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 		    tab 'Display' do
 		      f.inputs 'Question Display' do
 		         hr
+		         f.input :hide_in_reviewer_view, as: :boolean, hint: 'This question will NOT display in the reviewr inteface.'
 		         div 'Change the way this question is displayed.', class: 'intro'
 		         f.input :caption, as: :text, input_html: {cols:50, rows: 3, style: 'width: 100%'}, hint: 'This text is shown below the question and can provide additional guidance.'
 		         f.input :error_text, as: :text, input_html: {cols:50, rows: 2, style: 'width: 100%'}, hint: "All validations provide their own custom error text but you can use this to override the default error message when a question hasn't been answered properly."

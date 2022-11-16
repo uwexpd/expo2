@@ -71,14 +71,16 @@
 						
 						<div class="question_block">
 						<% @offering.mentor_types.each do |mentor_type| %>
-							<%= mf.radio_button :application_mentor_type_id, mentor_type.application_mentor_type_id %>
-							<%= mentor_type.title %>
-							<br>
-						<% end -%>
+						  <label>
+							 <%= mf.radio_button :application_mentor_type_id, mentor_type.application_mentor_type_id, {class: "with-gap"} %>
+							 <span><%= mentor_type.title %></span>
+						  </label>
+						  <br>
+						<% end %>
 						</div>
-					
 					</li>
 				</ul>
+				<br>
 				<% end %>
 							
 				<% if @offering.allow_hard_copy_letters_from_mentors? %>

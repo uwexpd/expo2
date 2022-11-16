@@ -91,6 +91,11 @@ For example, to change the default status-tag color: */
 	background: #fef5d4;
 }
 
+.flash {
+	animation: 1.8s am-snackbar-fade, 0.6s am-snackbar-fade reverse 9s forwards;
+	background: #f44336;
+}
+
 br.clear {
 	clear: both;
 }

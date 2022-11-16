@@ -64,6 +64,10 @@ module AuthenticatedSystem
       user_authorized?('Student') || user_authorized? || access_denied
     end
 
+    def uw_netid_required_student_login_if_possible
+      user_authorized?('Student') || user_authorized? || access_denied("This only allows UW NetID users to access. Please login with your UW NetID.")
+    end
+
     # Returns true if the current user is an admin user and deny access if not.
     def admin_required
       current_user.admin? || access_denied("You must be an admin user to access that page. Please login as an admin user.")
@@ -119,12 +123,7 @@ module AuthenticatedSystem
         vicarious_user = User.find_by_id(session[:vicarious_user])
         if vicarious_user.token == session[:vicarious_token]
           self.current_user = vicarious_user
-        else
-          HoptoadNotifier.notify(
-            :error_class => "Vicarious Login Error",
-            :error_message => "Vicarious Login Error: Vicarious token does not match",
-            :parameters => params
-          )
+        else          
           clear_vicarious_user
           login_from_session
         end

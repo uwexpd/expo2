@@ -24,10 +24,17 @@ $(document).on('turbolinks:load', function() {
   // End materializecss javascript initialization
   
   M.updateTextFields(); // Materializecss: Prefilling Text Inputs
-  if (!$.trim($('.materialize-textarea').val()).length < 1) {
-    M.textareaAutoResize($('.materialize-textarea'));
+
+  // Check materialize-textarea if needed to apply AutoResize method
+  for (let i=0; i < $('.materialize-textarea').length; i++) {
+    
+    var element_id = $('.materialize-textarea')[i]['id']
+
+    if ($.trim($('#' + element_id).val()).length > 0) {
+      M.textareaAutoResize($('#'+ element_id));
+    }      
   }
-  
+
 });
 
 $(document).on("click", "a[data-link-toggle]", function(){ 
