@@ -1,8 +1,10 @@
+<div class="input-field col s12"><%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %></div>
+
 <div class="input-field col s12">
 
-	<%= qf.text_area question.attribute_to_update, required: question.required? ? true : false, class: "materialize-textarea validate" %>
+	<%= qf.text_area question.attribute_to_update, required: question.required? ? true : false, class: "materialize-textarea validate", data: {length: question.character_limit} %>
 
-	<%= qf.label(question.attribute_to_update, (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe)%>	
+	<%= qf.label(question.attribute_to_update, "Please enter your answer here...") %>
 	
 	<%= content_tag('span', "#{question.word_limit} words limit", :class => 'helper-text') if question.word_limit? %>
 	

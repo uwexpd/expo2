@@ -23,9 +23,17 @@
 	margin-left: -1.2em;
 }
 
+/* Question label focus color */
+.offering_questions .input-field input[type=text] + label, div.select-wrapper + label, {
+  color: rgba(0, 0, 0, 0.87);
+}
 
-#apply_form label {
-	color: rgba(0, 0, 0, 0.87);
+.offering_questions div.select-wrapper {
+	padding-top: .5rem;
+}
+
+div.select-wrapper + label {	
+  font-size: 1rem;
 }
 
 #apply_form .input-field .helper-text {
@@ -249,7 +257,11 @@ table.application_review li {
   margin-left: 4em;
 }
 
-.card-content .col, .card-content .row {
-	margin-left:0;
-	margin-right:0;
+// .card-content .col, .card-content .row {
+// 	margin-left:0;
+// 	margin-right:0;
+// }
+
+.row .offering_questions {
+	padding-top: 1rem
 }

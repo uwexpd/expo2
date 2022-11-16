@@ -67,39 +67,39 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
     
-    columns do
-      column do
+    # columns do
+    #   column do
 
-        records = ActiveRecord::Base.connection.execute(" 
-          SELECT TABLE_NAME, TABLE_ROWS 
-          FROM INFORMATION_SCHEMA.TABLES 
-          WHERE TABLE_SCHEMA = '#{Rails.configuration.database_configuration[Rails.env]['database']}' AND
-          TABLE_NAME in ('users','people','appointments','events','offerings','committees')
-          order by TABLE_ROWS DESC;")
+    #     records = ActiveRecord::Base.connection.execute(" 
+    #       SELECT TABLE_NAME, TABLE_ROWS 
+    #       FROM INFORMATION_SCHEMA.TABLES 
+    #       WHERE TABLE_SCHEMA = '#{Rails.configuration.database_configuration[Rails.env]['database']}' AND
+    #       TABLE_NAME in ('users','people','appointments','events','offerings','committees')
+    #       order by TABLE_ROWS DESC;")
 
-        all_models_count = records.collect{ |row| [row[0], row[1].to_i]}
+    #     all_models_count = records.collect{ |row| [row[0], row[1].to_i]}
         
-        max = all_models_count.first[1].to_f
-        percent = 100.00/max
+    #     max = all_models_count.first[1].to_f
+    #     percent = 100.00/max
 
-        panel "Database Records" do
-          recs = ''
-          all_models_count.each do |model_name, count|
-            bar_size = percent*count
-            bar_size = 2 if bar_size < 2 and bar_size > 0
+    #     panel "Database Records" do
+    #       recs = ''
+    #       all_models_count.each do |model_name, count|
+    #         bar_size = percent*count
+    #         bar_size = 2 if bar_size < 2 and bar_size > 0
             
-            recs << "<div width='100px' class='intro'>"
-            recs << link_to("#{model_name.tableize} - #{count}", "/admin/#{model_name.tableize}") rescue nil
-            recs << "<div class=\"progress progress-info\">"
-            recs << "<div class=\"bar\" style=\"width: #{bar_size}%\">"
-            recs << "</div>"
-            recs << "</div>"
-            recs << "</div>"
-          end
-          recs.html_safe
-        end
-      end      
-    end
+    #         recs << "<div width='100px' class='intro'>"
+    #         recs << link_to("#{model_name.tableize} - #{count}", "/admin/#{model_name.tableize}") rescue nil
+    #         recs << "<div class=\"progress progress-info\">"
+    #         recs << "<div class=\"bar\" style=\"width: #{bar_size}%\">"
+    #         recs << "</div>"
+    #         recs << "</div>"
+    #         recs << "</div>"
+    #       end
+    #       recs.html_safe
+    #     end
+    #   end      
+    # end
 
   end # content
   

@@ -1,5 +1,7 @@
 <div class="input-field col s12" <%= "id='associate_question_#{question.id}'" if OfferingQuestionOption.find_by_associate_question_id(question.id) %>>
+	
 	<%= qf.text_field question.attribute_to_update, required: question.required? ? true : false ,class: "validate #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit} %>
+	
 	<%= qf.label(question.attribute_to_update, "#{question.question} #{content_tag('abbr', '*', title: "required") if question.required?}".html_safe, class: 'truncate') %>
 		
 	<%#= content_tag('p', "#{question.character_limit} character limit", :class => 'helper-text') if question.character_limit? %>

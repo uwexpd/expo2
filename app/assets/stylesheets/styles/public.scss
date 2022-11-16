@@ -735,11 +735,12 @@ textarea.materialize-textarea.error {
     -webkit-box-shadow: 0 1px 0 0 #F44336;
     box-shadow: 0 1px 0 0 #F44336;	
 }
-select[required]:focus{
+
+select.material:focus{
     outline: none !important;
 }
 
-select[required]{
+select.material{
     display: block;
     padding: 0;
     position: absolute;
