@@ -22,7 +22,7 @@ set :keep_releases, 10
 set :linked_files, %w{config/email.yml config/database.yml config/master.key}
 
 # dirs we want symlinking to shared
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system config/certs public/expo/error_images}
+set :linked_dirs, %w{bin log files tmp/pids tmp/cache tmp/sockets vendor/bundle public/system config/certs public/expo/error_images}
 
 set :assets_prefix, 'expo/assets'
   
