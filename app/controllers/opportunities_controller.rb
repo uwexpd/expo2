@@ -21,7 +21,7 @@ class OpportunitiesController < ApplicationController
 		if @research_opportunity
       		if !@research_opportunity.active? || (@research_opportunity.end_date && @research_opportunity.end_date < Date.today)
        			 flash[:error] = "The opportunity, #{@research_opportunity.title}, is inactive. You are not able to see more details."
-        		redirect_to :action => "search"
+        		redirect_to :action => "index"
       		end
       		add_breadcrumb @research_opportunity.title
     	else
