@@ -124,7 +124,7 @@ class ApplicationCompositeReport
       reviewer_bits << "i#{@offering_interview_interviewer.id.to_s}" if @offering_interview_interviewer
     end
     part_name = part == :scoring ? "scoring_#{reviewer_bits.join("_")}" : part.to_s
-    File.join(RAILS_ROOT, "files", "application_composite_report", @application_for_offering.id.to_s, "parts", part_name + ".pdf")
+    File.join(Rails.root, "files", "application_composite_report", @application_for_offering.id.to_s, "parts", part_name + ".pdf")
   end
   
   # Returns the full report filename, which includes a hash of the included_parts array for differentiation between versions.
@@ -134,7 +134,7 @@ class ApplicationCompositeReport
     reviewer_bits << "i#{@offering_interview_interviewer.id.to_s}" if @offering_interview_interviewer
     app_reviewer_bit = "_#{reviewer_bits.join("_")}" unless reviewer_bits.empty?
     basename = "Report_#{@application_for_offering.id.to_s}#{app_reviewer_bit.to_s}_#{include_parts.hash.to_s}.pdf"
-    File.join(RAILS_ROOT, "files", "application_composite_report", @application_for_offering.id.to_s, basename)
+    File.join(Rails.root, "files", "application_composite_report", @application_for_offering.id.to_s, basename)
   end
 
   protected
@@ -179,18 +179,16 @@ class ApplicationCompositeReport
     file.process!(:convert_to_pdf) ? file.pdf.path : nil
   end
   
-  # Creates a PDF "stamp" that can be used to label every page when combining using pdftk.
+  # Creates a PDF "stamp" that can be used to label every page when combining using pdftk/hexapdf.
   def generate_pdf_stamp!
-    pdf = ::PDF::Writer.new('Letter')
-    pdf.select_font "Helvetica"
-    pdf.add_text 20, pdf.y+10, "#{@application_for_offering.offering.title}", 9
-    pdf.add_text 20, pdf.y-2, "<b>Applicant: #{@application_for_offering.fullname}</b>", 11
-    pdf.fill_color Color::RGB::Red
-    pdf.add_text_wrap 0, pdf.y+10, 590, "<b>CONFIDENTIAL</b>", 11, :right
-    pdf.fill_color Color::RGB::Black
-    pdf.add_text_wrap 0, pdf.y, 590, "Destroy by #{@application_for_offering.offering.destroy_by}", 7, :right
     verify_file_path(part_filename(:stamp))
-    if File.open(part_filename(:stamp), "wb") { |f| f.write pdf.render }
+    composer = HexaPDF::Composer.new(page_size: :Letter, margin: 20) do |pdf|
+      pdf.text("#{@application_for_offering.offering.title}", font: 'Helvetica', font_size: 9, position: :float)
+      pdf.text("CONFIDENTIAL", font: ['Helvetica', variant: :bold], font_size: 11, fill_color: 'red', align: :right)
+      pdf.text("Applicant: #{@application_for_offering.fullname}", font: ['Helvetica', variant: :bold], font_size: 11, line_height: 5, position: :float)
+      pdf.text("Destroy by #{@application_for_offering.offering.destroy_by}", font: 'Helvetica', font_size: 7, align: :right)
+    end
+    if composer.write(part_filename(:stamp))
       return part_filename(:stamp)
     else
       nil
@@ -198,6 +196,8 @@ class ApplicationCompositeReport
   end
   
   # Adds the PDF stamp to the requested file
+  # Use hexapdf watermark command line
+  # $ hexapdf watermark -w uploads/josh-composer.pdf -t stamp uploads/josh.pdf uploads/josh-stamped.pdf
   def stamp_pdf!(file)
     puts "Stamping pdf: #{file}"
     `cp #{file} #{file}-unstamped`

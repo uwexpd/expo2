@@ -7,7 +7,7 @@ class FileUploader < CarrierWave::Uploader::Base
   configure do |config|
     config.remove_previously_stored_files_after_update = false
   end
-   # in `class PhotoUploader`
+  
   before :cache, :save_original_filename
   process :save_content_type_and_size_in_model
 
@@ -18,6 +18,10 @@ class FileUploader < CarrierWave::Uploader::Base
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
     "files/application_file/#{mounted_as}/#{model.application_for_offering.id}"  
+  end
+
+  def cache_dir
+    "files/tmp/application_file_cache"
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -39,6 +43,9 @@ class FileUploader < CarrierWave::Uploader::Base
   # version :thumb do
   #   process resize_to_fit: [50, 50]
   # end
+  version :unstamped do
+    process :stamp_pdf!
+  end
 
   # Add an allowlist of extensions which are allowed to be uploaded.
   # For images you might use something like this:
@@ -59,6 +66,28 @@ class FileUploader < CarrierWave::Uploader::Base
   def save_content_type_and_size_in_model
     model.file_content_type = file.content_type if file.content_type
     model.file_size = file.size
+  end  
+
+  protected
+
+  # Adds the PDF stamp to the requested file 
+  # Use hexapdf watermark command line
+  # e.g. $hexapdf watermark -w stamp-compsesr.pdf -t stamp to-be-stamped.pdf output.pdf
+  def stamp_pdf!
+    stamp_filename = model.application_for_offering.composite_report.get_part(:stamp)
+    # Rails.logger.debug "Debug: #{self.cache_name}, #{self.cache_path(self.original_filename)}"
+    cache_file_path = self.cache_path(self.original_filename)
+
+    command = "hexapdf watermark -w #{stamp_filename} -t stamp #{cache_file_path} #{cache_file_path}-stamped"
+    Rails.logger.info { "Stamping PDF file:\n   #{command}"}
+
+    res = `#{command}`
+    output = $?
+      if output.success?
+        `mv #{cache_file_path} #{cache_file_path}-unstamped`
+        `mv #{cache_file_path}-stamped #{cache_file_path}`
+      end
+    return output
   end
 
 end
