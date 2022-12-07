@@ -74,7 +74,6 @@ gem 'capitalize-names'
 gem 'material_icons'
 gem 'materialize-sass', '~> 1.0.0'
 
-
 gem 'redis'
 gem "sidekiq", "~> 6.5"
 

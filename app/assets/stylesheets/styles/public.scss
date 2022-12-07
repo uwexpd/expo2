@@ -48,6 +48,34 @@ a:hover{
 	color: #4b2e83;
 }
 
+.uw_bg_purple {
+	background-color: #4b2e83;
+}
+
+.uw_light_gold {
+	color: #e8e3d3;
+}
+
+.uw_light_bg_gold {
+	background-color: #e8e3d3;
+}
+
+.uw_dark_gold {
+	color: #b7a57a;
+}
+
+.uw_dark_bg_gold {
+	background-color: #b7a57a;
+}
+
+.uw_metallic_gold {
+	color: #85754d;
+}
+
+.uw_metallic_bg_gold {
+	background-color: #85754d;
+}
+
 .show_block {
 	display: block;
 }
@@ -183,8 +211,7 @@ nav .nav-wrapper a:hover{
 }
 
 thead th, tbody td, tbody th{
-	font-size: 0.9em;
-	// border-bottom: solid 1px #ddd;
+	font-size: 0.9em;	
 	padding: 15px;
 }
 
