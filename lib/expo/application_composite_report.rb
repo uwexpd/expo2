@@ -185,7 +185,7 @@ class ApplicationCompositeReport
     composer = HexaPDF::Composer.new(page_size: :Letter, margin: 20) do |pdf|
       pdf.text("#{@application_for_offering.offering.title}", font: 'Helvetica', font_size: 9, position: :float)
       pdf.text("CONFIDENTIAL", font: ['Helvetica', variant: :bold], font_size: 11, fill_color: 'red', align: :right)
-      pdf.text("Applicant: #{@application_for_offering.fullname}", font: ['Helvetica', variant: :bold], font_size: 11, line_height: 5, position: :float)
+      pdf.text("Applicant: #{@application_for_offering.fullname}", font: ['Helvetica', variant: :bold], font_size: 11, line_height: 10, position: :float)
       pdf.text("Destroy by #{@application_for_offering.offering.destroy_by}", font: 'Helvetica', font_size: 7, align: :right)
     end
     if composer.write(part_filename(:stamp))
