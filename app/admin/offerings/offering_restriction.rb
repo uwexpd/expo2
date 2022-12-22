@@ -45,7 +45,7 @@ ActiveAdmin.register OfferingRestriction, as: 'restrictions' do
 						span link_to '<span class="material-icons">delete</span>'.html_safe, admin_offering_restriction_exemption_path(offering, restrictions, exemption), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon'
 			         }
 			end
-			div link_to '<span class="material-icons md-20">add</span>Add New Exemption'.html_safe, admin_offering_restriction_exemption_path(offering, restrictions), class: 'button add'
+			div link_to '<span class="material-icons md-20">add</span>Add New Exemption'.html_safe, new_admin_offering_restriction_exemption_path(offering, restrictions), class: 'button add'
 		end
 	  end
   	end

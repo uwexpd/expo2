@@ -272,10 +272,10 @@ class OfferingQuestion < ApplicationRecord
 
   def add_files_errors(page)
     user_application = page.application_for_offering
-    file = user_application.files.find_by(offering_question_id: self)
-    add_error_message(page) if required? && file && file.file.nil?
-    unless file.nil? || file.file.nil?
-      add_error_message(page, "must be uploaded with PDF file. Your current file format is \"#{file.extension}\".") unless ["pdf","jpg","png","gif","xls","xlsx"].include?(file.extension)
+    app_file = user_application.files.find_by(offering_question_id: self)
+    add_error_message(page) if required? && app_file && app_file.file.file.nil?
+    unless app_file.nil? || app_file.file.file.nil?
+      add_error_message(page, "must be uploaded with PDF file. Your current file format is \"#{app_file.extension}\".") unless ["pdf","jpg","jpeg","png","gif","xls","xlsx"].include?(app_file.extension)
     end
   end
   
