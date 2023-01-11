@@ -89,6 +89,10 @@ a:hover{
 	color: #999;	
 }
 
+.word_wrap {
+	overflow-wrap: anywhere;
+}
+
 .clear {
 	clear: both;
 }
@@ -677,6 +681,14 @@ dl.big.numbers dd i {
 	font-size: small;
 	line-height: 28px;
 
+}
+
+#account-nav a{	
+	color: white;
+}
+
+#account-nav a:hover{	
+	color: #b7a57a;
 }
 
 .position_picture {	

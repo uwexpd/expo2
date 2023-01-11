@@ -33,10 +33,7 @@ module Expo2
     config.eager_load_paths += Dir["#{config.root}/lib/expo/**/"]
     
     config.constants = config_for(:constants)
-    
-    config.relative_url_root = '/expo'
-    config.assets.prefix = '/expo/assets'
-    
+
     config.generators do |g|
        g.test_framework :rspec,
          fixtures: false,

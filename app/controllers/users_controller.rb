@@ -33,7 +33,7 @@ class UsersController < ApplicationController
     cookies.delete :auth_token    
     @user = User.new(user_params)
     if User.where("email = ? AND type is NULL", params[:user][:person_attributes][:email].strip).take
-      flash[:error] = "This email address is already in use."
+      flash[:alert] = "This email address is already in use."
       render :action => 'new'
     else      
       @user.email = params[:user][:person_attributes][:email].strip rescue nil
@@ -60,14 +60,14 @@ class UsersController < ApplicationController
   private
 
   def user_params
-      params.require(:user).permit(:login, :password, :password_confirmation, person_attributes: [:salutation, :firstname, :lastname, :email])
+      params.require(:user).permit(:login, :password, :password_confirmation, person_attributes: [:salutation, :firstname, :lastname, :email, :nickname, :title, :phone, :address1, :address2, :address3, :city, :state, :zip])
   end
 
   # def check_recaptcha_v2
   #   valid = verify_recaptcha secret_key: ENV["RECAPTCHA_V2_CHECKBOX_SECRET_KEY"]
 
   #   if not valid
-  #     flash[:error] = "Recaptcha fails. Please let us know you are not a robot."
+  #     flash[:alert] = "Recaptcha fails. Please let us know you are not a robot."
   #     redirect_to :action => 'new'
   #   end
   # end

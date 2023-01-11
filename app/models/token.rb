@@ -1,7 +1,7 @@
 # Allows any model to have a randomly generated token which can used for authenticating via things like e-mail links.
 class Token < ApplicationRecord
   stampable
-  belongs_to :tokenable, :polymorphic => true
+  belongs_to :tokenable, polymorphic: true
   after_create :generate
   
   # attr_protected :token

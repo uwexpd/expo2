@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_admin_user!
     unless current_admin_user
-      flash[:error] = "Access denied! Please make sure you have admin permission."
+      flash[:alert] = "Access denied! Please make sure you have admin permission."
       redirect_to :login
     end
   end
@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
     unless @current_user.has_role?(role)
       @role = role.to_s.titleize
       # return render :template => "exceptions/permission_denied", :status => :unauthorized
-      flash[:error] = "You are not authorized to view this page. You must be assigned the #{@role} role."
+      flash[:alert] = "You are not authorized to view this page. You must be assigned the #{@role} role."
       redirect_to root_path
     end
   end
@@ -90,7 +90,7 @@ class ApplicationController < ActionController::Base
     unless @current_user.in_unit?(unit)
       @unit = unit
       # return render :template => "exceptions/wrong_unit", :status => :unauthorized
-      flash[:error] = "You don't belong to the #{@unit.name} unit, so you can't view this item."
+      flash[:alert] = "You don't belong to the #{@unit.name} unit, so you can't view this item."
       redirect_to root_path
     end
   end
@@ -115,7 +115,7 @@ class ApplicationController < ActionController::Base
   end
 
   # def redirect_exception(exception)
-  #   flash[:error] = "EXPO tried to redirect you back to the previous page, but there's no previous 
+  #   flash[:alert] = "EXPO tried to redirect you back to the previous page, but there's no previous 
   #                    page to redirect you back to. You're going to have to find your own way from here."
   #   redirect_to root_url and return
   # end

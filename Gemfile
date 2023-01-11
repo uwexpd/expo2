@@ -71,7 +71,7 @@ gem 'sanitize'
 gem 'capitalize-names'
 # gem 'auto_strip_atrributes'
 
-gem 'material_icons'
+gem 'material_icons', '~> 4.0'
 gem 'materialize-sass', '~> 1.0.0'
 
 gem 'redis'

@@ -1,0 +1,34 @@
+<% title "Forgot Your Username/Password | EXPO " %>
+
+<div class="login_header"></div>
+
+<%= render 'account_nav' %>
+
+<div class="session">
+	<h2><i class="material-icons md-32 uw_purple">lock</i> Forgot Your Username/Password</h2>
+	<p class='highlight'><i class="material-icons uw_purple">info_outline</i> If you've forgotten your password, we can send a link to your e-mail address so that you can reset it.</p>	
+	
+	<form class="hightlight box">
+		<strong>Please enter your username:</strong>
+		<div><%= text_field_tag 'username', params[:login], size: 30 %>		
+		<%= submit_tag "Reset my password" %></div>
+	</form>
+	
+	<br>
+
+	<p class='highlight'><i class="material-icons uw_purple">info_outline</i> If you can't remember your username, please enter your email below.</p>
+	
+	<form class="hightlight box">
+		<strong>Please enter your email:</strong>
+		<div><%= text_field_tag 'email', params[:email], size: 30 %>		
+		<%= submit_tag "Find your username" %></div>
+	</form>
+
+	<br>
+	<p>If your e-mail address has changed, please contact <%= auto_link "expohelp@uw.edu" %> </p>
+	<br>
+	<%= link_to "← Back to Login Screen", login_url, :class => 'button' %>
+
+	<%= render 'footer' %>
+
+</div>

@@ -1,21 +1,4 @@
 class UserMailer < ActionMailer::Base
-  
-  # def password_reminder(user, sent_at = Time.now)
-  #   subject    'Password Reminder'
-  #   recipients user.email
-  #   from       CONSTANTS[:system_help_email]
-  #   sent_on    sent_at
-  #   body       :user => user,
-  #               :password_reset_link => reset_password_url(user.id, user.token.to_s, :host => CONSTANTS[:base_url_host])
-  # end
-
-  # def username_reminder(email, users, sent_at = Time.now)
-  #   subject    'Your UW EXPO Username Reminder'
-  #   recipients email
-  #   from       CONSTANTS[:system_help_email]
-  #   sent_on    sent_at
-  #   body       :users => users        
-  # end
 
   def welcome_signup(user)
     @user = user
@@ -23,6 +6,24 @@ class UserMailer < ActionMailer::Base
          subject: 'Welcome to UW EXPO online system',
          from: Rails.configuration.constants['system_help_email'],
          date: Time.now)
+  end
+
+  def password_reminder(user, sent_at = Time.now)      
+    @user = user
+    @password_reset_link = reset_password_url(user.id, user.token.to_s, host: Rails.configuration.action_mailer.default_url_options[:host], protocol: 'https')
+
+    mail(to: @user.email, 
+         subject: 'Password Reminder',
+         from: Rails.configuration.constants['system_help_email'],
+         date: sent_at)
+  end
+
+  def username_reminder(email, users, sent_at = Time.now)
+    @users = users
+    mail(to: email,
+         subject: 'Your UW EXPO Username Reminder',
+         from: Rails.configuration.constants['system_help_email'],
+         date: sent_at)
   end
 
 end

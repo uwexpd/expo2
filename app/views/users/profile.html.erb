@@ -1,0 +1,37 @@
+<% title("Your Profile: #{@user.login}") %>
+
+<div class="login_header"></div>
+
+<div class="session">
+	<h2><i class="material-icons md-32 uw_purple" style="vertical-align: bottom">person</i> Your Profile: <%= @user.login %></h2>
+	<p class="small"><i class="material-icons uw_purple">info_outline</i> To update your user profile, make your changes in the fields below and click "Update." These details are used system-wide throughout EXPO, so the changes you make here will be reflected within every part of the system.</p>
+
+	<small class="light">Last updated <%= @user.person.contact_info_updated_at %></small>
+
+	<%= form_for :user, url: {action: 'update'} do |f| %>
+
+	<%= render "shared/error_messages", :target => @user %>
+
+		<table>			
+			<%= fields_for "user[person_attributes]", @user.person do |person_fields| %>
+				<%= render :partial => "shared/person_fields", :object => person_fields %>
+			<% end -%>
+			
+			<%# if @user.admin? %>
+			<!-- <dt><%#= f.label :picture, "picture" %></dt>
+			<dd><%#= image_tag f.object.picture.thumb.url if f.object.picture rescue nil %>
+				<%#= upload_column_field 'user', 'picture' %>
+				<p class="caption">If you choose a picture, EXPO will use this picture when displaying notes and comments made by you.</p>
+				</dd> -->
+			<%# end %>
+
+		</table>
+
+		<%= f.submit "Update", :disable_with => "Updating contacting information..." %>
+
+	<% end %>
+
+	<%= render 'sessions/footer' %>
+
+</div>
+

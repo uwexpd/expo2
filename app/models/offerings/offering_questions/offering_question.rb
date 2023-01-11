@@ -109,7 +109,7 @@ class OfferingQuestion < ApplicationRecord
       if display_as == 'radio_options' && model_to_update.blank?
         add_error_message page and return if page.application_for_offering.instance_eval(attribute_to_update).nil?
       elsif display_as == 'checkbox_options'
-        add_error_message page and return if page.application_for_offering.answers.find_all_by_offering_question_id(self.id).select{|a| a.answer != "false"}.empty?
+        add_error_message page and return if page.application_for_offering.answers.where(offering_question_id: self.id).where.not(answer: "false").empty?
       elsif display_as == 'application_text'
         add_error_message page and return if page.application_for_offering.text(attribute_to_update).blank?
       elsif display_as == 'application_category'

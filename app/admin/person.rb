@@ -46,14 +46,16 @@ ActiveAdmin.register Person do
          tab "Mentor (#{person.application_mentors.size})" do
            panel 'Mentored Projects' do
               table_for person.application_mentors do
-                 column 'Offerings' do |mentor|
-                   mentor.application_for_offering.offering.title                                      
-                 end
-                 column 'Applications' do |mentor|
-                   span mentor.application_for_offering.person.fullname
-                   span ' ― '
-                   span mentor.application_for_offering.project_title || '(no title)'                   
-                 end
+                   column 'Offerings' do |mentor|
+                     mentor.application_for_offering.offering.title if mentor.application_for_offering
+                   end
+                   column 'Applications' do |mentor|
+                     if mentor.application_for_offering
+                       span mentor.application_for_offering.person.fullname
+                       span ' ― '
+                       span mentor.application_for_offering.project_title || '(no title)'
+                     end
+                   end
               end
            end
          end
