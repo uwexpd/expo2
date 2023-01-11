@@ -1,14 +1,8 @@
+<% title "Login | EXPO" %>
+
 <div class="login_header"></div>
 
-<div id="account-nav">
-	<% if logged_in? %>
-		<%= vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS" : "Logged in as" %>
-		<strong><%= (current_user.fullname) %></strong></a>
-		<%= "[#{current_user.identity_type}]" if current_user.identity_type %>
-		<%= link_to 'Log out of vicarious mode', remove_vicarious_login_path if vicariously_logged_in? %> |
-		<%= link_to "Log out", logout_path %>
-	<% end %>
-</div>
+<%= render 'account_nav' %>
 
 <div id="login">
 	
@@ -41,21 +35,12 @@
 				<td><%= password_field_tag 'password', params[:password] %></td>
 	  		</tr>
 
-	  	 </table>
-
-		<p><%= submit_tag 'Log in' %></p>
+	  	</table>
+		<p><%= submit_tag 'Log in' %><small style='padding-left:10px'><%= link_to "Forgot username/password?", sessions_forgot_path %></small></p>
 		<p><%= link_to "Create a new expo account", signup_path %></p>
 	<% end %>
 
-	<div id="login_footer">
-		<div id="footer">
-			<p id="copyright">
-				Copyright &copy; 2007&ndash;<%= Time.now.year %> <a href="http://www.washington.edu" target="_blank">University of Washington</a>.
-				Managed by the <a href="http://expd.uw.edu" target="_blank">Center for Experiential Learning &amp; Diversity</a>, a unit of 
-				<a href="http://www.washington.edu/uaa/" target="_blank">Undergraduate Academic Affairs</a>.				
-			</p>			
-		</div>
-	</div>
+	<%= render 'footer' %>
 
 </div>
 

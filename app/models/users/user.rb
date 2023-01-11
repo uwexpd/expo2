@@ -12,6 +12,25 @@ class User < ApplicationRecord
   end
   
   has_many :logins, :class_name => "LoginHistory"
+  has_many :email_addresses, :class_name => "UserEmailAddress"
+  belongs_to :default_email_address, :class_name => "UserEmailAddress", :foreign_key => "default_email_address_id"
+
+  has_one :token_object, :class_name => "Token", :as => :tokenable
+  
+  MAX_TOKEN_AGE = 1.day
+  
+  # Returns the actual token from this User's +token_object+ or generates a new one if:
+  # 
+  #  * no token object exists yet
+  #  * the existing token is older than the MAX_TOKEN_AGE.
+  def token
+    return create_token_object.token if token_object.nil? || Time.now - token_object.updated_at > MAX_TOKEN_AGE
+    token_object.token
+  end
+  
+  def create_token
+    create_token_object
+  end
     
   # Virtual attribute for the unencrypted password
   attr_accessor :password
@@ -36,6 +55,7 @@ class User < ApplicationRecord
   
   scope :admin, -> { where(admin: true) }
   
+
   # Pulls the current user out of Thread.current. We try to avoid this when possible, but sometimes we need 
   # to access the current user in a model (e.g., to check EmailQueue#messages_waiting?).
   def self.current_user

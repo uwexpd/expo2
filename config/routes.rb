@@ -22,12 +22,11 @@ Rails.application.routes.draw do
     mount Sidekiq::Web, at: '/admin/sidekiq'
     
     ## For active storage scope workaround
-    get "rails/active_storage/disk/:encoded_key/*filename" => "active_storage/disk#show", as: :scoped_rails_disk_service
-    get "rails/active_storage/blobs/:signed_id/*filename" => "active_storage/blobs#show", as: :scoped_rails_blobs_service
-    get "rails/active_storage/representations/:signed_blob_id/*filename" => "active_storage/representations#show", as: :scoped_rails_representations_service    
+    # get "rails/active_storage/disk/:encoded_key/*filename" => "active_storage/disk#show", as: :scoped_rails_disk_service
+    # get "rails/active_storage/blobs/:signed_id/*filename" => "active_storage/blobs#show", as: :scoped_rails_blobs_service
+    # get "rails/active_storage/representations/:signed_blob_id/*filename" => "active_storage/representations#show", as: :scoped_rails_representations_service    
 
-    ##### Custom active admin routes ##############
-    # DEPRECATION WARNING: Using a dynamic :action: get 'admin/apply/:offering/:action', to: 'admin/apply#:action', as: :admin_apply_action
+    # Custom Active Admin Routes --------------------------------------------
     get 'admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
     get 'admin/apply/:offering/list', to: 'admin/apply#list', as: :admin_apply_list
     get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
@@ -58,13 +57,22 @@ Rails.application.routes.draw do
       end
     end
     
-    # User and Sessions    
-    resources :sessions    
+    # -------------------------------------------------------------------------------------------
+    # Public Routes
+    # -------------------------------------------------------------------------------------------
+    # User and Sessions            
     get 'signup',  to: 'users#new'
+    match 'signup', to: 'users#create', via: [:post]
+    get 'profile', to: 'users#profile'
+    match 'profile', to: 'users#update', via: [:post, :put, :patch]
+    resources :users, only: [:create, :update]
     get 'login',  to: 'sessions#new'
     match 'logout', to: 'sessions#destroy', via: [:get, :delete]
+    match 'sessions/forgot',  to: 'sessions#forgot', via: [:get, :post], as: :sessions_forgot
+    get 'sessions/reset/:user_id/:token', to: 'sessions#reset_password', as: :reset_password
+    resources :sessions
     get 'remove_vicarious_login', :to => 'application#remove_vicarious_login'
-    resources :users, only: [:create, :update]
+    
 
     # RSVP for events
     get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event
@@ -84,6 +92,7 @@ Rails.application.routes.draw do
     match 'apply/:offering/files/application_file/file/:id/:filename', to: 'apply#file', via: [:get], as: :apply_file
     get 'mentor/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_map
     get 'mentor/offering/:offering_id/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_offering_map
+    # get 'mentor/:action/:id', to:'mentor#' as: :mentor
 
     # OMSFA Scholarship Sesarch
     resources :scholarships, only: [:show, :index], param: :page_stub

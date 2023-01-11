@@ -249,7 +249,7 @@ class ApplicationForOffering < ApplicationRecord
       self.class.send :define_method, "dynamic_answer_#{offering_question_id.to_s}_#{offering_question_option_id.to_s}=",
                                              Proc.new {|argv| set_answer(offering_question_id, argv, offering_question_option_id)}
     end    
-    type_cast_dynamic_answer(answer)
+    type_cast_dynamic_answer(answer)    
   end
     
   # Save the answer to the specified question. Note that if +display_as=checkbox_options+, use +offering_question_option_id+ to save checked question_option_id.
@@ -277,9 +277,9 @@ class ApplicationForOffering < ApplicationRecord
       true
     elsif answer == "false"
       false
-    elsif answer.match /^\d+$/
+    elsif answer.is_int?
       answer.to_i
-    elsif answer.match /^\d+.\d+$/
+    elsif answer.is_float?
       answer.to_f
     else
       answer
@@ -351,11 +351,13 @@ class ApplicationForOffering < ApplicationRecord
     if email.send_to == "applicant"
       cc_to_feedback_person = email.cc_to_feedback_person?
       email_object = ApplyMailer.status_update(self, email.email_template, self.person.email, Time.now, 
-                                                      apply_url(:host => Rails.configuration.constants["base_url_host"], 
-                                                                :offering => offering),
-                                                      apply_url(:host => Rails.configuration.constants["base_url_host"], 
-                                                                :offering => offering) + "/availability",
-                                                      cc_to_feedback_person)
+          apply_url(host: Rails.configuration.action_mailer.default_url_options[:host],
+                    protocol: 'https', 
+                    offering: offering),
+          apply_url(
+                    host: Rails.configuration.action_mailer.default_url_options[:host],
+                    protocol: 'https',
+                    offering: offering) + "/availability",cc_to_feedback_person)
       if deliver_emails_now
         EmailContact.log self.person.id, email_object.deliver_now, status
       else
@@ -398,7 +400,7 @@ class ApplicationForOffering < ApplicationRecord
 
   # Sends status update to mentor
   def send_mentor_status_update(mentor, email, deliver_emails_now = true, status = nil)
-    link = mentor_offering_map_url(:host => Rails.configuration.constants["base_url_host"], :offering_id => offering.id, :mentor_id => mentor.id, :token => mentor.token)
+    link = mentor_offering_map_url(host: Rails.configuration.constants["base_url_host"], offering_id: offering.id, mentor_id: mentor.id, :token => mentor.token, protocol: 'https')
     if deliver_emails_now
       EmailContact.log mentor.person_id, ApplyMailer.mentor_status_update(mentor, email.email_template, mentor.email, nil, link).deliver_now, status
     else

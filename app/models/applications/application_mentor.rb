@@ -30,7 +30,7 @@ class ApplicationMentor < ApplicationRecord
   validates_presence_of :letter, :on => :update, :message => "must be submitted.", :if => :require_validations?
   # TODO: upgrade to rails 5: validates_format_of :letter, :with => %r{\.(pdf)$}i, :message => "must be uploaded with PDF file.", :if => :require_validations?
       
-  #after_save :send_invite_email_if_needed
+  after_save :send_invite_email_if_needed
 
   serialize :task_completion_status_cache
   serialize :academic_department
@@ -267,10 +267,9 @@ class ApplicationMentor < ApplicationRecord
 
   # Sends the invite e-mail to this mentor using the template specified in the Offering's +early_mentor_invite_email_template_id+ attribute.
   def deliver_invite_email(template = offering.early_mentor_invite_email_template)
-      link = mentor_offering_map_url(:host => Rails.configuration.constants[:base_url_host], :offering_id => offering.id, :mentor_id => id, :token => token)
-      #mentor_map_url(:host => Rails.configuration.constants[:base_url_host], :mentor_id => id, :token => token)
+      link = mentor_offering_map_url(host: Rails.configuration.constants['base_url_host'], offering_id: offering.id, mentor_id: id, token: token, protocol: 'https')     
       
-      if EmailContact.log(person_id, ApplyMailer.deliver_mentor_status_update(self, template, email, nil, link), application_for_offering.status)
+      if EmailContact.log(person_id, ApplyMailer.mentor_status_update(self, template, email, nil, link).deliver_now, application_for_offering.status)
         update_attribute(:invite_email_sent_at, Time.now)
       end
   end

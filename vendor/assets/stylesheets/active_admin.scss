@@ -92,8 +92,13 @@ For example, to change the default status-tag color: */
 }
 
 .flash {
-	animation: 1.8s am-snackbar-fade, 0.6s am-snackbar-fade reverse 9s forwards;
-	background: #f44336;
+	animation: 2s am-snackbar-fade, 0.6s am-snackbar-fade reverse 9s forwards;	
+}
+
+.flash_notice {
+	background: #C8E6C9;
+	color: #1B5E20;
+	text-shadow: 0 1px 1px #C8E6C9;
 }
 
 br.clear {
@@ -189,7 +194,7 @@ a.button.has_many_add, a.button.has_many_remove {
 }
 
 //https://github.com/google/material-design-icons/issues/206
-// .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, #signup .material-icons
+// .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, .session .material-icons
 .material-icons {
     display: inline-flex;
     align-items: center;
@@ -211,6 +216,10 @@ a.button:hover {
 a.action_icon:hover, a .material-icons:hover {
 	opacity: 0.6;
 	text-decoration: none;
+}
+
+.material-icons.md-32, .mi.md-32 {
+	font-size: 32px;
 }
 
 .material-icons.md-20, .mi.md-20 {
@@ -259,22 +268,23 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 
 /* login page style */
 .login_header {
-	width: 45%;
+	width: 60%;
     margin: -52px auto 32px;
 	background: url(image-path('expo-logo-light.png')) no-repeat;
     height: 67px;
-	min-width: 365px;
+	min-width: 601px;
 }
 
-#login, #signup {
-	width: 45%;
-	padding: 40px 50px 20px 50px;
+#login, .session {
+	width: 60%;
+	padding: 48px 50px 24px;
 	max-width : none;  /*	for IE*/
-	min-width: 365px;
-	min-height: 450px;
+	min-width: 601px;
+	height: auto;
+	min-height: 500px;
 }
 
-#signup {
+.session {
   -webkit-animation: 0.6s am-dialog-fade;
   animation: 0.6s am-dialog-fade;
   background: #fff;
@@ -283,14 +293,16 @@ form fieldset.inputs ol li.text div.mce-tinymce {
   outline: none;
   z-index: 1000;  
   margin: -32px auto 0;  
-  min-width: 400px;
 }
 
-#signup h2 {
+.session h2 {
 	border-bottom: #999 2px dotted;
-	padding-bottom: 5px;
+	padding-bottom: 7px;
 }
 
+#user_person_attributes_address1, #user_person_attributes_address2, #user_person_attributes_address3 {
+	margin-bottom: 2px;
+}
 
 #login h2 {
     position: relative !important;
@@ -349,6 +361,10 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 	// opacity:0.9;
 }
 
+// body.logged_out {
+// 	background-color: #4b2e83;
+// }
+
 body.logged_out h2 {
 	font-size: 1.5em;
 	line-height: 30px;	
@@ -367,16 +383,16 @@ body.logged_out h2 {
     padding: 0.2em;
 }
 
-#signup form table tr>td {
+.session form table tr>td {
 	padding-bottom: 1em;
 }
 
-#login form label, #signup form label {
+#login form label, .session form label {
 	font-weight: bold;    
     padding-right: 1em;
 }
 
-#login form input[type=text], #login form input[type=email], #login form input[type=password], #signup form input[type=text], #signup form input[type=email], #signup form input[type=password] {
+#login form input[type=text], #login form input[type=email], #login form input[type=password], .session form input[type=text], .session form input[type=email], .session form input[type=password], .session form select {
 	// width: 100%;
  	// padding-left: 8px;
  	// height: 2em;
@@ -405,12 +421,19 @@ body.logged_out h2 {
   	transition: border linear 0.2s, box-shadow linear 0.2s;
 }
 
-#signup form input[type=text], #signup form input[type=email], #signup form input[type=password] {
-	max-width : none;  /*	for IE*/
-	min-width: 125%;	
+.session form input[type=text], .session form input[type=email], .session form input[type=password]{
+	max-width : none;  /*	for IE*/	
 }
 
-#login form input.error, #signup form input.error {
+table#signup tr td input[type=text], table#signup tr td input[type=email], table#signup tr td input[type=password] {
+	width: 125%;
+}
+
+.session table input[type=text], .session table input[type=email]{
+	width: 250px;
+}
+
+#login form input.error, .session form input.error {
 	border-color: #f44336;
 }
 

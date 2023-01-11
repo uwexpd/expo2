@@ -151,6 +151,8 @@ GEM
       coffee-rails (>= 3.2)
       railties (>= 3.0)
       sassc-rails (>= 2.1.2)
+    city-state (0.1.0)
+      rubyzip (>= 1.1)
     cmdparse (3.0.7)
     coffee-rails (5.0.0)
       coffee-script (>= 2.2.0)
@@ -163,6 +165,9 @@ GEM
       activerecord (~> 5.2.4)
     concurrent-ruby (1.1.9)
     connection_pool (2.2.5)
+    country_state_select (3.2.0)
+      city-state
+      rails
     crass (1.0.6)
     debug_inspector (1.1.0)
     diff-lcs (1.5.0)
@@ -227,7 +232,7 @@ GEM
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (1.0.2)
-    material_icons (2.2.1)
+    material_icons (4.0.0)
       railties (>= 3.2)
     materialize-sass (1.0.0.1)
       autoprefixer-rails (>= 6.0.3)
@@ -442,13 +447,14 @@ DEPENDENCIES
   chosen-rails
   coffee-rails
   composite_primary_keys (~> 11.3, >= 11.3.1)
+  country_state_select
   dotenv-rails
   ed25519 (>= 1.2, < 2.0)
   hexapdf
   invisible_captcha (~> 1.1)
   jquery-rails
   json
-  material_icons
+  material_icons (~> 4.0)
   materialize-sass (~> 1.0.0)
   mimemagic (~> 0.4.3)
   mini_magick

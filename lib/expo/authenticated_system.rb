@@ -82,7 +82,7 @@ module AuthenticatedSystem
     # to access the requested action.  For example, a popup window might
     # simply close itself.
     def access_denied(message = nil)
-      flash[:error] = message unless message.blank?
+      flash[:alert] = message unless message.blank?
       respond_to do |accepts|
         accepts.html do
           store_location
