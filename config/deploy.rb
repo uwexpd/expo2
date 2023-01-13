@@ -24,13 +24,13 @@ set :linked_files, %w{config/email.yml config/database.yml config/master.key}
 # dirs we want symlinking to shared
 set :linked_dirs, %w{bin log files tmp/pids tmp/cache tmp/sockets vendor/bundle public/system config/certs public/expo/error_images}
 
-set :assets_prefix, 'expo/assets'
+# set :assets_prefix, 'expo/assets'
   
 namespace :deploy do
   task :fix_absent_manifest_bug do
      on roles(:web) do
        within release_path do execute :touch,
-         release_path.join('public/expo/assets/manifest-fix.temp')
+         release_path.join('public/assets/manifest-fix.temp')
        end
      end
   end

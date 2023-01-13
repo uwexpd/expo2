@@ -14,6 +14,6 @@ end
  %>
 
 <div id="time_left" class="<%= $severity %> <%= 'right' unless float_right == :false %>">
-	<i class="material-icons md-18 uw_purple middle_align">timer</i> You have <strong><%= time_ago_in_words(@offering.deadline, include_seconds: true) %> left</strong> before the deadline:
+	<i class="material-icons md-18 uw_purple middle_align">alarm</i> You have <strong><%= time_ago_in_words(@offering.deadline, include_seconds: true) %> left</strong> before the deadline:
 	<%= @offering.deadline.to_s(:date_time12) %>
 </div>
