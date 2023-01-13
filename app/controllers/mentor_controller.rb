@@ -2,8 +2,8 @@ class MentorController < ApplicationController
   # before_filter :map_user_to_mentor
   skip_before_action :check_if_contact_info_blank
   before_action :fetch_offering
-  before_filter :apply_alternate_stylesheet
-  before_filter :check_if_contact_info_is_current, :except => ['update', 'map']
+  before_action :apply_alternate_stylesheet
+  before_action :check_if_contact_info_is_current, :except => ['update', 'map']
 
   def index
     @person = @current_user.person
