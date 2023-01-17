@@ -5,6 +5,10 @@ class SessionsController < ApplicationController
   
   layout 'active_admin_logged_out'
 
+  def new
+    @page_title = 'Login'
+  end
+
   def create
     auth = request.env["omniauth.auth"]
     if !auth.nil? && auth["provider"] == "shibboleth"
@@ -29,6 +33,7 @@ class SessionsController < ApplicationController
   end
   
   def forgot
+     @page_title = 'Forgot Your Username/Password'
     if params[:commit]
       if params[:username]
         user = User.where("login = ? AND type IS NULL", params[:username].strip).take
@@ -56,6 +61,7 @@ class SessionsController < ApplicationController
   end
 
   def reset_password
+    @page_title = 'Reset Your Password'
     @user = Token.find_object(params[:user_id], params[:token], false)
     if @user.nil?
       flash[:alert] = "That password reset link is invalid. Please try again."

@@ -3,18 +3,18 @@
     <ul class="menu">
 	      <li class="menu-text">EXPD-Online</li>
 	      <li id="account-nav">
-				<% if logged_in? %>
-					<%= vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS" : "Logged in as" %>
-					<strong><%= (current_user.fullname) %></strong></a>
-					<%= "[#{current_user.identity_type}]" if current_user.identity_type %>
-					<%= link_to 'Log out of vicarious mode', remove_vicarious_login_path if vicariously_logged_in? %>
-					<%= link_to profile_path(:return_to => request.url) do %>
-						<i class="material-icons middle_align">account_circle</i>
-				  <% end %>
-				  <a href="https://expd.uw.edu/expo-help" target="_blank"><i class="material-icons middle_align">help</i></a>
-					<%= link_to logout_path do %>
+			<% if logged_in? %>
+				<%= vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS" : "Logged in as" %>
+				<strong><%= (current_user.fullname) %></strong></a>
+				<%= "[#{current_user.identity_type}]" if current_user.identity_type %>
+				<%= link_to 'Log out of vicarious mode', remove_vicarious_login_path if vicariously_logged_in? %>
+				<%= link_to profile_path(:return_to => request.url) do %>
+					<i class="material-icons middle_align">account_circle</i>
+				<% end %>
+				<a href="https://expd.uw.edu/expo-help" target="_blank"><i class="material-icons middle_align">help</i></a>
+				<%= link_to logout_path do %>
 						<i class="material-icons middle_align">logout</i>
-				  <% end %>
+				<% end %>
 			<% end %>
 	  </li>
     </ul>

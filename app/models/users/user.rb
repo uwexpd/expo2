@@ -36,11 +36,8 @@ class User < ApplicationRecord
   attr_accessor :password
   attr_accessor :allow_invalid_person
   
-  # TODO: Rails 4.0 has removed attr_accessible and attr_protected feature in favor of Strong Parameters. 
-  # You can use the Protected Attributes gem for a smooth upgrade path. 
-  #attr_accessible :login, :email, :password, :password_confirmation, :identity_url, :person_attributes, :picture, :picture_temp  #, :person_id
-  
   validates :login, presence: true
+  validates :email, presence: true, email: {mode: :strict, require_fqdn: true}
   validates :password, presence: true, :if => :password_required?
   validates :password_confirmation, presence: true, :if => :password_required?
   validates :password, length: { :in => 6..40 }, :if => :password_required?
