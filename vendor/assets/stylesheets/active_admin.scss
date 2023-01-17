@@ -20,7 +20,7 @@ $am-theme-accent: #b7a57a;
 
 @import 'chosen';
 @import 'material_icons';
-@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+@import 'material_icons.helpers';
 
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.
@@ -33,6 +33,7 @@ For example, to change the default status-tag color: */
 	&.error, &.errored, &.red { background: #d45f53; }
 	&.admin, &.highlight {background: #fce01e; color: #656565}
 }
+
 .status_tag.small { padding: 2px 6px; font-size:0.6rem; }
 
 /* @group Tags */
@@ -970,6 +971,14 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 	top: 1rem;
 	right: 1rem;
 	color: whitesmoke;	
+}
+
+#account-nav a{
+	color: white;
+}
+
+#account-nav a:hover{
+	color: #b7a57a;
 }
 
 #create_appointment {

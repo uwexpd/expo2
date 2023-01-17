@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   layout 'active_admin_logged_out'
   
   def new
+    @page_title = 'Create New Account'
     @user = User.new
   end
 

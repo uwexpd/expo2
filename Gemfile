@@ -69,6 +69,7 @@ gem 'chartkick'
 
 gem 'sanitize'
 gem 'capitalize-names'
+gem 'email_validator'
 # gem 'auto_strip_atrributes'
 
 gem 'material_icons', '~> 4.0'
