@@ -36,8 +36,7 @@ class User < ApplicationRecord
   attr_accessor :password
   attr_accessor :allow_invalid_person
   
-  validates :login, presence: true
-  validates :email, presence: true, email: {mode: :strict, require_fqdn: true}
+  validates :login, presence: true  
   validates :password, presence: true, :if => :password_required?
   validates :password_confirmation, presence: true, :if => :password_required?
   validates :password, length: { :in => 6..40 }, :if => :password_required?
