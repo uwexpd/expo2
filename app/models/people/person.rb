@@ -87,14 +87,15 @@ class Person < ApplicationRecord
             :through => :service_learning_course_extra_enrollees,
             :source => :service_learning_course
 
-  validates :firstname, presence: true, if: ->{ :require_validations? ||  :require_name_validations?}, on: :update
-  validates :lastname,  presence: true, if: ->{ :require_validations? ||  :require_name_validations?}, on: :update
-  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i}, if: :require_validations?, on: :update
-  validates :address1, presence: true, if: :require_address_validations?, on: :update
-  validates :city, presence: true, if: :require_address_validations?, on: :update
-  validates :state, presence: true, if: :require_address_validations?, on: :update
-  validates :zip, presence: true, if: :require_address_validations?, on: :update
-  validate :student_validations, :if => :require_student_validations?, on: :update
+  validates :firstname, presence: true, if: ->{ :require_validations? || :require_name_validations?}
+  validates :lastname,  presence: true, if: ->{ :require_validations? || :require_name_validations?}
+  #validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i}, if: :require_validations?
+  validates :email, presence: true, email: {mode: :strict, require_fqdn: true}, if: :require_validations?
+  validates :address1, presence: true, if: :require_address_validations?
+  validates :city, presence: true, if: :require_address_validations?
+  validates :state, presence: true, if: :require_address_validations?
+  validates :zip, presence: true, if: :require_address_validations?
+  validate :student_validations, :if => :require_student_validations?
 
   scope :non_student, -> { where(type: nil) }
 
