@@ -30,7 +30,15 @@ Authenticates a user by their login name without a password.  Returns the user i
         u.person = Student.find_by_uw_netid(uwnetid)
         return false if u.person.nil? # If we required a Student and no student record exists, then auth fails.
       else
-        u.person = Person.create || Student.find_by_uw_netid(uwnetid)
+        #u.person = Person.create || Student.find_by_uw_netid(uwnetid)
+        if Student.find_by_uw_netid(uwnetid)
+          s = Student.find_by_uw_netid(uwnetid)
+          u.create_person!(firstname: s.formal_firstname, lastname: s.lastname, email: s.email)
+        else
+          person_email = uwnetid + "@uw.edu" rescue nil
+          u.create_person!(require_validations: false, email: person_email)
+        end
+
       end
       u.save
     end
@@ -40,7 +48,7 @@ Authenticates a user by their login name without a password.  Returns the user i
   # Construct the user's email address based on the UWNetID.  At the UW, all uwnetid's correspond to an
   # e-mail address @u.washington.edu (Actually, this may or may not be true... some depts have their own email servers - mharris2 4/15/08)
   def email
-    login + '@u.washington.edu'
+    login + '@uw.edu'
   end
   
   protected

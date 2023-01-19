@@ -87,9 +87,8 @@ class Person < ApplicationRecord
             :through => :service_learning_course_extra_enrollees,
             :source => :service_learning_course
 
-  validates :firstname, presence: true, if: ->{ :require_validations? || :require_name_validations?}
-  validates :lastname,  presence: true, if: ->{ :require_validations? || :require_name_validations?}
-  #validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i}, if: :require_validations?
+  validates :firstname, presence: true, if: :require_validations?
+  validates :lastname,  presence: true, if: :require_validations?
   validates :email, presence: true, email: {mode: :strict, require_fqdn: true}, if: :require_validations?
   validates :address1, presence: true, if: :require_address_validations?
   validates :city, presence: true, if: :require_address_validations?
