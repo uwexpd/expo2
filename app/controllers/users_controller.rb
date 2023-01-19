@@ -31,7 +31,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    cookies.delete :auth_token    
+    cookies.delete :auth_token
     @user = User.new(user_params)
     if User.where("email = ? AND type is NULL", params[:user][:person_attributes][:email].strip).take
       flash[:alert] = "This email address is already in use."
