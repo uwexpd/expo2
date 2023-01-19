@@ -1,5 +1,5 @@
 // Init tinyMCE
-tinyMCE.baseURL = '/expo/assets/tinymce/';
+// tinyMCE.baseURL = '/expo/assets/tinymce/';
 
 $(function() {
   tinyMCE.init({
