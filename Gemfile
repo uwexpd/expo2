@@ -40,10 +40,10 @@ gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
 # Connect to UW Student Web Service
 gem 'activeresource', '~> 5.1', '>= 5.1.1'
 
-gem 'mysql2', '~> 0.5.3'
+gem 'mysql2', '0.5.3' # [TODO] 0.5.4 is not working, needed to be installed manually
 gem 'mimemagic', '~> 0.4.3'
 gem 'activerecord-userstamp', github: 'lowjoel/activerecord-userstamp'
-gem 'tinymce-rails'
+gem 'tinymce-rails', '5.10.7' # [TODO] not working with verson 6+
 gem 'will_paginate', '~> 3.1.6'
 gem 'will_paginate-materialize', github: 'harrybournis/will_paginate-materialize'
 
@@ -87,9 +87,8 @@ gem 'multiverse' # Mutliple database
 gem 'carrierwave', '~> 2.0'
 gem 'mini_magick'
 
-gem 'hexapdf' # PDF generation, mauipulating, merging, etc
+gem 'hexapdf', '0.26.2' # PDF generation, mauipulating, merging, etc
 gem 'wicked_pdf' # html to pdf
-
 
 group :production do  
   gem 'omniauth-shibboleth'

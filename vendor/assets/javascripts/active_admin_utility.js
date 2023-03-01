@@ -2,18 +2,13 @@
 // tinyMCE.baseURL = '/expo/assets/tinymce/';
 
 $(function() {
-  tinyMCE.init({
-     selector: '.tinymce',
-   plugins: [
-      'advlist autolink lists link image charmap print preview anchor',
-      'searchreplace visualblocks code fullscreen searchreplace wordcount',
-      'insertdatetime media table paste'
-   ],
-   toolbar: 'insertfile undo redo | cut copy paste searchreplace | styleselect forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link unlink anchor image media | table insertdatetime charmap preview code | hr spellchecker removeformat',  
-   menubar: false,
-   paste_merge_formats: true,
-   browser_spellcheck: true   
-
+   tinymce.init({
+      selector: '.tinymce',
+      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table',
+      toolbar: 'insertfile undo redo | cut copy paste searchreplace | styleselect forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link unlink anchor image media | table insertdatetime charmap preview code | hr spellchecker removeformat',      
+      menubar: false,
+      paste_merge_formats: true,
+      browser_spellcheck: true
    });
 
    // Enable chosen js
@@ -30,12 +25,12 @@ $(function() {
    $('a#toggle_filters').click(function(){ $('div#sidebar').toggle(); $(this).toggleClass('epon') })
 
    $(".select2").select2({
-          width: 'resolve'
+      width: 'resolve'
     });
 
    $(".select2.minimum_input").select2({    
-          placeholder: 'Start entering characters',
-          minimumInputLength: 2    
+      placeholder: 'Start entering characters',
+      minimumInputLength: 2    
     });
 
 });
