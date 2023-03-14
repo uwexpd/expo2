@@ -21,5 +21,4 @@
 //= require highcharts
 //= require chartkick
 //= require_tree ./application
-//= require ./apply/apply
 //= require ./service_learning/service_learnings
