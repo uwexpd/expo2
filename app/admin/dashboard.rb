@@ -43,7 +43,7 @@ ActiveAdmin.register_page "Dashboard" do
 
         if current_user.has_role?(:vicarious_login)
           panel "Vicarious Login" do
-            header_action link_to('Open to Login', {remote: true}, data: { link_toggle: "#vicarious_login"})
+            header_action link_to('Open to Login', '#', data: { link_toggle: "#vicarious_login"})
             render partial: 'admin/base/vicarious_login'
           end
         end

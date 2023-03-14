@@ -1,5 +1,5 @@
 class ApplicationGroupMember < ApplicationRecord
-  #include ActionController::UrlWriter
+  include Rails.application.routes.url_helpers
   stampable
   
   belongs_to :application_for_offering
@@ -15,10 +15,10 @@ class ApplicationGroupMember < ApplicationRecord
   #   def for_event(event); find(:all).select{|e| e.event == event }; end
   # end
 
+  validates :application_for_offering_id, :lastname, :firstname, :email, presence: true
   
-  validates_presence_of :application_for_offering_id
-  validates_presence_of :lastname, :firstname, :email
-  validates_inclusion_of :uw_student, :in => [true, false], :message => "selection must be either true or false"
+  validates :uw_student, inclusion: { in: [true, false], message: "must be either true or false" }
+  
   #validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :unless => proc { |obj| obj.uw_student? }
   validate :valid_uw_netid?
   validate :not_primary_applicant?
@@ -30,7 +30,8 @@ class ApplicationGroupMember < ApplicationRecord
 
   attr_accessor :validate_nominated_mentor
   validate :nominated_mentor_explanation_length, :if => :validate_nominated_mentor?
-  validates_presence_of :nominated_mentor_id, :nominated_mentor_explanation, :if => :validate_nominated_mentor?
+  validates :nominated_mentor_id, :nominated_mentor_explanation, presence: true, if: :validate_nominated_mentor?
+
   def validate_nominated_mentor?; validate_nominated_mentor; end
   def nominated_mentor_explanation_length
     if nominated_mentor_explanation.split.size > 200
@@ -125,7 +126,7 @@ class ApplicationGroupMember < ApplicationRecord
   # Sends a validation email to this group member using the Offering's group_member_validation_email_template. This email includes
   # a link that allows a group member to go in and validate that they are, indeed, a part of the group.
   def send_validation_email
-    e = TemplateMailer.deliver(offering.group_member_validation_email_template.create_email_to(self, validation_link))
+    e = offering.group_member_validation_email_template.create_email_to(self, validation_link).deliver_now
     update_attribute(:validation_email_sent_at, Time.now) if e
     e
   end
@@ -133,7 +134,7 @@ class ApplicationGroupMember < ApplicationRecord
   # Generates a link that can be used to connect to the validation page
   def validation_link
     apply_group_member_validation_url(
-        :host => Rails.configuration.constants[:base_url_host], 
+        :host => Rails.configuration.constants["base_url_host"], 
         :offering => offering,
         :group_member_id => self,
         :token => token.to_s)
@@ -159,15 +160,20 @@ class ApplicationGroupMember < ApplicationRecord
   # the attributes hash from OfferingAdminPhaseTaskCompletionStatus as values. If you just want to reset the cache
   # for a specific set of tasks, pass the task as a parameter.
   def update_task_completion_status_cache!(tasks = nil)
-    self.task_completion_status_cache ||= {}
-    tasks ||= offering.tasks.find(:all, :conditions => "context = 'group_members' AND completion_criteria != ''")
-    tasks = [tasks] unless tasks.is_a?(Array)
+    self.task_completion_status_cache ||= {}    
+    tasks ||= offering.tasks.where("context = 'group_members' AND completion_criteria != ''")
+
+    tasks = tasks.to_a unless tasks.is_a?(Array)
     for task in tasks
-      tcs = task_completion_statuses.find_or_create_by_task_id(task.id)
+      tcs = task_completion_statuses.find_or_initialize_by(task_id: task.id)
       tcs.result = self.instance_eval(task.completion_criteria.to_s)
       tcs.complete = tcs.result == true
       tcs.save
-      self.task_completion_status_cache[task.id] = tcs.attributes
+      # Covert time object to string in attributes in order to be compatible with ruby 1.8
+      tcs_attr = tcs.attributes
+      tcs_attr["created_at"] = tcs_attr["created_at"].to_s if tcs_attr["created_at"]
+      tcs_attr["updated_at"] = tcs_attr["updated_at"].to_s if tcs_attr["updated_at"]
+      self.task_completion_status_cache[task.id] = tcs_attr
     end
     task_completion_status_cache
   end
@@ -184,11 +190,15 @@ class ApplicationGroupMember < ApplicationRecord
   def complete_task(task)
     self.task_completion_status_cache ||= {}
     task = OfferingAdminPhaseTask.find(task) unless task.is_a?(OfferingAdminPhaseTask)
-    tcs = task_completion_statuses.find_or_create_by_task_id(task.id)
+    tcs = task_completion_statuses.find_or_initialize_by(task_id: task.id)
     tcs.result = true
     tcs.complete = true
     tcs.save
-    self.task_completion_status_cache[task.id] = tcs.attributes
+    # Covert time object to string in attributes in order to be compatible with ruby 1.8
+    tcs_attr = tcs.attributes
+    tcs_attr["created_at"] = tcs_attr["created_at"].to_s if tcs_attr["created_at"]
+    tcs_attr["updated_at"] = tcs_attr["updated_at"].to_s if tcs_attr["updated_at"]
+    self.task_completion_status_cache[task.id] = tcs_attr
     tcs
   end
 

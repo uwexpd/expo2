@@ -8,7 +8,7 @@
 
 		<%= text_fields.label(:body, (question.short_title.blank? ? "Please enter your answer here..." : question.short_title))%>
 
-		<%= help_link question %>		
+		<%= help_link question %>
 
 		<%= content_tag('span', "#{question.word_limit} word limit", :class => 'helper-text') if question.word_limit? %>
 

@@ -46,7 +46,7 @@ ActiveAdmin.register_page "Apply" do
     end
 
     def fetch_apps
-      @apps ||= @offering.application_for_offerings
+      @apps ||= @offering.application_for_offerings.sort_by(&:fullname)
     end
 	  
   end 

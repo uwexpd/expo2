@@ -15,7 +15,7 @@
 		<% @application_page = ApplicationPage.find_by(offering_page_id: @page.id, application_for_offering_id:  @user_application.id)
 			if @application_page.started
 				if !@application_page.passes_validations? %>
-					<%= render :partial => "error_messages", :locals => { :errors => @application_page.errors } unless  @user_application.skip_validations %>
+					<%= render :partial => "error_messages", :locals => { :errors => @application_page.errors } unless @user_application.skip_validations %>
 				<% end
 			end
 		%>

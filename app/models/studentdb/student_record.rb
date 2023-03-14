@@ -56,8 +56,8 @@ class StudentRecord < StudentInfo
   
   # Returns true if we are successfully able to find a matching student record for the given UW NetID. It's still possible that
   # the NetID in question could exist, but it doesn't belong to a student with a student record.
-  def self.valid_uw_netid?(netid)
-    !find(:first, :conditions => { :uw_netid => netid }).nil?
+  def self.valid_uw_netid?(netid)    
+    !find_by(uw_netid: netid).nil?
   end
   
   def fullname
