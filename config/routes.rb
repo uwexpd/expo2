@@ -90,9 +90,10 @@ Rails.application.routes.draw do
     get 'apply/:offering/review', to: 'apply#review', constraints: { offering: /\d+/ }
     match 'apply/:offering/submit', to: 'apply#submit', constraints: { offering: /\d+/ }, via: [:post, :put, :patch]
     match 'apply/:offering/files/application_file/file/:id/:filename', to: 'apply#file', via: [:get], as: :apply_file
+    match 'apply/:offering/validate/:group_member_id/:token', to: 'apply#group_member_validation', as: :apply_group_member_validation, via: [:get, :post, :put, :patch]
     get 'mentor/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_map
     get 'mentor/offering/:offering_id/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_offering_map
-    # get 'mentor/:action/:id', to:'mentor#' as: :mentor
+    
 
     # OMSFA Scholarship Sesarch
     resources :scholarships, only: [:show, :index], param: :page_stub

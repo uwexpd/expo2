@@ -19,7 +19,7 @@
 		
 	<h2 id="non_uw">All Other Non-UW Users<%#= link_to "All Other Non-UW Users", {remote: true}, data: { link_toggle: "#external_login"} %></h2>
 
-	<%= submit_tag 'Click to Login', id: 'non_uw_button', remote: true, data: { link_toggle: "#external_login"} %>
+	<%= submit_tag 'Click to Login', id: 'non_uw_button', data: { link_toggle: "#external_login"} %>
 
 	<%= form_tag sessions_path, id: 'external_login', style: 'display:none' do %>
 	  

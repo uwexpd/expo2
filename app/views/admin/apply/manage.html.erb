@@ -44,7 +44,7 @@
 				</li>
 				<% unless @offering.application_for_offerings.awarded.empty? %>
 				<li>
-						<i class='material-icons md-36'>starts</i>
+						<i class='material-icons md-36'>stars</i>
 						<%= link_to "Awardees", admin_apply_awardees_path(@offering) %>
 					<div><strong><%= pluralize @offering.application_for_offerings.awarded.size, "applicant" %></strong> have been awarded.</div>
 				</li>

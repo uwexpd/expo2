@@ -97,13 +97,14 @@ a:hover{
 	clear: both;
 }
 
-span.hightlight{
+span.highlight{
 	padding: 3px 6px;
 }
 
-.hightlight {
+.highlight {
 	background-color: #fdfbce;
 	border: 1px solid #fde496;
+	padding: 8px 12px;
 }
 
 ul.list_style {
@@ -132,6 +133,15 @@ abbr[title="required"]{
 [type="checkbox"] + span:not(.lever) {
 	line-height: 20px;
 }
+
+.material-icons.md-20, .mi.md-20 {
+	font-size: 20px;
+}
+
+.material-icons.md-32, .mi.md-32 {
+	font-size: 32px;
+}
+
 // Align matieral-icons with text
 i.material-icons.align, i.material-icons.bottom_align {
 	vertical-align: bottom;
@@ -144,6 +154,8 @@ i.material-icons.middle_align{
 i.material-icons.top_align, i.material-icons.vertical_top {
 	vertical-align: top;
 }
+
+
 
 // EXPO Header
 #header {
@@ -635,11 +647,12 @@ dl.inline-definitions dd ul li {
 	width: 150%;
 }
 
-p.final_submit {
+.final_submit {
     text-align: center;
     width: 60%;
     font-weight: bold;
     margin: 5px auto;
+    padding-bottom: 2.4rem
 }
 
 /* @group Big Numbers */

@@ -1,4 +1,4 @@
-<div class="input-field col s12" <%= "id='associate_question_#{question.id}'" if OfferingQuestionOption.find_by_associate_question_id(question.id) %>>
+<div class="input-field col s12" <%= "id=associate_question_#{question.id}" if OfferingQuestionOption.where(associate_question_id: question.id) %>>
 	
 	<%= qf.text_field question.attribute_to_update, required: question.required? ? true : false ,class: "validate #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit} %>
 	

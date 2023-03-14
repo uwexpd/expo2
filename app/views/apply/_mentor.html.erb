@@ -6,8 +6,7 @@
 		<%= title %>
 		<% unless  @user_application.submitted? || !@user_application.less_mentors_ok? %>
 			<span class='small light'>
-			<%= link_to "remove", {action: 'update', page: @page.ordering, remove_mentor: mentor.id}, 
-				data: {confirm: "Are you sure?"}, class: 'btn small' unless mentor.invite_email_sent? %></span>
+			<%= link_to "remove", {action: 'update', page: @page.ordering, remove_mentor: mentor.id}, data: {confirm: "Are you sure?"}, class: 'btn small' unless mentor.invite_email_sent? || mentor.primary? %></span>
 		<% end %>
 	</td>
 	
@@ -63,24 +62,25 @@
 				
 				
 				<% unless @offering.mentor_types.empty? %>
-				<ul>
-					<li><label>
-							<%= @offering.mentor_title %> Type:
-							<%= content_tag('em', '*', :class => 'required') %>
-						</label>
-						
-						<div class="question_block">
-						<% @offering.mentor_types.each do |mentor_type| %>
-						  <label>
-							 <%= mf.radio_button :application_mentor_type_id, mentor_type.application_mentor_type_id, {class: "with-gap"} %>
-							 <span><%= mentor_type.title %></span>
-						  </label>
-						  <br>
-						<% end %>
-						</div>
-					</li>
-				</ul>
-				<br>
+				<div class="input-field col s12">										
+					<%= @offering.mentor_title %> Type:
+					<%= content_tag('em', '*', :class => 'required') %>
+						<% if  mentor.primary? && @offering.alternate_stylesheet.include?('symposium') %>
+							<p><label>
+								<%= mf.radio_button :application_mentor_type_id, 1, {class: "with-gap"} %>
+								<span>Faculty</span>
+							</label></p>
+						<% else %>
+							<% @offering.mentor_types.each do |mentor_type| %>
+								<p>
+								  <label>
+									 <%= mf.radio_button :application_mentor_type_id, mentor_type.application_mentor_type_id, {class: "with-gap"} %>
+									 <span><%= mentor_type.title %></span>
+								  </label>
+								</p>
+							<% end %>
+						<% end %>						
+				</div>
 				<% end %>
 							
 				<% if @offering.allow_hard_copy_letters_from_mentors? %>
@@ -101,7 +101,7 @@
 								
 				<% if @offering.allow_early_mentor_submissions? %>
 				<br>				
-				<div id="early_mentor_email_field_<%= mentor.id %>">
+				<div class="input-field col s12" id="early_mentor_email_field_<%= mentor.id %>">
 					To request a letter of support from your <%= @offering.mentor_title %> immediately, please check the box below.  (Once you give early access to your <%= @offering.mentor_title %>, you will not be able to remove them as a <%= @offering.mentor_title %> from your application.)
 						<div class="question_block">
 						  <label>
@@ -114,22 +114,23 @@
 				
 				<% if @offering.ask_applicant_to_waive_mentor_access_right? %>
 				
-					<div class="warning box">The Family Education Rights and Privacy Act of 1974 and its amendments guarantee you access to educational records concerning yourself. However, those writing recommendations and those assessing them may attach more significance to them if it is known that they will retain confidentiality. You are permitted by those laws to voluntarily waive that right of access.</div>
+					<div class="input-field col s12 warning box">The Family Education Rights and Privacy Act of 1974 and its amendments guarantee you access to educational records concerning yourself. However, those writing recommendations and those assessing them may attach more significance to them if it is known that they will retain confidentiality. You are permitted by those laws to voluntarily waive that right of access.</div>
 
 
-					<p>
+					<div class="input-field col s12">
 					Do you wish to waive this right? <%= content_tag('em', '*', :class => 'required') %>
-					 <div class="question_block">
+					  <p>
 						<label>
-							<%= mf.radio_button :waive_access_review_right, true %>
+							<%= mf.radio_button :waive_access_review_right, true, {class: "with-gap"} %>
 							<span>I wish to waive my right for access to review this letter of support from my <%= @offering.mentor_title %>.</span>
 						</label>
-				
-						<label><%= mf.radio_button :waive_access_review_right, "false" %> 
+					  </p>
+					  <p>
+						<label><%= mf.radio_button :waive_access_review_right, "false", {class: "with-gap"} %> 
 							<span>I do not wish to waive my right for access to review this letter of support.</span>
 						</label>
-					 </div>
-					</p>
+					  </p>
+					</div>
 
 				<% end %>
 						

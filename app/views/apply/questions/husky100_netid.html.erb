@@ -1,13 +1,8 @@
-<li>
-	<%= qf.label(question.attribute_to_update, question.question) %>
-	<%= qf.text_field question.attribute_to_update, :size => question.width %> 
-	<%= content_tag('em', '*', :class => 'required') if question.required? %> 
-	<%# unless ApplicationAnswer.find_by_offering_question_id(question.id).answer.blank? %>
-		<%#= link_to "Send notification",
-						{:action => 'update', :page => @page.ordering, :send_to_netid_question => question.id },
-						:confirm => "Are you sure you want to send the notification to this nominated student?", :class => "button" unless @user_application.submitted? %>
-	<%# end %>
-	<%#= hidden_field_tag "send_to_netid_question[#{question.id}]" %>
-	<%= content_tag('p', "#{question.character_limit} character limit", :class => 'question_caption') if question.character_limit? %>
+<div class="input-field col s12">	
+
+	<%= qf.text_field question.attribute_to_update, required: question.required? ? true : false ,class: "validate #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit} %>
+
+	<%= qf.label(question.attribute_to_update, "#{question.question} #{content_tag('abbr', '*', title: "required") if question.required?}".html_safe) %>
+		
 	<%= display_computed_caption(question.caption) if question.caption? %>
-</li>
+</div>

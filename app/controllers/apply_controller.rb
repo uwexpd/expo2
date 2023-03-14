@@ -80,12 +80,10 @@ class ApplyController < ApplicationController
     
     # add a group member if needed
     if params[:add_group_member_button]
-      @group_member = @user_application.group_members.create(params[:group_member])
-      if @group_member.errors.empty?        
+      @group_member = @user_application.group_members.create(group_member_params)
+      if @group_member.errors.empty?
         @group_member.send_validation_email
         @group_member = nil # We clear out the instance variable so it won't show up in the "add new group member" pane
-      else                
-        redirect_to :action => 'page', :page => page and return
       end
     end
     
@@ -124,7 +122,7 @@ class ApplyController < ApplicationController
     unless @user_application.skip_validations
     
       # check if the page passes validation
-      if @user_application.page_passes_validations?(@page.id)
+      if @user_application.page_passes_validations?(@page.id) && !(@group_member && @group_member.errors.any?)
         @user_application.current_page.update_attribute :complete, true #mark page as complete
         passes_validations = true
       end
@@ -178,8 +176,7 @@ class ApplyController < ApplicationController
   def group_member_validation
     @group_member ||= Token.find_object params[:group_member_id], params[:token], false
     @person = @current_user.person
-    raise ExpoException.new("Invalid Link", "That verification link is not valid. Please ask your primary group member to resend a
-                                              verification link to you.") and return unless @group_member
+    raise ExpoException.new("Invalid Link", "That verification link is not valid. Please ask your primary group member to resend a verification link to you.") and return unless @group_member
     @user_application = @group_member.application_for_offering
     
     if request.post?
@@ -189,7 +186,6 @@ class ApplyController < ApplicationController
         @person.require_validations = true
         @person.require_student_validations = true
         if @person.update_attributes(params[:person]) && @group_member.save
-#          render :text => "<h1>Thank you.</h1><p>Your membership in the group has been confirmed and your primary application contact has been notified.</p>", :layout => true
           flash[:notice] = "Thank you for confirming your group membership, #{@person.firstname}!"
           redirect_to :action => "index" and return
         else
@@ -217,30 +213,11 @@ class ApplyController < ApplicationController
       else
         @user_application.set_status "submitted"
       end
-      # Send eamil notification for husky 100 process. TODO: Refactory this in the future and use application mentor to store the nominated students
+      # Send eamil notification for husky 100 process
       unless @offering.questions.where(display_as: 'husky100_netid').blank?
-          sent_student_emails = []
-          @offering.questions.where(display_as: 'husky100_netid').each do |question_id|
-            input_netid = @user_application.get_answer(question_id)
-            if input_netid
-              uwnetid = input_netid.to_s.match(/^(\w+)(@.+)?$/).try(:[], 1)
-              student = Student.find_by_uw_netid(uwnetid)
-              unless student.nil?
-                  template = EmailTemplate.find_by_name("Husky 100: Nominated Student First Notification")
-                  if template
-                      EmailContact.log  student.id, TemplateMailer.deliver(template.create_email_to(student, link = "#{@user_application.person.firstname_first}")), @user_application.current_status
-                      sent_student_emails << student.email
-                  else
-                      flash[:error] = "Can not find the template to send: Husky 100: Nominated Student First Notification."
-                  end
-              end
-            end
-          end
-          flash[:notice] = "A notification email sent to #{sent_student_emails.join(', ')} for husky 100 nomination."
-      end
-      
-      redirect_to :action => 'index' and return
-      
+          send_notification_email
+      end      
+      redirect_to :action => 'index' and return      
     else
       @electronic_signature_error = true if !@user_application.electronic_signature_valid?
       render :action => 'review'
@@ -481,12 +458,38 @@ class ApplyController < ApplicationController
     add_breadcrumb "#{@offering.name} #{@offering.quarter_offered.title rescue nil}", apply_path
   end
 
+  # For Husky 100 nominations specifically
+  def send_notification_email
+    sent_student_emails = []
+          @offering.questions.where(display_as: 'husky100_netid').each do |question|
+            input_netid = @user_application.get_answer(question.id)
+            if input_netid
+              uwnetid = input_netid.to_s.match(/^(\w+)(@.+)?$/).try(:[], 1)
+              student = Student.find_by_uw_netid(uwnetid)
+              unless student.nil?
+                  template = EmailTemplate.find_by_name("Husky 100: Nominated Student First Notification")
+                  if template
+                      EmailContact.log  student.id, template.create_email_to(student, link = "#{@user_application.person.firstname_first}").deliver_now, @user_application.current_status
+                      sent_student_emails << student.email
+                  else
+                      return flash[:error] = "Can not find the template to send: Husky 100: Nominated Student First Notification."
+                  end
+              end
+            end
+          end
+          return flash[:notice] = "A notification email sent to #{sent_student_emails.join(', ')} for husky 100 nomination."
+  end
+
   private
 
   def apply_params
       params.require(:user_application).permit! if params[:user_application]
       # (:project_title, :project_description, :hours_per_week, :project_dates, :other_scholarship_support, :local_or_permanent_address,
       #   person_attributes: [:salutation, :firstname, :lastname, :nickname, :email, :phone, :est_grad_qtr])
+  end
+
+  def group_member_params
+      params.require(:group_member).permit(:firstname, :lastname, :uw_student, :email)    
   end
 
 end

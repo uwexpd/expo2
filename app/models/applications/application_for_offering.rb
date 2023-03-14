@@ -485,7 +485,7 @@ class ApplicationForOffering < ApplicationRecord
       if attributes[:id].blank?
         group_members.build(attributes)
       else
-        group_member = group_members.detect { |m| m.id == group_member_id.to_i }
+        group_member = group_members.detect { |gm| gm.id == group_member_id.to_i }
         group_member.attributes = attributes
       end
     end

@@ -38,13 +38,11 @@ $(document).on('turbolinks:load', function() {
 });
 
 $(document).on("click", "a[data-link-toggle]", function(){ 
-  var obj = $(this).attr('data-link-toggle');
-  link_toggle(obj);
+  var obj=$(this).attr('data-link-toggle');
+  if (Object.keys(obj).length > 0){
+      $(obj).toggle(400);
+   }
 });
-
-function link_toggle(obj){
-  $(obj).toggle();
-}
 
 function toggle_card(obj, display){
   if (display) {
