@@ -1,3 +1,4 @@
-<div id="time_left" class='right'>
+<% float_right ||= true %>
+<div id="time_left" class=<%= 'right' unless float_right == :false %>>
 	<i class="material-icons md-18 uw_purple top_align">alarm</i> You have passed the deadline for submitting this application.
 </div>
