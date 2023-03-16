@@ -620,8 +620,9 @@ form .inline-hints {
 	padding: 8px 16px;
 }
 
-.sherlock-buttons {
-	padding-bottom: 2em;
+ul.sherlock-buttons{
+	margin:0;
+	padding-bottom: 15px;
 }
 
 .sherlock-buttons > li {
@@ -1140,4 +1141,12 @@ li#offering_final_decision_weight_ratio_input label{
 	margin-left: -25px;
 }
 
+
+#title_bar {
+	padding: 12px 16px 12px 16px;
+}
+
+#active_admin_content {
+	padding: 16px 24px 24px 24px
+}
 

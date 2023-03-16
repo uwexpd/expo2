@@ -4,7 +4,7 @@
 
 <div class="input-field col s12">
 
-		<%= text_fields.text_area :body, class: "materialize-textarea validate #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit} %>
+		<%= text_fields.text_area :body, class: "#{'tinymce' if question.use_mce_editor} materialize-textarea validate #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit} %>
 
 		<%= text_fields.label(:body, (question.short_title.blank? ? "Please enter your answer here..." : question.short_title))%>
 

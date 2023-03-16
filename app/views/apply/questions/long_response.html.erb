@@ -2,7 +2,7 @@
 
 <div class="input-field col s12">
 
-	<%= qf.text_area question.attribute_to_update, required: question.required? ? true : false, class: "materialize-textarea validate #{'charcounter' if question.character_limit? }", data: {length: question.character_limit} %>
+	<%= qf.text_area question.attribute_to_update, required: question.required? ? true : false, class: "#{'tinymce' if question.use_mce_editor} materialize-textarea validate #{'charcounter' if question.character_limit? }", data: {length: question.character_limit} %>
 
 	<%= qf.label(question.attribute_to_update, "Please enter your answer here...") %>
 	

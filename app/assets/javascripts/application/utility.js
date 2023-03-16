@@ -8,6 +8,17 @@ $(document).ready(function(){
     });
   });
   // End
+
+  // initate config of tinymce
+  tinymce.init({
+      selector: 'textarea.tinymce',
+      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table',
+      toolbar: 'undo redo | cut copy paste searchreplace | italic subscript superscript charmap | preview hr spellchecker removeformat',      
+      menubar: false,
+      paste_merge_formats: true,
+      browser_spellcheck: true
+   });
+
 });
 
 // Turbolinks fix:

@@ -93,6 +93,7 @@ Rails.application.routes.draw do
     match 'apply/:offering/validate/:group_member_id/:token', to: 'apply#group_member_validation', as: :apply_group_member_validation, via: [:get, :post, :put, :patch]
     get 'mentor/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_map
     get 'mentor/offering/:offering_id/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_offering_map
+    get 'apply/:offering/help/:id', to: 'apply#help', as: :apply_help
     
 
     # OMSFA Scholarship Sesarch
