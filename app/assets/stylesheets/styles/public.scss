@@ -97,14 +97,14 @@ a:hover{
 	clear: both;
 }
 
-span.highlight{
-	padding: 3px 6px;
-}
-
-.highlight {
+.highlight_box {
 	background-color: #fdfbce;
 	border: 1px solid #fde496;
 	padding: 8px 12px;
+}
+
+span.highlight_box{
+	padding: 3px 6px;
 }
 
 ul.list_style {
