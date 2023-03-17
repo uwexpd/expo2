@@ -1,14 +1,23 @@
-<h1>Enter an Invitation Code</h1>
+<% title(@offering.name, (@offering.quarter_offered.title rescue nil)) %>
 
-<p>In order to continue, you must enter an invitation code before you start your application. Please enter the invitation code that you were given to access this application process.</p>
+<div class="card">
+  
+  <%= form_for :code, action: 'enter_code', id: 'enter_code' do |f| %>
+  
+	  <div class="card-content">
+	  	
+		<h4>Enter an Invitation Code</h4>
 
-<div class="left-indent">
-<% form_for :code, :url => url_for(:action => 'enter_code') do |f| %>
+		<p>In order to continue, you must enter an invitation code before you start your application. Please enter the invitation code that you were given to access this application process.</p>
+		
+		<div class="row">
+		  <div class="input-field col s4">
+			<%= text_field_tag :code %>
+			<%= label_tag :code, "Invitation Code:" %>
+			<%= submit_tag "Submit", data: {:disable_with => "Adding..."}, class: 'btn' %>
+		  </div>
+	    </div>
+	  </div>
 
-	<%= label_tag :code, "Invitation Code:" %>
-	<%= text_field_tag :code %>
-
-	<%= f.submit "Submit", :disable_with => 'Validation invitation code...' %>
-
-<% end -%>
+  <% end %>
 </div>

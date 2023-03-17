@@ -19,7 +19,7 @@
 	<!-- <strong><%= @enrolled_service_learning_courses.collect(&:title).join(", ") %></strong> -->
 	</p>
 
-	<p><strong><%= @service_learning_course.title %> has total <span class="highlight"><%= pluralize @service_learning_course.positions.open.size, "position" %></span> open.</strong></p>
+	<p><strong><%= @service_learning_course.title %> has total <span class="highlight_box"><%= pluralize @service_learning_course.positions.open.size, "position" %></span> open.</strong></p>
 </div>
 
 <% if @service_learning_course.finalized? && !@service_learning_course.open? %>

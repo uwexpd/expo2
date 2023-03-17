@@ -90,6 +90,7 @@ For example, to change the default status-tag color: */
 
 .highlight {
 	background: #fef5d4;
+	padding: 10px;
 }
 
 .flash {
@@ -248,7 +249,7 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 
 .logged_in #footer {
 	position: inherit;
-	padding: 30px;
+	padding: 0 30px 30px 30px;
     font-size: 0.9em;
     clear: both;
     text-align: left;

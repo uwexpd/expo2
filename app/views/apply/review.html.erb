@@ -24,7 +24,7 @@
 	<%= form_for @user_application, as: :user_application, url: { action: :submit } do |f| %>	
 
 	  <% unless @offering.disable_signature? %>
-		<div class="row z-depth-2 highlight">
+		<div class="row z-depth-2 highlight_box">
 		  <div class="col s12 digital_signature">
 			<p>By entering my full legal name below, I hereby affirm that the information presented in this application is true and is my work. <%= raw(@offering.final_text) %></p>		  			
 		        <strong>Electronic Signature: </strong>
@@ -48,7 +48,7 @@
 	<% end %>
 
 	<% unless @user_application.user_editable? || @offering.disable_signature? %>
-		<div class="row z-depth-2 highlight">
+		<div class="row z-depth-2 highlight_box">
 		  <div class="col s12 digital_signature">
 			<p>By entering my full legal name below, I hereby affirm that the information presented in this application is true and is my work. <%= raw(@offering.final_text) %></p>
 

@@ -86,6 +86,7 @@ Rails.application.routes.draw do
     match 'apply/:offering/page/:page', to: 'apply#page', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch], as: :apply_page
     match 'apply/:offering/update/:page', to: 'apply#update', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch]
     match 'apply/:offering/cancel', to: 'apply#cancel', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch]
+    match 'apply/:offering/enter_code', to: 'apply#enter_code', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch]
     get 'apply/:offering/cancelled', to: 'apply#cancelled', constraints: { offering: /\d+/ }
     get 'apply/:offering/review', to: 'apply#review', constraints: { offering: /\d+/ }
     match 'apply/:offering/submit', to: 'apply#submit', constraints: { offering: /\d+/ }, via: [:post, :put, :patch]
