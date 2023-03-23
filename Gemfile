@@ -87,7 +87,7 @@ gem 'multiverse' # Mutliple database
 gem 'carrierwave', '~> 2.0'
 gem 'mini_magick'
 
-gem 'hexapdf', '0.26.2' # PDF generation, mauipulating, merging, etc
+gem 'hexapdf', '0.26.2' # PDF generation, manipulation, merging, etc
 gem 'wicked_pdf' # html to pdf
 
 group :production do  

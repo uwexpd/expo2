@@ -2,11 +2,13 @@
 
 <div class="input-field col s12">
 
-	<%= qf.text_area question.attribute_to_update, required: question.required? ? true : false, class: "#{'tinymce' if question.use_mce_editor} materialize-textarea validate #{'charcounter' if question.character_limit? }", data: {length: question.character_limit} %>
+	<%= qf.text_area question.attribute_to_update, required: question.required? ? true : false, class: "#{question.use_mce_editor? ? 'tinymce' : 'materialize-textarea validate'} #{'charcounter' if question.character_limit? }", data: {length: question.character_limit} %>
 
-	<%= qf.label(question.attribute_to_update, "Please enter your answer here...") %>
+	<%= content_tag('span', "", class: 'tinymce_error explanation_box error left') if question.use_mce_editor %>
+
+	<%= qf.label(question.attribute_to_update, "Please enter your answer here...") unless question.use_mce_editor %>
 	
-	<%= content_tag('span', "#{question.word_limit} words limit", :class => 'left helper-text') if question.word_limit? %>
+	<%= content_tag('span', "#{question.word_limit} words limit", :class => 'right helper-text') if question.word_limit? %>
 	
 	<%= display_computed_caption(question.caption) if question.caption? %>
 </div>

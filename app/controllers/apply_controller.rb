@@ -143,8 +143,8 @@ class ApplyController < ApplicationController
 
   def help
     @question = OfferingQuestion.find params[:id]
-    render :text => "That question does not have any help text.", :layout => 'popup' and return if @question.help_text.blank?
-    render :layout => 'popup'
+    render layout: 'popup', text: "That question does not have any help text." and return if @question.help_text.blank?
+    render layout: 'popup'
   end
 
   def review

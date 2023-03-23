@@ -108,10 +108,10 @@ span.heading_inline {
 	font-size: 110%;
 }
 
-#errorExplanation {
-	background: #bec;
-	color: #031;
-	border-color: #8DA;
+.explanation_box, div.questionWithError .input-field {
+	background: #fdd;
+	border-color: #fbb;
+	color: #700;
 	padding: 10px;
 	border: 1px solid;
 	margin-bottom: 10px;
@@ -120,11 +120,9 @@ span.heading_inline {
 	border-radius:5px;
 }
 
-#errorExplanation {
-	background: #fdd;
-	border-color: #fbb;
-	color: #700;
+.explanation_box.error {
 	font-size:smaller;
+	border: none;
 }
 
 div.fieldWithErrors {
@@ -135,6 +133,7 @@ div.fieldWithErrors {
 // div.questionWithError input, div.questionWithError textarea,
 // div.questionWithError select, 
 // div.questionWithError .mceLayout,
+// div.questionWithError .input-field,
 // div.fieldWithErrors input, div.fieldWithErrors textarea,
 // div.fieldWithErrors select
 //  {
@@ -284,4 +283,8 @@ table.application_review li {
 }
 #new_group_member_uw .input-field.inline label {
 	margin-left: -10px;
+}
+
+.apply label {
+	color: #666;
 }
