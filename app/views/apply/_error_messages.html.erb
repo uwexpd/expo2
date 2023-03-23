@@ -1,4 +1,4 @@
-<div class="errorExplanation" id="errorExplanation">
+<div class="explanation_box error">
 	<h6><strong>There are problems with your submission on this page.</strong></h6>
 	<p>Your responses were still saved, but some of them were not valid. You can correct these errors now, or you can 
 		continue to another part of the application and come back later to fix these problems. You will have to correct 
@@ -8,7 +8,7 @@
 		<% unless errors.empty? %>
 			The following fields had problems:</p>
 				<ul>
-				<% errors.full_messages.each do |msg| %>
+				<% errors.messages[:base].each do |msg| %>
 					<li><%= msg %></li>
 				<% end %>
 				</ul>

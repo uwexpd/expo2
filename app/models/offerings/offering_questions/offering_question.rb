@@ -101,7 +101,7 @@ class OfferingQuestion < ApplicationRecord
     else
       page.errors.add(:base, "#{short_question_title} #{message}")
     end
-    # page.errors.add "q#{self.id}", message
+    page.errors.add("q#{self.id}", message)
   end
   
   def add_required_error(page)

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<title><%= content_for?(:title) ? yield(:title) : "EXPD-Online" %></title>
+
+    <%= stylesheet_link_tag    "application" %>    
+    <%= javascript_include_tag "application", 'data-turbolinks-track': 'reload' %>
+    <%= csrf_meta_tags %>
+    <%= favicon_link_tag 'favicon.ico' %>
+	
+</head>
+
+<body class="popup <%= controller.controller_name %> <%= controller.action_name %> <%= Rails.env %>">
+	
+	<div id="header">
+		<% #<a href="javascript:window.print()" id="print_button">Print</a> %>
+		<%= yield :header %>
+	</div>
+
+	<div id="content">
+		<%= yield :layout %>
+
+		<br>
+	</div>
+
+</body>
+</html>
+
+

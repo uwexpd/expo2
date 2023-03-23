@@ -4,13 +4,13 @@
 
 <div class="input-field col s12">
 
-		<%= text_fields.text_area :body, class: "#{'tinymce' if question.use_mce_editor} materialize-textarea validate #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit} %>
+		<%= text_fields.text_area :body, class: "#{question.use_mce_editor? ? 'tinymce' : 'materialize-textarea validate'} #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit} %>
 
-		<%= text_fields.label(:body, (question.short_title.blank? ? "Please enter your answer here..." : question.short_title))%>
+		<%= text_fields.label(:body, (question.short_title.blank? ? "Please enter your answer here..." : question.short_title)) unless question.use_mce_editor %>
 
 		<%= help_link question %>
 
-		<%= content_tag('span', "#{question.word_limit} word limit", :class => 'helper-text') if question.word_limit? %>
+		<%= content_tag('span', "#{question.word_limit} word limit", :class => 'right helper-text') if question.word_limit? %>
 
 		<%= display_computed_caption(question.caption) if question.caption? %>	
 		

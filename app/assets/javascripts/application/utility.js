@@ -9,16 +9,6 @@ $(document).ready(function(){
   });
   // End
 
-  // initate config of tinymce
-  tinymce.init({
-      selector: 'textarea.tinymce',
-      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table',
-      toolbar: 'undo redo | cut copy paste searchreplace | italic subscript superscript charmap | preview hr spellchecker removeformat',      
-      menubar: false,
-      paste_merge_formats: true,
-      browser_spellcheck: true
-   });
-
 });
 
 // Turbolinks fix:
@@ -46,7 +36,39 @@ $(document).on('turbolinks:load', function() {
     }      
   }
 
-});
+  // initate config of tinymce
+  tinymce.init({
+      selector: 'textarea.tinymce',
+      // https://stackoverflow.com/questions/60834085/how-to-make-textarea-filed-mandatory-when-ive-applied-tinymce/66032994#66032994
+      setup: function (editor) {
+        editor.on('change', function () {
+            tinymce.triggerSave();
+            checkSubmit();
+        });
+      },
+      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table',
+      toolbar: 'undo redo | cut copy paste searchreplace | italic subscript superscript charmap | preview hr spellchecker removeformat',      
+      menubar: false,
+      paste_merge_formats: true,
+      browser_spellcheck: true
+  });
+
+  //
+  $(".tinymce_error").hide();
+  $(document).on('click', 'input[type=submit]', checkSubmit);
+    function checkSubmit() {
+      if ($('textarea.tinymce').val().trim().length <= 0) {        
+        $('.tinymce_error').show();
+        $('.tinymce_error').html('Please fill out content in the input box above');
+        return false;
+      }
+      else{        
+        $('.tinymce_error').hide();
+        $('.tinymce_error').html('');   
+      }
+  }
+
+}); // end of turbolinks:load
 
 $(document).on("click", "a[data-link-toggle]", function(){ 
   var obj=$(this).attr('data-link-toggle');
