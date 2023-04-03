@@ -91,7 +91,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 			    f.input :offering_page_id, required: true, as: :select, collection: offering.pages
 			    f.input :question, as: :text, required: true, input_html: {cols:50, rows: 3, style: 'width: 100%'}, hint: 'Specify the "question" here. This could be very short or quite long; there are no restrictions on length.'
 			    f.input :short_title, input_html: {style: 'width: 50%'}, hint: 'EXPO will use the short title to refer to this question in the admin area, and on the Application Review page for students and reviewers. Leave blank to use the full question title for this purpose instead.'
-				f.input :ordering, label: 'Order', as: :select, collection:  (1..page.questions.size+1).to_a, include_blank: false, hint: 'You can also rearrange questions when viewing the page details.'
+				f.input :ordering, label: 'Order', as: :select, collection:  (1..page.questions.collect(&:ordering).compact.max()+1).to_a, include_blank: false, hint: 'You can also rearrange questions when viewing the page details.'
 				f.input :display_as, label: 'Type', required: true, as: :select, collection: OfferingQuestion.display_as_options.collect{|o| [o[:title], o[:name]]}, include_blank: true, hint: 'Determines how this question will be displayed to the student.'
 			  end
 			  f.inputs 'Data Storage' do
