@@ -5,7 +5,7 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 	config.sort_order = 'ordering_asc'
 	config.filters = false
 
-	permit_params :title, :description, :introduction, :hide_in_admin_view, :hide_in_reviewer_view
+	permit_params :title, :description, :introduction, :hide_in_admin_view, :hide_in_reviewer_view, :ordering
 
 	member_action :form_builder, :method => :get do
 

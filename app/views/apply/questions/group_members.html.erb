@@ -59,7 +59,7 @@
 				<% unless @user_application.submitted? %>
 				   <br><%= link_to 'Add another', 'javascript:;', data: { link_toggle: "#new_group_member"}, class: 'btn small' %>
 				   	<br><br>
-					<div id="new_group_member" class="row z-depth-2 highlight" style="display:<%= @group_member.nil? && qf.object.group_members.empty? ? 'none' : 'block' %>">
+					<div id="new_group_member" class="row z-depth-2 highlight_box" style="display:<%= @group_member.nil? && qf.object.group_members.empty? ? 'none' : 'block' %>">
 						<%= render :partial => "apply/new_group_member", :locals => { question:question, :qf => qf } %>
 					</div>
 				<% end %>
