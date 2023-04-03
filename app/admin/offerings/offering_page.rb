@@ -64,11 +64,11 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
         render "admin/offerings/pages/pages", { offering: offering, offering_page: pages }
   	end
 
-	form do |f|
+	form do |f|	  
 	  f.semantic_errors *f.object.errors.keys
 	  f.inputs do
 	    f.input :title, as: :string
-	    f.input :ordering, label: 'Order', as: :select, collection: (1..offering.pages.count+1).to_a.reverse, include_blank: false
+	    f.input :ordering, label: 'Order', as: :select, collection: (1..offering.pages.collect(&:ordering).compact.max()+1).to_a.reverse, include_blank: false
 	    f.input :description, as: :text, :input_html => { rows: 3, style: 'width: 100%'  }
 	    f.input :introduction, :input_html => {  :class => "tinymce", :rows => 5, :style => "width:100%;" }
 	    f.input :hide_in_admin_view, label: 'Hide this page when viewing an application in admin view. (This also hides this page from reviewers)'
