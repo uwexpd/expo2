@@ -238,7 +238,7 @@ class ServiceLearningController < ApplicationController
   
   def check_if_student
     unless @current_user.person.is_a? Student      
-      raise ServiceLearningException.new("You aren't a student.", "In order to registerlfor a community-engaged learninc opportunity, you must be a registered student at the University of Washington.")
+      raise ServiceLearningException.new("You aren't a student.", "In order to registerlfor a community-engaged learninc opportunity, you must be a registered student at the University of Washington. <a href='#{login_as_student_path}'>Click this to try switching to UW student role if exists</a> ")
     end    
   end
   

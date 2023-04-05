@@ -32,9 +32,27 @@ class ApplicationController < ActionController::Base
       session[:user] = session[:original_user]
       session[:original_user] = nil
       session[:vicarious_token] = nil
-      session[:vicarious_user] = nil      
-      # redirect_to :redirect_root
+      session[:vicarious_user] = nil
       redirect_back(fallback_location: root_path)
+  end
+
+  def force_login_as_student
+      user = User.find_by_login_and_identity_type(@current_user.login, 'Student')
+      # remove vicarious login session if needed
+      if vicariously_logged_in?
+        session[:original_user] = nil
+        session[:vicarious_token] = nil
+        session[:vicarious_user] = nil
+      end
+
+      if user
+        @current_user = user
+        session[:user] = @current_user.id
+        flash[:notice] = "You are now logged in as #{user.fullname} with the role of a student."
+      else
+        flash[:alert] = "No student role account associated with the provided NetID was found."
+      end
+      redirect_back(fallback_location: :login)
   end
 
   # Add return_to to session if it's been requested
@@ -115,8 +133,7 @@ class ApplicationController < ActionController::Base
   end
 
   # def redirect_exception(exception)
-  #   flash[:alert] = "EXPO tried to redirect you back to the previous page, but there's no previous 
-  #                    page to redirect you back to. You're going to have to find your own way from here."
+  #   flash[:alert] = "EXPO tried to redirect you back to the previous page, but there's no previous page to redirect you back to. You're going to have to find your own way from here."
   #   redirect_to root_url and return
   # end
 

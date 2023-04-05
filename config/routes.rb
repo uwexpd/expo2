@@ -71,9 +71,8 @@ Rails.application.routes.draw do
     match 'sessions/forgot',  to: 'sessions#forgot', via: [:get, :post], as: :sessions_forgot
     get 'sessions/reset/:user_id/:token', to: 'sessions#reset_password', as: :reset_password
     resources :sessions
-    get 'remove_vicarious_login', :to => 'application#remove_vicarious_login'
-    
-
+    get 'remove_vicarious_login', to: 'application#remove_vicarious_login'
+    get 'login_as_student', to: 'application#force_login_as_student', as: :login_as_student
     # RSVP for events
     get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event
     get 'rsvp/attend/:id', to: 'rsvp#attend', as: :rsvp_attend
