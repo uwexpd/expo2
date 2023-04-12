@@ -12,7 +12,7 @@
 
 	<%= render "shared/error_messages", :target => @user %>
 
-		<table>			
+		<table>
 			<%= fields_for "user[person_attributes]", @user.person do |person_fields| %>
 				<%= render :partial => "shared/person_fields", :object => person_fields %>
 			<% end -%>
