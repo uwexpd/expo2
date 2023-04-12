@@ -8,8 +8,8 @@
 
 <h5>In case we need to get ahold of you...</h5>
 <p>From time to time, we might need to e-mail or call you to get more information. It is important that you check your UW e-mail address (<strong><%= @student.email %></strong>) regularly for updates about your service-learning position.</p><br>
-
-	<%#= error_messages_for :student %>
+	
+  <%= render "shared/error_messages", :target => @student %>
 
 	<div class="row">
 		<div class="col s12">Your e-mail address: <strong><%= @student.email %></strong></div>

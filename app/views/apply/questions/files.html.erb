@@ -25,13 +25,13 @@
 		  	  <i class="material-icons left">file_upload</i>
 			  <span>Replace this File:	</span>
 			  <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
-		  </div>				
+		  </div>
 		<% end %>
 
 		<div class="file-path-wrapper">
 			 <% placeholder = question_file.file_identifier.nil? ? "Upload file" : question_file.file_identifier %>
         	 <input class="file-path validate" type="text" placeholder= <%= placeholder %> >
-    	</div>    	
+    </div>
 
 		<%= hidden_field_tag "user_application[file_attributes][#{question_file.id}][title]", question.short_title.empty? ? question.question : question.short_title %>
 		
