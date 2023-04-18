@@ -6,7 +6,8 @@
     color: #039be5;
 }
 
-.sidebar_nav .collection .collection-item.active {
+.sidebar_nav .collection .collection-item.active, 
+.sidebar_nav .collection li.collection-item.active a{
 	// background-color: #4b2e83;
 	color: #eafaf9;
 }

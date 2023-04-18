@@ -1,13 +1,13 @@
 class MentorController < ApplicationController
-  # before_filter :map_user_to_mentor
   skip_before_action :check_if_contact_info_blank
-  before_action :fetch_offering
-  before_action :apply_alternate_stylesheet
+  before_action :fetch_offering  
+  before_action :apply_alternate_stylesheet  
   before_action :check_if_contact_info_is_current, :except => ['update', 'map']
+  before_action :fetch_breadcrumb
 
   def index
     @person = @current_user.person
-    @mentor_applications = @person.application_mentors
+    @mentor_applications = @person.application_mentors.page(params[:page]).order('id desc')
     @mentor_applications = @mentor_applications.select{|m| m.offering == @offering rescue false} if @offering
     render :action => 'index_abstract_approve' and return if @offering && @offering.mentor_mode == 'abstract_approve'
   end
@@ -19,13 +19,12 @@ class MentorController < ApplicationController
     @mentee_application_record = @person.application_mentors.find params[:id]
     @mentee_application_record.reload
     @mentee_application_record.create_answers_if_needed
-    @mentee_application = ApplicationForOffering.find(@mentee_application_record.application_for_offering.id) #@mentee_application_record.application_for_offering => change to use ApplicationForOffering for solving undefine_method "dynamic_answer_xxxx". It seems a ghost method. TODO: Fix ghost method in ApplicationForOffering model
+    @mentee_application = ApplicationForOffering.find(@mentee_application_record.application_for_offering.id)
     @mentee = @mentee_application.person
     check_if_past_deadline unless @mentee_application_record.responded?
-    if params["mentor"]
- #     @mentee_application_record.letter = params["mentor"]["letter"]
+    if params[:application_mentor]
       @mentee_application_record.require_validations = true
-      if @mentee_application_record.update_attributes(params[:mentor])
+      if @mentee_application_record.update(mentor_letter_params)
         if @mentee_application.submitted?
           if @offering.require_all_mentor_letters_before_complete?
             @mentee_application.set_status "complete" if @mentee_application.all_mentor_letters_received?
@@ -40,19 +39,19 @@ class MentorController < ApplicationController
 #        @mentee_application_record.save!
         flash[:notice] = "Your letter for #{@mentee.fullname} was received. Thank you."
         redirect_to :action => "index"
-      else
-        # render "mentee"
+      else        
+        flash[:error] = "Something went wrong. Please check error message below."
       end
     end
         
     if params['file'] && @mentee_application.mentor_access_ok
-      file_path = File.join(RAILS_ROOT, 'files', @mentee_application.files.find(params[:file]).file.original.url)
+      file_path = File.join(Rails.root, 'files', @mentee_application.files.find(params[:file]).file.original.url)
       send_file file_path unless file_path.nil?
     end
     if params['view'] == 'letter'
-      file_path = File.join(RAILS_ROOT, 'files', @mentee_application_record.letter.original.url)
+      file_path = File.join(Rails.root, 'files', @mentee_application_record.letter.original.url)
       send_file file_path unless file_path.nil?
-    end
+    end    
   end
   
   # Approve Mentee abstract logic: 
@@ -105,14 +104,12 @@ class MentorController < ApplicationController
   def update
     @person = @current_user.person
     if params["person"]
-      @person.attributes = params["person"]
+      @person.attributes = person_params
       @person.contact_info_updated_at = Time.now
       @person.require_validations = true
       if @person.save
         flash[:notice] = "Contact information saved"
-        redirect_to :action => "index"
-      else
-        # render "update"
+        redirect_to :action => "index"      
       end
     end
   end
@@ -129,6 +126,15 @@ class MentorController < ApplicationController
       mentor.save false
     end
     redirect_to :action => 'index'
+  end
+
+  def letter 
+    mentor = ApplicationMentor.find(params[:id])
+    letter_path = "#{Rails.root}/files/application_mentor/letter/#{mentor.id}/#{mentor.letter.filename}"
+    
+    unless letter_path.nil?
+      send_file letter_path, x_sendfile: true
+    end    
   end
   
   protected
@@ -148,8 +154,13 @@ class MentorController < ApplicationController
     
   end
 
+  def fetch_breadcrumb
+    add_breadcrumb "#{@current_user.person.fullname}"
+    add_breadcrumb "Mentor Review", mentor_path
+  end
+
   def apply_alternate_stylesheet
-    if @offering && @offering.alternate_stylesheet && File.exists?(File.join(RAILS_ROOT, 'public', 'stylesheets', "#{@offering.alternate_stylesheet}.css"))
+    if @offering && @offering.alternate_stylesheet && File.exists?(File.join(Rails.root, 'public', 'stylesheets', "#{@offering.alternate_stylesheet}.css"))
       @alternate_stylesheet = @offering.alternate_stylesheet
     end
   end
@@ -159,7 +170,7 @@ class MentorController < ApplicationController
   def check_if_contact_info_is_current
     update_date = @current_user.person.contact_info_updated_at
     if update_date.blank? || Time.now - update_date > 12.months
-      redirect_to :action => "update", :return_to => request.request_uri
+      redirect_to :action => "update", :return_to => request.url
     end
   end
 
@@ -171,6 +182,16 @@ class MentorController < ApplicationController
                                     "If you have questions, contact #{@offering.contact_name} at #{(@offering.contact_email)}
                                     or #{@offering.contact_phone}.")
     end
+  end
+
+  private
+
+  def person_params
+      params.require(:person).permit(:firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip)
+  end
+
+  def mentor_letter_params
+      params.require(:application_mentor).permit(:letter, :letter_content_type, :letter_size, answer_attributes: [:answer])
   end
   
 end

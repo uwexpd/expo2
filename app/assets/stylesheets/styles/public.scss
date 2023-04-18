@@ -36,12 +36,20 @@ a:hover{
 	margin-bottom: 2em;
 }
 
-.gray, .grey, .light {
+.gray, .light {
 	color: gray;
 }
 
 .required {	
-    color: #d45f53;    
+    color: #d45f53;
+}
+
+.red_color {
+	color: #F44336;
+}
+
+.uw_green{
+	color: #4CAF50;
 }
 
 .uw_purple {
@@ -154,8 +162,6 @@ i.material-icons.middle_align{
 i.material-icons.top_align, i.material-icons.vertical_top {
 	vertical-align: top;
 }
-
-
 
 // EXPO Header
 #header {
@@ -754,6 +760,10 @@ dl.big.numbers dd i {
     text-align: center;
 }
 
+.card .actions.text-left {
+    text-align: left;
+}
+
 form ul.error {
 	background-color: #f44336;
 	color: white;
@@ -827,9 +837,36 @@ li.active .collapsible-header .material-icons.iconcollapse {
 	opacity: 0.5;
 }
 
-.welcome-links li li{
+.mentor_main ul li, .welcome-links li li{
 	padding-left: 1em;
     list-style-type: disc;
     margin-left: 2em;
 }
 
+#mentor_contact_info {
+	width: 65%;
+}
+
+#mentor_contact_info label {
+	font-size: 1rem;
+	font-weight: 500;
+	color: #999;
+}
+
+#mentor_contact_info select {
+	border-color:#e5e5e5;
+	margin-bottom: 8px;
+}
+
+#mentor_contact_info input, #mentor_contact_info tr td{
+	font-size:1rem;
+}
+
+#name_fields {
+	margin-top: 1rem;
+}
+
+div.uploaded_letter {	
+	padding: 1.5rem;
+	background: #f7f7f7;
+}

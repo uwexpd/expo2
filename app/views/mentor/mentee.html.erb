@@ -1,0 +1,37 @@
+<% title "#{@offering.mentor_title.pluralize} Review", "View Student" %>
+
+<div class="card content mentor_main">
+<h5>Student: 		
+	<span class="plain">
+		<%= @mentee.fullname %> <%= "(#{@mentee.nickname})" unless @mentee.nickname.blank? %>
+		<% unless (@mentee.sdb.class_standing_description rescue nil).nil? %>
+			<span class="smaller gray"> - <%= @mentee.sdb.class_standing_description %></span>
+		<% end %>
+	</span>
+</h5>
+
+<% unless @mentee_application.group_members.empty? %>
+<h5>Co-Presenters: 	<span class="plain">
+						<%= @mentee_application.group_members.collect(&:fullname).join(", ") %>
+					</span></h5>
+<% end %>
+
+<% unless @mentee_application.project_title.nil? %>						
+<h5>Project Title: 	<span class="plain">
+						<%= strip_tags @mentee_application.project_title %>
+					</span></h5>
+<% end %>				
+<hr>
+
+<% @user_application = @mentee_application # need to use the same instance variable so the partials work %>
+
+<% if params['view'] && @mentee_application.mentor_access_ok %>
+	<%= render :partial => "mentor/application_view/#{params['view']}", :locals => { :student => @mentee } %>
+<% else %>
+	<%= render :partial => "welcome", :locals => { :student => @mentee } %>
+<% end %>
+
+<%#= render :partial => "page_list" if @mentee_application.mentor_access_ok %>
+<% sidebar :sidebar_nav if @mentee_application.mentor_access_ok %>
+
+</div>

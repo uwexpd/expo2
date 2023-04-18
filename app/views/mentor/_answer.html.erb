@@ -1,0 +1,16 @@
+<div class="input-field col s12">
+<%= fields_for "application_mentor[answer_attributes][]", answer do |qf| %>
+	
+	<p><b><%= raw answer.question.question %></b></p>	
+
+	<p class="left-indent">
+		<% if answer.question.display_as == "long_response" %>
+			<%= qf.text_area :answer %>
+		<% else %>
+			<%= qf.text_field :answer, :size => answer.question.size %>
+		<% end -%>
+	</p>	
+
+</div>
+
+<% end -%>

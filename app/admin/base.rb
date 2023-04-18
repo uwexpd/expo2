@@ -5,13 +5,13 @@ ActiveAdmin.register_page "Base" do
 	  skip_before_action :login_required, :only => :remove_vicarious_login, raise: false
 
 	  def vicarious_login
-	    if params[:vicarious_login]
+	    if !params['vicarious_login'].blank?
 	      identity_type = params[:identity_type].blank? ? nil : params[:identity_type]
 	      user = User.find_by_login_and_identity_type(params[:vicarious_login], identity_type)
-	    elsif params[:user_id]
+	    elsif !params['user_id'].blank?
 	      user = User.find(params[:user_id])
 	    else
-	      flash[:error] = "You need to provide either a user ID or a username and identity type."
+	      flash[:alert] = "You need to provide either a user ID or a username and identity type."
 	      return redirect_to root_path
 	    end
 	    if user
@@ -22,7 +22,7 @@ ActiveAdmin.register_page "Base" do
 	      flash[:notice] = "You are now logged in as #{user.fullname}."
 	      return redirect_to root_path
 	    else
-	      flash[:error] = "Could not find the user you requested. Try looking for a different identity type for that user."
+	      flash[:alert] = "Could not find the user you requested. Try looking for a different identity type for that user."
 	      return redirect_to root_path
 	    end
 	  end

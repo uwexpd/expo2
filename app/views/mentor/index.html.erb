@@ -1,0 +1,34 @@
+<% title @offering.nil? ? "Mentor Review" : "#{@offering.mentor_title.pluralize} Review", @person.fullname %>
+<div class="card content">
+<h5>Mentor Review: <small class='gray'>Your Contact Information</small>
+	<span class="heading_inline"><%= link_to "Edit", {action: "update"}, class: 'btn smaller' %></span>
+</h5>
+	<%= render :partial => "contact_info" %>
+<br>
+</div>
+<div class="card content">
+<h5>Your <%= pluralize(@mentor_applications.size, 'Mentee') %> </h5>
+<p>Below you will find a list of students who have listed you as their mentor. For each student, click on the student's name to submit a letter of support for them.</p>
+<div class="table-header"><%= will_paginate @mentor_applications %></div>
+<table class="responsive-table highlight">
+	<tr>
+		<th>Student Name</th>
+		<th>Award</th>
+		<th>Project Title</th>
+		<th>Letter Received</th>
+		<th>Application Status</th>
+	</tr>
+	
+	<%= render :partial => "application_mentor", :collection => @mentor_applications %>
+	
+	<% if @mentor_applications.empty? %>
+	<tr class="empty">
+		<td colspan=5>You are not listed as a mentor for any student applications.</td>
+	</tr>
+	<% end %>
+	
+</table>
+<div class="table-footer">
+  <%= will_paginate @mentor_applications %>
+</div>  
+</div>

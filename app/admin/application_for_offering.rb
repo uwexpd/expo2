@@ -1,4 +1,4 @@
-ActiveAdmin.register ApplicationForOffering, as: 'applications' do
+ActiveAdmin.register ApplicationForOffering, as: 'application' do
   belongs_to :offering  
   actions :all, :except => [:destroy]
   batch_action :destroy, false
@@ -10,8 +10,8 @@ ActiveAdmin.register ApplicationForOffering, as: 'applications' do
   end
 
   show :title => proc{|app|app.person.fullname} do
-    student = applications.person
-    render "admin/applications/application_header", { app: applications, student: student}
+    student = application.person
+    render partial: "application_header", locals: { app: application, student: student}
     div :class => 'tabsview' do
       tabs do
          tab 'Student Info' do
@@ -41,20 +41,17 @@ ActiveAdmin.register ApplicationForOffering, as: 'applications' do
               # row ('Full History'){|app| link_to 'See full student history', admin_student_path(student)}
             end
          end
-         unless applications.offering.other_award_types.empty?
+         unless application.offering.other_award_types.empty?
 	         tab 'Past Applications' do
 
 	         end
 	     end
          tab 'Application Details' do
-           panel '' do
-              pages = applications.pages.reject{|p|p.hide_in_admin_view?}
-              pages.each do |page|
-                h2 "#{page.offering_page.title}"
-                render partial: "admin/applications/question_review",
-                       collection: page.offering_page.questions,
-                       locals: { app: applications }
-              end
+           panel 'Application Details' do           
+              render partial:"question_review", locals: { pages: application.pages.reject{|p|p.hide_in_admin_view?}, application: application }            
+              # render partial: "/apply/page_review",
+              #        collection: application.pages.reject{|p|p.hide_in_admin_view?},
+              #        locals: { links: :false, user_application: application}
            end
          end
 

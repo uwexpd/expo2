@@ -13,10 +13,11 @@
 <% end -%>
 
 <% if show_salutation_field %>
-  <tr>	
-		<td><label for="salutation">Salutation </label></td>	
-		<td><%= person_fields.select :salutation, %w( Mr. Mrs. Ms. Miss Professor Dr. Hon. Rev. ) , {:prompt => true} %>
-			</td>
+  <tr>
+		<td><label for="salutation">Salutation </label></td>
+		<td>
+				<%= person_fields.select :salutation, %w( Mr. Mrs. Ms. Miss Professor Dr. Hon. Rev. ) , {:prompt => true}, class: 'browser-default' %>
+		</td>
 <% end %>
 
 <% if obj.nil? || obj.new_record? || obj.firstname.blank? || obj.lastname.blank?  %>
@@ -33,17 +34,16 @@
 		<td><label for="name">Name</label></td>
 		<td>
 				<%= obj.firstname_first %>
-				<small><%#= link_to_function "(Change #{"my" unless not_self} name)", 
-											"Effect.toggle('name_fields', 'blind', {duration: 0.25})" unless obj.is_a?(Student) %></small>
-			
-				<div id="name_fields" class="box" style="display: none">
-					<p class="small warning">Only change <%= not_self ? "this person's" : "your" %> 
-						name if <%= not_self ? "he or she is" : "you're" %> the same person. <br>
-						<strong>If <%= not_self ? "he or she isn't" : "you aren't" %> <%= obj.firstname_first %>, 
+				<small><%= link_to "(Change #{"my" unless not_self} name)", "javascript:;", data: { link_toggle: "#name_fields"} unless obj.is_a?(Student) %></small>
+
+				<div id="name_fields" class="highlight_box" style="display: none">
+					<i class="material-icons uw_purple middle_align">warning</i>
+					<small>Only change <%= not_self ? "this person's" : "your" %>
+						name if <%= not_self ? "they are" : "you're" %> the same person. <br>
+						<strong>If <%= not_self ? "they aren't" : "you aren't" %> <%= obj.firstname_first %>,
 						then you should <%= not_self ? "create a new account" : link_to("create a new account", signup_path) %>
 						instead.</strong><br>Contact our staff for assistance if you need help.
-					</p>
-					<br>
+					</small>
 					<p>
 					New first name:
 					<%= obj.is_a?(Student) ? obj.formal_firstname : person_fields.text_field(:firstname) %>
@@ -84,8 +84,10 @@
 <% end %>
 
 <% if show.include?(:organization) %>
-	<dt>organization/<br>institution</dt>
-	<dd><%= person_fields.text_field :organization %></dd>
+	<tr>
+		<td><label>organization/<br>institution</label></td>
+		<td><%= person_fields.text_field :organization %></td>
+	</tr>
 <% end %>
 
 <tr>
@@ -101,20 +103,22 @@
 <% end %>
 
 <% if show.include?(:box_number) %>
-	<dt>box number</dt>
-	<dd><%= person_fields.text_field :box_no %></dd>
+	<tr>
+		<td><label>box number</label></td>
+		<td><%= person_fields.text_field :box_no %></td>
+	</tr>
 <% end %>
 
 
 <% if show_address_fields %>
   <tr>
 		<td><label for='address'>Address</label></td>
-		<td><small>Line 1:</small> <%= person_fields.text_field :address1 %>
-			<br><small>Line 2:</small> <%= person_fields.text_field :address2 %>
-			<br><small>Line 3:</small> <%= person_fields.text_field :address3 %>
-			<br><small>City:</small> <%= person_fields.text_field :city, size: 15 %>
-				<small>State:</small> <%= person_fields.select :state, US_STATES, { include_blank: true } %>
-				<small>Zip:</small> <%= person_fields.text_field :zip, size: 10 %></td>
+		<td>Line 1: <%= person_fields.text_field :address1 %>
+			<br>Line 2: <%= person_fields.text_field :address2 %>
+			<br>Line 3: <%= person_fields.text_field :address3 %>
+			<br>City: <%= person_fields.text_field :city, size: 15 %>
+				State: <%= person_fields.select :state, US_STATES, { include_blank: true }, class: 'browser-default' %>
+				Zip: <%= person_fields.text_field :zip, size: 10 %></td>
   </tr>
 <% end %>
 
