@@ -1,14 +1,18 @@
 # An ApplicationForOffering may be sponsored by one or more ApplicationMentors.
 class ApplicationMentor < ApplicationRecord
+  self.per_page = 12
   # include ActionController::UrlWriter
-  include Rails.application.routes.url_helpers
-  stampable
+  include Rails.application.routes.url_helpers  
+
+  stampable  
   belongs_to :application_for_offering
   delegate :offering, :to => :application_for_offering
 
   belongs_to :person
   delegate :address_block, :to => :person
   
+  mount_uploader :letter, LetterUploader
+
   has_many :answers, :class_name => "ApplicationMentorAnswer" do
       def for(offering_mentor_question)
         find_by(offering_mentor_question_id: offering_mentor_question.id)
@@ -27,8 +31,9 @@ class ApplicationMentor < ApplicationRecord
                     :message => "is too big; it must be smaller than 2 MB. Please upload a smaller file.",
                     :allow_nil => true,
                     :if => :require_validations?
-  validates_presence_of :letter, :on => :update, :message => "must be submitted.", :if => :require_validations?
-  # TODO: upgrade to rails 5: validates_format_of :letter, :with => %r{\.(pdf)$}i, :message => "must be uploaded with PDF file.", :if => :require_validations?
+  validates_presence_of :letter, :on => :update, :message => "must be submitted.", if: :require_validations?
+  
+  validate :is_pdf, if: :require_validations?
       
   after_save :send_invite_email_if_needed
 
@@ -56,50 +61,28 @@ class ApplicationMentor < ApplicationRecord
   end  
   
   # acts_as_soft_deletable
-  # upload_column :letter, :root_dir => File.join(RAILS_ROOT, 'files')
-  # 
-  # # Supplies the filename to use when saving this file to the filesystem
-  # def letter_filename(original, ext)
-  #   filename = [id] 
-  #   filename << application_for_offering.person.fullname
-  #   filename << "Mentor-Letter"
-  #   filename << "from"
-  #   filename << person.fullname rescue nil
-  #   filename.join('-').gsub(/[^a-z1-9]+/i,'-') + ".#{ext}"
-  # end
-
-  # upload_column :letter, 
-  #                 :root_dir => File.join(RAILS_ROOT, 'files'), 
-  #                 #:versions => { :original => nil, :pdf => :convert_to_pdf },
-  #                 :versions => { :original => nil, :pdf => :original },
-  #                 :old_files => :keep,
-  #                 :manipulator => UploadColumn::Manipulators::DocumentConverter,
-  #                 :filename => proc { |record, file| record.filename(record, file) },
-  #                 :store_dir => proc{ |record, file| File.join("application_mentor", "letter", record.id.to_s) },
-  #                 :public_filename => proc { |record, file| record.public_filename(record, file) },
-  #                 :fix_file_extensions => true,
-  #                 :get_content_type_from_file_exec => true
-  # 
-    # Supplies the filename to use when saving and retrieving this file to the filesystem
-  def filename(record, file)
-      ext = file.suffix.nil? || file.suffix == :original ? file.extension : file.suffix
-      "#{id.to_s}-Letter.#{ext}"
-  end
-  # 
+ 
   # Supplies the filename to use when sending this file to the user's browser
-  def public_filename(record, file)
-    filename = [id] 
+  def public_filename
+    filename = [id.to_s]
     filename << application_for_offering.person.lastname
     filename << "Mentor Letter"
     filename << "from"
     filename << person.fullname rescue nil
-    ext = file.suffix.nil? || file.suffix == :original ? file.extension : file.suffix
-    filename.join(' ').gsub(/[^a-z0-9 ]+/i,'-') + ".#{ext}"
+    filename.join(' ').gsub(/[^a-z0-9 ]+/i,'-') + ".#{extension}"
   end
+
+  def extension
+    if self.read_attribute(:letter).blank?
+      self.read_attribute(:letter)
+    else
+      File.extname(self.read_attribute(:letter)).downcase.delete('.')      
+    end
+  end
+
   # 
-  def login_link
-    # link = mentor_map_url(:host => Rails.configuration.constants[:base_url_host], :mentor_id => id, :token => token)
-    mentor_offering_map_url(:host => Rails.configuration.constants[:base_url_host], :offering_id => offering.id, :mentor_id => id, :token => token)
+  def login_link    
+    mentor_offering_map_url(:host => Rails.configuration.constants["base_app_url"], :offering_id => offering.id, :mentor_id => id, :token => token)
   end
   #   
   def letter_received?
@@ -115,11 +98,11 @@ class ApplicationMentor < ApplicationRecord
   end
   #   
   def send_thank_you_email(deliver_emails_now = true, status = nil)
-    link = mentor_map_url(:host => Rails.configuration.constants[:base_url_host], :mentor_id => self.id, :token => self.token)
+    link = mentor_map_url(:host => Rails.configuration.constants["base_app_url"], :mentor_id => self.id, :token => self.token)
     email_template = offering.mentor_thank_you_email_template
     unless email_template.nil?
       if deliver_emails_now
-        EmailContact.log person_id, ApplyMailer.deliver_mentor_thank_you(self, email_template, self.email, nil, link)
+        EmailContact.log person_id, ApplyMailer.mentor_thank_you(self, email_template, self.email, nil, link).deliver_now
       else
         EmailQueue.queue mentor.person_id, ApplyMailer.create_mentor_status_update(self, email_template, self.email, nil, link)
       end
@@ -149,7 +132,7 @@ class ApplicationMentor < ApplicationRecord
         academic_dpet = self.academic_department.join(delimiter) rescue self.academic_department
         department_name = academic_department==true ? academic_dpet : person.department_name 
         line = ["#{fp}#{fullname}#{fs}", "#{dp}#{department_name}#{fs}"]
-        line << person.organization unless (person.organization.to_s == Rails.configuration.constants[:university_name] or person.organization.to_s == "UW")
+        line << person.organization unless (person.organization.to_s == Rails.configuration.constants['university_name'] or person.organization.to_s == "UW")
         line = line.compact.delete_if{|x| x.blank?}.join(', ')
       end
       line
@@ -224,7 +207,7 @@ class ApplicationMentor < ApplicationRecord
     end
 
   def answer_for(offering_mentor_question)
-      a = answers.find_or_create_by_offering_mentor_question_id(offering_mentor_question.id)
+      a = answers.find_or_create_by(offering_mentor_question_id: offering_mentor_question.id)
       unless a.valid?
         a.skip_validations = true
         a.save
@@ -376,4 +359,11 @@ class ApplicationMentor < ApplicationRecord
       tcs
   end
 
+  private
+
+  def is_pdf
+    if self.letter? && !self.letter_content_type.in?("application/pdf")  
+      errors.add(:letter, 'must be uploaded with PDF file.')
+    end
+  end
 end

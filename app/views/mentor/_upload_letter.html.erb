@@ -1,0 +1,59 @@
+<div class="row">
+<% letter = @mentee_application_record.letter %>
+<%= form_with model: @mentee_application_record, url: mentee_path do |f| %>
+	
+  <%= render "shared/error_messages", :target => @mentee_application_record %>
+
+<div class="col s12">	
+  <div class='uploaded_letter'>
+		<h5>Upload Your Letter</h5>
+		<p>Please upload your letter of support for this student. <span class="red_color">We only accept PDF files</span></p>
+		<div class="file-field input-field">
+		<% if letter.file.nil? || !@mentee_application_record.errors.empty? %>
+			<div class="btn">
+		  	  <i class="material-icons left">file_upload</i>
+			  <span>Upload your letter:</span>
+			  <%= f.file_field :letter %>
+		    </div>		
+		<% else %>		
+			<div class="btn">
+		  	  <i class="material-icons left">file_upload</i>
+			  <span>Replace this Letter:</span>
+			  <%= f.file_field :letter %>
+		    </div>				
+		<% end %>
+			<div class="file-path-wrapper">
+				 <% placeholder = @mentee_application_record.letter_identifier.nil? ? "Upload file" : @mentee_application_record.letter_identifier %>
+		    	 <input class="file-path validate" type="text" placeholder= <%= placeholder %> >
+			</div>
+
+	  </div>
+
+	  <% unless @mentee_application_record.letter.file.nil? %>
+		 <div>
+		  	<b>Your Letter:</b>
+			  <%= link_to @mentee_application_record.public_filename, mentor_letter_path(@mentee_application_record.id, letter.filename) %>
+			  <i class="material-icons middle_align uw_purple">file_download</i>
+			  <span class='caption'>(<%= @mentee_application_record.letter.content_type + ", " if @mentee_application_record.letter_content_type %><%= number_to_human_size(@mentee_application_record.letter_size) %>)</span>
+		 </div>
+  	<% end %>
+
+  </div>
+</div>
+
+<% if @mentee_application.offering.asks_mentor_questions? %>
+  <div class="col s12">
+		<p>Please take a moment to answer the following additional questions about this student:</p>
+		<p class="gray">Fields marked <em class="required">*</em> are required</p>
+		<%= render :partial => "answer", :collection => @mentee_application_record.answers, :locals => { :f => f } %>
+  </div>
+<% end %>
+
+</div>
+
+<div class='card-action'>	
+	<%= f.submit "Submit and Upload Letter", class:"btn" ,disable_with: "Uploading your letter..." %>	
+</div>
+<% end %>
+
+

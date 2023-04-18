@@ -1,0 +1,20 @@
+
+<p>Please update your contact information below:</p>
+
+<%= form_for @person, url: {action: 'update'} do |f| %>
+
+<%= render "shared/error_messages", :target => @person %>
+
+<table id="mentor_contact_info" class="responsive-table borderless">
+	<%= render :partial => "shared/person_fields", :object => f, :locals => { :show => [:other_department, :organization, :box_number] } %>
+</table>
+
+<div class="actions text-left">
+	<%= f.submit "Save Contact Information", :disable_with => "Updating contacting information...", class:'btn' %>
+
+	<span class='separator'> – or – </span>
+
+	<%= f.submit "Skip and Continue", :disable_with => "Continuing...", class: 'btn' %>
+</div>
+
+<% end %>

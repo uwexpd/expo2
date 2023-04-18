@@ -1,6 +1,9 @@
-<table>
-	<tr class='row'>
-		<th><%= question_review.short_question_title %></th>
+<table class="borderless">
+	<%= render partial: "/apply/page_review",
+               collection: pages,
+               locals: { links: :false, user_application: application, admin_view: true} %>
+	<!-- <tr class='row'>
+		<th><%#= question_review.short_question_title %></th>
 	    <td><%#= eval "app.#{question_review.full_attribute_name}" %></td>
-	</tr>
+	</tr> -->
 </table>	

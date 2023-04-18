@@ -1,0 +1,25 @@
+<table class="responsive-table">
+<tr>
+	<th><h6>Organization and Title</h6></th>
+	<th><h6>Phone and Email</h6></th>
+	<th><h6>Mailing Address</h6></th>
+</tr>
+<tr>	
+	<td>		
+		<%= @person.formal_fullname %>
+		<%= raw "<br>#{@person.title}" unless @person.title.blank? %>
+		<%= raw "<br>#{@person.department_name}" unless @person.department_name.blank? %>
+		<%= raw "<br>#{@person.organization}" unless @person.organization.blank? %>
+	</td>
+
+	<td>		
+		<%= "#{@person.email}" unless @person.email.blank? %>
+		<%= raw "<br>#{@person.phone_formatted}" unless @person.phone.blank? %>
+	</td>
+
+	<td>		
+		<%= raw address_block(@person) %>
+	</td>
+</tr>	
+</table>
+
