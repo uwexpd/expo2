@@ -1,14 +1,23 @@
 class MentorController < ApplicationController
   skip_before_action :check_if_contact_info_blank
-  before_action :fetch_offering  
+  before_action :fetch_offering
   before_action :apply_alternate_stylesheet  
   before_action :check_if_contact_info_is_current, :except => ['update', 'map']
   before_action :fetch_breadcrumb
 
   def index
-    @person = @current_user.person
-    @mentor_applications = @person.application_mentors.page(params[:page]).order('id desc')
-    @mentor_applications = @mentor_applications.select{|m| m.offering == @offering rescue false} if @offering
+    @person = @current_user.person    
+    if params[:offering_id]
+      # @offering = Offering.find(params[:offering_id])
+      @mentor_applications = @person.application_mentors.select{|m| m.offering.id == params[:offering_id].to_i }
+      logger.debug "#{@mentor_applicaitons}"
+      @total_mentees_count = @mentor_applications.size
+    else
+      @total_mentees_count = @person.application_mentors.size
+      @page_number = true
+      @mentor_applications = @person.application_mentors.page(params[:page]).order('id desc')
+    end
+        
     render :action => 'index_abstract_approve' and return if @offering && @offering.mentor_mode == 'abstract_approve'
   end
 
@@ -109,7 +118,7 @@ class MentorController < ApplicationController
       @person.require_validations = true
       if @person.save
         flash[:notice] = "Contact information saved"
-        redirect_to :action => "index"      
+        redirect_to :action => "index"
       end
     end
   end
@@ -123,9 +132,9 @@ class MentorController < ApplicationController
   def map
     if mentor = ApplicationMentor.find_using_token(params[:mentor_id], params[:token])
       mentor.person_id = @current_user.person.id
-      mentor.save false
+      mentor.save(validate: false)
     end
-    redirect_to :action => 'index'
+    redirect_to mentor_offering_path(@offering.id)
   end
 
   def letter 
@@ -144,14 +153,13 @@ class MentorController < ApplicationController
   def map_user_to_mentor
     if params[:mid] && params[:t] && mentor = ApplicationMentor.find_using_token(params[:mid], params[:t])
       mentor.person_id = @current_user.person.id
-      mentor.save false
+      mentor.save(validate: false)
     end
   end
 
   def fetch_offering
     @offering = Offering.find(params[:offering_id]) if params[:offering_id]
-    @offering = @current_user.person.application_mentors.find(params[:id]).application_for_offering.offering if params[:id] rescue nil
-    
+    @offering = @current_user.person.application_mentors.find(params[:id]).application_for_offering.offering if params[:id] rescue nil    
   end
 
   def fetch_breadcrumb
