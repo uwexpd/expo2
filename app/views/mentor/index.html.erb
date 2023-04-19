@@ -7,9 +7,9 @@
 <br>
 </div>
 <div class="card content">
-<h5>Your <%= pluralize(@mentor_applications.size, 'Mentee') %> </h5>
+<h5>Your <%= pluralize(@total_mentees_count, 'Mentee') %> </h5>
 <p>Below you will find a list of students who have listed you as their mentor. For each student, click on the student's name to submit a letter of support for them.</p>
-<div class="table-header"><%= will_paginate @mentor_applications %></div>
+<div class="table-header"><%= will_paginate @mentor_applications if @page_number %></div>
 <table class="responsive-table highlight">
 	<tr>
 		<th>Student Name</th>
@@ -29,6 +29,6 @@
 	
 </table>
 <div class="table-footer">
-  <%= will_paginate @mentor_applications %>
+  <%= will_paginate @mentor_applications if @page_number %>
 </div>  
 </div>

@@ -96,6 +96,7 @@ Rails.application.routes.draw do
     get 'mentor', to: 'mentor#index'
     get 'mentor/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_map
     get 'mentor/offering/:offering_id/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_offering_map
+    get 'mentor/offering/:offering_id', to: 'mentor#index', as: :mentor_offering
     match 'mentor/update', to: 'mentor#update', via: [:get, :post, :put, :patch]
     match 'mentor/mentee/:id', to: 'mentor#mentee', via: [:get, :post, :put, :patch], as: :mentee
     get 'mentor/:id/letter/:filename', to: 'mentor#letter', as: :mentor_letter

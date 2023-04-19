@@ -223,8 +223,6 @@ class ApplicationMentor < ApplicationRecord
   
   def generate_token
     write_attribute :token, random_string(10)
-
-    # @attributes['token'] = random_string(10) #Base64.encode64(Digest::SHA1.digest("#{rand(1<<64)}/#{Time.now.to_f}/#{Process.pid}/#{object_id}"))[0..7]
   end
   
   def random_string( len )
