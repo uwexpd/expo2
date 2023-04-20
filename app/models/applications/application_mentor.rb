@@ -86,7 +86,7 @@ class ApplicationMentor < ApplicationRecord
   end
   #   
   def letter_received?
-    !letter.nil?
+    !letter.file.nil?
   end
   
   def should_destroy?

@@ -351,11 +351,11 @@ class ApplicationForOffering < ApplicationRecord
     if email.send_to == "applicant"
       cc_to_feedback_person = email.cc_to_feedback_person?
       email_object = ApplyMailer.status_update(self, email.email_template, self.person.email, Time.now, 
-          apply_url(host: Rails.configuration.action_mailer.default_url_options[:host],
+          apply_url(host: Rails.configuration.constants["base_url_host"],
                     protocol: 'https', 
                     offering: offering),
           apply_url(
-                    host: Rails.configuration.action_mailer.default_url_options[:host],
+                    host: Rails.configuration.constants["base_url_host"],
                     protocol: 'https',
                     offering: offering) + "/availability",cc_to_feedback_person)
       if deliver_emails_now
