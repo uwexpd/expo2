@@ -3,7 +3,7 @@ class ApplyMailer < ActionMailer::Base
 
   def status_update(application_for_offering, email_template, recipients, sent_at = Time.now, 
                     link = apply_url(
-                        host: Rails.configuration.action_mailer.default_url_options[:host],
+                        host: Rails.configuration.constants["base_url_host"],
                         protocol: 'https', 
                         offering: application_for_offering.offering),
                     availability_link = apply_url(
