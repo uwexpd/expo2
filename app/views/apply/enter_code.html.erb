@@ -8,16 +8,18 @@
 	  	
 		<h4>Enter an Invitation Code</h4>
 
-		<p>In order to continue, you must enter an invitation code before you start your application. Please enter the invitation code that you were given to access this application process.</p>
+		<p><i class="material-icons uw_purple middle_align">info_outline</i> In order to continue, you must enter an invitation code before you start your application. Please enter the invitation code that you were given to access this application process.</p>
 		
 		<div class="row">
 		  <div class="input-field col s4">
-			<%= text_field_tag :code %>
-			<%= label_tag :code, "Invitation Code:" %>
-			<%= submit_tag "Submit", data: {:disable_with => "Adding..."}, class: 'btn' %>
-		  </div>
-	    </div>
+				<%= text_field_tag :code %>
+				<%= label_tag :code, "Invitation Code:" %>
+		  </div>	    
 	  </div>
 
+	  </div>
+	  <div class="card-action">
+	  	<%= submit_tag "Submit", data: {:disable_with => "Adding..."}, class: 'btn' %>
+	  </div>
   <% end %>
 </div>

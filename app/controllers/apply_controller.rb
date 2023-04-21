@@ -393,7 +393,7 @@ class ApplyController < ApplicationController
   
   def fetch_user_applications
     @user_applications = ApplicationForOffering.where(person_id: @current_user.person.id, offering_id: @offering.id)
-    @group_applications = ApplicationGroupMember.where(person_id: @current_user.person.id).select{|a| a.offering == @offering rescue false }
+    @group_applications = ApplicationGroupMember.where(person_id: @current_user.person.id).select{|a| a.offering.id == @offering.id rescue false }
     @application_count = @user_applications.size + @group_applications.size
   end
 
@@ -407,7 +407,7 @@ class ApplyController < ApplicationController
         redirect_to apply_which_url(@offering)
       else
         @user_application = ApplicationForOffering.find session[:application_for_offering_id]
-        raise ExpoException.new("That is not a valid application ID.") and return if @user_application.nil?
+        raise ExpoException.new("That is not a valid application ID.") and return if @user_application.nil?        
         if @user_applications.collect(&:id).include?(@user_application.id)
           @is_group_member = false
         elsif @group_applications.collect(&:application_for_offering).collect(&:id).include?(@user_application.id)
