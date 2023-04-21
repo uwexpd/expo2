@@ -24,8 +24,8 @@ class Offering < ApplicationRecord
            :dependent => :destroy do 
      # Return applications with current_status
      def with_status(status_name)
-       joins(:person, {:current_application_status => :status_type }).
-       where('name=?', status_name.to_s)
+       joins(:person, {:current_application_status => :application_status_type }).
+       where('application_status_types.name=?', status_name.to_s)
      end
      def valid_status
        where('current_application_status_id is not null')

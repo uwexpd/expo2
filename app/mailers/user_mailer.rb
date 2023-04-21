@@ -10,7 +10,7 @@ class UserMailer < ActionMailer::Base
 
   def password_reminder(user, sent_at = Time.now)      
     @user = user
-    @password_reset_link = reset_password_url(user.id, user.token.to_s, host: Rails.configuration.action_mailer.default_url_options[:host], protocol: 'https')
+    @password_reset_link = reset_password_url(user.id, user.token.to_s, host: Rails.configuration.constants["base_url_host"], protocol: 'https')
 
     mail(to: @user.email, 
          subject: 'Password Reminder',
