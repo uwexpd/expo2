@@ -18,7 +18,7 @@
 				<% if audience == :reviewer %>
 					<%= strip_tags(app.project_title) || "(no title)" %>
 				<% else %>
-					<%= link_to  (strip_tags(app.project_title) || "(no title)"),  admin_offering_application_path(offering_id: (audience == :reviewer ? @offering : app.offering_id), id: app.id) %>
+					<%= link_to (strip_tags(app.project_title) || "(no title)"),  admin_offering_application_path(offering_id: (audience == :reviewer ? @offering : app.offering_id), id: app.id) %>
 					<%#= link_to (strip_tags(app.project_title) || "(no title)"), 
 								{:offering => (audience == :reviewer ? @offering : app.offering_id), 
 									:action => 'show', :id => app.id},
