@@ -19,7 +19,7 @@ ActiveAdmin.register Person do
   show do
     tabs do
          tab 'Person Info' do
-            attributes_table do
+            attributes_table title: 'Person Info' do
               row ('Expo Person ID') {|person| person.id }
               row ('Name') {|person| person.fullname }
               row :email

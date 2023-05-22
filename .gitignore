@@ -10,12 +10,13 @@
 .DS_Store
 /.ruby-gemset
 
-# Ignore all logfiles, tempfiles, and files/storage
+# Ignore all logfiles, tempfiles, files/storage, and documentation
 /log/*
 !/log/.keep
 /tmp
 storage/
 /files
+/doc
 
 # Ignore results of `rake assets:precompile`.
 /public/assets/

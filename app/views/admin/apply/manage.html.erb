@@ -3,7 +3,7 @@
 		<div class='content-block apply'>
 			<h1><%= @offering.title %></h1>
 			<table class="admin_phases">
-			<tr>
+			  <tr>
 				<% first = true %>
 				<% for phase in @offering.admin_phases.sort %>
 
@@ -19,7 +19,7 @@
 							 <div class='arrow'></div>"), admin_apply_manage_path(@offering) %>
 					</td>
 				<% end %>
-			</tr>
+			  </tr>
 			</table>
 		</div>
 	</div>

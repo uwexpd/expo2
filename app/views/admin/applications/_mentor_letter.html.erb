@@ -1,0 +1,38 @@
+<% admin_view ||= false %>
+
+<!-- <h2><%#= @offering.mentor_title.pluralize %></h2> -->
+
+<table class="borderless hightlightless">
+
+	<%= render :partial => "admin/applications/mentor", :collection => @app.mentors, :locals => { :admin_view => admin_view } %>
+	
+	<% if @app.mentors.empty? %>
+		<tr class="empty">
+			<td colspan=10>This application does not have any <%= @offering.mentor_title.pluralize %> specified.</td>
+		</tr>
+	<% end %>
+	
+</table>
+<hr><br>
+<div class='content-block'>
+<strong>Mentor Department:</strong>
+<%= @app.mentor_department || "<span class=\"light\">Not yet known</span>".html_safe %>
+
+<% if admin_view %>
+	<small>(<%= link_to 'Override', 'javascript:;', data: { link_toggle: "#mentor_department_form"} %>)</small>
+	
+	<div id="mentor_department_form" class='highlight_box' style="display:none">
+		<%= form_with model: @app, :url => { :action => "update", :id => @app, :tab => 'mentor_letter' } do |f| %>
+	
+			Override mentor department: 
+			<%= f.text_field :mentor_department, size: 50 %>	
+			<%= f.submit "Save", class: 'small' %>
+		<% end %>
+	</div>
+<% end %>
+
+<br><br>
+<%= link_to "<i class='material-icons sub_align md-16'>add</i>Add another #{@offering.mentor_title.downcase}".html_safe, 
+			new_admin_mentor_path(@offering, @app, :return_to => request.url), 
+			:class => "button small" if admin_view %>
+</div>

@@ -35,7 +35,9 @@ Rails.application.routes.draw do
     ActiveAdmin.routes(self)    
     namespace :admin do
       resources :offerings do
-        resources :applications
+        resources :applications do
+          resources :group_members
+        end
         resources :pages do
           resources :questions do
             resources :validations

@@ -88,7 +88,11 @@ class Offering < ApplicationRecord
   has_many :application_categories, :class_name => "OfferingApplicationCategory", :dependent => :destroy
   has_many :location_sections, :class_name => "OfferingLocationSection", :dependent => :destroy
   has_many :dashboard_items, -> { order(:sequence) }, :class_name => "OfferingDashboardItem", :dependent => :destroy
-
+  has_many :sessions, -> {order("identifier") }, class_name: "OfferingSession", dependent: :destroy do
+    def in_group(group); where(session_group: group); end
+    def for_type(type_id); where(offering_application_type_id: type_id); end
+    def for_type_in_group(type_id, group); where(session_group: group, offering_application_type_id: type_id); end
+  end
   has_many :offering_award_types, :dependent => :destroy
   has_many :award_types, :through => :offering_award_types
   belongs_to :activity_type
@@ -426,19 +430,19 @@ class Offering < ApplicationRecord
   # Every offering starts with three default statuses: New, In Progress, and Submitted.
   def create_starting_statuses
     new_status_attributes = { :public_title => "New",
-                              :application_status_type => ApplicationStatusType.find_or_create_by_name("new"),
+                              :application_status_type => ApplicationStatusType.find_or_create_by( name: "new"),
                               :disallow_user_edits => 0,
                               :disallow_all_edits => 0,
                               :allow_application_edits => 1 }
     statuses.create(new_status_attributes)
     in_progress_status_attributes = { :public_title => "In Progress",
-                              :application_status_type => ApplicationStatusType.find_or_create_by_name("in_progress"),
+                              :application_status_type => ApplicationStatusType.find_or_create_by(name: "in_progress"),
                               :disallow_user_edits => 0,
                               :disallow_all_edits => 0,
                               :allow_application_edits => 1 }
     statuses.create(in_progress_status_attributes)
     submitted_status_attributes = { :public_title => "Submitted",
-                              :application_status_type => ApplicationStatusType.find_or_create_by_name("submitted"),
+                              :application_status_type => ApplicationStatusType.find_or_create_by( name: "submitted"),
                               :disallow_user_edits => 1,
                               :disallow_all_edits => 0,
                               :allow_application_edits => 0 }
@@ -488,7 +492,7 @@ class Offering < ApplicationRecord
     application_types.find(:first, :joins => :application_type, :conditions => { "application_types.title" => "Oral Presentation" })
   end  
 
-  # Returns the OfferingApplicationType that is assigned to the "Oral Session" application type.
+  # Returns the OfferingApplicationType that is assigned to the "Visual Arts & Design" application type.
   def visual_arts_application_type
     application_types.find(:first, :joins => :application_type, :conditions => { "application_types.title" => "Visual Arts & Design" })
   end

@@ -320,6 +320,7 @@ GEM
       activesupport (>= 5.2.4)
       i18n
     rchardet (1.8.0)
+    rdoc (6.2.1)
     recaptcha (5.12.3)
       json
     redis (4.8.1)
@@ -367,6 +368,8 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    sdoc (2.6.1)
+      rdoc (>= 5.0)
     secure_headers (6.5.0)
     sentry-rails (5.8.0)
       railties (>= 5.0)
@@ -479,11 +482,13 @@ DEPENDENCIES
   rails (~> 5.2, >= 5.2.4.3)
   rails_autolink
   ransack (~> 2.3, >= 2.3.2)
+  rdoc
   recaptcha
   redis
   rspec-rails
   sanitize
   sass-rails
+  sdoc
   secure_headers
   sentry-rails
   sentry-ruby

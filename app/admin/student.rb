@@ -16,7 +16,7 @@ menu parent: 'Groups'
     div :class => 'tabsview' do
       tabs do
          tab 'Student Info' do
-            attributes_table do
+            attributes_table title: 'Student Info' do
               row ('Class standing') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) }
               row ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) }
               row ('Minor(s)') {|student| raw(student.sdb.minors_list(true, "<br>")) }
@@ -44,10 +44,9 @@ menu parent: 'Groups'
          end
          
          tab "Applications (#{student.application_for_offerings.size})" do
-          panel '' do
+          panel 'Online Application History' do
             div :class => 'content-block' do
-              h3 'Online Application History'
-              hr
+              hr              
               table_for student.application_for_offerings do |app|
                 column ('Created At') {|app| app.created_at.to_s(:short_at_time12)}
                 column ('Offering title') {|app| link_to app.offering.title, admin_apply_manage_path(app.offering) }

@@ -1,0 +1,33 @@
+<% audience ||= :admin %>
+
+<% @app = application if audience == :admin %>
+<%# @student = @app.person %>
+
+<table class='borderless'>
+
+	<% if @app.past_applications.empty? %>
+		<tr class="empty">
+			<td colspan=4>No previous applications found.</td>
+		</tr>
+	<% else %>
+		<% for app in @app.past_applications %>
+		<tr>
+			<td width= '120px' class="grey"><%= raw(relative_timestamp(app.created_at, "<br>")) %></td>
+			<td><%= link_to app.offering.title, admin_apply_manage_path(app.offering) %></td>
+			<td>
+				<% if audience == :reviewer %>
+					<%= strip_tags(app.project_title) || "(no title)" %>
+				<% else %>
+					<%= link_to  (strip_tags(app.project_title) || "(no title)"),  admin_offering_application_path(offering_id: (audience == :reviewer ? @offering : app.offering_id), id: app.id) %>
+					<%#= link_to (strip_tags(app.project_title) || "(no title)"), 
+								{:offering => (audience == :reviewer ? @offering : app.offering_id), 
+									:action => 'show', :id => app.id},
+								:popup => true %>
+				<% end %>
+				</td>
+			<td width='120px'><%= raw (app.awarded? ? "<span class=\"green\"><strong>AWARDED</strong></span>" : app.current_status_name.titleize) rescue "unknown" %></td>
+		</tr>
+		<% end %>
+	<% end %>
+
+</table>
