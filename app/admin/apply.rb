@@ -36,6 +36,20 @@ ActiveAdmin.register_page "Apply" do
       end
     end
 
+    def view
+      @app = ApplicationForOffering.find params[:id]
+
+      if params[:file]
+        file = @app.files.find(params[:file]).file
+        file_path = "#{Rails.root}/files/application_file/file/#{@app.id}/#{file.filename}"
+      elsif params[:mentor]
+        mentor_id = params[:mentor]
+        letter = @app.mentors.find(mentor_id).letter
+        file_path = "#{Rails.root}/files/application_mentor/letter/#{mentor_id}/#{letter.filename}"
+    end
+      send_file(file_path, x_sendfile: true) unless file_path.nil?
+    end
+
   	private
   
     def fetch_offering

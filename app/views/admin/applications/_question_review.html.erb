@@ -1,6 +1,6 @@
 <% @app = application %>
 
-<table class="borderless">
+<table class="borderless highlightless">
 	<%= render partial: "/apply/page_review",
                collection: pages,
                locals: { links: :false, user_application: @app, admin_view: true} %>

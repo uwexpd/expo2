@@ -141,14 +141,24 @@ table.borderless {
 	border-spacing: 0;
 }
 
-.panel_contents table.borderless tr td {
-	border: none;
-}
-
 .panel_contents table.highlightless tbody tr:hover{
 	background-color: #fff;
 }
-.panel_contents table.highlightless tbody tr:hover td{	
+
+.panel_contents table.highlightless tr:hover td{
+	box-shadow: none;
+	border-bottom: 1px solid #efefef;
+}
+
+.panel_contents table.mentor_letter tr td {
+	border: none;
+}
+
+.panel_contents table.mentor_letter tbody tr:hover{
+	background-color: #fff;
+}
+
+.panel_contents table.mentor_letter tr:hover td {	
 	box-shadow: none;
 	border-bottom: none;
 }
@@ -1272,8 +1282,8 @@ dl.inline-definitions dd {
 
 tr.rowset-header td {
 	font-weight: bold;
-	background: #eee !important;
-	border-bottom: 1px solid #aaa;
+	background: #eee;
+	// border-bottom: 1px solid #aaa;
 	color: #333;
 	padding: 5px !important;
 }

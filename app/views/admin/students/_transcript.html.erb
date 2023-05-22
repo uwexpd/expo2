@@ -18,7 +18,7 @@
 		@cum_grade_points = 0
 		 %>
 
-		<table class="transcript" <%= "cellpadding=5 border=1" if print_only %>>
+		<table class="transcript highlightless" <%= "cellpadding=5 border=1" if print_only %>>
 		<%= render :partial => "admin/students/transcript_transfer",
 		 			:collection => transcript.sdb.transfers,
 					:locals => {:print_only => print_only} %>

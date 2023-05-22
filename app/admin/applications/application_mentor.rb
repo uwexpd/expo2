@@ -17,7 +17,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
     # end
     column ('Email') {|mentor| mentor.email }
     column ('Offering') {|mentor| link_to(mentor.offering.title, admin_offering_path(mentor.offering)) if mentor.offering}
-    column ('Application') {|mentor| mentor.application_for_offering.stripped_project_title || "(no title)"}
+    column ('Application') {|mentor| link_to(mentor.application_for_offering.stripped_project_title || "(no title)", admin_offering_application_path(mentor.offering.id, mentor.application_for_offering_id))}
     # column ('Created At') {|mentor| "#{time_ago_in_words mentor.created_at} ago"}
     actions
   end
