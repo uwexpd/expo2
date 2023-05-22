@@ -1,0 +1,56 @@
+<% admin_view ||= false %>
+
+<div class='content-block'>
+<% @app.files.each do |app_file| %>
+
+  <h4><%= app_file.title %>:</h4>	
+  <div class="left-indent"> 	
+	<% unless app_file.file.file.nil? %>
+	  <div class='filename'>
+			<i class="material-icons middle_align uw_purple md-36">picture_as_pdf</i>
+			<%= link_to app_file.public_filename, apply_file_path(@offering, app_file.id, app_file.file_identifier) %>
+				
+			<span class='caption'>(<%= number_to_human_size(app_file.file_size) %>, uploaded <%= relative_timestamp(app_file.updated_at) rescue '(unknown)' %>)
+			</span>
+		</div>
+	<% end %>
+	
+	<% if admin_view %>
+	  <i class="material-icons middle_align uw_purple">upload</i>
+		<%= link_to 'Upload new file', 'javascript:;', data: { link_toggle: "#update_file_form_#{app_file.id}"}, class: 'small' %>
+
+		<div id="update_file_form_<%= app_file.id %>" style="display:none">
+			<%= form_with model: @app, url: { action: 'update', section: 'essay' }, id: @app.id do |f| %>
+
+				<%= fields_for "app[file_attributes][]", app_file do |file_fields| %>
+					<%= file_fields.file_field :file  %>
+				<% end %>
+				<%= f.submit "Upload new file", class: 'small' %>
+			<% end %>
+		</div>
+	<% end %>
+  </div>
+  <br>
+<% end %>
+
+<% if admin_view %>
+<br>
+<%= link_to 'Add new file', 'javascript:;', data: { link_toggle: "#new_file_form"}, class: 'button small' %>
+					
+<div id="new_file_form" style="display:none" class="big-border box">
+	<div class=highlight_box>
+		<h4><i class="material-icons uw_purple">add_circle</i> Add New File</h4>
+		<p>To add a file to this application, give it a title first, and then upload the file after the new title shows above.</p>
+		
+		<%= form_with model: @app, url: { action: 'update', section: 'essay' }, id: @app.id do |f| %>
+
+			<%= fields_for "app[file_attributes][0]", ApplicationFile.new do |file_fields| %>
+				Title: <%= file_fields.text_field :title %>
+			<% end %>			
+			<%= f.submit "Add new file", class: 'small' %>		
+		<% end %>
+	</div>
+</div>
+<% end %>
+
+</div>

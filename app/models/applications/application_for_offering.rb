@@ -857,7 +857,7 @@ class ApplicationForOffering < ApplicationRecord
     return [] if offering.other_award_types.empty?
     offerings_to_include = offering.other_award_types.collect(&:offerings).flatten.uniq.compact
     conditions = "offering_id IN (#{offerings_to_include.collect(&:id).join(",")}) && offering_id != #{offering_id}"
-    all = person.application_for_offerings.find(:all, :conditions => conditions, :include => :statuses)
+    all = person.application_for_offerings.includes(:statuses).where(conditions)
     all.select{|a| a.passed_status?(:complete) rescue false}
   end
 

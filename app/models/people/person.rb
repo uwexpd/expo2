@@ -28,7 +28,7 @@ class Person < ApplicationRecord
   has_many :contact_histories, -> {order('updated_at DESC')}
   has_many :event_staffs
   has_many :event_staff_shifts, :through => :event_staffs, :source => :shift do
-    def for; -> (position) { where('event_staff_position_id = ?', position.id) }; end
+    def for; where(event_staff_position_id: position.id); end
   end
   
   has_many :appointments, :foreign_key => 'staff_person_id' do    
@@ -329,6 +329,30 @@ class Person < ApplicationRecord
     false
   end
 
+  def earned_award?(award_type)
+    awards.include?(award_type)
+  end
+  
+  # Retrieves the award_type objects of awards that this student has earned. This is not a normal association because
+  # awards earned are stored in the +award_ids+ attribute as space-separated ID values instead of proper DB objects.
+  # TODO: Change this to a real association!
+  def awards
+    return [] if award_ids.nil?
+    AwardType.find(award_ids.split)
+  end
+  
+  # Converts the array of award_ids into a space-separated string for storage.
+  def award_ids=(ids)
+    return nil unless ids.is_a?(Hash)
+    self.write_attribute(:award_ids, ids.keys.join(" "))
+  end
+  
+  # Constructs a list of awards based on the "award_ids" field in the person record.
+  def awards_list(join_string = ", ")
+    return "" if awards.empty?
+    awards.collect(&:scholar_title).join(join_string)
+  end
+  
   # Returns true if this person's contact information was updated since the specified time, according to
   # the +contact_info_updated_at+ attribute of this Person.
   def contact_info_updated_since(t)

@@ -1,0 +1,52 @@
+<% admin_view ||= false %>
+
+<tr class='borderless'>	
+	<td width="35%">
+		<span class='left' style='padding-right:0.5rem'>
+			<i class='material-icons uw_purple md-42'>account_box</i><br>
+			<small class='caption'><%= mentor.id %></small>
+		</span>
+		<span class='left'>
+			<%= mentor.fullname %>
+			(<%=  mentor.person.nil? ? "no person record" : link_to("edit", edit_admin_person_path(mentor.person, :return_to => url_for(:action => 'show', :section => nil, :anchor => 'mentor_letter'))) %>)
+			<br><%= mentor.no_email? ? "<span class='error-message'>No e-mail</span>".html_safe : mentor.email %>
+			<%= raw "<br><small class=light>Primary #{@offering.mentor_title}</small>" if mentor.primary? %>
+		</span>
+	</td>
+	
+	<td>
+		<%= raw([mentor.person.title, 
+			 mentor.person.department_name, 
+			 mentor.person.organization].compact.delete_if{|x| x.blank?}.join('<br>')+'<br>') if mentor.person %>
+			
+		<%= raw([
+				("<span class=light>Title:</span> #{mentor.title}" if @offering.ask_for_mentor_title),
+			 	("<span class=light>Relationship:</span> #{mentor.relationship}" if @offering.ask_for_mentor_relationship)
+			].compact.join("<br>")) %>
+	</td>
+
+	<td width="10%">
+		<% if admin_view %>	
+			<%#= link_to 'Options', 'javascript:;', data: { link_toggle: "options_panel_#{mentor.id}"}, class: 'small' %>
+
+			<!-- <div id="options_panel_<%#= mentor.id %>" class="panel" style="display:none"> -->
+				<div>
+				<%= link_to "Edit", 
+							edit_admin_mentor_path(mentor.id, :return_to => request.url) %>
+				<br>
+				<%= link_to "Delete", 
+							admin_mentor_path(mentor.id, :return_to => request.url), 
+							:method => :delete, :confirm => "Are you sure?" %>
+				</div>
+			<!-- </div> -->
+		<% end %>
+		
+	</td>
+</tr>
+
+<tr class='borderless'>
+	<td colspan=4>
+		<%= render "admin/applications/mentor_response", { :mentor => mentor, :admin_view => admin_view } %>
+	</td>
+
+</tr>

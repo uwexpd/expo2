@@ -41,16 +41,16 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 
 	index do
 		column ('#') {|question| question.ordering }
-        column ('Questions') {|question| (link_to question.short_question_title,admin_offering_page_question_path(offering, question.offering_page, question)) + (content_tag(:em, " *", :class => 'required') if question.required?)}
+    column ('Questions') {|question| (link_to question.short_question_title,admin_offering_page_question_path(offering, question.offering_page, question)) + (content_tag(:em, " *", :class => 'required') if question.required?)}
 		column ('Type'){|question| question.display_as.titleize}
-        column ('Data Storage'){|question|
-					if OfferingQuestion::QUESTION_TYPES_NOT_REQUIRING_ATTRIBUTE_TO_UPDATE.include?(question.display_as)
-						content_tag(:span, "n/a", :class => 'light')
-			        elsif question.dynamic_answer?
-						status_tag "dynamic answer", class: 'small'
-					else
-						content_tag(:code, (question.full_attribute_name))
-					end}
+    column ('Data Storage') {|question|
+				if OfferingQuestion::QUESTION_TYPES_NOT_REQUIRING_ATTRIBUTE_TO_UPDATE.include?(question.display_as)
+					content_tag(:span, "n/a", :class => 'light')
+		        elsif question.dynamic_answer?
+					status_tag "dynamic answer", class: 'small'
+				else
+					content_tag(:code, (question.full_attribute_name))
+				end}
 		actions
 	end
 

@@ -1,0 +1,68 @@
+<% offering ||= @offering %>
+<% app ||= @app %>
+
+<blockquote class='mentor_response'>
+
+<ul class="bulletless left-indent">
+
+<% if offering.asks_mentor_questions? %>
+	<% for answer in mentor.answers %>
+		<li><%= answer.question.question %>
+			<br><span class="light"><%= answer.answer %></span>
+		</li>
+	<% end -%>
+<% end -%>
+
+<% if offering.mentor_mode == 'abstract_approve' %>		
+		<li><strong>Approval Response:</strong>
+			<%= raw(mentor.approval_response.blank? ? "<em>No response</em>" : "<span class='highlight'>#{mentor.approval_response.titleize}</span>") %>
+			<%= "<span class='timestamp'>(#{relative_timestamp(mentor.approval_at)})</span>".html_safe if mentor.approval_at %></li>
+		<% unless mentor.approval_comments.blank? %>
+			<li><strong>Comments:</strong> <%= mentor.approval_comments %></li>
+		<% end -%>		
+<% elsif offering.mentor_mode != 'no_interaction' %>
+	<div>
+		<% if mentor.letter.file.nil? %>
+			<em>No mentor letter received</em>
+			<br><%= link_to 'Upload a letter', 'javascript:;', data: { link_toggle: "#update_mentor_form_#{mentor.id}"} if admin_view %>
+		<% else %>		
+			<i class="material-icons middle_align uw_purple md-32">picture_as_pdf</i>
+			<%= link_to mentor.public_filename, mentor_letter_path(@offering, mentor.id, mentor.letter_identifier) %>
+			<span class='caption'>
+				(<%= mentor.letter_content_type << ", " if mentor.letter_content_type %>
+				<%= number_to_human_size(mentor.letter_size) %>)				
+				<% if admin_view%>
+				| <i class="material-icons middle_align uw_purple">upload</i>
+				<%= link_to 'Upload new letter', 'javascript:;', data: { link_toggle: "#update_mentor_form_#{mentor.id}"} %>
+			</span>
+			<% end %>			
+
+		<% end %>
+
+		<p>The student has <%= mentor.waive_access_review_right ? "waived the right to access this mentor letter" : "retained the right to access this mentor letter" %>.</p>
+
+
+		<% if admin_view %>
+			<div id="update_mentor_form_<%= mentor.id %>" style="display:none">
+			  <div class=highlight_box>
+			  	<h4><i class="material-icons uw_purple">add_circle</i> Upload new letter</h4>				
+				<%= form_with model: app, url: { :action => 'update', :id => app} do |f| %>
+
+					<%= fields_for "app[mentor_attributes][#{mentor.id}]", mentor do |mentor_fields| %>
+						<%= mentor_fields.file_field :letter %>
+					<% end %>
+
+					<%= hidden_field_tag :section, "mentor_letter" %>
+					
+					<%= f.submit "Upload new letter", class:'small' %>
+
+				<% end %>
+			  </div>
+			</div>
+		<% end %>
+	</div>
+<% end %>
+
+</ul>
+
+</blockquote>

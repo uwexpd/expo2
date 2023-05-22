@@ -1,4 +1,5 @@
 ActiveAdmin.register ApplicationMentor, as: 'mentor' do 
+  # belongs_to :application_for_offering
   actions :all, :except => [:destroy]
   batch_action :destroy, false
   config.per_page = [30, 50, 100, 200]

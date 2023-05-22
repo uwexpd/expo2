@@ -1,0 +1,42 @@
+<div class='content-block'>
+	<span><%= link_to "<i class='material-icons'>grid_view</i> View all group members".html_safe, admin_offering_application_group_members_path(@offering, @app) %></span>
+	<span class='right'>
+		<%= link_to "Add new group member", new_admin_offering_application_group_member_path(@offering, @app), class: 'button small' %>
+	</span>
+</div>
+<table class="borderless">
+
+	<% for group_member in @app.group_members.valid %>	
+	<tr>
+		<td class="person <%= group_member.verified? ? "verified" : "unverified" %>">
+			<%= group_member.fullname %>
+			<%= raw "<br><small class='small status_tag error'>Unverified</small>" unless group_member.verified? %>
+			<%= raw "<br><small class='small status_tag complete'>Verified</small>" if group_member.verified? %>
+			<%= raw "<small class='small status_tag error'>Unconfirmed</small>" unless group_member.confirmed? %>
+			<%= raw "<small class='small status_tag complete'>Confirmed</small>" if group_member.confirmed? %>
+		</td>
+		<td>
+			<%= group_member.email %>
+			<br><small class="light">Verification e-mail sent 
+								<%= time_ago_in_words group_member.validation_email_sent_at rescue "unknown" %> ago.
+				<%= link_to "Send again", 
+							{:action => 'update', :id => @app, :resend_group_member => group_member.id} %>
+			</small>
+		</td>
+		<td>
+			<%= link_to "Details", admin_offering_application_group_member_path(@offering, @app, group_member.id) %>
+			<br><%= link_to "Edit", edit_admin_offering_application_group_member_path(@offering, @app, group_member.id) %>
+			<br><%= link_to "Remove", admin_offering_application_group_member_path(@offering, @app, group_member.id), method: :delete, data: { confirm:'Are you sure you want to remove this group member?', remote: true} %>
+		</td>
+	</tr>
+	<% end -%>
+	
+	<% if @app.group_members.valid.empty? %>
+	<tr class="empty">
+		<td colspan=3>No group members exist. 
+			<%= link_to "Add one", new_admin_offering_application_group_member_path(@offering, @app) %>.</td>
+	</tr>
+	<% end %>
+	
+</table>
+

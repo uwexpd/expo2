@@ -1,7 +1,6 @@
 # Institution Codes
 class Institution < StudentInfo
   self.table_name = "sys_tbl_02_ed_inst_info"
-#  set_primary_keys :table_type, :table_key
   self.primary_key = :table_key
   
   def <=>(o)
@@ -11,7 +10,7 @@ class Institution < StudentInfo
   def id
     read_attribute(:table_key).to_i
   end
-  
+
   def name
     college_names = {
       "THE EVERGREEN ST COLL" => "The Evergreen State College",

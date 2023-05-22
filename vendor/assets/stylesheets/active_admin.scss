@@ -26,7 +26,6 @@ $am-theme-accent: #b7a57a;
 /* Overriding any non-variable SASS must be done after the fact.
 For example, to change the default status-tag color: */
 
-
 .status_tag {
 	&.ok, &.published, &.complete, &.completed, &.green { background: #8daa92; }
 	&.warn, &.warning, &.orange { background: #e29b20; }
@@ -60,8 +59,18 @@ For example, to change the default status-tag color: */
 	color: #aaaaaa;
 }
 
+.caption {
+	font-size: 80%;
+	color: #999;	
+}
+
 .gray, .grey {
 	color: gray;
+}
+
+.green {
+	// color: green;
+	color: #4CAF50;
 }
 
 .smaller {
@@ -109,12 +118,39 @@ For example, to change the default status-tag color: */
 	text-shadow: 0 1px 1px #C8E6C9;
 }
 
+.left-indent {
+	padding-left: 2rem;
+}
+
+.error-message {
+	color: red;
+	font-weight: bold;
+}
+
+.success-message {
+	color: green;
+	font-weight: bold;
+}
+
 br.clear {
 	clear: both;
 }
 
+
 table.borderless {
 	border-spacing: 0;
+}
+
+.panel_contents table.borderless tr td {
+	border: none;
+}
+
+.panel_contents table.highlightless tbody tr:hover{
+	background-color: #fff;
+}
+.panel_contents table.highlightless tbody tr:hover td{	
+	box-shadow: none;
+	border-bottom: none;
 }
 
 body.active_admin {
@@ -191,6 +227,7 @@ a.button {
 
 a.button.small {
 	line-height: 6px;
+	font-size: smaller;
 }
 
 a.button.add {
@@ -224,6 +261,18 @@ a.button:hover {
 a.action_icon:hover, a .material-icons:hover {
 	opacity: 0.6;
 	text-decoration: none;
+}
+
+i.material-icons.middle_align{
+	vertical-align: middle;
+}
+
+i.material-icons.sub_align{
+	vertical-align: sub;
+}
+
+.material-icons.md-42, .mi.md-42 {
+	font-size: 42px;
 }
 
 .material-icons.md-32, .mi.md-32 {
@@ -840,20 +889,49 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 }
 
 // Admin phase
-.panel_contents table.admin_phases {
+.admin_phases {
 	background: inherit;
 }
 
-.panel_contents table.admin_phases tr:hover {
-	border: none;
-	background: none;
-}
-
-.panel_contents table.admin_phases td {
+.admin_phases td {
 	text-align: center;
-	// color: #b1b1b1;
+	background: #fff;
+	color: #b1b1b1;
 	padding: 5px 5px 0px 15px;
 	border:none;
+}
+
+.admin_phases td.first {
+	// background: none;
+	padding-left: 0;
+}
+
+.admin_phases a {
+	color: #b1b1b1;
+	display: block;
+	padding: 5px 10px 10px 10px;
+	position: relative;	
+}
+
+.admin_phases a:hover {
+	background-color: #d8dfea;	
+	color: #08d;
+	// border: 1px solid #9abadb;
+	// margin: -1px;
+	// border-bottom: none;
+	text-decoration: none;
+}
+
+.admin_phases tr:hover {
+	background: inherit;
+}
+
+.admin_phases td:hover {
+	color: #5f5f5f;
+}
+
+.admin_phases .current a, .admin_phases .current .sequence{
+	color: #006699;
 }
 
 .admin_phases .sequence {
@@ -861,32 +939,6 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 	font-size: 120%;
 	color: #b7d9f8;
 	padding-bottom: 5px;
-}
-
-.panel_contents table.admin_phases td.first {
-	background: none;
-	padding-left: 0;
-}
-
-.panel_contents table.admin_phases a {
-	color: #b1b1b1;
-	display: block;
-	padding: 5px 10px 10px 10px;	
-}
-
-.panel_contents table.admin_phases a:hover {
-	background-color: #d8dfea;
-	border: 1px solid #9abadb;
-	color: #08d;
-	text-decoration: none;
-	// border: 1px solid #9abadb;
-	// margin: -1px;
-	// border-bottom: none;
-	// text-decoration: none;
-}
-
-.panel_contents table.admin_phases #viewing a, .panel_contents table.admin_phases .current a{
-	color: #006699;
 }
 // end admin phase
 
@@ -1159,4 +1211,79 @@ li#offering_final_decision_weight_ratio_input label{
 
 tr.completed td.page_status span.status_tag {
     background-color: #4CAF50;
+}
+
+tr.incomplete td.page_status span.status_tag {
+    background-color: #d45f53;
+}
+
+.content-block .filename {
+	padding-bottom: 1rem;
+}
+
+ul.bulletless {
+    list-style-type: none;
+    // padding: 0;
+}
+
+blockquote.mentor_response {
+	margin: 0;
+	padding: 0;
+}
+
+// dl.inline-definitions {
+// 	margin-top: 2em;
+// }
+
+dl.inline-definitions dt {
+	float: left;
+	margin: 0;
+	font-size: 100%;
+	font-weight: bold;
+	color: #999;
+	margin-left: 20px;
+	display: block;	
+	/*clear: left;*/
+	line-height: 2rem;
+}
+
+dl.inline-definitions dd {
+	margin: 0;
+	margin-bottom: 1em;
+	font-size: 100%;
+	padding: 2px;
+	padding-left: 150px;
+}
+
+.transcript .general-info {
+	border: 1px solid #dadada;
+	background: #f7f7f7;
+	padding: 0 10px;
+	margin-top: 10px;
+}
+
+.transcript .general-info dl {
+	margin-top: 0.35rem;
+}
+
+.transcript .general-info dd {
+	margin-bottom: .5em;
+}
+
+tr.rowset-header td {
+	font-weight: bold;
+	background: #eee !important;
+	border-bottom: 1px solid #aaa;
+	color: #333;
+	padding: 5px !important;
+}
+
+tr.rowset-header td.default td {
+	padding-top: inherit;
+	font-weight: normal;
+}
+
+tr.rowset-header:hover, tr.rowset-header:hover td {
+	background-color: none;
+	box-shadow: none;
 }
