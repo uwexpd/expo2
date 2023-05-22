@@ -90,6 +90,9 @@ gem 'mini_magick'
 gem 'hexapdf', '0.26.2' # PDF generation, manipulation, merging, etc
 gem 'wicked_pdf' # html to pdf
 
+gem 'sdoc'
+gem 'rdoc'
+
 group :production do  
   gem 'omniauth-shibboleth'
 end
@@ -117,7 +120,5 @@ group :development do
   gem 'spring-commands-rspec'  
   #gem 'gas_load_tester'
   gem 'ed25519', '>= 1.2', '< 2.0'
-  gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
-  gem 'sdoc'
-  gem 'rdoc'
+  gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'  
 end
