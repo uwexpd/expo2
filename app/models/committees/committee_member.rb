@@ -134,8 +134,8 @@ class CommitteeMember < ApplicationRecord
   
   # Returns true if this CommitteeMember has a CommitteeMemberQuarter record for the specified quarter.
   def active_for?(q)
-    if cq = CommitteeQuarter.find_by_committee_id_and_quarter_id(committee.id, q.id)
-      cmq = committee_member_quarters.find_or_create_by_committee_quarter_id(cq.id)
+    if cq = CommitteeQuarter.find_by(committee_id: committee.id, quarter_id: q.id)
+      cmq = committee_member_quarters.find_or_create_by(committee_quarter_id: cq.id)
       return cmq.active?
     end
     false
@@ -167,7 +167,7 @@ class CommitteeMember < ApplicationRecord
   def create_committee_member_quarters_if_needed
     if committee
       committee.committee_quarters.each do |committee_quarter|
-        committee_member_quarters.find_or_create_by_committee_quarter_id(committee_quarter.id)
+        committee_member_quarters.find_or_create_by(committee_quarter_id: committee_quarter.id)
       end
     end
   end
@@ -175,7 +175,7 @@ class CommitteeMember < ApplicationRecord
   def create_committee_member_meetings_if_needed
     if committee
       committee.meetings.each do |committee_meeting|
-        committee_member_meetings.find_or_create_by_committee_meeting_id(committee_meeting.id)
+        committee_member_meetings.find_or_create_by(committee_meeting_id: committee_meeting.id)
       end
     end
   end
@@ -213,8 +213,8 @@ class CommitteeMember < ApplicationRecord
   # end
   # 
   def quarter_comment_for(q)
-    if cq = CommitteeQuarter.find_by_committee_id_and_quarter_id(committee.id, q.id)
-      cmq = committee_member_quarters.find_or_create_by_committee_quarter_id(cq.id)
+    if cq = CommitteeQuarter.find_by(committee_id: committee.id, quarter_id: q.id)
+      cmq = committee_member_quarters.find_or_create_by(committee_quarter_id: cq.id)
       return cmq.comment
     end
   end
@@ -271,7 +271,7 @@ class CommitteeMember < ApplicationRecord
                                                     AND context_object_completion_criteria != ''")
       tasks = [tasks] unless tasks.is_a?(Array)
       for task in tasks
-        tcs = task_completion_statuses.find_or_create_by_task_id(task.id)
+        tcs = task_completion_statuses.find_or_create_by(task_id: task.id)
         tcs.result = self.instance_eval("@offering ||= Offering.find(#{task.offering.id}); #{task.context_object_completion_criteria.to_s}")
         tcs.complete = tcs.result == true
         tcs.save
@@ -293,7 +293,7 @@ class CommitteeMember < ApplicationRecord
   def complete_task(task)
     self.task_completion_status_cache ||= {}
     task = OfferingAdminPhaseTask.find(task) unless task.is_a?(OfferingAdminPhaseTask)
-    tcs = task_completion_statuses.find_or_create_by_task_id(task.id)
+    tcs = task_completion_statuses.find_or_create_by(task_id: task.id)
     tcs.result = true
     tcs.complete = true
     tcs.save

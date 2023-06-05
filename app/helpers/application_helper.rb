@@ -99,13 +99,13 @@ module ApplicationHelper
     "<span class=\"separator\"> &ndash; #{text} &ndash; </span>"
   end
 
-  def tooltip(link_text, content, options = {})
-    full_link_text = "#{link_text}"
-    full_link_text << content_tag(:div, content, :class => 'content')
-    options[:class] = options[:class].nil? ? 'tooltip' : "#{options[:class]} tooltip"
-    return link_to(full_link_text, options.delete(:url) || nil, options) if options[:url]
-    content_tag(:a, full_link_text, options)
-  end
+  # def tooltip(link_text, content, options = {})
+  #   full_link_text = "#{link_text}"
+  #   full_link_text << content_tag(:div, content, :class => 'content')
+  #   options[:class] = options[:class].nil? ? 'tooltip' : "#{options[:class]} tooltip"
+  #   return link_to(full_link_text, options.delete(:url) || nil, options) if options[:url]
+  #   content_tag(:a, full_link_text, options)
+  # end
 
   # Tries to produce a human-readable phone number. Strips all non-digits and then feeds to number_to_phone
   def phone_number(number)

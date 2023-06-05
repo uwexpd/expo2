@@ -1,0 +1,67 @@
+<% perspective ||= 'applicant' %>
+
+<tr <%= "class=unavailable" if @offering.uses_scored_review? && !applicant_reviewer.finalized? %>>
+	<td>
+		<% if perspective == 'reviewer' %>
+			<%= link_to applicant_reviewer.application_for_offering.fullname,
+			 			{:controller => 'admin/apply', :action => 'show', :offering => @offering, 
+							:id => applicant_reviewer.application_for_offering},
+						:popup => true %>
+
+		<% elsif !applicant_reviewer.committee_member.nil? %>
+			
+			<%= applicant_reviewer.committee_score? ? "Committee" : applicant_reviewer.fullname %>
+
+		<% else %>
+
+			<%= applicant_reviewer.committee_score? ? "Committee" : applicant_reviewer.fullname %>
+		<% end %>
+		
+		<%= content_tag(:span, applicant_reviewer.committee_member_type.name, :class => 'light') rescue nil %>
+	</td>
+
+	<% if @offering.uses_scored_review? %>
+		<% if applicant_reviewer.started_scoring? %>	
+	
+			<% for review_criterion in @offering.review_criterions.sort %>
+				<td class="center">					
+					<span class="tooltip"><%= applicant_reviewer.get_score(review_criterion) %>
+  						<span class="tooltiptext"><%= simple_format("Comments:<br>" + applicant_reviewer.get_comment(review_criterion)) %></span>
+					</span>					
+					<small class="light">
+						<% if perspective == 'reviewer' %>
+							<%= "/ " + '%.2f' % applicant_reviewer.application_for_offering.average_score(review_criterion) %>
+						<% else %>
+							<%= "/ " + '%.2f' % applicant_reviewer.reviewer_average_score(review_criterion) unless applicant_reviewer.committee_score? || applicant_reviewer.reviewer_average_score(review_criterion).nil? %>
+						<% end %>
+					</small>
+				</td>
+			<% end %>
+			<td class="center">			
+				<span class="tooltip"><%= applicant_reviewer.total_score %>
+					<span class="tooltiptext"><%= simple_format("Comments:<br>" + applicant_reviewer.comments) %></span>
+				</span>
+
+				<small class="light"> 
+					<% if perspective == 'reviewer' %>
+						<%= "/ " + '%.2f' % applicant_reviewer.application_for_offering.average_score %>
+					<% else %>
+						<%= "/ " + '%.2f' % applicant_reviewer.reviewer_total_average_score unless applicant_reviewer.committee_score? %>
+					<% end %>
+				</small>
+			</td>
+			<td>
+				<%#= link_to_remote "<span>#{applicant_reviewer.finalized? ? "Yes" : "No"}</span>",
+									:url => {:action => "toggle_reviewer_finalized", :id => applicant_reviewer.id },
+									:html => {:class => "#{applicant_reviewer.finalized? ? "on" : "off"} switch",
+											  :id => "toggle_reviewer_finalized_button_#{applicant_reviewer.id}"} %>
+			</td>
+
+		<% else %>
+	
+			<td colspan=<%= @offering.review_criterions.size + 2 %> class="light center" style="padding:auto">Not yet reviewed.</td>
+		
+		<% end %>
+	<% end %>
+	
+</tr>

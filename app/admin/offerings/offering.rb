@@ -85,36 +85,38 @@ ActiveAdmin.register Offering do
           render 'features', { offering: offering}
         end
       end
-      tab 'Awards' do
-        f.inputs 'Award Parameteres' do
-          hr
-          f.input :number_of_awards, label: 'Default number', :input_html => { :style => "width:7%;" }, hint: 'Every student starts with this number of awards as default. Use the minimum and maximum below to control whether or not a student can add or remove additional quarters of funding.'
-          f.input :default_award_amount, label: 'Default amount', :input_html => { :style => "width:15%;" }, hint: 'The default amount of funding for each quarter. Staff can decrease or increase individual awards on a case-by-case basis later in the process.'
-          f.input :min_number_of_awards, label: 'Munimun number', :input_html => { :style => "width:7%;" }
-          f.input :max_number_of_awards, label: 'Maximun number', :input_html => { :style => "width:7%;" }
-          f.input :first_eligible_award_quarter_id, as: :select, collection: quarter_select, include_blank: true, hint: 'What is the first eligible quarter that can be selected as an award quarter?'
-          f.input :max_quarters_ahead_for_awards, label: 'Max. quarters ahead ', :input_html => { :style => "width:7%;" }, hint: "How many quarters ahead can the student select as award quarters? Set this to <strong>0</strong> if students can only select the next upcoming quarter. Set this to <strong>1</strong> to let students have a buffer quarter, and so on. Note that students are always allowed to skip summer quarter.".html_safe
-          f.input :award_basis, as: :select, collection: ["review", "interview", "final"], hint: "Sets the basis that the system should use for determining whether or not an applicant has been 'awarded.' Unlike some systems, there is not a simple 'awarded' flag that can be set on an applicant record. Instead, the system calculates the applicant's award status on-the-fly based on this value. For example, if this is set to 'interview,' then EXPO will look at the interview committee's decision to determine if the applicant was awarded."
-          columns do
-            column max_width: "50px", min_width: "50px" do
-              status_tag "Review", style: "margin-top:3rem;"
-            end
-            column do
-              f.input :final_decision_weight_ratio
-            end
-            column do
-              status_tag "Interview", style: "margin-top:3rem; margin-left: -1rem"
-            end
-          end
-          para "Sets the weight ratio to use when determining combined scores for the 'final decision' process. This is only used when the review committee or interview committee is not the final decision-maker in the process. This value should be a decimal ratio value weighting the review committee score to the interview committee score. For example, a value here of '0.30' will make weight the computed scores 30% to the review committee score and 70% to the interview committee score. Defaults to 0.50 (50/50 even split).", class: 'caption'
-          end
-
-        f.inputs 'Award Approval Workflow Users' do
+      if offering.uses_awards?
+        tab 'Awards' do
+          f.inputs 'Award Parameteres' do
             hr
-            admin_users = User.admin.pluck(:login, :id)
-            f.input :dean_approver_id, label: 'Dean', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}
-            f.input :financial_aid_approver_id, label: 'Financial aid', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}
-            f.input :disbersement_approver_id, label: 'Disbersement', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}
+            f.input :number_of_awards, label: 'Default number', :input_html => { :style => "width:7%;" }, hint: 'Every student starts with this number of awards as default. Use the minimum and maximum below to control whether or not a student can add or remove additional quarters of funding.'
+            f.input :default_award_amount, label: 'Default amount', :input_html => { :style => "width:15%;" }, hint: 'The default amount of funding for each quarter. Staff can decrease or increase individual awards on a case-by-case basis later in the process.'
+            f.input :min_number_of_awards, label: 'Munimun number', :input_html => { :style => "width:7%;" }
+            f.input :max_number_of_awards, label: 'Maximun number', :input_html => { :style => "width:7%;" }
+            f.input :first_eligible_award_quarter_id, as: :select, collection: quarter_select, include_blank: true, hint: 'What is the first eligible quarter that can be selected as an award quarter?'
+            f.input :max_quarters_ahead_for_awards, label: 'Max. quarters ahead ', :input_html => { :style => "width:7%;" }, hint: "How many quarters ahead can the student select as award quarters? Set this to <strong>0</strong> if students can only select the next upcoming quarter. Set this to <strong>1</strong> to let students have a buffer quarter, and so on. Note that students are always allowed to skip summer quarter.".html_safe
+            f.input :award_basis, as: :select, collection: ["review", "interview", "final"], hint: "Sets the basis that the system should use for determining whether or not an applicant has been 'awarded.' Unlike some systems, there is not a simple 'awarded' flag that can be set on an applicant record. Instead, the system calculates the applicant's award status on-the-fly based on this value. For example, if this is set to 'interview,' then EXPO will look at the interview committee's decision to determine if the applicant was awarded."
+            columns do
+              column max_width: "50px", min_width: "50px" do
+                status_tag "Review", style: "margin-top:3rem;"
+              end
+              column do
+                f.input :final_decision_weight_ratio
+              end
+              column do
+                status_tag "Interview", style: "margin-top:3rem; margin-left: -1rem"
+              end
+            end
+            para "Sets the weight ratio to use when determining combined scores for the 'final decision' process. This is only used when the review committee or interview committee is not the final decision-maker in the process. This value should be a decimal ratio value weighting the review committee score to the interview committee score. For example, a value here of '0.30' will make weight the computed scores 30% to the review committee score and 70% to the interview committee score. Defaults to 0.50 (50/50 even split).", class: 'caption'
+            end
+
+          f.inputs 'Award Approval Workflow Users' do
+              hr
+              admin_users = User.admin.pluck(:login, :id)
+              f.input :dean_approver_id, label: 'Dean', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}
+              f.input :financial_aid_approver_id, label: 'Financial aid', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}
+              f.input :disbersement_approver_id, label: 'Disbersement', as: :select, collection: admin_users, include_blank: true, input_html: { class: "select2 minimum_input", style: "width: 30%"}
+          end
         end
       end
       tab 'Applicants' do
@@ -134,53 +136,55 @@ ActiveAdmin.register Offering do
           end
         end
       end
-      tab 'Mentors' do
-        f.inputs 'Mentor' do
-        hr
-          f.input :max_number_of_mentors, label: 'Maximun', input_html: { style: "width:7%;"}, hint: 'Students cannot have more mentors than this.'
-          f.input :min_number_of_mentors, label: 'Maximun', input_html: { style: "width:7%;"}, hint: 'Students cannot have less mentors than this. If students can only have a specific number of mentors (e.g., one mentor), set both the minimum and maximum to the same value.'
-          f.input :mentor_deadline, as: :datetime_picker, input_html: { style: "width:50%;"}, hint: 'Specify a time by which mentors should complete their task (as defined by the Mentor Mode, below). This is blank by default and has no binding effect unless the "Deny mentor access after mentor deadline" checkbox is marked below. Otherwise, this is just used to provide an informational deadline for mentors when they log in.'
-          f.input :deny_mentor_access_after_mentor_deadline, as: :boolean, hint: 'If this box is checked, mentors cannot get in to the mentor interface after the deadline defined above. If you leave this box unchecked, mentors can still get in after the deadline.'
-          f.input :allow_hard_copy_letters_from_mentors, as: :boolean, hint: 'By default, we expect mentors to upload their letters using our online form. If your application process demands that mentors be allowed to submit letters in a different form, check this box. Applicants will be presented with a check box that says: "If your mentor cannot access the Internet and will need to submit a hard copy letter, please check here."'
-          f.input :allow_early_mentor_submissions, as: :boolean, hint: 'If this box is checked, applicants can choose to request a letter from their mentor before they have submitted their application. By default, mentors are not notified to submit a letter until after the application is submitted. If an applicant chooses to invite a mentor to submit early (even if the mentor does not submit until later), the applicant is not allowed to remove that mentor from their application.'
-          f.input :require_all_mentor_letters_before_complete, as: :boolean, hint: 'If this box is unchecked, the system will consider an application complete as soon as just one mentor submits a letter or approves the application.'
-          f.input :mentor_mode, as: :select, collection: ["abstract_approve", "no_interaction"], include_blank: "default", hint: "<strong>default:</strong> Mentors are asked to submit a letter of support through the online system. <strong>abstract_approve:</strong> Mentors approve the student's abstract instead of submitting a letter. <strong>no_interaction:</strong> Mentors do not interact with the online system (i.e., mentors are involved in a separate process, or only included on the application for informational purposes).".html_safe
-          f.input :alternate_mentor_title, input_html: {style: 'width:50%'}, hint: 'If you call your mentors something else (e.g., "Letter Writers") enter the singular form of the alternate title here (e.g., "Letter Writer").'
-        end
+      if offering.uses_mentors?
+        tab 'Mentors' do
+          f.inputs 'Mentor' do
+          hr
+            f.input :max_number_of_mentors, label: 'Maximun', input_html: { style: "width:7%;"}, hint: 'Students cannot have more mentors than this.'
+            f.input :min_number_of_mentors, label: 'Maximun', input_html: { style: "width:7%;"}, hint: 'Students cannot have less mentors than this. If students can only have a specific number of mentors (e.g., one mentor), set both the minimum and maximum to the same value.'
+            f.input :mentor_deadline, as: :datetime_picker, input_html: { style: "width:50%;"}, hint: 'Specify a time by which mentors should complete their task (as defined by the Mentor Mode, below). This is blank by default and has no binding effect unless the "Deny mentor access after mentor deadline" checkbox is marked below. Otherwise, this is just used to provide an informational deadline for mentors when they log in.'
+            f.input :deny_mentor_access_after_mentor_deadline, as: :boolean, hint: 'If this box is checked, mentors cannot get in to the mentor interface after the deadline defined above. If you leave this box unchecked, mentors can still get in after the deadline.'
+            f.input :allow_hard_copy_letters_from_mentors, as: :boolean, hint: 'By default, we expect mentors to upload their letters using our online form. If your application process demands that mentors be allowed to submit letters in a different form, check this box. Applicants will be presented with a check box that says: "If your mentor cannot access the Internet and will need to submit a hard copy letter, please check here."'
+            f.input :allow_early_mentor_submissions, as: :boolean, hint: 'If this box is checked, applicants can choose to request a letter from their mentor before they have submitted their application. By default, mentors are not notified to submit a letter until after the application is submitted. If an applicant chooses to invite a mentor to submit early (even if the mentor does not submit until later), the applicant is not allowed to remove that mentor from their application.'
+            f.input :require_all_mentor_letters_before_complete, as: :boolean, hint: 'If this box is unchecked, the system will consider an application complete as soon as just one mentor submits a letter or approves the application.'
+            f.input :mentor_mode, as: :select, collection: ["abstract_approve", "no_interaction"], include_blank: "default", hint: "<strong>default:</strong> Mentors are asked to submit a letter of support through the online system. <strong>abstract_approve:</strong> Mentors approve the student's abstract instead of submitting a letter. <strong>no_interaction:</strong> Mentors do not interact with the online system (i.e., mentors are involved in a separate process, or only included on the application for informational purposes).".html_safe
+            f.input :alternate_mentor_title, input_html: {style: 'width:50%'}, hint: 'If you call your mentors something else (e.g., "Letter Writers") enter the singular form of the alternate title here (e.g., "Letter Writer").'
+          end
 
-        f.inputs 'E-mail Templates' do
-        hr
-          f.input :early_mentor_invite_email_template_id, label: 'Early Invite', as: :select, collection:email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}, hint: "Sent to a mentor before an applicant has submitted their application."
-          f.input :mentor_thank_you_email_template_id, label: 'Thank you', as: :select, collection: email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}, hint: "Sent to every mentor after they submits their letter."
-        end
+          f.inputs 'E-mail Templates' do
+          hr
+            f.input :early_mentor_invite_email_template_id, label: 'Early Invite', as: :select, collection:email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}, hint: "Sent to a mentor before an applicant has submitted their application."
+            f.input :mentor_thank_you_email_template_id, label: 'Thank you', as: :select, collection: email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}, hint: "Sent to every mentor after they submits their letter."
+          end
 
-        f.inputs 'Mentor Instructions' do
-        hr
-          f.input :mentor_instructions, input_html: { class: "tinymce", rows: 15 }
-          codes = %w(waived_right_note released_access_note firstname lastname his_her he_she)
-          div "Valid placeholder codes: ", class: 'label' do
-            codes.each do |code|
-              span code, class: 'placeholder_text'
+          f.inputs 'Mentor Instructions' do
+          hr
+            f.input :mentor_instructions, input_html: { class: "tinymce", rows: 15 }
+            codes = %w(waived_right_note released_access_note firstname lastname his_her he_she)
+            div "Valid placeholder codes: ", class: 'label' do
+              codes.each do |code|
+                span code, class: 'placeholder_text'
+              end
             end
           end
-        end
 
-        f.inputs 'Mentor Types' do
-        hr
-          f.has_many :mentor_types, allow_destroy: true do |mentor_type|
-              mentor_type.input :application_mentor_type_id, as: :select, collection: ApplicationMentorType.all, :prompt => "Choose a mentor type"
-              mentor_type.input :meets_minimum_qualification, as: :boolean
+          f.inputs 'Mentor Types' do
+          hr
+            f.has_many :mentor_types, allow_destroy: true do |mentor_type|
+                mentor_type.input :application_mentor_type_id, as: :select, collection: ApplicationMentorType.all, :prompt => "Choose a mentor type"
+                mentor_type.input :meets_minimum_qualification, as: :boolean
+            end
           end
-        end
 
-        f.inputs 'Mentor Questions' do
-        hr
-          f.has_many :mentor_questions, allow_destroy: true do |mentor_question|
-              mentor_question.input :question, :input_html => { class: "tinymce", rows: 5, style: 'width: 70%' }
-              mentor_question.input :required, as: :boolean
-              mentor_question.input :must_be_number, as: :boolean
-              mentor_question.input :display_as, as: :select, collection: ['short_response', 'long_response'], include_blank: false
-              mentor_question.input :size, label: 'field input size', input_html: { style: 'width: 30%'}
+          f.inputs 'Mentor Questions' do
+          hr
+            f.has_many :mentor_questions, allow_destroy: true do |mentor_question|
+                mentor_question.input :question, :input_html => { class: "tinymce", rows: 5, style: 'width: 70%' }
+                mentor_question.input :required, as: :boolean
+                mentor_question.input :must_be_number, as: :boolean
+                mentor_question.input :display_as, as: :select, collection: ['short_response', 'long_response'], include_blank: false
+                mentor_question.input :size, label: 'field input size', input_html: { style: 'width: 30%'}
+            end
           end
         end
       end
@@ -209,88 +213,98 @@ ActiveAdmin.register Offering do
           end
         end
       end
-      tab 'Interviews' do
-        f.inputs 'Interviews' do
-          hr
-          f.input :interview_committee_id, as: :select, collection: Committee.all, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}
-          div 'Interview time', class: 'label'
-          f.input :interview_time_for_applicants, label: 'For applicants:', as: :select, collection: 30.times.collect{|i| i*5+5}
-          f.input :interview_time_for_interviewers, label: 'For interviewers:', as: :select, collection: 30.times.collect{|i| i*5+5}
-          div 'Options', class: 'label'
-          f.input :uses_scored_interviews, as: :boolean, hint: 'By default, interviewers make a Yes/No decision as a committee about each applicant that they interview. If your interviewers are expected to provide a score, then check this box. Interviewers will score on the same review criteria as reviewers.'
-          f.input :interview_committee_submits_committee_score, as: :boolean, hint: 'If the interview committee will submit a separate consensus score, check this box. If checked, the interview committee will also be asked for a decision recommendation.'
-          f.input :interviewer_help_text, label: 'Welcome text', input_html: { class: "tinymce", rows: 5}, hint: 'This bit of text is displayed in the "Welcome" box on the sidebar of the interview interface.'
-        end
-        f.inputs 'Interviewer Instructions' do
-          hr
-          f.input :interviewer_instructions, label: "This text is displayed to an interviewer when they are looking at an applicant's information.", input_html: { class: "tinymce", rows: 20 }
+      if offering.uses_interviews?
+        tab 'Interviews' do
+          f.inputs 'Interviews' do
+            hr
+            f.input :interview_committee_id, as: :select, collection: Committee.all, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}
+            div 'Interview time', class: 'label'
+            f.input :interview_time_for_applicants, label: 'For applicants:', as: :select, collection: 30.times.collect{|i| i*5+5}
+            f.input :interview_time_for_interviewers, label: 'For interviewers:', as: :select, collection: 30.times.collect{|i| i*5+5}
+            div 'Options', class: 'label'
+            f.input :uses_scored_interviews, as: :boolean, hint: 'By default, interviewers make a Yes/No decision as a committee about each applicant that they interview. If your interviewers are expected to provide a score, then check this box. Interviewers will score on the same review criteria as reviewers.'
+            f.input :interview_committee_submits_committee_score, as: :boolean, hint: 'If the interview committee will submit a separate consensus score, check this box. If checked, the interview committee will also be asked for a decision recommendation.'
+            f.input :interviewer_help_text, label: 'Welcome text', input_html: { class: "tinymce", rows: 5}, hint: 'This bit of text is displayed in the "Welcome" box on the sidebar of the interview interface.'
           end
+          f.inputs 'Interviewer Instructions' do
+            hr
+            f.input :interviewer_instructions, label: "This text is displayed to an interviewer when they are looking at an applicant's information.", input_html: { class: "tinymce", rows: 20 }
+            end
+        end
       end
-      tab 'Award Acceptance' do
-        f.inputs 'Award Acceptance Process' do
-          hr
-          div 'The award acceptance process is used to allow students to accept or decline an award before they receive it. Only students who have been awarded by the awarding committee will be allowed to go through the award acceptance process.', class: 'instruction'
-          f.input :enable_award_acceptance, as: :boolean, hint: 'This allows applicants who have been awarded (based on award_basis) to accept or decline their awards.'
-          f.input :accepted_offering_status_id, label: 'If applicant accepts:', as: :select, collection: offering.statuses.sort.map{|s|[s.private_title, s.id]} , include_blank: 'None', input_html: { class: 'select2', style: 'width: 30%'}, hint: "The applicant's status will be set to this as soon as they accepts their award."
-          f.input :declined_offering_status_id, label: 'If applicant declines:', as: :select, collection: offering.statuses.sort.map{|s|[s.private_title, s.id]} , include_blank: 'None', input_html: { class: 'select2', style: 'width: 30%'}, hint: "The applicant's status will be set to this as soon as they declines their award. Additionally, students who decline will no longer show as being awarded the scholarship."
-          div 'Option text', class: 'label'
-          f.input :acceptance_yes_text, label: "Accept option text:", as: :string
-          f.input :acceptance_no_text, label: "Decline option text:", as: :string, hint: 'These two text blocks are displayed right next to the bullets for accepting or declining on the award acceptance screen. HTML tags are allowed here. An example might be "<strong>Yes!</strong>, I accept this award."'.html_safe
+      if offering.uses_award_acceptance?
+        tab 'Award Acceptance' do
+          f.inputs 'Award Acceptance Process' do
+            hr
+            div 'The award acceptance process is used to allow students to accept or decline an award before they receive it. Only students who have been awarded by the awarding committee will be allowed to go through the award acceptance process.', class: 'instruction'
+            f.input :enable_award_acceptance, as: :boolean, hint: 'This allows applicants who have been awarded (based on award_basis) to accept or decline their awards.'
+            f.input :accepted_offering_status_id, label: 'If applicant accepts:', as: :select, collection: offering.statuses.sort.map{|s|[s.private_title, s.id]} , include_blank: 'None', input_html: { class: 'select2', style: 'width: 30%'}, hint: "The applicant's status will be set to this as soon as they accepts their award."
+            f.input :declined_offering_status_id, label: 'If applicant declines:', as: :select, collection: offering.statuses.sort.map{|s|[s.private_title, s.id]} , include_blank: 'None', input_html: { class: 'select2', style: 'width: 30%'}, hint: "The applicant's status will be set to this as soon as they declines their award. Additionally, students who decline will no longer show as being awarded the scholarship."
+            div 'Option text', class: 'label'
+            f.input :acceptance_yes_text, label: "Accept option text:", as: :string
+            f.input :acceptance_no_text, label: "Decline option text:", as: :string, hint: 'These two text blocks are displayed right next to the bullets for accepting or declining on the award acceptance screen. HTML tags are allowed here. An example might be "<strong>Yes!</strong>, I accept this award."'.html_safe
 
-          div 'Extra questions', class: 'label'
-          f.input :acceptance_question1, label: "Question 1: ", as: :string
-          f.input :acceptance_question2, label: "Question 2: ", as: :string
-          f.input :acceptance_question3, label: "Question 3: ", as: :string, hint: "Applicants will always be asked to accept or decline the award, but if you'd like to ask additional questions during the acceptance process, enter them here. Any question left blank will not appear on the screen when the applicant is looking at it."
-        end
-        f.inputs 'Acceptance Instructions' do
-          hr
-          f.input :acceptance_instructions, label: "This text is shown at the top of the award acceptance screen. U se <code>%award_quarter_list%</code> where you want to put in the list of award quarters.".html_safe, input_html: { class: "tinymce", rows: 20 }
-        end
-      end
-      tab 'Moderators' do
-        f.inputs 'Moderator' do
-          hr
-          f.input :moderator_committee_id, as: :select, collection: Committee.all, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}
-          f.input :moderator_instructions, input_html: { class: "tinymce", rows: 15 }
-          f.input :moderator_criteria, input_html: { class: "tinymce", rows: 15 }
-        end
-      end
-      tab 'Confirmation' do
-        f.inputs 'Confirmation Process' do
-          hr
-          f.input :disable_confirmation, as: :boolean, hint: 'This prevents applicants from accessing the confirmation process.'
-          f.input :confirmation_deadline, as: :datetime_picker, input_html: { style: "width:50%;" }, hint: 'Students can confirm their participations anytime for first time confirmation. However, they cannot change their confirmations by confirmation deadline'
-          f.input :confirmation_instructions, input_html: { class: "tinymce", rows: 15 }
-          f.input :confirmation_yes_text, input_html: { class: "tinymce", rows: 15 }
-          f.input :guest_invitation_instructions, input_html: { class: "tinymce", rows: 10 }
-          f.input :guest_postcard_layout, input_html: { class: "tinymce", rows: 7 }, hint: 'Note that leave blank here will remove guest invitation section from the confirmation process.'
-          f.input :nomination_instructions, input_html: { class: "tinymce", rows: 10 }
-          f.input :theme_response_title, as: :string, hint: 'Leave blank here will remove theme section from the confirmation process.'
-          f.input :theme_response_instructions, input_html: { class: "tinymce", rows: 7 }
-          columns do
-            column min_width: "20%", max_width: "20%", style: "margin-right: 0" do
-              f.input :theme_response_type, as: :select, collection: ["textfield", "textarea"]
-            end
-            column do
-              f.input :theme_response_word_limit, input_html: { stlye: 'width: 10%' }
-            end
+            div 'Extra questions', class: 'label'
+            f.input :acceptance_question1, label: "Question 1: ", as: :string
+            f.input :acceptance_question2, label: "Question 2: ", as: :string
+            f.input :acceptance_question3, label: "Question 3: ", as: :string, hint: "Applicants will always be asked to accept or decline the award, but if you'd like to ask additional questions during the acceptance process, enter them here. Any question left blank will not appear on the screen when the applicant is looking at it."
           end
-          f.input :theme_response2_instructions, input_html: { class: "tinymce", rows: 7 }
-          columns do
-            column min_width: "20%", max_width: "20%", style: "margin-right: 0" do
-              f.input :theme_response2_type, as: :select, collection: ["textfield", "textarea"]
-            end
-            column do
-              f.input :theme_response2_word_limit, input_html: { stlye: 'width: 10%' }
-            end
+          f.inputs 'Acceptance Instructions' do
+            hr
+            f.input :acceptance_instructions, label: "This text is shown at the top of the award acceptance screen. U se <code>%award_quarter_list%</code> where you want to put in the list of award quarters.".html_safe, input_html: { class: "tinymce", rows: 20 }
           end
-          f.input :special_requests_text, input_html: { class: "tinymce", rows: 5 }
         end
       end
-      tab 'Proceedings' do
-        f.inputs 'Online Proceedings' do
-          hr
-          f.input :proceedings_welcome_text, input_html: { class: "tinymce", rows: 30 }
+      if offering.uses_moderators?
+        tab 'Moderators' do
+          f.inputs 'Moderator' do
+            hr
+            f.input :moderator_committee_id, as: :select, collection: Committee.all, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}
+            f.input :moderator_instructions, input_html: { class: "tinymce", rows: 15 }
+            f.input :moderator_criteria, input_html: { class: "tinymce", rows: 15 }
+          end
+        end
+      end
+      if offering.uses_confirmation?
+        tab 'Confirmation' do
+          f.inputs 'Confirmation Process' do
+            hr
+            f.input :disable_confirmation, as: :boolean, hint: 'This prevents applicants from accessing the confirmation process.'
+            f.input :confirmation_deadline, as: :datetime_picker, input_html: { style: "width:50%;" }, hint: 'Students can confirm their participations anytime for first time confirmation. However, they cannot change their confirmations by confirmation deadline'
+            f.input :confirmation_instructions, input_html: { class: "tinymce", rows: 15 }
+            f.input :confirmation_yes_text, input_html: { class: "tinymce", rows: 15 }
+            f.input :guest_invitation_instructions, input_html: { class: "tinymce", rows: 10 }
+            f.input :guest_postcard_layout, input_html: { class: "tinymce", rows: 7 }, hint: 'Note that leave blank here will remove guest invitation section from the confirmation process.'
+            f.input :nomination_instructions, input_html: { class: "tinymce", rows: 10 }
+            f.input :theme_response_title, as: :string, hint: 'Leave blank here will remove theme section from the confirmation process.'
+            f.input :theme_response_instructions, input_html: { class: "tinymce", rows: 7 }
+            columns do
+              column min_width: "20%", max_width: "20%", style: "margin-right: 0" do
+                f.input :theme_response_type, as: :select, collection: ["textfield", "textarea"]
+              end
+              column do
+                f.input :theme_response_word_limit, input_html: { stlye: 'width: 10%' }
+              end
+            end
+            f.input :theme_response2_instructions, input_html: { class: "tinymce", rows: 7 }
+            columns do
+              column min_width: "20%", max_width: "20%", style: "margin-right: 0" do
+                f.input :theme_response2_type, as: :select, collection: ["textfield", "textarea"]
+              end
+              column do
+                f.input :theme_response2_word_limit, input_html: { stlye: 'width: 10%' }
+              end
+            end
+            f.input :special_requests_text, input_html: { class: "tinymce", rows: 5 }
+          end
+        end
+      end
+      if offering.uses_proceedings?
+        tab 'Proceedings' do
+          f.inputs 'Online Proceedings' do
+            hr
+            f.input :proceedings_welcome_text, input_html: { class: "tinymce", rows: 30 }
+          end
         end
       end
     end

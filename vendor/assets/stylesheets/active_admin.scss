@@ -68,11 +68,6 @@ For example, to change the default status-tag color: */
 	color: gray;
 }
 
-.green {
-	// color: green;
-	color: #4CAF50;
-}
-
 .smaller {
 	font-size: smaller;
 }
@@ -161,6 +156,9 @@ table.borderless {
 .panel_contents table.mentor_letter tr:hover td {	
 	box-shadow: none;
 	border-bottom: none;
+}
+.panel_contents hr{
+	border-bottom: 1px solid #c0b08b;
 }
 
 body.active_admin {
@@ -1141,8 +1139,9 @@ body.active_admin .progress .bar{
 
 /* Tooltip container */
 .tooltip {
-	border-bottom: 1px dotted #c5dafd;
 	position: relative;
+	// display: inline-block;
+	border-bottom: 1px dotted #08d;	
 }
 
 .tooltip.noborder {
@@ -1151,6 +1150,31 @@ body.active_admin .progress .bar{
 
 .tooltip:hover {
 	cursor: help;
+	color: #c0b08b;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fcfcfc;
+  text-align: left;
+  padding: 5px 1em 10px 1em;
+  margin: 25px 0px;
+  border-radius: 6px;
+  font-size: 90%;
+  line-height: 15px;
+  transition: opacity .6s;
+ 
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
 
 body.edit #main_content > form .email_preview .row th {
