@@ -56,7 +56,7 @@ class ApplicationReviewer < ApplicationRecord
   #  * If started_scoring? is false, return nil.
   def get_score(criterion)
     return nil unless criterion.is_a?(OfferingReviewCriterion)
-    result = scores.find_by_offering_review_criterion_id(criterion.id)
+    result = scores.find_by(offering_review_criterion_id: criterion.id)
     return nil if result.nil?
     result.score.blank? ? (started_scoring? ? 0 : nil) : result.score
   end
@@ -64,33 +64,25 @@ class ApplicationReviewer < ApplicationRecord
   # Provides the comment that this reviewer has submitted for the specified OfferingReviewCriterion.
   def get_comment(criterion)
     return nil unless criterion.is_a?(OfferingReviewCriterion)
-    result = scores.find_by_offering_review_criterion_id(criterion.id)
+    result = scores.find_by(offering_review_criterion_id: criterion.id)
     result.comments rescue nil
   end
 
   # Returns the average score for this CommitteeMember for all scores of this criterion.
-  def reviewer_average_score(criterion)
-    # committee_member.application_reviewers.collect{|r| r.get_score(criterion) rescue nil}.compact.average
-    committee_member.application_reviewers.find(:all, 
-      :joins => :scores, 
-      :select => "AVG(score) AS average_score",
-      :conditions => ["application_reviewer_scores.offering_review_criterion_id = #{criterion.id}"]).first.average_score
+  def reviewer_average_score(criterion)    
+    committee_member.application_reviewers.joins(:scores).select("AVG(score) AS average_score").where("application_reviewer_scores.offering_review_criterion_id = #{criterion.id}").first.average_score        
   end
   
   # Returns the average score for this CommitteeMember for all total scores for this Offering.
-  def reviewer_total_average_score
-    # committee_member.application_reviewers.for(offering).collect{|r| r.total_score rescue nil}.compact.average
-    committee_member.application_reviewers.find(:all, 
-      :joins => :scores, 
-      :select => "SUM(score) AS summed_score",
-      :group => 'application_for_offering_id').collect{|s| s.summed_score.to_i}.average
+  def reviewer_total_average_score      
+    committee_member.application_reviewers.joins(:scores).select("SUM(score) AS summed_score").group('application_for_offering_id').collect{|s| s.summed_score.to_i}.average
   end
   
   # Creates an ApplicationReviewScore object for each associated OfferingReviewCriterion for this ApplicationForOffering's Offering.
   # Use this method to initialize a reviewer's score card before they begin reviewing with the reviewer interface.
   def create_scores
     for review_criterion in application_for_offering.offering.review_criterions
-      scores.create(:offering_review_criterion_id => review_criterion.id) unless scores.find_by_offering_review_criterion_id(review_criterion)
+      scores.create(offering_review_criterion_id: review_criterion.id) unless scores.find_by(offering_review_criterion_id: review_criterion)
     end
   end
 

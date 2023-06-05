@@ -18,15 +18,29 @@
 						<ul class="inline">
 							<li><%= link_to "Main Details", edit_admin_offering_path(offering) %></li>
 							<li><%= link_to "Features", edit_admin_offering_path(offering, :anchor => "features") %></li>
-							<li class="for_uses_awards"><%= link_to "Awards", edit_admin_offering_path(offering, :anchor => "awards") %></li>
+							<% if offering.uses_awards? %>
+								<li class="for_uses_awards"><%= link_to "Awards", edit_admin_offering_path(offering, :anchor => "awards") %></li>
+							<% end %>
 							<li><%= link_to "Applicants", edit_admin_offering_path(offering, :anchor => "applicants") %></li>
-							<li class="for_uses_mentors"><%= link_to "Mentors", edit_admin_offering_path(offering, :anchor => "mentors") %></li>
+							<% if offering.uses_mentors? %>
+								<li class="for_uses_mentors"><%= link_to "Mentors", edit_admin_offering_path(offering, :anchor => "mentors") %></li>
+							<% end %>
 							<li class="for_uses_reviews"><%= link_to "Reviews", edit_admin_offering_path(offering, :anchor => "reviews") %></li>
-							<li class="for_uses_interviews"><%= link_to "Interviews", edit_admin_offering_path(offering, :anchor => "interviews") %></li>
-							<li class="for_uses_moderators"><%= link_to "Moderators", edit_admin_offering_path(offering, :anchor => "moderators") %></li>
-							<li class="for_uses_confirmation"><%= link_to "Confirmation Process", edit_admin_offering_path(offering, :anchor => "confirmation") %></li>
-							<li class="for_uses_award_acceptance"><%= link_to "Award Acceptance", edit_admin_offering_path(offering, :anchor => "award-acceptance") %></li>
-							<li class="for_uses_proceedings"><%= link_to "Online Proceedings", edit_admin_offering_path(offering, :anchor => "proceedings") %></li>
+							<% if offering.uses_interviews? %>
+								<li class="for_uses_interviews"><%= link_to "Interviews", edit_admin_offering_path(offering, :anchor => "interviews") %></li>
+							<% end %>
+							<% if offering.uses_moderators? %>
+								<li class="for_uses_moderators"><%= link_to "Moderators", edit_admin_offering_path(offering, :anchor => "moderators") %></li>
+							<% end %>
+							<% if offering.uses_confirmation? %>
+								<li class="for_uses_confirmation"><%= link_to "Confirmation Process", edit_admin_offering_path(offering, :anchor => "confirmation") %></li>
+							<% end %>
+							<% if offering.uses_award_acceptance? %>
+								<li class="for_uses_award_acceptance"><%= link_to "Award Acceptance", edit_admin_offering_path(offering, :anchor => "award-acceptance") %></li>
+							<% end %>
+							<% if offering.uses_proceedings? %>
+								<li class="for_uses_proceedings"><%= link_to "Online Proceedings", edit_admin_offering_path(offering, :anchor => "proceedings") %></li>
+							<% end %>
 							</ul>
 						<br class="clear">
 						</span>

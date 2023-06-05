@@ -16,7 +16,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     render "application_header", { app: application, student: @student}
     div :class => 'tabsview' do
       tabs do
-         tab 'Student Info' do            
+         tab 'Student Info' do
             attributes_table title: 'Student Info' do
              row ('Expo ID') do |app|
                link_to "#{@student.class} #{@student.id}", send("admin_#{@student.class.to_s.underscore}_path", @student)
@@ -73,8 +73,10 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
             end
          end
          unless application.awards.empty?
-           tab 'Award Quarters' do
-
+           tab "Award Quarters (#{application.awards.valid.size})" do
+             panel 'Award Quarters' do
+              render "awards"
+             end
            end
          end
          tab "#{@offering.mentor_title.pluralize} (#{application.mentors.size})" do
@@ -83,7 +85,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
             end
          end
          tab 'Review' do
-
+            panel 'Review' do
+              render "review_committee"
+           end
          end
          if @offering.uses_interviews?
            tab 'Interview' do
@@ -96,7 +100,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
            end
          end
          tab 'Application History' do
-
+            panel 'Application History' do
+              render "history"
+            end
          end
          tab 'Notes & Feedback' do
 

@@ -19,7 +19,7 @@ class ApplicationForOffering < ApplicationRecord
   has_many :answers, :class_name => "ApplicationAnswer", :dependent => :destroy
   has_many :awards, :class_name => "ApplicationAward", :dependent => :destroy do
     def valid
-      find(:all, :conditions => 'requested_quarter_id is not null')
+      where('requested_quarter_id is not null')      
     end
   end
   has_many :files, :class_name => "ApplicationFile", :dependent => :destroy
@@ -31,7 +31,9 @@ class ApplicationForOffering < ApplicationRecord
   has_many :other_awards, :class_name => "ApplicationOtherAward", :dependent => :destroy
   has_many :pages, :class_name => "ApplicationPage", :dependent => :destroy
   has_many :reviewers, -> { includes(:scores) }, :class_name => "ApplicationReviewer", :dependent => :destroy do
-        def without_committee_scores; -> { where('committee_score IS NULL OR committee_score = 0') }; end;
+        def without_committee_scores
+          where('committee_score IS NULL OR committee_score = 0')
+        end
       end
   has_many :application_statuses, :dependent => :destroy
   has_many :statuses, :class_name => "ApplicationStatus", :dependent => :destroy

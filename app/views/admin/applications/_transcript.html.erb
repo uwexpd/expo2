@@ -1,6 +1,6 @@
 <% print_only ||= false %>
 <% audience ||= :admin %>
-
+<hr>
 <% if @app.person.is_a?(Student) %>
 	<%= render :partial => "admin/students/transcript", object: @app.person, locals: { :print_only => print_only, :audience => audience } %>
 <% else %>
