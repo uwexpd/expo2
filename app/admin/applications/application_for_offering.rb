@@ -17,7 +17,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     div :class => 'tabsview' do
       tabs do
          tab 'Student Info' do
-            attributes_table title: 'Student Info' do
+            attributes_table title: 'Student Information' do             
              row ('Expo ID') do |app|
                link_to "#{@student.class} #{@student.id}", send("admin_#{@student.class.to_s.underscore}_path", @student)
              end
@@ -85,18 +85,22 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
             end
          end
          tab 'Review' do
-            panel 'Review' do
+           panel 'Review' do
               render "review_committee"
            end
          end
          if @offering.uses_interviews?
-           tab 'Interview' do
-
-           end
+            tab 'Interview' do
+             panel 'Interview' do
+                render "interview"
+             end
+            end
          end
          unless @offering.sessions.empty?
            tab 'Session' do
-
+              panel 'Session' do
+                render "session"
+             end 
            end
          end
          tab 'Application History' do
@@ -105,7 +109,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
             end
          end
          tab 'Notes & Feedback' do
-
+            panel 'Special Notes' do
+              render "notes"
+            end
          end
       end
     end

@@ -1,7 +1,5 @@
 <% admin_view ||= false %>
-
-<!-- <h2><%#= @offering.mentor_title.pluralize %></h2> -->
-
+<hr class='header'><div class='content-block'>
 <table class="mentor_letter">
 
 	<%= render :partial => "admin/applications/mentor", :collection => @app.mentors, :locals => { :admin_view => admin_view } %>
@@ -13,8 +11,7 @@
 	<% end %>
 	
 </table>
-<hr><br>
-<div class='content-block'>
+<hr class='divider'><br>
 <strong>Mentor Department:</strong>
 <%= @app.mentor_department || "<span class=\"light\">Not yet known</span>".html_safe %>
 

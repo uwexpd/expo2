@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     get 'admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
     get 'admin/apply/:offering/list', to: 'admin/apply#list', as: :admin_apply_list
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
-    get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter
+    get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter    
     get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
     post 'admin/base/vicarious_login', :to => 'admin/base#vicarious_login', as: :admin_vicarious_login
     get 'admin/base/remove_vicarious_login', :to => 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     namespace :admin do
       resources :offerings do
         resources :applications do
+          put :assign_session, on: :member
           resources :group_members
         end
         resources :pages do

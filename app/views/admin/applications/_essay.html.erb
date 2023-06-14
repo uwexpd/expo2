@@ -1,9 +1,9 @@
 <% admin_view ||= false %>
-
+<hr class='header'>
 <div class='content-block'>
 <% @app.files.each do |app_file| %>
-
-  <h4><%= app_file.title %>:</h4>	
+	
+  <h2><%= app_file.title %>:</h2>
   <div class="left-indent"> 	
 	<% unless app_file.file.file.nil? %>
 	  <div class='filename'>

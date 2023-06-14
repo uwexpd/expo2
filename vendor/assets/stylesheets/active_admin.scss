@@ -157,7 +157,7 @@ table.borderless {
 	box-shadow: none;
 	border-bottom: none;
 }
-.panel_contents hr{
+.panel_contents hr.header, .panel_contents hr.divider{
 	border-bottom: 1px solid #c0b08b;
 }
 
@@ -1320,4 +1320,12 @@ tr.rowset-header td.default td {
 tr.rowset-header:hover, tr.rowset-header:hover td {
 	background-color: none;
 	box-shadow: none;
+}
+
+ul.icons {
+	list-style-type: none;
+}
+
+.notes h2 {	
+    padding-left: 0px;
 }
