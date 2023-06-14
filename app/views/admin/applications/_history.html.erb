@@ -1,12 +1,12 @@
-<div class='content-block'><hr>
+<hr class='header'><div class='content-block'>
 <table class="notes borderless">
 	<% for application_status in @app.statuses.reverse %>
 	<tr>
-		<td width="170px">
+		<td width="30%">
 			<span class="light"><%= relative_timestamp(application_status.updated_at) rescue "unknown" %></span>
 		</td>
 
-		<td>
+		<td width="40%">
 			Status changed to 			
 			<span class="tooltip"><%= application_status.name.titleize %>
 				<span class="tooltiptext"><%= application_status.description %></span>
@@ -15,12 +15,12 @@
 			<% unless application_status.contact_histories.empty? %>
 			<ul class="icons">
 				<% for contact_history in application_status.contact_histories %>
-					<li class="email">E-mail sent to <%= contact_history.person.fullname rescue "(name unknown)" %>
-						<%= link_to "(View)", contact_history_path(contact_history), :popup => true %>
+					<li class="email"><span class='material-icons uw_purple'>forward_to_inbox</span> E-mail sent to <%= contact_history.person.fullname rescue "(name unknown)" %>
+						<%#= link_to "(View)", contact_history_path(contact_history), :popup => true %>
 					</li>
 				<% end -%>
 			</ul>
-			<% end -%>
+			<% end %>
 			
 			<% unless application_status.notes.empty? %>
 			<ul class="icons">
@@ -32,7 +32,7 @@
 			
 		</td>
 		
-		<td>
+		<td width='30%'>
 			by <span class="username"><%= application_status.updater.fullname rescue "unknown" %></span>
 		</td>
 		

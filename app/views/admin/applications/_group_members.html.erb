@@ -1,8 +1,9 @@
+<hr class='header'>
 <div class='content-block'>
-	<span><%= link_to "<i class='material-icons'>grid_view</i> View all group members".html_safe, admin_offering_application_group_members_path(@offering, @app) %></span>
+  <p><span><%= link_to "<i class='material-icons'>grid_view</i> View all group members".html_safe, admin_offering_application_group_members_path(@offering, @app) %></span>
 	<span class='right'>
 		<%= link_to "Add new group member", new_admin_offering_application_group_member_path(@offering, @app), class: 'button small' %>
-	</span>
+	</span></p>
 </div>
 <table class="borderless">
 

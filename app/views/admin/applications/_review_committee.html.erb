@@ -1,10 +1,9 @@
 <% show_final_decision ||= true %>
-
+<hr class='header'>
 <div class="content-block">
-
 <% if !@offering.uses_non_committee_review %>
-
-	<small class="light"><strong>Note:</strong> Average scores shown are based on the current offering only.</small>
+	
+	<p class="small light"><strong>Note:</strong> Average scores shown are based on the current offering only.</p>
 	<hr>
 	<div id="applicant_reviewers_table_<%= @app.id %>">
 		<%= render :partial => "applicant_reviewers_table" %>
