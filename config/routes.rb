@@ -58,8 +58,9 @@ Rails.application.routes.draw do
         resources :dashboard_items
         resources :restrictions do
           resources :exemptions
-        end
+        end        
       end
+      resources :contact_histories
     end
     
     # -------------------------------------------------------------------------------------------

@@ -12,6 +12,7 @@ menu parent: 'Groups'
   end
 
   show do
+    @student = student
     render "admin/students/student_header", { student: student, mode: :info }
     div :class => 'tabsview' do
       tabs do
@@ -58,20 +59,30 @@ menu parent: 'Groups'
          tab "Service Learning" do         
          end
          tab "Pipeline" do
-         end         
-         tab "Omsfa" do
-         end
-         tab "Events" do
+         end                  
+         tab "Events (#{student.event_invites.size})" do
+            panel "Events" do
+              render "admin/students/tabs/events"
+            end
          end
          tab "Equipments" do
          end
-         tab "Notes" do
+         tab "Notes (#{student.notes.size})" do
          end
-         tab "Contact History" do
+         tab "Contact History (#{student.contact_histories.size})" do
+            panel "Contact History" do
+              render "admin/students/tabs/contact_history"
+            end
          end
-         tab "Appointments" do
+         tab "Appointments (#{student.appointments.size})" do
+            panel "Appointments" do
+              render "admin/students/tabs/appointments"
+            end
          end
          tab "Transcript" do
+            panel "Transcript" do
+              render partial: "admin/students/transcript", object: student # [TODO] Tune this page, cost 3 sec
+           end
          end
       end
     end    

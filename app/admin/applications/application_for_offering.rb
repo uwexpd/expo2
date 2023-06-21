@@ -12,7 +12,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   show :title => proc{|app|app.person.fullname} do
     @app = application
     @student = application.person
-    @offering = application.offering    
+    @offering = application.offering
     render "application_header", { app: application, student: @student}
     div :class => 'tabsview' do
       tabs do
@@ -50,9 +50,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
               end
 	         end
 	       end
-         tab 'Application Details' do
+         tab 'Application Details', id: 'app_details' do
            panel 'Application Details' do
-              render "question_review", { pages: application.pages.reject{|p|p.hide_in_admin_view?}, application: application }              
+              render "question_review", { pages: application.pages.reject{|p|p.hide_in_admin_view?}, application: application }  # [TODO] tune this page, cost 3 sec
            end
          end
          if @offering.uses_group_members?
@@ -64,7 +64,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
          end
          tab 'Transcript' do
            panel 'Student Transcript' do
-              render "transcript", {admin_view: true}
+              render "transcript", {admin_view: true} # [TODO] Tune this page, cost 3 sec
            end
          end
          tab "Essay & Files (#{application.files.size})" do
@@ -84,9 +84,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
               render "mentor_letter", {admin_view: true}
             end
          end
-         tab 'Review' do
+         tab 'Review', id: 'review' do
            panel 'Review' do
-              render "review_committee"
+              render "review_committee" # [TODO] Need to tune this page...cost almost 5 seconds
            end
          end
          if @offering.uses_interviews?

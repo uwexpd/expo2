@@ -7,7 +7,7 @@
 				<tbody>
 					<tr class="row">
 						<th>From</th>
-						<td><%= text_field_tag "email_queue[email][from]", @email_queue.email.from.join(',') %></td>
+						<td><%= text_field_tag "email_queue[email][from]", @email_queue.email_from %></td>
 					</tr>
 					<tr class="row">
 						<th>Subject</th>
@@ -15,7 +15,7 @@
 					</tr>
 					<tr class="row">
 						<th>To</th>
-						<td><%= text_field_tag "email_queue[email][to]", @email_queue.email.to.join(',') %></td>
+						<td><%= text_field_tag "email_queue[email][to]", @email_queue.email_to %></td>
 					</tr>
 					<tr class="row">
 						<th>Cc</th>

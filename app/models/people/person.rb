@@ -23,6 +23,8 @@ class Person < ApplicationRecord
   end
   has_many :application_mentors     
   
+  has_many :notes, :as => :notable, :dependent => :nullify
+  has_many :event_invites, :class_name => "EventInvitee", :as => :invitable, :dependent => :destroy
   has_many :committee_members
   has_many :committees, :through => :committee_members
   has_many :contact_histories, -> {order('updated_at DESC')}

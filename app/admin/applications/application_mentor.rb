@@ -53,7 +53,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
     	f.input :email_confirmation, :input_html => { :style => 'width:50%;' }
     	f.input :title, :input_html => { :style => 'width:50%;' }
     	f.input :relationship, :input_html => { :style => 'width:50%;' }
-    	f.input :mentor_type, as: :select, collection: f.object.offering.mentor_types
+    	f.input :mentor_type, as: :select, collection: mentor.offering.mentor_types
     	f.input :waive_access_review_right, as: :boolean
 		# f.input :academic_department, as: :tags, collection: AcademicDepartment.all.collect(&:name).sort
 		f.input :academic_department, as: :select, collection: AcademicDepartment.all.collect(&:name).sort, :input_html => { multiple: true, class: "chosen-select", :style => 'width: 50%' }

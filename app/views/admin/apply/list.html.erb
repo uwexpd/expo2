@@ -1,6 +1,13 @@
 <div class='panel'>	
 	<div class='panel_contents'>
-		
+			<div class='table_tools'>
+				<div class='scopes'>
+					<ul class="table_tools_segmented_control scope-default-group">
+						<li class='scope'></li>
+						<li class='scope'></li>
+					</ul>
+				</div>
+			</div>
 			<table border="0" cellspacing="0" cellpadding="0">
 				
 				<tr>
@@ -9,14 +16,13 @@
 					<th>Current Status</th>
 				</tr>
 
-
 				<% @apps.each do |app| %>
 					<tr>				
 						<td><%= link_to app.person.lastname_first, admin_student_path(app.person) %>
 							<br><small><%= auto_link app.person.email rescue "Unknown" %></small></td>
-							<td><%= link_to app.project_title.blank? ? "View Application" : strip_tags(app.project_title), admin_offering_application_path(app.offering, app) %>
+						<td><%= link_to app.project_title.blank? ? "View Application" : strip_tags(app.project_title), admin_offering_application_path(app.offering, app) %>
 							</td>
-							<td><%= raw(print_status(app)) %></td>
+						<td><%= raw(print_status(app)) %></td>
 					</tr>					
 				<% end -%>
 
