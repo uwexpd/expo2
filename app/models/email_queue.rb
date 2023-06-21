@@ -1,3 +1,4 @@
+require 'mail'
 class EmailQueue < ApplicationRecord
   stampable
   # EmailQueue.partial_updates = false # disable partial_updates so that serialized columns get saved
@@ -57,6 +58,23 @@ class EmailQueue < ApplicationRecord
     if EmailContact.log(person_id, email.deliver!, application_status, original, contactable)
        self.destroy
     end
+  end
+
+  def email_to
+    if email.class.name == "TMail::Mail"
+      email['to'].as_json['body'] rescue ""
+    else
+      email.to.join(',')
+    end
+
+  end
+
+  def email_from
+    if email.class.name == "TMail::Mail"
+      email['from'].as_json['body'] rescue ""
+    else
+      email.from.join(',')
+    end    
   end
 
 end

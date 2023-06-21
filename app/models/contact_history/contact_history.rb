@@ -17,4 +17,8 @@ class ContactHistory < ApplicationRecord
     true
   end
 
+  def contact_email
+    email.from.first.gsub(/\"/,'') rescue ""
+  end
+
 end

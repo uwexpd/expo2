@@ -42,9 +42,9 @@ storage/
 !/.env.*.sample
 
 # Ignore some development function or postpone project. 
-/lib/tmail/header.rb
-/lib/tmail/parser.rb
-/lib/tmail/scanner_r.rb
+# /lib/tmail/header.rb
+# /lib/tmail/parser.rb
+# /lib/tmail/scanner_r.rb
 /node_modules/*
 /package.json
 /package-lock.json

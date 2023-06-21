@@ -1,0 +1,29 @@
+<hr class='header'>
+<div class='content-block'>
+
+<table class='borderless'>
+
+	<tr>
+		<th>Date</th>
+		<th>From</th>
+		<th>Subject</th>
+		<th>View</th>
+	</tr>
+
+	<% if @student.contact_histories.empty? %>
+		<tr class="empty">
+			<td colspan=4>No contact history.</td>
+		</tr>
+	<% else %>
+		<% for contact in @student.contact_histories %>
+		<tr>
+			<td><%= relative_timestamp(contact.updated_at)  %></td>
+			<td><%= contact.contact_email unless contact.email.nil? %></td>
+			<td><%= contact.email.subject unless contact.email.nil? %></td>
+			<td><%= link_to "View", admin_contact_history_path(contact), target: '_blank' %></td>
+		</tr>
+		<% end -%>
+	<% end -%>
+
+</table>
+</div>

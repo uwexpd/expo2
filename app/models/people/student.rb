@@ -5,6 +5,12 @@ class Student < Person
   belongs_to :sdb, :class_name => "StudentRecord", :foreign_key => "system_key"  
   validates :student_no, presence: true
   
+  has_many :appointments, :foreign_key => "student_id" do
+    def today; where("DATE(start_time) = ?", Time.now.to_date); end
+  end
+
+  belongs_to :first_generation_pell_eligible, :class_name => "FirstGenerationPellEligible", :foreign_key => "system_key"
+  
   attr_accessor :electronic_signature
   
   delegate :class_standing_description, :raw_gpa, :gpa, :institution_name, :majors_list, :minors_list, :minors, :majors, :age, :transfer_student?, :washington_state_resident?, :to => :sdb

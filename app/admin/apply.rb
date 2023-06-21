@@ -18,7 +18,7 @@ ActiveAdmin.register_page "Apply" do
   		@phase = @offering.current_offering_admin_phase
   	end 
 
-  	def list  
+  	def list
   	end
 
     # def awardees

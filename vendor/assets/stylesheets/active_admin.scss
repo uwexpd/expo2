@@ -190,7 +190,7 @@ em.required {
 
 .input.text textarea {
     height: auto;
-	width: auto;
+	// width: auto;
 }
 
 .input > label, .input .label > label {
@@ -609,6 +609,8 @@ form .inline-hints {
 #show_table_offering_tasks .col-functions {min-width: 115px;}
 #index_table_restrictions .col-type {min-width: 200px;}
 #index_table_department_extras .col-id {min-width: 55px;}
+#index_table_email_queues .col-to {min-width: 200px;}
+#index_table_email_queues .col-from {min-width: 140px;}
 /* end index table column width */
 
 #q_submit {

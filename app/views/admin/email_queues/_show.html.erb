@@ -6,27 +6,27 @@
 				<tbody>
 					<tr class="row">
 						<th>To</th>
-						<td><%= email.to.join(',') || "" %></td>
+						<td><%= queue.email_to rescue "" %></td>
 					</tr>
 					<tr class="row">
 						<th>From</th>
-						<td><%= email.from.join(',') || "" %></td>
+						<td><%= queue.email_from rescue "" %></td>
 					</tr>
 					<tr class="row">
 						<th>Subject</th>
-						<td><%= email.subject || "" %></td>
+						<td><%= queue.email.subject || "" %></td>
 					</tr>
 					<tr class="row">
 						<th>Cc</th>
-						<td><%= email.cc.join(',') rescue "" %></td>
+						<td><%= queue.email.cc.join(',') rescue "" %></td>
 					</tr>
 					<tr class="row">
 						<th>Bcc</th>
-						<td><%= email.bcc.join(',') rescue "" %></td>
+						<td><%= queue.email.bcc.join(',') rescue "" %></td>
 					</tr>
 					<tr class="row">
 						<th>Body</th>
-						<td><%= simple_format(email.body.to_s) %></td>
+						<td><%= simple_format(queue.email.body.to_s) %></td>
 					</tr>
 				</tbody>				
 			</table>

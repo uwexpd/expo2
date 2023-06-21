@@ -1,5 +1,4 @@
 require 'tmail'
-
 ActiveAdmin.register EmailQueue do
   config.filters = false
   config.sort_order = 'created_at_desc'
@@ -62,15 +61,15 @@ ActiveAdmin.register EmailQueue do
 
   index :download_links => false do
   	selectable_column
-  	column ('To') {|queue| queue.email[:to].to_s || "" }
-  	column ('From') {|queue| queue.email[:from].to_s || "" }
+  	column ('To') {|queue| queue.email_to || "" }
+  	column ('From') {|queue| queue.email_from.to_s || "" }
   	column ('Subject') {|queue| link_to queue.email.subject, admin_email_queue_path(queue) rescue "" }
   	column ('Queued') {|queue| time_ago_in_words(queue.updated_at.to_s + " ago") }
   	actions
   end
 
-  show :title => proc{|queue| "Send to: " + queue.email.to.join(',') || ""} do
-    render 'show', { email: email_queue.email}
+  show :title => proc{|queue| "Send to: " + queue.email_to rescue ""} do
+    render 'show', { queue: email_queue}
     # attributes_table do
     #    row ('To') {|queue| queue.email[:to].to_s || "" }
     #    row ('Cc') {|queue| queue.email[:cc].to_s || "" }
