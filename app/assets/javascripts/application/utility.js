@@ -43,7 +43,7 @@ $(document).on('turbolinks:load', function() {
       setup: function (editor) {
         editor.on('change', function () {
             tinymce.triggerSave();
-            // checkSubmit();
+            checkSubmit();
         });
       },
       plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table',
@@ -53,20 +53,24 @@ $(document).on('turbolinks:load', function() {
       browser_spellcheck: true
   });
 
-  //
-  // $(".tinymce_error").hide();
-  // $(document).on('click', 'input[type=submit]', checkSubmit);
-  //   function checkSubmit() {
-  //     if ($('textarea.tinymce').val().trim().length <= 0) {        
-  //       $('.tinymce_error').show();
-  //       $('.tinymce_error').html('Please fill out content in the input box above');
-  //       return false;
-  //     }
-  //     else{        
-  //       $('.tinymce_error').hide();
-  //       $('.tinymce_error').html('');   
-  //     }
-  // }
+  // check tinymce if empty before submit for long response question
+  if ($(".tinymce_error").length){
+    $(".tinymce_error").hide();
+  }
+
+  $(document).on('click', 'input[type=submit]', checkSubmit);
+  function checkSubmit() {
+    if ($('textarea.tinymce').length && $('textarea.tinymce').val().trim().length <= 0) {
+      $('.tinymce_error').show();
+      $('.tinymce_error').html('Please fill out content in the input box above');
+      return false;
+    }
+    else{        
+      $('.tinymce_error').hide();
+      $('.tinymce_error').html('');   
+    }
+  }
+  
 
 }); // end of turbolinks:load
 

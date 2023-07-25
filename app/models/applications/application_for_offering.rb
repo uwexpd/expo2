@@ -8,7 +8,6 @@ class ApplicationForOffering < ApplicationRecord
   include ActionView::Helpers::SanitizeHelper
   include Comparable
   #   acts_as_soft_deletable
-  self.per_page = 20
   
   belongs_to :offering, :counter_cache => true
   belongs_to :person
@@ -664,7 +663,7 @@ class ApplicationForOffering < ApplicationRecord
   # Returns true if all mentor letters have been received
   def all_mentor_letters_received?
     mentors.each do |m|
-      return false if m.letter.nil?
+      return false if m.letter.file.nil?
     end
     true
   end

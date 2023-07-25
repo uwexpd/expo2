@@ -10,16 +10,6 @@ Rails.application.routes.draw do
   scope 'expo' do
 
     root 'admin/dashboard#index'
-    Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-      # Protect against timing attacks:
-      # - See https://codahale.com/a-lesson-in-timing-attacks/
-      # - See https://thisdata.com/blog/timing-attacks-against-string-comparison/
-      # - Use & (do not use &&) so that it doesn't short circuit.
-      # - Use digests to stop length information leaking (see also ActiveSupport::SecurityUtils.variable_size_secure_compare)
-      ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(username), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USERNAME"])) &
-        ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(password), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"]))
-    end if Rails.env.production?
-    mount Sidekiq::Web, at: '/admin/sidekiq'
     
     ## For active storage scope workaround
     # get "rails/active_storage/disk/:encoded_key/*filename" => "active_storage/disk#show", as: :scoped_rails_disk_service
@@ -40,6 +30,7 @@ Rails.application.routes.draw do
         resources :applications do
           put :assign_session, on: :member
           resources :group_members
+          resources :mentors
         end
         resources :pages do
           resources :questions do
@@ -131,6 +122,18 @@ Rails.application.routes.draw do
     match 'community_engaged/change/:id', to: 'service_learning#change', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
     match 'community_engaged/contact/:id', to: 'service_learning#contact', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
     match 'community_engaged/risk/:id', to: 'service_learning#risk', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
+
+    # Sidekiq admin routes
+    Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+      # Protect against timing attacks:
+      # - See https://codahale.com/a-lesson-in-timing-attacks/
+      # - See https://thisdata.com/blog/timing-attacks-against-string-comparison/
+      # - Use & (do not use &&) so that it doesn't short circuit.
+      # - Use digests to stop length information leaking (see also ActiveSupport::SecurityUtils.variable_size_secure_compare)
+      ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(username), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USERNAME"])) &
+        ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(password), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"]))
+    end if Rails.env.production?
+    mount Sidekiq::Web, at: '/admin/sidekiq'
 
   end
   

@@ -86,7 +86,7 @@ class ApplyMailer < ActionMailer::Base
     @invite_link = invite_link
     @recipients  = offering_interviewer.person.email
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now)
   end
 
   def reviewer_message(offering_reviewer, email_template, offering, link = reviewer_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering))
@@ -96,7 +96,7 @@ class ApplyMailer < ActionMailer::Base
     @link       = link
     @recipients = offering_reviewer.person.email
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now)
   end
 
 
@@ -107,7 +107,7 @@ class ApplyMailer < ActionMailer::Base
     @link       = link
     @recipients = recipients
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now)
   end
 
 end

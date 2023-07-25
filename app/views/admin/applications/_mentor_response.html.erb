@@ -46,13 +46,13 @@
 			<div id="update_mentor_form_<%= mentor.id %>" style="display:none">
 			  <div class=highlight_box>
 			  	<h4><i class="material-icons uw_purple">add_circle</i> Upload new letter</h4>				
-				<%= form_with model: app, url: { :action => 'update', :id => app} do |f| %>
+				<%= form_with model: app, url: { action: 'update', id: app, section: 'mentor_letter'} do |f| %>
 
-					<%= fields_for "app[mentor_attributes][#{mentor.id}]", mentor do |mentor_fields| %>
-						<%= mentor_fields.file_field :letter %>
+					<%= f.fields_for :mentors, mentor do |mentor_fields| %>
+						<%= mentor_fields.file_field :letterfiles, name: "application_for_offering[mentor_attributes][#{mentor.id}][letter]" %>
 					<% end %>
 
-					<%= hidden_field_tag :section, "mentor_letter" %>
+					<%#= hidden_field_tag :section, "mentor_letter" %>
 					
 					<%= f.submit "Upload new letter", class:'small' %>
 
