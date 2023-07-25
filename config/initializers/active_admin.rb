@@ -236,6 +236,7 @@ ActiveAdmin.setup do |config|
       admin.build_menu :default do |menu|
         menu.add label: 'Modules', priority: 1
         menu.add label: 'Tools', priority: 2
+        menu.add label: 'Groups', priority: 3
         # menu.add  :label  => "Log out of vicarious mode",
         #           :url    => proc{ admin_remove_vicarious_login_path },
         #           :if     => proc{ vicariously_logged_in? },

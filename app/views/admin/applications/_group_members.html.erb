@@ -35,7 +35,7 @@
 	<% if @app.group_members.valid.empty? %>
 	<tr class="empty">
 		<td colspan=3>No group members exist. 
-			<%= link_to "Add one", new_admin_offering_application_group_member_path(@offering, @app) %>.</td>
+			<%= link_to "Add one", new_admin_offering_application_group_member_path(@offering, @app, return_to: request.url) %>.</td>
 	</tr>
 	<% end %>
 	

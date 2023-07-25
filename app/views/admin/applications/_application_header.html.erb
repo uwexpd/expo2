@@ -25,7 +25,7 @@
 						</small>
 
 						<div id="assign_new_status" style="display:none">
-							<%= form_for :applications, :url => { :action => 'update', :id => app } do |f| %>
+							<%= form_for app, :url => { :action => 'update', :id => app } do |f| %>
 								<small>New Status: <%= f.collection_select :new_status, 
 														app.offering.statuses.order('sequence ASC'),
 														:application_status_name,

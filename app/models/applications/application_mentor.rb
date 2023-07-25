@@ -6,7 +6,7 @@ class ApplicationMentor < ApplicationRecord
 
   stampable  
   belongs_to :application_for_offering
-  delegate :offering, :to => :application_for_offering
+  delegate :offering, :to => :application_for_offering, allow_nil: true
 
   belongs_to :person
   delegate :address_block, :to => :person

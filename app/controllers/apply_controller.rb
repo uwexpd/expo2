@@ -208,14 +208,19 @@ class ApplyController < ApplicationController
       @user_application.electronic_signature_date = Time.now
     end            
     if @user_application.passes_validations? && (@offering.disable_signature? || @user_application.electronic_signature_valid?)
-      if @user_application.mentor_letter_received?
-        @user_application.set_status "complete"
+
+      @user_application.set_status "submitted"
+
+      if @offering.require_all_mentor_letters_before_complete?
+        @user_application.set_status "complete" if @user_application.all_mentor_letters_received?
       else
         @user_application.set_status "submitted"
+        @user_application.set_status "complete" if @user_application.mentor_letter_received?
       end
+
       # Send eamil notification for husky 100 process
       unless @offering.questions.where(display_as: 'husky100_netid').blank?
-          send_notification_email
+          send_husky_notifications
       end      
       redirect_to :action => 'index' and return      
     else
@@ -459,7 +464,7 @@ class ApplyController < ApplicationController
   end
 
   # For Husky 100 nominations specifically
-  def send_notification_email
+  def send_husky_notifications
     sent_student_emails = []
           @offering.questions.where(display_as: 'husky100_netid').each do |question|
             input_netid = @user_application.get_answer(question.id)

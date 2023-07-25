@@ -58,7 +58,7 @@ ActiveAdmin.register User do
 
     div :class => 'tabsview' do
       tabs do
-          tab "Units & Roles (#{user.roles.size})" do
+          tab "Units & Roles (#{user.roles.size})", id: 'unit_roles' do
             panel '' do
               table_for user.roles.order('unit_id ASC') do
                 column ('Unit') {|role| role.unit ? role.unit.name : 'Global' }
@@ -67,7 +67,7 @@ ActiveAdmin.register User do
               end
             end
           end
-          tab "Logins (#{user.logins.size})" do
+          tab "Logins (#{user.logins.size})", id: 'logins' do
             panel '' do
               paginated_collection(user.logins.page(params[:page]).per(20).order('id DESC'), download_links: false) do
                 table_for(collection, sortable: false) do
