@@ -1,3 +1,4 @@
+<div id="review_committee">
 <% show_final_decision ||= true %>
 <hr class='header'>
 <div class="content-block">
@@ -5,7 +6,7 @@
 	
 	<p class="small light"><strong>Note:</strong> Average scores shown are based on the current offering only.</p>
 	<hr>
-	<div id="applicant_reviewers_table_<%= @app.id %>">
+	<div id="applicant_reviewers_table_<%= @app.id %>" class="applicant_reviewers_table">
 		<%= render :partial => "applicant_reviewers_table" %>
 	</div>
 
@@ -54,4 +55,5 @@
 
 <% end %>
 
+</div>
 </div>

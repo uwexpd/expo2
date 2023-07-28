@@ -1319,7 +1319,7 @@ tr.rowset-header td.default td {
 	font-weight: normal;
 }
 
-tr.rowset-header:hover, tr.rowset-header:hover td {
+tr.rowset-header:hover, tr.rowset-header:hover td{
 	background-color: none;
 	box-shadow: none;
 }
@@ -1330,4 +1330,8 @@ ul.icons {
 
 .notes h2 {	
     padding-left: 0px;
+}
+
+.applicant_reviewers_table table tbody tr td{
+	min-width: 110px;
 }

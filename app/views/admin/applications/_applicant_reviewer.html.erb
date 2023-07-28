@@ -26,8 +26,8 @@
 			<% for review_criterion in @offering.review_criterions.sort %>
 				<td class="center">					
 					<span class="tooltip"><%= applicant_reviewer.get_score(review_criterion) %>
-  						<span class="tooltiptext"><%= simple_format("Comments:<br>" + applicant_reviewer.get_comment(review_criterion)) %></span>
-					</span>					
+  						<span class="tooltiptext"><%= simple_format("Comments:<br> #{applicant_reviewer.get_comment(review_criterion)}") %></span>
+					</span>
 					<small class="light">
 						<% if perspective == 'reviewer' %>
 							<%= "/ " + '%.2f' % applicant_reviewer.application_for_offering.average_score(review_criterion) %>
@@ -39,7 +39,7 @@
 			<% end %>
 			<td class="center">			
 				<span class="tooltip"><%= applicant_reviewer.total_score %>
-					<span class="tooltiptext"><%= simple_format("Comments:<br>" + applicant_reviewer.comments) %></span>
+					<span class="tooltiptext"><%= simple_format("Comments:<br> #{applicant_reviewer.comments}") %></span>
 				</span>
 
 				<small class="light"> 

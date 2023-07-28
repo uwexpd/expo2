@@ -266,16 +266,19 @@ class CommitteeMember < ApplicationRecord
   def update_task_completion_status_cache!(tasks = nil)
     self.task_completion_status_cache ||= {}
     for offering in applications_for_review.collect(&:offering).uniq
-      tasks ||= offering.tasks.find(:all, 
-                                    :conditions => "(context = 'reviewers' OR context = 'interviewers') 
+      tasks ||= offering.tasks.where("(context = 'reviewers' OR context = 'interviewers')
                                                     AND context_object_completion_criteria != ''")
-      tasks = [tasks] unless tasks.is_a?(Array)
+      tasks = tasks.to_a unless tasks.is_a?(Array)
       for task in tasks
-        tcs = task_completion_statuses.find_or_create_by(task_id: task.id)
+        tcs = task_completion_statuses.find_or_initialize_by(task_id: task.id)
         tcs.result = self.instance_eval("@offering ||= Offering.find(#{task.offering.id}); #{task.context_object_completion_criteria.to_s}")
         tcs.complete = tcs.result == true
         tcs.save
-        self.task_completion_status_cache[task.id] = tcs.attributes
+        # Covert time object to string in attributes in order to be compatible with ruby 1.8
+        tcs_attr = tcs.attributes
+        tcs_attr["created_at"] = tcs_attr["created_at"].to_s if tcs_attr["created_at"]
+        tcs_attr["updated_at"] = tcs_attr["updated_at"].to_s if tcs_attr["updated_at"]
+        self.task_completion_status_cache[task.id] = tcs_attr
       end
     end
     task_completion_status_cache
@@ -293,11 +296,15 @@ class CommitteeMember < ApplicationRecord
   def complete_task(task)
     self.task_completion_status_cache ||= {}
     task = OfferingAdminPhaseTask.find(task) unless task.is_a?(OfferingAdminPhaseTask)
-    tcs = task_completion_statuses.find_or_create_by(task_id: task.id)
+    tcs = task_completion_statuses.find_or_initialize_by(task_id: task.id)
     tcs.result = true
     tcs.complete = true
     tcs.save
-    self.task_completion_status_cache[task.id] = tcs.attributes
+    # Covert time object to string in attributes in order to be compatible with ruby 1.8
+    tcs_attr = tcs.attributes
+    tcs_attr["created_at"] = tcs_attr["created_at"].to_s if tcs_attr["created_at"]
+    tcs_attr["updated_at"] = tcs_attr["updated_at"].to_s if tcs_attr["updated_at"]
+    self.task_completion_status_cache[task.id] = tcs_attr
     tcs
   end
 
