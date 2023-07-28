@@ -36,7 +36,7 @@
 		<td colspan=<%= @offering.review_criterions.size %>>
 			
 			<div id="assign_reviewer">
-				<%= form_for @app, :url => { :action => 'update', :id => @app, :tab => "review_committee" }, remote: true do |f| %>
+				<%= form_for @app, :url => { :action => 'update', :id => @app.id, :anchor => "review" }, remote: true do |f| %>
 					<%= f.label :new_reviewer, "Add Another Reviewer:" %>
 					<%= f.collection_select :new_reviewer, 
 											@app.offering.reviewers_for(@app).sort,
@@ -50,7 +50,7 @@
 	<% unless @app.reviewers.blank? %>
 		<td colspan = 3>
 			<div id="drop_reviewer">
-				<%= form_for @app, :url => { :action => 'update', :id => @app, :tab => "review_committee" }, remote: true do |f| %>
+				<%= form_for @app, :url => { :action => 'update', :id => @app.id, :anchor => "review" }, remote: true do |f| %>
 					<%= f.label :remove_reviewer, "Drop a Reviewer:" %>
 					<%= f.collection_select :remove_reviewer, 
 											@app.reviewers.reject{|r|r.committee_member_id.nil?},

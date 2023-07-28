@@ -7,9 +7,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   menu false
 
   controller do
-    before_action :check_user_unit, :except => [ :new, :create ]
+    before_action :fetch_offering, :except => [ :new, :create ]
 
-    def update      
+    def update
       @app = ApplicationForOffering.find params[:id]
       anchor = params[:section] if params[:section]
       if params['application_for_offering']
@@ -32,15 +32,18 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
         end
       end
       respond_to do |format|
-        format.html { redirect_to :action => 'show', :id => @app, :anchor => anchor }       
+        format.html { redirect_to :action => 'show', :id => @app, :anchor => anchor }
+        format.js
       end
-    end  
+    end
 
     protected
     
-    def check_user_unit
-      @offering = Offering.find(params[:offering_id] || params[:id])
-      require_user_unit @offering.unit
+    def fetch_offering
+      if params[:offering_id]
+        @offering = Offering.find params[:offering_id]
+        require_user_unit @offering.unit
+      end
     end
 
     private
