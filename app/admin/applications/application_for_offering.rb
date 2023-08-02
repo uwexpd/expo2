@@ -165,7 +165,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
             end
          end
          unless @offering.sessions.empty?
-           tab 'Session' do
+           tab 'Session', id: 'session' do
               panel 'Session' do
                 render "session"
              end 

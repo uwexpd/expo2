@@ -1,5 +1,5 @@
 <table class='borderless'>
-	<tr>
+	<tr class="header">
 		<td>Reviewer</td>
 		<% if @offering.uses_scored_review? %>
 			<% for review_criterion in @offering.review_criterions.sort %>
@@ -14,8 +14,8 @@
 	
 	<% if @offering.uses_scored_review? %>
 	<tr class="total">
-		<td><strong>Average Scores:</strong>
-			<br><small class="light">(Does not include committee)</small></td>
+		<td>Average Scores:
+			<small class="light">(Does not include committee)</small></td>
 		<% for review_criterion in @offering.review_criterions.sort %>
 			<td><strong><%= '%.2f' % @app.average_score(review_criterion) %></strong></td>
 		<% end %>
@@ -24,33 +24,32 @@
 	<% end %>
 
 	<% if @app.reviewers.empty? %>
-	<tr class="empty">
-		<td colspan=<%= @offering.review_criterions.size + 3 %>>
-			No reviewers assigned.
-		</td>
-	</tr>
+		<tr class="empty">
+			<td colspan=<%= @offering.review_criterions.size + 3 %>>
+				No reviewers assigned.
+			</td>
+		</tr>
 	<% end %>
 	
 	<% unless @app.offering.reviewers_for(@app).blank? %>
-	<tr>
-		<td colspan=<%= @offering.review_criterions.size %>>
-			
-			<div id="assign_reviewer">
-				<%= form_for @app, :url => { :action => 'update', :id => @app.id, :anchor => "review" }, remote: true do |f| %>
-					<%= f.label :new_reviewer, "Add Another Reviewer:" %>
-					<%= f.collection_select :new_reviewer, 
-											@app.offering.reviewers_for(@app).sort,
-											:id,
-											'fullname' %>
-					<%= f.submit "Add", class: 'small' %>					
-				<% end %>
-			</div>				
-		</td>
+		<tr>
+			<td colspan=<%= @offering.review_criterions.size %>>
+				<div id="assign_reviewer">
+					<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
+						<%= f.label :new_reviewer, "Add Another Reviewer:" %>
+						<%= f.collection_select :new_reviewer,
+												@app.offering.reviewers_for(@app).sort,
+												:id,
+												'fullname' %>
+						<%= f.submit "Add", class: 'small' %>					
+					<% end %>
+				</div>				
+			</td>
 	<% end %>
 	<% unless @app.reviewers.blank? %>
 		<td colspan = 3>
 			<div id="drop_reviewer">
-				<%= form_for @app, :url => { :action => 'update', :id => @app.id, :anchor => "review" }, remote: true do |f| %>
+				<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
 					<%= f.label :remove_reviewer, "Drop a Reviewer:" %>
 					<%= f.collection_select :remove_reviewer, 
 											@app.reviewers.reject{|r|r.committee_member_id.nil?},
