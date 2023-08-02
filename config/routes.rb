@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     namespace :admin do
       resources :offerings do
         resources :applications do
-          put :assign_session, on: :member
+          patch :assign_session, on: :member
           resources :group_members
           resources :mentors
         end

@@ -8,7 +8,7 @@
 		</span>
 		<span class='left'>
 			<%= mentor.fullname %>
-			(<%=  mentor.person.nil? ? "no person record" : link_to("edit", edit_admin_person_path(mentor.person, :return_to => url_for(:action => 'show', :section => nil, :anchor => 'mentor_letter'))) %>)
+			(<%=  mentor.person.nil? ? "no person record" : link_to("edit", edit_admin_person_path(mentor.person, :return_to => url_for(:action => 'show', section: 'mentor_letter'))) %>)
 			<br><%= mentor.no_email? ? "<span class='error-message'>No e-mail</span>".html_safe : mentor.email %>
 			<%= raw "<br><small class=light>Primary #{@offering.mentor_title}</small>" if mentor.primary? %>
 		</span>

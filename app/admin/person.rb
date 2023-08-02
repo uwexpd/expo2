@@ -53,7 +53,7 @@ ActiveAdmin.register Person do
                      if mentor.application_for_offering
                        span mentor.application_for_offering.person.fullname
                        span ' ― '
-                       span mentor.application_for_offering.project_title || '(no title)'
+                       span mentor.application_for_offering.stripped_project_title || '(no title)'
                      end
                    end
               end

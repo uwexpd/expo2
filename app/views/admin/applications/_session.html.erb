@@ -5,16 +5,17 @@
 <p><strong>Currently assigned to: </strong>
 	<span id="session_title">
 		<% if @app.offering_session %>
+			<%= @app.offering_session.title %>
 			<%#= link_to(@app.offering_session.title, offering_session_url(@offering, @app.offering_session)) %>
-		<%- else -%>
+		<% else %>
 			<font class="light">None</font>
-		<% end -%>
+		<% end %>
 	</span>	
 	(<%= link_to 'change', 'javascript:;', data: { link_toggle: "#change_session"} %>)
 	</p>
 	
 <div id="change_session" style="display:none">
-	<%= form_for @app, url: { :action => "assign_session", :id => @app }, remote: true do |f| %>
+	<%= form_for @app, url: { :action => "update", :id => @app.id, section: "session" } do |f| %>
 		Assign to: <%= f.collection_select :offering_session_id, 
 											@offering.sessions.for_type(@app.application_type_id), 
 											:id, :title, :include_blank => "None" %>

@@ -32,7 +32,7 @@
 		</p>
 	
 	<div id="change_review_decision" style="display:none">
-		<%= form_for @app, :url => { :action => "update", :id => @app, :tab => "review_committee" }, remote: true do |f| %>
+		<%= form_for @app, :url => { :action => "update", :id => @app, :section => "review" }, remote: true do |f| %>
 			Set to: <%= f.collection_select :application_review_decision_type_id,
 			 								@offering.application_review_decision_types, 
 											:id, :title, :include_blank => "Not yet reviewed" %>
