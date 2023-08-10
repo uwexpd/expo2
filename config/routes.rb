@@ -52,6 +52,11 @@ Rails.application.routes.draw do
         end        
       end
       resources :contact_histories
+      resources :committees do
+        resources :committee_members
+        resources :committee_quarters
+        resources :committee_meetings
+      end
     end
     
     # -------------------------------------------------------------------------------------------

@@ -12,14 +12,14 @@ ActiveAdmin.register Person do
       link_to person.fullname, admin_person_path(person)
     end
     column :email
-    column ('Created At') {|person| "#{time_ago_in_words person.created_at} ago"}
+    column ('Created At') {|person| "#{time_ago_in_words person.created_at} ago" rescue ""}
     actions
   end
   
   show do
     tabs do
          tab 'Person Info' do
-            attributes_table title: 'Person Info' do
+            attributes_table title: 'Person Info', id: 'person' do
               row ('Expo Person ID') {|person| person.id }
               row ('Name') {|person| person.fullname }
               row :email
@@ -30,7 +30,7 @@ ActiveAdmin.register Person do
               row ('Address') {|person| text_node "#{person.address1} #{person.address2 unless person.address2.blank?} #{person.address3 unless person.address3.blank?} #{person.city unless person.city.blank?}#{', '+person.state unless person.state.blank?} #{person.zip unless person.zip.blank?}" }
             end
          end
-         tab "Users (#{person.users.size})" do
+         tab "Users (#{person.users.size})", id: 'users' do
            panel 'User Accounts' do
               table_for person.users do 
                  column 'Username' do |user|
@@ -43,40 +43,87 @@ ActiveAdmin.register Person do
               end
             end
          end
-         tab "Mentor (#{person.application_mentors.size})" do
+         tab "Mentor (#{person.application_mentors.size})", id: 'mentor' do
            panel 'Mentored Projects' do
-              table_for person.application_mentors do
+              table_for person.application_mentors.reverse do
                    column 'Offerings' do |mentor|
                      mentor.application_for_offering.offering.title if mentor.application_for_offering
                    end
-                   column 'Applications' do |mentor|
-                     if mentor.application_for_offering
-                       span mentor.application_for_offering.person.fullname
-                       span ' ― '
-                       span mentor.application_for_offering.stripped_project_title || '(no title)'
-                     end
-                   end
+                   column ('Applications') {|mentor| link_to mentor.application_for_offering.person.fullname + " ― " + (mentor.application_for_offering.stripped_project_title || '(no title)'), admin_offering_application_path(mentor.application_for_offering.offering, mentor.application_for_offering) if mentor.application_for_offering }
               end
            end
          end
-         tab "Committees (#{person.committee_members.size})" do
+         tab "Committees (#{person.committee_members.size})", id: 'committees' do
             panel 'Committees' do
                table_for person.committee_members do
-                  column ('Name') {|commitee_member| commitee_member.committee.try(:name)}
+                  column ('Name') {|commitee_member| link_to commitee_member.committee.try(:name), admin_committee_path(commitee_member.committee)}
+                  # [TODO] link to committee members page where can view the review history
+                  # https://expo.uw.edu/expo/admin/committees/7/members/536
+                  # column ('Review') {}
                end
             end           
          end
-         tab "Reviews/Interviews" do
-         end         
-         tab "Instructors" do
+         tab "Interviews", id: 'interviews' do
+            panel 'Interviews' do
+              # This will pull too many reviewed apps. We can try pagination but still not ideal.
+              # Let's move this to committees tab then link to committee member to view review history
+              # h2 "Reviews"
+              # person.committee_members.reverse.each do |committee_member|
+              #   h3 {b committee_member.committee.name}
+              #   table_for committee_member.applications_for_review do
+              #     column ('Applicants'){|app| link_to app.firstname_first, admin_offering_application_path(app.offering.id, app.id) }
+              #   end
+              # end
+              h2 "Interviews"
+              person.offering_interviewers.reverse.each do |interview|
+                h3 { b interview.offering.title}
+                table_for interview.offering_interview_interviewers do        
+                  column("Applicants") {|app_interview| link_to app_interview.applicant.firstname_first, admin_offering_application_path(app_interview.applicant.offering.id, app_interview.applicant.id) rescue "app_interview: #{app_interview.id}" }
+                  column("Comments") {|app_interview| app_interview.comments rescue "#Error!"}
+                end
+              end
+            end
          end
-         tab "Organizations" do
+         tab "Instructors (#{person.service_learning_course_instructors.size})", id: 'instructor' do
+            panel 'Courses Instructed' do 
+              table_for person.service_learning_course_instructors.reverse do                
+                  column ('Quarter') {|instrutor| instrutor.service_learning_course.quarter.title unless instrutor.service_learning_course.blank?}
+                  column ('Unit') {|instrutor| instrutor.service_learning_course.unit.title unless instrutor.service_learning_course.blank?}
+                  column ('Course') {|instrutor| instrutor.service_learning_course.title unless instrutor.service_learning_course.blank?}
+              end
+            end
          end
-         tab "Equipments" do
+         tab "Organizations (#{person.organization_contacts.size})", id: 'organizations' do
+           panel 'Organizations' do
+             table_for person.organization_contacts do
+               column('Current Organizations'){|contact| link_to contact.organization.name, admin_organization_path(contact.organization)}
+               column('Units'){|contact| contact.units.collect(&:name).join("<br>").html_safe}
+             end
+             unless person.former_organization_contacts.blank?
+               table_for person.former_organization_contacts do
+                 column('Former Organization'){|contact| link_to contact.organization.name, admin_organization_path(contact.organization)}
+                 column('Units'){|contact| contact.units.collect(&:name).join("<br>").html_safe}
+               end
+             end
+
+           end
          end
+         # tab "Equipments" do
+         # end
          tab "Notes" do
+           panel "Notes" do
+
+           end
          end
-         tab "Contact History" do
+         tab "Contact History (#{person.contact_histories.size})", id: 'contact_history' do
+           panel "" do
+             table_for person.contact_histories do
+               column('Date'){|contact| contact.updated_at}
+               column('From'){|contact| contact.email_from unless contact.email.nil?}
+               column('Subject'){|contact| contact.email.subject unless contact.email.nil?}
+               column('View'){|contact| link_to "View", admin_contact_history_path(contact), target: "_blank"}
+             end
+           end
          end                  
     end    
   end

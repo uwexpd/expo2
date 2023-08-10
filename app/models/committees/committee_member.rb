@@ -26,27 +26,25 @@ class CommitteeMember < ApplicationRecord
   
   has_many :application_reviewers do
     def for(offering)
-      # find_all{|r| r.application_for_offering.offering == offering rescue nil }.compact
-      find(:all, :joins => :application_for_offering, :conditions => { "application_for_offerings.offering_id" => (offering.is_a?(Offering) ? offering.id : offering)})
+      joins(:application_for_offering).where("application_for_offerings.offering_id=?", (offering.is_a?(Offering) ? offering.id : offering))      
     end
   end
   has_many :applications_for_review, :through => :application_reviewers, :source => :application_for_offering do
     def for(offering)
-      find(:all, :conditions => { :offering_id => (offering.is_a?(Offering) ? offering.id : offering) })
+      where(offering_id: offering.is_a?(Offering) ? offering.id : offering)  
     end
   end
-
-  has_many :application_interviewers do
-    def for(offering)
-      # find_all{|r| r.application_for_offering.offering == offering rescue nil }.compact
-      find(:all, :joins => :application_for_offering, :conditions => { "application_for_offerings.offering_id" => (offering.is_a?(Offering) ? offering.id : offering)})
-    end
-  end
-  has_many :applications_for_interview, :through => :application_interviewers, :source => :application_for_offering do
-    def for(offering)
-      find(:all, :conditions => { :offering_id => (offering.is_a?(Offering) ? offering.id : offering) })
-    end
-  end
+  # [FIXME] We did not set this up.
+  # has_many :application_interviewers do
+  #   def for(offering)
+  #     joins(:application_for_offering).where("application_for_offerings.offering_id=?", (offering.is_a?(Offering) ? offering.id : offering))
+  #   end
+  # end
+  # has_many :applications_for_interview, :through => :application_interviewers, :source => :application_for_offering do
+  #   def for(offering)
+  #     find(:all, :conditions => { :offering_id => (offering.is_a?(Offering) ? offering.id : offering) })
+  #   end
+  # end
   
   has_many :contact_histories, :as => :contactable
   

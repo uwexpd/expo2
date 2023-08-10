@@ -189,4 +189,14 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
       
   end
 
+  form do |f|
+    semantic_errors *f.object.errors.keys
+    inputs "#{application.fullname} - #{application.id}" do
+      h1 "Under development"
+      # input :offering_id
+      # input :person_id
+    end
+    actions
+  end
+
 end 

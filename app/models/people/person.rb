@@ -22,7 +22,18 @@ class Person < ApplicationRecord
     end
   end
   has_many :application_mentors     
-  
+  has_many :mentee_applications, :through => :application_mentors, :source => :application_for_offering
+  has_many :offering_reviewers
+  has_many :offering_interviewers
+  has_many :organization_contacts, -> { where current: true }
+  has_many :organizations, through: :organization_contacts
+  has_many :former_organization_contacts, -> { where current: false }, :class_name => "OrganizationContact"
+  has_many :former_organizations, through: :former_organization_contacts
+  has_many :service_learning_course_instructors
+  has_many :service_learning_courses, through: :service_learning_course_instructors do
+    def for(quarter); where(quarter_id: quarter.id); end
+  end
+
   has_many :notes, :as => :notable, :dependent => :nullify
   has_many :event_invites, :class_name => "EventInvitee", :as => :invitable, :dependent => :destroy
   has_many :committee_members
@@ -45,7 +56,7 @@ class Person < ApplicationRecord
     # if unit is nil, we get placements from all units except pipeline
     def for(obj, unit = Unit.find_by_abbreviation("carlson"))
       unit_id = unit.nil? ? [1,9] : unit.id
-      if obj.is_a? Quarter        
+      if obj.is_a? Quarter
         includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { quarter_id: obj.id, unit_id: unit_id})      
       else
         includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { unit_id: unit_id}).where(["#{obj.class.name.foreign_key} = ? ", obj]) rescue []        
@@ -69,7 +80,6 @@ class Person < ApplicationRecord
       end
     end
   end
-      
 
   has_many :service_learning_self_placements do
   #Object can be a ServiceLearningPosition, or a ServiceLearningCourse.
@@ -80,7 +90,7 @@ class Person < ApplicationRecord
   
   has_many :course_extra_enrollees, :dependent => :destroy do
     def for(qtr)
-      where(:ts_year => qtr.year, :ts_quarter => qtr.quarter_code_id)      
+      where(:ts_year => qtr.year, :ts_quarter => qtr.quarter_code_id)
     end
   end
   has_many :service_learning_course_extra_enrollees, -> {includes(:service_learning_course)}
@@ -136,7 +146,7 @@ class Person < ApplicationRecord
   
   # for activeadmin breadcrumb title display
   def display_name
-    "#{fullname}"
+    "#{fullname}" " <small class='small caption'>(Expo Person ID: #{id})</small>".html_safe
   end
   
   def <=>(o)
