@@ -19,6 +19,8 @@
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
 
+# Active Admin refers to:
+# https://github.com/activeadmin/activeadmin/blob/master/config/locales/en.yml
 en:
   active_admin:
     resources:

@@ -27,7 +27,7 @@ ActiveAdmin.register TextTemplate, as: 'template'  do
     	f.input :name, label: 'Title', :input_html => { :style => 'width:65%;' }
     	f.input :from, :input_html => { :style => 'width:65%;' }
     	f.input :subject, :input_html => { :style => 'width:65%;' }
-    	# TODO Add a switch to swith tinymice editor and plain text input
+      # TODO Add a switch to switch tinymice editor and plain text input
     	# https://materializecss.com/switches.html
     	# div 'HTML Editor', class: 'switch' do |d|
     	# 	d.label do |l|

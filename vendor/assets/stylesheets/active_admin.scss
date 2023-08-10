@@ -9,7 +9,7 @@
 
 // Active Admin's got SASS!
 @import "active_admin/mixins";
-/*@import "active_admin/base";*/
+// @import "active_admin/base";
 
 /* Custom active material theme variables for UW look and feel */
 $am-theme-primary: #4b2e83;
@@ -21,6 +21,9 @@ $am-theme-accent: #b7a57a;
 @import 'chosen';
 @import 'material_icons';
 @import 'material_icons.helpers';
+
+// Custom css
+@import 'buttons';
 
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.
@@ -197,108 +200,116 @@ em.required {
 	font: 600 0.8rem/16px "RobotoDraft", sans-serif;
 }
 
-a:link, a:visited {
-	color: #08d;
-}
+// a:link, a:visited {
+// 	color: #08d;
+// }
 
-// link_to button and material icon style
-a.button {
-	font-size: 14px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    line-height: 0.75rem;
-    text-transform: uppercase;
-    color: rgba(0, 0, 0, 0.7);
-    background: transparent;
-    border-radius: 2px;
-    border: 0;
-    cursor: pointer;
-    display: inline-block;
-    line-height: 18px;
-    margin: 0px;
-    padding: 12px 8px;
-    position: relative;
-    text-align: center;
-    text-transform: uppercase;
-    transition: 0.25s all;
-    user-select: none;
-    vertical-align: middle;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
-    background-color: #4b2e83;
-    color: white;
-    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.15);
-    font-weight: 600;
-    min-width: 88px;
-}
+// // link_to button and material icon style
+// a.button, .action_item a{
+// 	font-size: 14px;
+//     font-size: 0.875rem;
+//     font-weight: 500;
+//     letter-spacing: 0.01em;
+//     line-height: 0.75rem;
+//     text-transform: uppercase;
+//     // color: rgba(0, 0, 0, 0.7);
+//     // background: transparent;
+//     border-radius: 2px;
+//     border: 0;
+//     cursor: pointer;
+//     display: inline-block;
+//     line-height: 18px;
+//     margin: 0px;
+//     padding: 12px 8px;
+//     position: relative;
+//     text-align: center;
+//     text-transform: uppercase;
+//     transition: 0.25s all;
+//     user-select: none;
+//     vertical-align: middle;
+//     -moz-osx-font-smoothing: grayscale;
+//     -webkit-font-smoothing: antialiased;
 
-a.button.small {
-	line-height: 6px;
-	font-size: smaller;
-}
+//     background-color: #4b2e83;
+//     color: white;
+//     box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.15);
+//     // font-weight: 600;
+//     min-width: 88px;
+// }
 
-a.button.add {
-	margin-top: 1rem;
-}
+// a.button.small {
+// 	line-height: 6px;
+// 	font-size: smaller;
+// }
 
-a.button.has_many_add, a.button.has_many_remove {
-	margin: 0 1rem 1rem 1rem;
-}
+// a.button.add {
+// 	margin-top: 1rem;
+// }
 
-//https://github.com/google/material-design-icons/issues/206
-// .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, .session .material-icons
-.material-icons {
-    display: inline-flex;
-    align-items: center;
-    vertical-align: middle;
-}
+// a.button.has_many_add, a.button.has_many_remove {
+// 	margin: 0 1rem 1rem 1rem;
+// }
 
-a.button .material-icons {
-	display: inline-flex;
-    align-items: center;
-    vertical-align: bottom;
-}
 
-a.button:hover {
-	text-decoration: none;
-	color: white;
-	opacity: 0.8;
-}
+// #titlebar_right .action_item a{
+// 	background-color: #4b2e83;
+// 	color: white;
+// 	box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.15);
+// }
 
-a.action_icon:hover, a .material-icons:hover {
-	opacity: 0.6;
-	text-decoration: none;
-}
+// //https://github.com/google/material-design-icons/issues/206
+// // .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, .session .material-icons
+// .material-icons {
+//     display: inline-flex;
+//     align-items: center;
+//     vertical-align: middle;
+// }
 
-i.material-icons.middle_align{
-	vertical-align: middle;
-}
+// a.button .material-icons {
+// 	display: inline-flex;
+//     align-items: center;
+//     vertical-align: bottom;
+// }
 
-i.material-icons.sub_align{
-	vertical-align: sub;
-}
+// a.button:hover, #titlebar_right .action_item a:hover {
+// 	text-decoration: none;
+// 	color: white;
+// 	opacity: 0.8;
+// }
 
-.material-icons.md-42, .mi.md-42 {
-	font-size: 42px;
-}
+// a.action_icon:hover, a .material-icons:hover {
+// 	opacity: 0.6;
+// 	text-decoration: none;
+// }
 
-.material-icons.md-32, .mi.md-32 {
-	font-size: 32px;
-}
+// i.material-icons.middle_align{
+// 	vertical-align: middle;
+// }
 
-.material-icons.md-20, .mi.md-20 {
-	font-size: 20px;
-}
+// i.material-icons.sub_align{
+// 	vertical-align: sub;
+// }
 
-.material-icons.md-16, .mi.md-16 {
-	font-size: 16px;
-}
+// .material-icons.md-42, .mi.md-42 {
+// 	font-size: 42px;
+// }
 
-input[type="submit"].small, input[type="reset"].small, input[type="button"].small {
-	padding: 6px 8px;
-	font-size: smaller;
-}
+// .material-icons.md-32, .mi.md-32 {
+// 	font-size: 32px;
+// }
+
+// .material-icons.md-20, .mi.md-20 {
+// 	font-size: 20px;
+// }
+
+// .material-icons.md-16, .mi.md-16 {
+// 	font-size: 16px;
+// }
+
+// input[type="submit"].small, input[type="reset"].small, input[type="button"].small {
+// 	padding: 6px 8px;
+// 	font-size: smaller;
+// }
 
 form fieldset.inputs ol li.text div.mce-tinymce {
 /*	float: left;*/
@@ -622,15 +633,18 @@ form .inline-hints {
     padding: 0px 16px 5px;
 }
 
-.panel_contents h1{
+.panel_contents h2, .panel_contents h3 {
+	padding: 1.5rem 1rem 1rem;
+}
+
+.panel_contents h1 {
 	font-size: 1.3rem;
 	// padding: 0.3rem 0rem;
 }
 
-.panel_contents h2{
+.panel_contents h2 {
 	font-size: 1rem;
 	font-weight: bold;
-    padding: 1.5rem 1rem 1rem;
 }
 
 .panel_contents .content-block {
@@ -982,7 +996,10 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 	padding-bottom: 1rem;
 }
 
-.sidebar_section .information {
+.sidebar_section .information,
+#applications_sidebar_section .panel_contents,
+#add-committee-member_sidebar_section .panel_contents
+{
 	padding: 1rem;
 	border-bottom: 1px solid #efefef;
 }
@@ -1059,7 +1076,7 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 
 // Filter toggle
 a#toggle_filters.epon, a#toggle_filters.epon:hover {
-    color: #08d;
+    // color: #08d;
 }
 
 .batch_action[data-action="destroy"] {

@@ -101,6 +101,7 @@ group :development, :test do
   gem 'awesome_print'
   gem 'rspec-rails'
   gem 'byebug'
+  gem 'pry', '~> 0.14.2'
 end
 
 group :development do

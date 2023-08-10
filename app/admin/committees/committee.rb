@@ -1,6 +1,7 @@
 ActiveAdmin.register Committee do
   batch_action :destroy, false   
   menu parent: 'Modules', :priority => 30
+  config.per_page = [30, 50, 75]
   config.sort_order = 'name_asc'
 
   index do
@@ -14,8 +15,8 @@ ActiveAdmin.register Committee do
   end
 
   sidebar 'Add Committee Member', only: [:show, :edit] do
-  	i 'person_add', :class => 'material-icons md-32'
-    link_to "Add new committee member", new_admin_committee_member_path(committee)
+      i 'person_add', :class => 'material-icons md-32'
+      link_to "Add new committee member", new_admin_committee_member_path(committee)
   end
 
   form do |f|

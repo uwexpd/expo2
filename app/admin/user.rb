@@ -69,7 +69,7 @@ ActiveAdmin.register User do
           end
           tab "Logins (#{user.logins.size})", id: 'logins' do
             panel '' do
-              paginated_collection(user.logins.page(params[:page]).per(20).order('id DESC'), download_links: false) do
+              paginated_collection(user.logins.page(params[:page]).per(15).order('id DESC'), params: {anchor: 'logins' }, download_links: false) do
                 table_for(collection, sortable: false) do
                     column ('Type') {|login| status_tag 'Sucessful Login', class: 'ok small' }
                     column ('Date/Time') {|login| time_ago_in_words(login.created_at) }
