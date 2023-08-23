@@ -64,9 +64,7 @@ class Person < ApplicationRecord
     end
   end
   
-  has_many :pipeline_placements, -> {includes(position: [:organization_quarter, :organization]).where("organization_quarters.unit_id = :unit_id OR service_learning_placements.unit_id = :unit_id ", unit_id: Unit.find_by_abbreviation("pipeline"))}, :class_name => "ServiceLearningPlacement" do
-
-  # { includes(:position => {:organization_quarter => :organization}).where(["organization_quarters.unit_id = :unit_id OR service_learning_placements.unit_id = :unit_id ", :unit_id => Unit.find_by_abbreviation("pipeline")])}, :class_name => "ServiceLearningPlacement" do
+  has_many :pipeline_placements, -> {joins(position: {organization_quarter: :organization}).includes(position: {organization_quarter: :organization}).where("organization_quarters.unit_id = :unit_id OR service_learning_placements.unit_id = :unit_id ", unit_id: Unit.find_by_abbreviation("pipeline"))}, :class_name => "ServiceLearningPlacement" do
     # Limit to the passed quarter
     def for(quarter, unit = Unit.find_by_abbreviation("pipeline"))
       if quarter.is_a? Quarter
