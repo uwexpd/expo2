@@ -1,7 +1,7 @@
 require 'tmail'
 ActiveAdmin.register ContactHistory do  
   config.sort_order = 'created_at_desc'
-  config.per_page = [30, 50, 100]  
+  config.per_page = [30, 50]
   batch_action :destroy, false
   config.action_items.delete_if {|item| (item.name == :edit || item.name == :destroy) && item.display_on?(:show) }  
   menu label: "Contact History"
@@ -11,7 +11,7 @@ ActiveAdmin.register ContactHistory do
     link_to 'Resend this message', admin_contact_history_path
   end
 
-  index do
+  index pagination_total: false do
     column('Date'){|contact| contact.updated_at}
     column('To'){|contact| contact.email_to unless contact.email.nil?}
     column('Subject'){|contact| contact.email.subject unless contact.email.nil?}

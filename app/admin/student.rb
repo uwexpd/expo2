@@ -44,42 +44,81 @@ menu parent: 'Groups'
             end
          end
          
-         tab "Applications (#{student.application_for_offerings.size})" do
+         tab "Applications (#{student.application_for_offerings.size})", id: 'online_applications' do
           panel 'Online Application History' do
-            div :class => 'content-block' do
-              hr              
+            hr class: 'header'
+            div :class => 'content-block' do              
               table_for student.application_for_offerings do |app|
                 column ('Created At') {|app| app.created_at.to_s(:short_at_time12)}
                 column ('Offering title') {|app| link_to app.offering.title, admin_apply_manage_path(app.offering) }
-                # column ('Application title') {|app| link_to (strip_tags(app.project_title) || "(no title)"), } 
+                column ('Application title') {|app| link_to (strip_tags(app.project_title) || "(no title)"), admin_offering_application_path(app.offering.id, app.id)} 
+                column ('Status'){|app| app.current_status_name.titleize rescue "unknown" }
               end
             end
           end
          end
-         tab "Service Learning" do         
+
+         # units = Unit.where(abbreviation: ['carlson', 'bothell'])
+         community_engaged_placements = student.service_learning_placements
+         # .where(unit_id: units.collect(&:id))
+         tab "Community Engagement (#{community_engaged_placements.size})", id: 'community_engagement' do
+            panel "Community Engagement History" do
+              hr class: 'header'
+              table_for community_engaged_placements do
+                column ('Quarter'){|placement| placement.course.quarter.title}
+                column ('Course'){|placement| placement.course.title}
+                column ('Position'){|placement| raw(placement.position.title) + " at " + placement.position.organization.name rescue "error"}
+                column ('Unit'){|placement| placement.position.unit.name}
+                # column (''){|placement| placement.evaluation_submitted? ? "Evaluation" : "Submit Evaluation"}
+              end              
+              attributes_table title: 'Acknowledgement of Risk' do
+                row ('Date of Birth'){|student| student.sdb.birth_date.to_s(:long)}
+                row ('Electronic AOR'){|student| student.service_learning_risk_date.to_date.to_s(:long) rescue "<span class=light>None on file</span>".html_safe}
+                row ('Paper AOR on file'){|student| student.service_learning_risk_paper_date.to_date.to_s(:long) rescue "<span class=light>None on file</span>".html_safe}
+              end
+              if student.pipeline_placements 
+                attributes_table title: 'Acknowledgement of Risk' do
+                end
+              end
+
+            end
          end
-         tab "Pipeline" do
-         end                  
-         tab "Events (#{student.event_invites.size})" do
+         # tab "Pipeline" do
+         # end
+         tab "Events (#{student.event_invites.size})", id: 'events' do
             panel "Events" do
               render "admin/students/tabs/events"
             end
          end
-         tab "Equipments" do
+         # tab "Equipments" do
+         # end
+         tab "Notes (<span id='notes_count'>#{student.notes.size}</span>)".html_safe, id: "notes" do
+           panel "Notes" do
+             hr class: 'header'
+             br
+             render "admin/people/notes", {person: student}
+           end
          end
-         tab "Notes (#{student.notes.size})" do
+         tab "Contact History (#{student.contact_histories.size})", id: 'contact_history' do
+           panel "Contact History" do
+              hr class: 'header'
+              # render "admin/students/tabs/contact_history"   
+              paginated_collection(student.contact_histories.page(params[:page]).per(20).order('id DESC'), params: {anchor: 'contact_history' }, download_links: false) do
+                table_for(collection, sortable: false) do            
+                  column('Date'){|contact| contact.updated_at}
+                  column('From'){|contact| contact.email_from unless contact.email.nil?}
+                  column('Subject'){|contact| contact.email.subject unless contact.email.nil?}
+                  column('View'){|contact| link_to "View", admin_contact_history_path(contact), target: "_blank"}
+                end
+              end
+           end
          end
-         tab "Contact History (#{student.contact_histories.size})" do
-            panel "Contact History" do
-              render "admin/students/tabs/contact_history"
-            end
-         end
-         tab "Appointments (#{student.appointments.size})" do
+         tab "Appointments (#{student.appointments.size})", id: 'appointments' do
             panel "Appointments" do
               render "admin/students/tabs/appointments"
             end
          end
-         tab "Transcript" do
+         tab "Transcript", id: 'transcript' do
             panel "Transcript" do
               render partial: "admin/students/transcript", object: student # [TODO] Tune this page, cost 3 sec
            end

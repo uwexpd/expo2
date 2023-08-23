@@ -1,0 +1,7 @@
+$("#notes_count").text("<%= j @person.notes.size.to_s %>")
+$("#person_notes").html("<%= j render 'notes', {person: @person} %>");
+// TODO: Need to include jquery UI highlight-effect, tried it but not work.
+// $("#note_<%= @note.id %>").effect("highlight", {background: "#fef5d4"}, 3000);
+
+
+

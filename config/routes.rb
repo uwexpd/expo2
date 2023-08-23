@@ -1,22 +1,15 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
   
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
-  
   root to: redirect('expo'), :as => 'redirect_root'
   get '/auth/:provider/callback', to: 'sessions#create'
 
   scope 'expo' do
 
     root 'admin/dashboard#index'
-    
-    ## For active storage scope workaround
-    # get "rails/active_storage/disk/:encoded_key/*filename" => "active_storage/disk#show", as: :scoped_rails_disk_service
-    # get "rails/active_storage/blobs/:signed_id/*filename" => "active_storage/blobs#show", as: :scoped_rails_blobs_service
-    # get "rails/active_storage/representations/:signed_blob_id/*filename" => "active_storage/representations#show", as: :scoped_rails_representations_service    
-
-    # Custom Active Admin Routes --------------------------------------------
+    # -------------------------------------------------------------------------------------------
+    # Custom Active Admin Routes
+    # -------------------------------------------------------------------------------------------
     get 'admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
     get 'admin/apply/:offering/list', to: 'admin/apply#list', as: :admin_apply_list
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
@@ -24,6 +17,7 @@ Rails.application.routes.draw do
     get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
     post 'admin/base/vicarious_login', :to => 'admin/base#vicarious_login', as: :admin_vicarious_login
     get 'admin/base/remove_vicarious_login', :to => 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
+
     ActiveAdmin.routes(self)    
     namespace :admin do
       resources :offerings do
@@ -56,7 +50,8 @@ Rails.application.routes.draw do
         resources :committee_members
         resources :committee_quarters
         resources :committee_meetings
-      end
+      end      
+      resources :notes      
     end
     
     # -------------------------------------------------------------------------------------------
@@ -81,7 +76,7 @@ Rails.application.routes.draw do
     get 'rsvp/unattend/:id', to: 'rsvp#unattend', as: :rsvp_unattend
     get 'rsvp', to: 'rsvp#index'
 
-    # Online Applications    
+    # Online Applications
     get 'apply/:offering/', to: 'apply#index', constraints: { offering: /\d+/ }, as: :apply
     match 'apply/:offering/which', to: 'apply#which', constraints: { offering: /\d+/ }, via: [:get, :post], as: :apply_which
     match 'apply/:offering/page/:page', to: 'apply#page', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch], as: :apply_page
@@ -95,6 +90,7 @@ Rails.application.routes.draw do
     match 'apply/:offering/validate/:group_member_id/:token', to: 'apply#group_member_validation', as: :apply_group_member_validation, via: [:get, :post, :put, :patch]
     get 'apply/:offering/help/:id', to: 'apply#help', as: :apply_help
 
+    # Mentor
     get 'mentor', to: 'mentor#index'
     get 'mentor/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_map
     get 'mentor/offering/:offering_id/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_offering_map

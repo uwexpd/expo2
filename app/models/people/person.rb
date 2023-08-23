@@ -57,14 +57,16 @@ class Person < ApplicationRecord
     def for(obj, unit = Unit.find_by_abbreviation("carlson"))
       unit_id = unit.nil? ? [1,9] : unit.id
       if obj.is_a? Quarter
-        includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { quarter_id: obj.id, unit_id: unit_id})      
+        includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { quarter_id: obj.id, unit_id: unit_id}) 
       else
         includes(:position => {:organization_quarter => :organization}).where(organization_quarters: { unit_id: unit_id}).where(["#{obj.class.name.foreign_key} = ? ", obj]) rescue []        
       end
     end
   end
   
-  has_many :pipeline_placements, -> { inclues(:position => {:organization_quarter => :organization}).where(["organization_quarters.unit_id = :unit_id OR service_learning_placements.unit_id = :unit_id ", :unit_id => Unit.find_by_abbreviation("pipeline")])}, :class_name => "ServiceLearningPlacement" do
+  has_many :pipeline_placements, -> {includes(position: [:organization_quarter, :organization]).where("organization_quarters.unit_id = :unit_id OR service_learning_placements.unit_id = :unit_id ", unit_id: Unit.find_by_abbreviation("pipeline"))}, :class_name => "ServiceLearningPlacement" do
+
+  # { includes(:position => {:organization_quarter => :organization}).where(["organization_quarters.unit_id = :unit_id OR service_learning_placements.unit_id = :unit_id ", :unit_id => Unit.find_by_abbreviation("pipeline")])}, :class_name => "ServiceLearningPlacement" do
     # Limit to the passed quarter
     def for(quarter, unit = Unit.find_by_abbreviation("pipeline"))
       if quarter.is_a? Quarter

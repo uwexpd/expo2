@@ -6,7 +6,24 @@ ActiveAdmin.register Person do
   menu parent: 'Groups'
   
   permit_params :firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip
-  
+
+  controller do  
+    def note_params
+      params.require(:note).permit(:note, :contact_type_id, :notable_type, :creator_name, :access_level)
+    end
+  end
+
+  member_action :note, method: [:post, :put] do
+    @person = Person.find(params[:id])
+    @note = @person.notes.create(note_params)
+    
+    respond_to do |format|
+      format.html { redirect_to admin_person_path(@person), anchor: "notes" }
+      format.js
+    end    
+  end
+
+
   index pagination_total: false do
     column 'Name' do |person|
       link_to person.fullname, admin_person_path(person)
@@ -110,27 +127,29 @@ ActiveAdmin.register Person do
          end
          # tab "Equipments" do
          # end
-         tab "Notes" do
+         tab "Notes (<span id='notes_count'>#{person.notes.size}</span>)".html_safe, id: "notes" do
            panel "Notes" do
-
+             render "notes", {person: person}
            end
          end
          tab "Contact History (#{person.contact_histories.size})", id: 'contact_history' do
-           panel "" do
-             table_for person.contact_histories do
-               column('Date'){|contact| contact.updated_at}
-               column('From'){|contact| contact.email_from unless contact.email.nil?}
-               column('Subject'){|contact| contact.email.subject unless contact.email.nil?}
-               column('View'){|contact| link_to "View", admin_contact_history_path(contact), target: "_blank"}
-             end
+           panel "Contact History" do
+              paginated_collection(person.contact_histories.page(params[:page]).per(20).order('id DESC'), params: {anchor: 'contact_history' }, download_links: false) do
+                table_for(collection, sortable: false) do            
+                  column('Date'){|contact| contact.updated_at}
+                  column('From'){|contact| contact.email_from unless contact.email.nil?}
+                  column('Subject'){|contact| contact.email.subject unless contact.email.nil?}
+                  column('View'){|contact| link_to "View", admin_contact_history_path(contact), target: "_blank"}
+                end
+              end
            end
-         end                  
+         end
     end    
   end
+
   sidebar "People Search", only: :show do
       
   end
-
   
   form do |f|
      f.semantic_errors *f.object.errors.keys

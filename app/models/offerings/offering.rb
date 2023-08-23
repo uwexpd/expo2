@@ -4,14 +4,12 @@ class Offering < ApplicationRecord
   
   scope :sorting, -> {
     left_outer_joins(:quarter_offered).
-    where("unit_id in (?)", current_user.units.collect(&:id)).
-    order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC") 
-  }
-
-  scope :current, -> { left_outer_joins(:quarter_offered).where("quarters.first_day >= ? AND offerings.year_offered >= ?", Quarter.current_quarter.first_day, Time.now.year)}
-  scope :sorting_current, -> { sorting.current}
-  scope :past, -> {  left_outer_joins(:quarter_offered).where("quarters.first_day < ? OR offerings.year_offered < ? OR offerings.year_offered is null", Quarter.current_quarter.first_day, Time.now.year) }
-  scope :sorting_past, -> { sorting.past}
+    where(unit_id: current_user.blank? ? Unit.all.collect(&:id) : current_user.units.collect(&:id)).
+    order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC")
+  }    
+  scope :current, -> { left_outer_joins(:quarter_offered).where("quarters.first_day >= ? OR (quarter_offered_id is null and year_offered >= ?)", Quarter.current_quarter.first_day, Time.now.year)}
+  scope :sorting_current, -> { sorting.current }
+  scope :sorting_past, -> { where(id: (sorting - sorting_current).map(&:id) )}
 
   belongs_to :unit
   has_many :applications, :class_name => "ApplicationForOffering"
