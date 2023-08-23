@@ -73,18 +73,23 @@ menu parent: 'Groups'
               end              
               attributes_table title: 'Acknowledgement of Risk' do
                 row ('Date of Birth'){|student| student.sdb.birth_date.to_s(:long)}
-                row ('Electronic AOR'){|student| student.service_learning_risk_date.to_date.to_s(:long) rescue "<span class=light>None on file</span>".html_safe}
+                row ('Electronic AOR') do |student| 
+                  span student.service_learning_risk_date.to_date.to_s(:long) rescue "<span class=light>None on file</span>".html_safe
+                  span "(#{student.service_learning_risk_signature})" rescue "error"
+                  span ", extends to #{student.extention_valid_date.to_date.to_s(:long)}" if student.service_learning_risk_date_extention?
+                end
                 row ('Paper AOR on file'){|student| student.service_learning_risk_paper_date.to_date.to_s(:long) rescue "<span class=light>None on file</span>".html_safe}
               end
-              if student.pipeline_placements 
-                attributes_table title: 'Acknowledgement of Risk' do
+              unless student.pipeline_placements.blank?
+                attributes_table title: "#{Unit.find_by_abbreviation('pipeline').name} Info" do
+                  row ('Orientation date'){|student| student.pipeline_orientation }
+                  row ('Background check date'){|student| student.pipeline_background_check.nil? ? "None" : student.pipeline_background_check }
+                  row ('Current pipeline enrolled courses'){|student| student.enrolled_service_learning_courses(Quarter.current_quarter, Unit.find_by_abbreviation("pipeline")).collect(&:title).join(", ") }
                 end
               end
 
             end
-         end
-         # tab "Pipeline" do
-         # end
+         end         
          tab "Events (#{student.event_invites.size})", id: 'events' do
             panel "Events" do
               render "admin/students/tabs/events"
