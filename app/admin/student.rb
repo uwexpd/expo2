@@ -48,11 +48,11 @@ menu parent: 'Groups'
           panel 'Online Application History' do
             hr class: 'header'
             div :class => 'content-block' do              
-              table_for student.application_for_offerings do |app|
+              table_for student.application_for_offerings.reverse do |app|
                 column ('Created At') {|app| app.created_at.to_s(:short_at_time12)}
                 column ('Offering title') {|app| link_to app.offering.title, admin_apply_manage_path(app.offering) }
                 column ('Application title') {|app| link_to (strip_tags(app.project_title) || "(no title)"), admin_offering_application_path(app.offering.id, app.id)} 
-                column ('Status'){|app| app.current_status_name.titleize rescue "unknown" }
+                column ('Status'){|app| app.current_status_name.titleize rescue "not started" }
               end
             end
           end

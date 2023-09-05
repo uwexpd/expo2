@@ -30,7 +30,7 @@ ActiveAdmin.register EventTime, as: 'times' do
     end
     panel 'Invitees' do
        table_for times.invitees.joins(:person).order((params[:order] ? params[:order] : 'lastname asc').gsub('_asc', ' asc').gsub('_desc', ' desc')), sortable: true do
-         column('Name', sortable: 'lastname') {|invitee| invitee.person.is_a?(Student) ? (link_to invitee.person.fullname, admin_user_path(invitee)) : (invitee.person.fullname rescue invitee.fullname rescue "#error") }
+         column('Name', sortable: 'lastname') {|invitee| invitee.person.is_a?(Student) ? (link_to invitee.person.fullname, admin_student_path(invitee.person.id)) : (link_to invitee.person.fullname, admin_person_path(invitee.person.id) rescue invitee.fullname rescue "#error") }
          column('Expected?', sortable: 'attending') {|invitee| invitee.attending? ? (status_tag 'Yes', class: 'green small') : (status_tag 'No', class: 'red small') }
          column('Attended?', sortable: 'checkin_time') {|invitee| invitee.checked_in? ? (status_tag 'Yes', class: 'ok small') : (status_tag 'No', class: 'red small') }         
        end

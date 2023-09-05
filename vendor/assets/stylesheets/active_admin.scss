@@ -615,7 +615,7 @@ form .inline-hints {
 #index_table_organizations .col-id { min-width: 75px; }
 #index_table_pages .col-title { min-width: 180px; }
 #show_table_offering_questions .col- {min-width: 50px;}
-#show_table_offering_questions .col-type {min-width: 100px;}
+#show_table_offering_questions .col-type, #online_applications .col-status {min-width: 100px;}
 #show_table_offering_questions .col-functions {min-width: 115px;}
 #show_table_offering_tasks .col-functions {min-width: 115px;}
 #index_table_restrictions .col-type {min-width: 200px;}
@@ -843,7 +843,7 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 }
 
 .panel_contents .student_header {
-	padding: 16px;
+	padding: 0.75rem;
 }
 
 .student_header {
