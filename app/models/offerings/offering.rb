@@ -64,7 +64,34 @@ class Offering < ApplicationRecord
   has_many :tasks, :through => :phases
   has_many :other_award_types, :class_name => "OfferingOtherAwardType", :dependent => :destroy
   has_many :invitation_codes, :class_name => "OfferingInvitationCode", :dependent => :destroy
-  has_many :events, :dependent => :nullify  
+  has_many :events, :dependent => :nullify
+  has_many :application_review_decision_types, :dependent => :destroy do
+    def yes_option
+      where(yes_option: true).first
+    end
+    def no_option
+      where(title: 'No').first
+    end
+  end
+  has_many :application_interview_decision_types, :dependent => :destroy do
+    def yes_option
+      where(yes_option: true).first
+    end
+    def no_option
+      where(title: 'No').first
+    end
+    def contingency_option
+      where(contingency_option: true).first
+    end
+  end
+  has_many :application_final_decision_types, :dependent => :destroy do
+    def yes_option
+      where(yes_option: true).first
+    end
+    def no_option
+      where(title: 'No').first
+    end
+  end
   has_many :application_moderator_decision_types, :dependent => :destroy
   belongs_to :dean_approver, :class_name => "User", :foreign_key => "dean_approver_id"
   belongs_to :financial_aid_approver, :class_name => "User", :foreign_key => "financial_aid_approver_id"

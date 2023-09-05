@@ -73,7 +73,7 @@ ActiveAdmin.register Person do
          tab "Committees (#{person.committee_members.size})", id: 'committees' do
             panel 'Committees' do
                table_for person.committee_members do
-                  column ('Name') {|commitee_member| link_to commitee_member.committee.try(:name), admin_committee_path(commitee_member.committee)}
+                  column ('Name') {|commitee_member| link_to commitee_member.committee.name, admin_committee_path(commitee_member.committee) rescue "<span class='grey'>Unknown</span>".html_safe }
                   # [TODO] link to committee members page where can view the review history
                   # https://expo.uw.edu/expo/admin/committees/7/members/536
                   # column ('Review') {}
