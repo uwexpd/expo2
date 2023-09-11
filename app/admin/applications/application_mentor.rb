@@ -60,7 +60,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
       f.input :academic_department, as: :select, collection: AcademicDepartment.all.collect(&:name).sort, :input_html => { multiple: true, class: "chosen-select", :style => 'width: 50%' }
       f.input :approval_response, as: :select, collection: %w(revise approved)
       f.input :approval_comments, as: :text, :input_html => { :class => 'autogrow', :rows => 5, :cols => 40  }
-    f.input :approval_at, as: :datetime_picker, input_html: { :style => 'width:50%;' }
+    f.input :approval_at, as: :date_time_picker, input_html: { :style => 'width:50%;' }
     end
     f.actions
   end

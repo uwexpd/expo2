@@ -15,7 +15,7 @@ ActiveAdmin.register Appointment do
     column ('Time') {|appointment| link_to appointment.start_time.to_s(:long_time12), admin_appointment_path(appointment)}
     column ('Type') {|appointment| status_tag appointment.contact_type.title, class: 'small' if appointment.contact_type}
     column ('Staff Person') {|appointment| appointment.staff_person.firstname_first rescue "unknown" }
-    column ('Student') {|appointment| appointment.student.fullname rescue "unknown"}
+    column ('Student') {|appointment| link_to appointment.student.fullname, admin_student_path(appointment.student) rescue "unknown"}
     column ('Chick In Time') {|appointment| appointment.check_in_time.to_s(:time12) if appointment.check_in_time }
     actions
   end
@@ -55,14 +55,14 @@ ActiveAdmin.register Appointment do
   form do |f|
     semantic_errors *f.object.errors.keys
     f.inputs do
-      f.input :start_time, as: :datetime_picker, required: true, :input_html => { :style => 'width:50%;' }
-      f.input :end_time, as: :datetime_picker, :input_html => { :style => 'width:50%;' }
+      f.input :start_time, as: :date_time_picker, required: true, :input_html => { :style => 'width:50%;' }
+      f.input :end_time, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
       f.input :unit, as: :select, include_blank: false, required: true
       f.input :staff_person_id, as: :select, required: true,
                collection: User.admin.reject{|u| u.person.firstname.nil?}.sort_by{|u| u.person.firstname}.map{|u| [u.fullname, u.person_id]}, 
                include_blank: false, input_html: { class: "select2", style: "width: 50%"}
       f.input :student_id, label: 'Student EXPO ID', :input_html => { :style => 'width:50%;' }
-      f.input :check_in_time, as: :datetime_picker, :input_html => { :style => 'width:50%;' }
+      f.input :check_in_time, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
       f.input :drop_in
       f.input :contact_type_id, as: :select, collection: ContactType.all
       f.input :front_desk_notes, :input_html => { :rows => 3, :style => 'width:50%;' }

@@ -61,7 +61,7 @@ ActiveAdmin.register OfferingRestrictionExemption, as: 'exemptions' do
 	  f.inputs do
 	  	f.input :person_id, required: true, :input_html => {style: 'width: 50%'}
 	  	f.input :note, :input_html => { rows: 3, style: 'width: 50%'}
-	  	f.input :valid_until, required: true, as: :datetime_picker, :input_html => {style: 'width: 50%'}
+	  	f.input :valid_until, required: true, as: :date_time_picker, picker_options: {min_date: Date.current}, input_html:{style: 'width: 50%'}
   	  end
   	  f.actions
   	end

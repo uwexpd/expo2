@@ -1,7 +1,7 @@
 ActiveAdmin.register Offering do
   batch_action :destroy, false
   menu parent: 'Modules', label: 'Online Apps', :priority => 25
-  config.sort_order = '' # Use blank to override the default sort by id in activeadmin
+  config.sort_order = ['created_at_desc', 'unit_id_asc']
   config.per_page = [30, 50, 100, 200]
 
   scope 'Current Offerings', :sorting_current, default: true

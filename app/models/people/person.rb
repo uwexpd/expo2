@@ -146,7 +146,7 @@ class Person < ApplicationRecord
   
   # for activeadmin breadcrumb title display
   def display_name
-    "#{fullname}" " <small class='small caption'>(Expo Person ID: #{id})</small>".html_safe
+    "#{fullname} (Expo Person ID: #{id})"
   end
   
   def <=>(o)

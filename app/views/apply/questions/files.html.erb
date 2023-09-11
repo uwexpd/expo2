@@ -15,7 +15,7 @@
 		<% if app_file.file.file.nil? %>
 		  <div class="btn">
 		  	 <i class="material-icons left">file_upload</i>
-			 <span><%= upload_title(app_file) %></span>
+			 <span>Choose File to Upload</span>
 			 <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
 		  </div>		  
 
@@ -23,13 +23,13 @@
 				
 			<div class="btn">
 		  	  <i class="material-icons left">file_upload</i>
-			  <span>Replace this File:	</span>
+			  <span>Replace this File</span>
 			  <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
 		  </div>
 		<% end %>
 
 		<div class="file-path-wrapper">
-			 <% placeholder = question_file.file_identifier.nil? ? "Upload file" : question_file.file_identifier %>
+			 <% placeholder = question_file.file_identifier.nil? ? "No_file_chosen" : question_file.file_identifier %>
         	 <input class="file-path validate" type="text" placeholder= <%= placeholder %> >
     </div>
 
