@@ -40,8 +40,8 @@ ActiveAdmin.register EventTime, as: 'times' do
   form do |f|
     semantic_errors *f.object.errors.keys
     f.inputs do
-      f.input :start_time, as: :datetime_picker, required: true, :input_html => { :style => 'width:50%;' }
-      f.input :end_time, as: :datetime_picker, :input_html => { :style => 'width:50%;' }
+      f.input :start_time, as: :date_time_picker, required: true, :input_html => { :style => 'width:50%;' }
+      f.input :end_time, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
       f.input :location_text, label: 'Location', :input_html => { :style => 'width:50%;' }
       f.input :title, :input_html => { :style => 'width:50%;' }
         div 'Use this title to distinguish this time slot from others.', class: 'caption'

@@ -3,7 +3,7 @@ ActiveAdmin.register OfferingQuestionOption, as: 'options' do
 	menu false	
 	config.filters = false
 
-	permit_params :title, :value
+	permit_params :title, :value, :associate_question_id
 
 	breadcrumb do
   	[
@@ -51,6 +51,7 @@ ActiveAdmin.register OfferingQuestionOption, as: 'options' do
 	  f.inputs do
 	    f.input :title, hint: 'The text displayed to the user.'
 	    f.input :value, hint: 'The value stored in the database. Leave this blank to just use the title as the value.'
+	    f.input :associate_question_id, label:'Toogle Question ID', hint: 'Radio button that toggles with another question. Please input the question ID you would like to toogle.'
 	  end
 	  f.actions
 	end

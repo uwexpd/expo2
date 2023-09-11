@@ -72,7 +72,7 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 	    f.input :ordering, label: 'Order', as: :select, collection: ordering, include_blank: false
 	    #
 	    f.input :description, as: :text, input_html: { rows: 3, style: 'width: 100%'  }
-	    f.input :introduction, as: :text, input_html: { rows: 8, style: 'width: 100%'  }
+	    f.input :introduction, as: :text, input_html: { :class => "tinymce", rows: 8, style: 'width: 100%'  }
 	    f.input :hide_in_admin_view, label: 'Hide this page when viewing an application in admin view. (This also hides this page from reviewers)'
 	    f.input :hide_in_reviewer_view, label: 'Hide this page when a reviewer is viewing an application'
 	  end
