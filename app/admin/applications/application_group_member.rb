@@ -61,23 +61,22 @@ ActiveAdmin.register ApplicationGroupMember, as: 'group_member' do
   end
 
   form do |f|
-	f.semantic_errors *f.object.errors.keys
-	inputs do
-	  input :person_id, input_html: { style: 'width: 30%'}
-	  input :verified, as: :boolean
-      input :firstname, input_html: { style: 'width: 30%'}
-      input :lastname, input_html: { style: 'width: 30%'}   
-      input :email, input_html: { style: 'width: 30%'}
-      input :uw_student      
-      input :confirmed, as: :boolean
-      input :nominated_mentor_id, as: :select, collection: group_member.app.mentors.map{|m| [m.fullname, m.id] }, include_blank: true
-      input :nominated_mentor_explanation, input_html: { :rows => 5, :style => "width:100%;" }
-      input :theme_response, input_html: { :rows => 4, :style => "width:100%;" }
-      input :theme_response2, input_html: { :rows => 4, :style => "width:100%;" }
-      input :requests_printed_program, label: 'Printed Proceedings?'      
-    end
+		f.semantic_errors *f.object.errors.keys
+		inputs do
+		  input :person_id, input_html: { style: 'width: 30%'}
+		  input :verified, as: :boolean
+	      input :firstname, input_html: { style: 'width: 30%'}
+	      input :lastname, input_html: { style: 'width: 30%'}
+	      input :email, input_html: { style: 'width: 30%'}
+	      input :uw_student
+	      input :confirmed, as: :boolean
+	      input :nominated_mentor_id, as: :select, collection: group_member.app.mentors.map{|m| [m.fullname, m.id] }, include_blank: true
+	      input :nominated_mentor_explanation, input_html: { :rows => 5, :style => "width:100%;" }
+	      input :theme_response, input_html: { :rows => 4, :style => "width:100%;" }
+	      input :theme_response2, input_html: { :rows => 4, :style => "width:100%;" }
+	      input :requests_printed_program, label: 'Printed Proceedings?'
+	    end
     actions
-
   end
 
 end

@@ -1,10 +1,12 @@
 ActiveAdmin.register ApplicationForOffering, as: 'application' do
-  belongs_to :offering
-  actions :all, :except => [:destroy]
+  belongs_to :offering, optional: true
+  includes :person, :offering
+  actions :all, :except => [:new, :destroy]
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   config.per_page = [20, 50, 100]
   menu false
+  config.filters = false
 
   controller do
     before_action :fetch_offering, :except => [ :new, :create ]
@@ -54,27 +56,15 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
   end
 
-  # scope "test", defalut: true do |application|
-  #   application.where(offering_id: 702)
-  # end
-
-  # controller do
-  #   def scoped_collection
-  #     # app_ids = Offering.find(params["offering_id"]).application_for_offerings.collect(&:id)
-  #     # logger.debug("Debug => #{app_ids}")
-  #     super.where(offering_id: params["offering_id"])
-  #   end
-  # end
-
   index do
-    column :id
-    # column 'Student Name' do |app|
-    #   p link_to app.person.lastname_first, admin_student_path(app.person)
-    #   p app.person.email rescue "Unknown"
-    # end
-    #column ('Project Tiitle') {|app| link_to app.project_title.blank? ? "View Application" : strip_tags(app.project_title), admin_offering_application_path(app.offering, app) }
-    # column ('Current Status') {|app| raw(print_status(app)) }
-    # actions
+    column 'Student Name' do |app|
+      text_node link_to app.person.lastname_first, admin_student_path(app.person)
+      br
+      span("#{app.person.email rescue Unknown}", class: 'caption')
+    end
+    column ('Project Tiitle') {|app| link_to app.project_title.blank? ? "View Application" : strip_tags(app.project_title), admin_offering_application_path(app.offering, app) }
+    column ('Current Status') {|app| raw(print_status(app)) }
+    actions
   end
 
   show :title => proc{|app|app.person.fullname} do
@@ -191,8 +181,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
   form do |f|
     semantic_errors *f.object.errors.keys
-    inputs "#{application.fullname} - #{application.id}" do
-      h1 "Under development"
+    inputs do
+      #"#{application.fullname unless object.new_record?} - #{application.id unless object.new_record?}"
+      h2 "Under development"
       # input :offering_id
       # input :person_id
     end
