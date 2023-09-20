@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
     post 'admin/base/vicarious_login', :to => 'admin/base#vicarious_login', as: :admin_vicarious_login
     get 'admin/base/remove_vicarious_login', :to => 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
+    get 'admin/application_for_offerings', to: 'admin/applications#index'
+    get 'admin/service_learning_placements', to: 'admin/dashboard#index' # [TODO] update when SLP is ready
 
     ActiveAdmin.routes(self)    
     namespace :admin do
@@ -47,9 +49,9 @@ Rails.application.routes.draw do
       end
       resources :contact_histories
       resources :committees do
-        resources :committee_members
+        resources :members
         resources :committee_quarters
-        resources :committee_meetings
+        resources :meetings
       end      
       resources :notes      
     end

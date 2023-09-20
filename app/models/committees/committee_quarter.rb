@@ -4,7 +4,7 @@ class CommitteeQuarter < ApplicationRecord
   belongs_to :quarter
   
   has_many :committee_member_quarters, :dependent => :destroy do
-    def active; find(:all, :conditions => {:active => true}); end
+    def active; where(active: true); end
   end
   
   validates_presence_of :quarter_id

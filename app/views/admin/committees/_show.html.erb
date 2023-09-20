@@ -1,7 +1,7 @@
 <div class='panel'>	
 	<div class='panel_contents'>
 		<div class='content-block committee'>
-			<h1>Committee Manager &raquo; <%= committee.name %></h1>
+			<h1>Committee Manager &raquo; <span class='caption'><%= committee.name %></span></h1>
 
 			<ul class="welcome-links">
 				
@@ -13,18 +13,18 @@
 				
 				<li id="calendar">
 					<i class='material-icons md-36'>today</i>
-					<%= link_to "Active Quarters", admin_committee_quarters_path(committee) %>
+					<%= link_to "Active Quarters", admin_committee_committee_quarters_path(committee) %>
 					<div>View the quarters that this committee is active.
 						<br><small>
-						<%= raw(committee.committee_quarters.sort.collect{|q| link_to q.title, admin_committee_quarter_path(committee, q)}.join(", ")) %>
+						<%= raw(committee.committee_quarters.sort.collect{|q| link_to q.title, admin_committee_committee_quarter_path(committee, q)}.join(", ")) %>
 						</small>
 					</div>
 				</li>
 
 				<li id="meetings">
 					<i class='material-icons md-36'>speaker_notes</i>
-					<%= link_to "Meetings", admin_committee_meetings_path(committee) %>
-					<div>View the meetings that have been arranged for this committee.
+					<%= link_to @committee.meetings_title_display, admin_committee_meetings_path(committee) %>
+					<div>View the <%= @committee.meetings_title_display(true) %> that have been arranged for this committee.
 					<br><small>
 					<%= raw(committee.meetings.future.sort.collect{|m| link_to m.title, admin_committee_meeting_path(committee, m)}.join(", ")) %>
 					</small>

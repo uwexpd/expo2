@@ -24,6 +24,7 @@ $am-theme-accent: #b7a57a;
 
 // Custom css
 @import 'buttons';
+@import 'index_table';
 
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.
@@ -600,30 +601,6 @@ form .inline-hints {
 	min-width: 275px;
 }
 
-/* @index table column width size */
-#index_table_scholarships .col-title, #index_table_scholarships .col-deadlines {
-	min-width: 110px;
-}
-
-#index_table_units .col-unit, #index_table_units .col-email, #index_table_units .col-phone, #index_table_offerings .col-unit, #index_table_offerings .col-quarter {
-	white-space: nowrap;
-}
-
-#index_table_offerings .col-unit, { min-width: 80px; }
-#index_table_offerings .col-quarter { min-width: 120px; }
-#index_table_events .col-type { min-width: 110px; }
-#index_table_organizations .col-id { min-width: 75px; }
-#index_table_pages .col-title { min-width: 180px; }
-#show_table_offering_questions .col- {min-width: 50px;}
-#show_table_offering_questions .col-type, #online_applications .col-status {min-width: 100px;}
-#show_table_offering_questions .col-functions {min-width: 115px;}
-#show_table_offering_tasks .col-functions {min-width: 115px;}
-#index_table_restrictions .col-type {min-width: 200px;}
-#index_table_department_extras .col-id {min-width: 55px;}
-#index_table_email_queues .col-to {min-width: 200px;}
-#index_table_email_queues .col-from {min-width: 140px;}
-/* end index table column width */
-
 #q_submit {
 	background-color: #4b2e83;
 }
@@ -998,7 +975,7 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 
 .sidebar_section .information,
 #applications_sidebar_section .panel_contents,
-#add-committee-member_sidebar_section .panel_contents
+.sidebar_section.panel .panel_contents
 {
 	padding: 1rem;
 	border-bottom: 1px solid #efefef;
