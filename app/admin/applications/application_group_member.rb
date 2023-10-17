@@ -37,7 +37,7 @@ ActiveAdmin.register ApplicationGroupMember, as: 'group_member' do
 
   show do
   	attributes_table do
-	    row :firstname        
+	    row :firstname
 	    row :lastname
 	    row :uw_student
 	    row :email

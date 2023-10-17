@@ -1,0 +1,20 @@
+<hr class='header'>
+<div class='panel_contents content-block'>
+
+<table class='borderless'>
+	<tr>
+		<th>Quarter</th>
+		<th>Active?</th>
+		<th>Comments</th>
+	</tr>
+		<% for q in member.committee_member_quarters.reverse %>
+			<%= fields_for "committee_member[committee_member_quarter_attributes][#{q.id}]", q do |quarter_fields| %>
+			<tr>
+				<td><%= q.quarter.title %></td>
+				<td><%= quarter_fields.check_box :active %></td>
+				<td><%= quarter_fields.text_field :comment, :size => 50 %></td>
+			</tr>
+			<% end %>
+		<% end %>	
+</table>
+</div>

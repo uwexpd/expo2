@@ -287,9 +287,7 @@ class ServiceLearningController < ApplicationController
 
   def show_minor_warning
     if @student.sdb.age < 18 && !@student.valid_service_learning_waiver_on_file?
-      flash[:error] = "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk
-                        form on your behalf <strong>before</strong> you can register for a service learning position. Please
-                        visit the Community-Engaged Courses office in Mary Gates Hall as soon as possible."
+      flash[:error] = "Since you are under 18, your parent or guardian <strong>must</strong> sign an Acknowledgement of Risk form on your behalf <strong>before</strong> you can register for a service learning position. Please visit the Community-Engaged Courses office in Mary Gates Hall as soon as possible.".html_safe
     end
   end
 

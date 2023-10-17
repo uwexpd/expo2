@@ -260,7 +260,7 @@ table.application_review li {
 	width: 75%;
 }
 
-.welcome-links li.application li, .page_intro ul li{
+.welcome-links ul li.application li, .page_intro ul li{
 	padding-left: 1em;
   list-style-type: disc;
   margin-left: 4em;
@@ -288,4 +288,8 @@ table.application_review li {
 
 .apply label {
 	color: #666;
+}
+
+.card .card-content .message p {
+	margin: revert;
 }

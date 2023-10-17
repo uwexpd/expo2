@@ -32,7 +32,7 @@ class Committee < ApplicationRecord
   
   has_many :quarters, :through => :committee_quarters, :source => :quarter do
     def upcoming(limit = 4, reference_quarter = Quarter.current_quarter)
-      reject{|q| q < reference_quarter}.sort[0..(limit-1)]
+      select{|q| (q <=> reference_quarter) == 1 }
     end
   end
   

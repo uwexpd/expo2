@@ -48,7 +48,7 @@ class CommitteeMember < ApplicationRecord
   
   has_many :contact_histories, :as => :contactable
   
-  delegate :fullname, :firstname_first, :lastname_first, :firstname, :lastname, :to => :person
+  delegate :fullname, :firstname_first, :lastname_first, :firstname, :lastname, :email, :to => :person
   
   validates_presence_of :person, :committee_id
   validates_uniqueness_of :person_id, :scope => :committee_id, :message => "already exists as part of this committee"
