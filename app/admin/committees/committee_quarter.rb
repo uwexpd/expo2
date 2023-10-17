@@ -14,8 +14,7 @@ ActiveAdmin.register CommitteeQuarter do
 
 	show do
 	  active_quarter_members = committee_quarter.committee_member_quarters.active
-	  panel '' do
-		div :class => 'content-block' do
+		div :class => 'panel panel_contents content-block' do
 		  h2 committee_quarter.title do
 		    span("» #{pluralize(active_quarter_members.size, 'active member')}", class: 'smaller gray')
 		  end
@@ -29,7 +28,6 @@ ActiveAdmin.register CommitteeQuarter do
 	        column ('Last Response') {|member| relative_timestamp(member.committee_member.last_user_response_at, :date_only => true, :empty_string => "Never") rescue nil}
 	      end
 	    end
-	  end
 	end
 
 	form do |f|
@@ -40,6 +38,6 @@ ActiveAdmin.register CommitteeQuarter do
         f.input :comments_prompt_text, hint: 'This text appears before the comments entry box for a specific quarter. Leave blank for the default "Comments?"'
       end
       f.actions
-    end
+  end
 
 end

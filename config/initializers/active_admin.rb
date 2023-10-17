@@ -1,3 +1,4 @@
+require 'active_admin_exts'
 ActiveAdmin.setup do |config|
   # == Site Title
   #

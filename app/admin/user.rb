@@ -35,25 +35,24 @@ ActiveAdmin.register User do
   end
     
   show do
-    panel '' do      
-      div :class => 'content-block' do
+    div class: 'panel panel_contents content-block' do
         # if user.picture.attached?
         #   span class: "left", style: "margin-right: 1rem;" do
         #     image_tag url_for(user.picture), size: "100x100"
         #   end
         # end
-        h1 "User: #{user.login}" do
+        h2 "User: #{user.login}" do
           span '(PubCookies User)', :class => 'light small' if user.is_a? PubcookieUser
           status_tag 'admin', class: 'admin small' if user.admin?
         end
-        div do
+
+        div class: 'content-block' do
           "Email: " + user.email
+          span :class => 'light small' do
+            "Created #{user.created_at.to_s(:short_at_time12)} #{' by ' + user.creator.firstname_first rescue nil}"  "#{' | Last edited ' + user.updated_at.to_s(:short_at_time12)}" + "#{' by ' + user.updater.firstname_first rescue nil}"
+          end
+          span link_to '← Back to Users', admin_users_path
         end
-        span :class => 'light small' do
-          "Created #{user.created_at.to_s(:short_at_time12)} #{' by ' + user.creator.firstname_first rescue nil}"  "#{' | Last edited ' + user.updated_at.to_s(:short_at_time12)}" + "#{' by ' + user.updater.firstname_first rescue nil}"
-        end
-        span link_to '← Back to Users', admin_users_path
-      end
     end
 
     div :class => 'tabsview' do
@@ -84,7 +83,7 @@ ActiveAdmin.register User do
           end
       end
     end
-  end  
+  end
 
   sidebar "Search Username", only: :show do  
       render "search_user"

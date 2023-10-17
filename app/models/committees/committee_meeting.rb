@@ -2,8 +2,8 @@ class CommitteeMeeting < ApplicationRecord
   stampable
   belongs_to :committee
   has_many :committee_member_meetings, :dependent => :destroy do
-    def attending; find(:all, :conditions => { :attending => true }); end
-    def not_attending; find(:all, :conditions => { :attending => false }); end
+    def attending; where(attending: true); end
+    def not_attending; where(attending: false); end
   end
 
   validates_presence_of :title
