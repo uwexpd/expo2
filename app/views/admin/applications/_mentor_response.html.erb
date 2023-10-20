@@ -49,7 +49,7 @@
 				<%= form_with model: app, url: { action: 'update', id: app, section: 'mentor_letter'} do |f| %>
 
 					<%= f.fields_for :mentors, mentor do |mentor_fields| %>
-						<%= mentor_fields.file_field :letterfiles, name: "application_for_offering[mentor_attributes][#{mentor.id}][letter]" %>
+						<%= mentor_fields.file_field :letterfiles, name: "application[mentor_attributes][#{mentor.id}][letter]" %>
 					<% end %>
 
 					<%#= hidden_field_tag :section, "mentor_letter" %>

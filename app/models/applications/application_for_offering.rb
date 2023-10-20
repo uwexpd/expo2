@@ -655,7 +655,7 @@ class ApplicationForOffering < ApplicationRecord
   def mentor_letter_received?
     letter_received = false
     mentors.each do |m|
-      letter_received = true unless m.letter.nil?
+      letter_received = true unless m.letter.file.nil?
     end
     return letter_received
   end

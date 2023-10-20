@@ -13,25 +13,35 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
     def update
       @app = ApplicationForOffering.find params[:id]
-      anchor = params[:section] if params[:section]
-      if params['application_for_offering']
-        unless params['application_for_offering']['new_status'].blank?
-          @app.set_status(params['application_for_offering']['new_status'], false, {:force => true, :note => params['application_for_offering']['new_status_note']}) 
-          params['application_for_offering'].delete('new_status')
-          params['application_for_offering'].delete('new_status_note')
-          @update_application_status = true
+      anchor = params['section'] if params['section']
+      update_application_status = false
+      if params['application']
+        unless params['application']['new_status'].blank?
+          @app.set_status(params['application']['new_status'], false, {:force => true, :note => params['application']['new_status_note']}) 
+          params['application'].delete('new_status')
+          params['application'].delete('new_status_note')
+          update_application_status = true
+          flash[:notice] = "Application status was updated."
         else
-          params['application_for_offering'].delete('new_status') if params['application_for_offering']['new_status']
+          params['application'].delete('new_status') if params['application']['new_status']
         end
-        @app.add_reviewer params['application_for_offering']['new_reviewer'] unless params['application_for_offering']['new_reviewer'].blank?
-        if params['application_for_offering']['special_notes']
-          @app.update_attribute('special_notes', params['application_for_offering']['special_notes'])
-          flash[:notice] = "Application notes saved."
-          anchor = "review_committee"
-        end
-        if @app.update_attributes(app_params)
+
+        @app.add_reviewer params['application']['new_reviewer'] unless params['application']['new_reviewer'].blank?
+
+        # logger.debug "DEBUG: #{params.inspect}"
+        if !update_application_status && @app.update_attributes(app_params)
           flash[:notice] = "Application changes saved."
         end
+
+        if params['resend_group_member']
+          if @app.group_members.find(params['resend_group_member']).send_validation_email
+            flash[:notice] = "Successfully re-sent verification e-mail."
+          else
+            flash[:error] = "Could not send verification e-mail."
+          end
+          anchor = "group_members"
+        end
+
       end
       respond_to do |format|
         format.html { redirect_to :action => 'show', :id => @app, :anchor => anchor }
@@ -51,7 +61,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     private
     
     def app_params
-      params.require(:application_for_offering).permit! if params[:application_for_offering]   
+      params.require(:application).permit! if params['application']
     end    
 
   end
