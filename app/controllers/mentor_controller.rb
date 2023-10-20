@@ -10,7 +10,7 @@ class MentorController < ApplicationController
     if params[:offering_id]
       # @offering = Offering.find(params[:offering_id])
       @mentor_applications = @person.application_mentors.select{|m| m.offering.id == params[:offering_id].to_i }
-      logger.debug "#{@mentor_applicaitons}"
+      # logger.debug "#{@mentor_applicaitons}"
       @total_mentees_count = @mentor_applications.size
     else
       @total_mentees_count = @person.application_mentors.size

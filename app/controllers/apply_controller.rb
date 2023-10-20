@@ -213,8 +213,7 @@ class ApplyController < ApplicationController
 
       if @offering.require_all_mentor_letters_before_complete?
         @user_application.set_status "complete" if @user_application.all_mentor_letters_received?
-      else
-        @user_application.set_status "submitted"
+      else      
         @user_application.set_status "complete" if @user_application.mentor_letter_received?
       end
 
