@@ -99,6 +99,8 @@ Rails.application.routes.draw do
     get 'mentor/offering/:offering_id', to: 'mentor#index', as: :mentor_offering
     match 'mentor/update', to: 'mentor#update', via: [:get, :post, :put, :patch]
     match 'mentor/mentee/:id', to: 'mentor#mentee', via: [:get, :post, :put, :patch], as: :mentee
+    match 'mentor/offering/:offering_id/mentee_abstract_approve/:id', to: 'mentor#mentee_abstract_approve', via: [:get, :post, :put, :patch]
+    match 'mentor/mentee_abstract_approve/:id', to: 'mentor#mentee_abstract_approve', via: [:get, :post, :put, :patch], as: :mentee_abstract_approve
     get 'mentor/:id/letter/:filename', to: 'mentor#letter', as: :mentor_letter
 
     # OMSFA Scholarship Sesarch

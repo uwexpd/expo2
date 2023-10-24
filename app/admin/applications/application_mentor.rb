@@ -7,7 +7,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
 
   scope "All", :with_name, default: true
 
-  permit_params :primary, :application_for_offering_id, :waive_access_review_right, :firstname, :lastname, :email, :email_confirmation, :application_mentor_type_id, :academic_department, :approval_response, :approval_comments, :approval_at, :title, :relationship
+  permit_params :primary, :application_for_offering_id, :person_id, :waive_access_review_right, :firstname, :lastname, :email, :email_confirmation, :application_mentor_type_id, :academic_department, :approval_response, :approval_comments, :approval_at, :title, :relationship
 
   index do
     column ('Name') {|mentor| link_to mentor.fullname, admin_mentor_path(mentor)}
@@ -23,9 +23,9 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
 
   show do
     attributes_table do
-      row :id     
+      row :id
       row ('Fullname') do |mentor| 
-                span mentor.person_id.nil? ? mentor.fullname : link_to(mentor.fullname, admin_person_path(mentor))
+                span mentor.person_id.nil? ? mentor.fullname : link_to(mentor.fullname, admin_person_path(mentor.person_id))
                 span 'Primary Mentor', :class => 'outline tag' if mentor.primary?
               end
       row :email
@@ -46,14 +46,14 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
     semantic_errors *f.object.errors.keys
     f.inputs do
       f.input :primary, as: :boolean
-      f.input :application_for_offering_id, input_html: { value: params[:application_id], style: 'width:25%;' }
-      f.input :person_id, input_html: { :style => 'width:25%;' }
-      f.input :firstname, input_html: { :style => 'width:50%;' }
-      f.input :lastname, input_html: { :style => 'width:50%;' }
-      f.input :email, input_html: { :style => 'width:50%;' }
-      f.input :email_confirmation, input_html: { :style => 'width:50%;' }
-      f.input :title, input_html: { :style => 'width:50%;' }
-      f.input :relationship, input_html: { :style => 'width:50%;' }
+      f.input :application_for_offering_id, input_html: { style: 'width:25%;' }
+      f.input :person_id, input_html: { style: 'width:25%;' }
+      f.input :firstname, input_html: { style: 'width:50%;' }
+      f.input :lastname, input_html: { style: 'width:50%;' }
+      f.input :email, input_html: { style: 'width:50%;' }
+      f.input :email_confirmation, input_html: { style: 'width:50%;' }
+      f.input :title, input_html: {  style: 'width:50%;' }
+      f.input :relationship, input_html: { style: 'width:50%;' }
       f.input :mentor_type, as: :select, collection: (Offering.find(params[:offering_id]).mentor_types rescue [""])
       f.input :waive_access_review_right, as: :boolean
     # f.input :academic_department, as: :tags, collection: AcademicDepartment.all.collect(&:name).sort
