@@ -31,8 +31,7 @@
 
 			<!-- <div id="options_panel_<%#= mentor.id %>" class="panel" style="display:none"> -->
 				<div>
-				<%= link_to "Edit", 
-							edit_admin_mentor_path(mentor.id, :return_to => request.url) %>
+				<%= link_to "Edit", edit_admin_mentor_path(mentor.id, :return_to => request.url) %>
 				<br>
 				<%= link_to "Delete", 
 							admin_mentor_path(mentor.id, :return_to => request.url), 

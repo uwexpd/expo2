@@ -351,7 +351,7 @@ class ApplicationForOffering < ApplicationRecord
   def send_status_update(email, deliver_emails_now = true, status = nil)
     if email.send_to == "applicant"
       cc_to_feedback_person = email.cc_to_feedback_person?
-      email_object = ApplyMailer.status_update(self, email.email_template, self.person.email, Time.now, 
+      email_object = ApplyMailer.status_update(self, email.email_template, self.person.email, nil,
           apply_url(host: Rails.configuration.constants["base_url_host"],
                     protocol: 'https', 
                     offering: offering),
@@ -362,7 +362,7 @@ class ApplicationForOffering < ApplicationRecord
       if deliver_emails_now
         EmailContact.log self.person.id, email_object.deliver_now, status
       else
-        EmailQueue.queue self.person.id, email_object, status
+        EmailQueue.queue self.person.id, email_object.deliver_later, status
       end
     elsif email.send_to == "staff"
       if deliver_emails_now
@@ -391,11 +391,11 @@ class ApplicationForOffering < ApplicationRecord
     if send_to == "mentors"
       self.mentors.each do |mentor|
         unless mentor.no_email
-          EmailQueue.queue mentor.person_id, ApplyMailer.create_mentor_status_update(mentor, EmailTemplate.find(email_template_id), mentor.email)
+          EmailQueue.queue mentor.person_id, ApplyMailer.mentor_status_update(mentor, EmailTemplate.find(email_template_id), mentor.email).deliver_later
         end
       end
     else
-      EmailQueue.queue self.person.id, ApplyMailer.create_status_update(self, EmailTemplate.find(email_template_id), self.person.email)
+      EmailQueue.queue self.person.id, ApplyMailer.status_update(self, EmailTemplate.find(email_template_id), self.person.email).deliver_later
     end
   end
 
@@ -405,7 +405,7 @@ class ApplicationForOffering < ApplicationRecord
     if deliver_emails_now
       EmailContact.log mentor.person_id, ApplyMailer.mentor_status_update(mentor, email.email_template, mentor.email, nil, link).deliver_now, status
     else
-      EmailQueue.queue mentor.person_id, ApplyMailer.create_mentor_status_update(mentor, email.email_template, mentor.email, nil, link), status
+      EmailQueue.queue mentor.person_id, ApplyMailer.mentor_status_update(mentor, email.email_template, mentor.email, nil, link).deliver_later, status
     end
   end
   
@@ -415,7 +415,7 @@ class ApplicationForOffering < ApplicationRecord
     if deliver_emails_now
       EmailContact.log group_member.person_id, ApplyMailer.group_member_status_update(group_member, email.email_template, group_member.email, nil, link).deliver_now, status
     else
-      EmailQueue.queue group_member.person_id, ApplyMailer.create_group_member_status_update(group_member, email.email_template, group_member.email, nil, link), status
+      EmailQueue.queue group_member.person_id, ApplyMailer.group_member_status_update(group_member, email.email_template, group_member.email, nil, link).deliver_later, status
     end
   end
   

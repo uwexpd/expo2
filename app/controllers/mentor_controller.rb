@@ -82,15 +82,17 @@ class MentorController < ApplicationController
     end
     
     check_if_past_deadline unless @mentee_application_record.responded?
-    if params["mentor"]
-      if params["academic_department"]
-         @mentee_application_record.update_attribute(:academic_department, params["academic_department"])
-      else         
+    if params["application_mentor"]
+      selected_academic_department = params["application_mentor"]["academic_department"].delete_if(&:blank?)
+      if selected_academic_department.blank?
          @error = "Please at least select one for your academic department(s)."
+         flash[:error] = @error
          redirect_to :action => 'mentee_abstract_approve', :id => params[:id], :error_message => @error and return true
+      else
+        @mentee_application_record.update_attribute(:academic_department, selected_academic_department)
       end
       
-      if @mentee_application_record.update_attributes(params[:mentor])
+      if @mentee_application_record.update_attributes(mentor_approval_params)
         @mentee_application_record.update_attribute(:approval_at, Time.now)
         if @mentee_application.submitted?
           @required_mentors = @mentee_application.reload.mentors.select{|m| m.primary || m.meets_minimum_qualification?}
@@ -201,5 +203,8 @@ class MentorController < ApplicationController
   def mentor_letter_params
       params.require(:application_mentor).permit(:letter, :letter_content_type, :letter_size, answer_attributes: [:answer])
   end
-  
+
+  def mentor_approval_params
+    params.require(:application_mentor).permit(:academic_department, :approval_response, :approval_comments)
+  end
 end

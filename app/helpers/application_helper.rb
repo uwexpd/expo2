@@ -34,6 +34,12 @@ module ApplicationHelper
     }
   end
 
+  def subtitle(content)
+    content_for(:after_page_title) {
+      content_tag('span', content, :class => 'after_page_title') unless content.nil?
+    }
+  end
+
   def page_entries_info(collection, options = {})
     entry_name = options[:entry_name] || (collection.empty?? 'item' :
         collection.first.class.name.split('::').last.titleize)
