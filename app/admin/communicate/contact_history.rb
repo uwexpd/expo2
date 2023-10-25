@@ -20,9 +20,9 @@ ActiveAdmin.register ContactHistory do
   
   show do
     attributes_table do
-       row ('From') {|contact| contact.email_to rescue "" }
-       row ('Cc') {|contact| contact.email.creator.fullname rescue contact.creator.login rescue "(unknown)" }
-       row ('To') {|contact| contact.email_from rescue "" }
+       row ('From') {|contact| contact.email_from rescue "" }
+       # row ('Cc') {|contact| contact.email.creator.fullname rescue contact.creator.login rescue "(unknown)" }
+       row ('To') {|contact| contact.email_to rescue "" }
        row ('Subject') {|contact| contact.email.subject  rescue "" }
        row ('Date') {|contact| contact.email.date rescue "" }       
        row ('Body') {|contact| simple_format(contact.email.body.to_s) }

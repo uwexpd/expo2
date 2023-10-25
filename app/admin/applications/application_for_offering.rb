@@ -28,21 +28,20 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
         @app.add_reviewer params['application']['new_reviewer'] unless params['application']['new_reviewer'].blank?
 
-        # logger.debug "DEBUG: #{params.inspect}"
         if !update_application_status && @app.update_attributes(app_params)
           flash[:notice] = "Application changes saved."
-        end
-
-        if params['resend_group_member']
+        end        
+      end
+      
+      if params['resend_group_member']
           if @app.group_members.find(params['resend_group_member']).send_validation_email
             flash[:notice] = "Successfully re-sent verification e-mail."
           else
             flash[:error] = "Could not send verification e-mail."
           end
           anchor = "group_members"
-        end
-
       end
+
       respond_to do |format|
         format.html { redirect_to :action => 'show', :id => @app, :anchor => anchor }
         format.js

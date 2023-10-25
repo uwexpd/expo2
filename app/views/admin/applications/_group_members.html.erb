@@ -20,8 +20,7 @@
 			<%= group_member.email %>
 			<br><small class="light">Verification e-mail sent 
 								<%= time_ago_in_words group_member.validation_email_sent_at rescue "unknown" %> ago.
-				<%= link_to "Send again", 
-							{:action => 'update', :id => @app, :resend_group_member => group_member.id} %>
+				<%= link_to "Send again", {action:'update', id: @app, :resend_group_member => group_member.id}, method: :patch %>
 			</small>
 		</td>
 		<td>
