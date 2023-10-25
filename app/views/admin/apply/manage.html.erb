@@ -31,7 +31,7 @@
 			<ul class="welcome-links">
 				<li>
 					<i class='material-icons md-36'>assignment_turned_in</i>
-					<b >Current Phase: <%= @phase.name %></b>
+					<b >Current Phase: <%= @phase.name rescue nil %></b>
 					<div>Complete tasks for this phase or move on to another.</div>
 				</li>
 

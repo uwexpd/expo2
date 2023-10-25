@@ -126,7 +126,7 @@ class ApplicationGroupMember < ApplicationRecord
   # Sends a validation email to this group member using the Offering's group_member_validation_email_template. This email includes
   # a link that allows a group member to go in and validate that they are, indeed, a part of the group.
   def send_validation_email
-    e = offering.group_member_validation_email_template.create_email_to(self, validation_link).deliver_now
+    e = EmailContact.log self.app.person.id, offering.group_member_validation_email_template.create_email_to(self, validation_link).deliver_now
     update_attribute(:validation_email_sent_at, Time.now) if e
     e
   end

@@ -23,7 +23,7 @@
 		  <dd><%= general.sdb.degrees.collect{|d|d.deg_title.strip.titleize}.join(", ") %></dd>
 
 		  <dt>Degrees Quarter:</dt>
-		  <dd><%= general.sdb.degrees.collect{|d|d.quarter.title} %></dd>
+		  <dd><%= general.sdb.degrees.collect{|d|d.quarter.title}.join(", ") %></dd>
 		<% end %>
 		<!-- <dt>Status:</dt>
 		<dd></dd> -->
