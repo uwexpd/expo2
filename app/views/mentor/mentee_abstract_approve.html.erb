@@ -1,22 +1,23 @@
 <% title "Mentor Review", "View Student" %>
 <% subtitle link_to("Back to Mentee List", :action => "index") %>
+<div id="mentor_abstract_approval_header" class="<%= @alternate_stylesheet if @alternate_stylesheet %>"> <span class="header_title <%= @alternate_stylesheet if @alternate_stylesheet %>" style="top: auto;"></span></div>
 <div class="card content mentor">
-<h4>Abstract</h4>
+<h4><b>Abstract</b></h4>
 
-<h6>Project Title: 	<%= strip_tags @mentee_application.project_title %></h6>
+<h6><strong>Project Title: </strong><span class="smaller"><%= strip_tags @mentee_application.project_title %></span></h6>
 					
-<h6>Student: <%= @mentee.fullname %><span class="smaller caption"> - <%= @mentee.class_standing_description %></span></h6>
+<h6><strong>Student:</strong> <span class="smaller"><%= @mentee.fullname %></span><span class="smaller caption"> - <%= @mentee.class_standing_description %></span></h6>
 
 <% unless @mentee_application.group_members.empty? %>
-	<h6>Co-Presenters: <%= @mentee_application.group_members.collect(&:fullname).join(", ") %></h6>
+	<h6><strong>Co-Presenters:</strong> <span class='smaller'><%= @mentee_application.group_members.collect(&:fullname).join(", ") %></span></h6>
 <% end -%>
 
 <% unless @mentee_application_record.academic_department.nil? %>
-	<h6>Your Academic Department(s):  <span class="plain"><%= @mentee_application_record.academic_department.join(", ") %></span></h6>
+	<h6><strong>Your Academic Department(s):</strong>  <span class="smaller"><%= @mentee_application_record.academic_department.join(", ") %></span></h6>
 <% end %>
 
 <div class="abstract">
-	<h5>Abstract:</h5>
+	<h5><b>Abstract:</b></h5>
 	<hr style="border: 1px solid #DDD">
 	<%= @mentee_application.text("Abstract").body.html_safe %>
 </div>
