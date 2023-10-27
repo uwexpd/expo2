@@ -386,7 +386,7 @@ class ApplyController < ApplicationController
   end
   
   def apply_alternate_stylesheet
-    if @offering.alternate_stylesheet && File.exists?(File.join(Rails.root, 'public', 'stylesheets', "#{@offering.alternate_stylesheet}.css"))
+    if @offering.alternate_stylesheet
       @alternate_stylesheet = @offering.alternate_stylesheet
     end
   end

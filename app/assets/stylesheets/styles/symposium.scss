@@ -1,0 +1,25 @@
+#apply_header, #mentor_abstract_approval_header{
+	height: 149px;
+	border-bottom: 1px solid #b2b2b2;
+	margin-bottom: 1rem;
+}
+
+#apply_header .header_title, #mentor_abstract_approval_header .header_title {	
+	height: 150px;
+	width: 750px;
+	position: absolute;
+	top: 120px;
+}
+
+#apply_header.symposium2023, #mentor_abstract_approval_header.symposium2023 {
+	background: #7fb439 url(image-path('symposium/2023/header.png'));
+	position: relative;	
+}
+
+#apply_header .header_title.symposium2023, #mentor_abstract_approval_header .header_title.symposium2023{
+	background: url(image-path('symposium/2023/header-title.png')) no-repeat;
+}
+
+.proceedings .header_title.symposium2023{
+	background: url(image-path('symposium/2023/proceedings-title.png'));
+}

@@ -6,7 +6,7 @@
 
     <title><%= content_for?(:title) ? yield(:title) : "EXPD-Online" %></title>
 
-    <%= stylesheet_link_tag    "application" %>
+    <%= stylesheet_link_tag "application" %>
     <%= javascript_include_tag "https://www.gstatic.com/charts/loader.js" %>
     <%= javascript_include_tag "application", 'data-turbolinks-track': 'reload' %>
     <%= csrf_meta_tags %>
@@ -36,6 +36,9 @@
 		    	<%= yield %>
 			</div>
 		<% else %>
+			<% if @alternate_stylesheet %>
+				<div id="apply_header" class="<%= @alternate_stylesheet %>"> <span class="header_title <%= @alternate_stylesheet %>" style="top: auto;"></span></div>
+			<% end %>
 			<div id="main" class="col s9">
 		    	<%= yield %>
 			</div>
