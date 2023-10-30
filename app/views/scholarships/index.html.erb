@@ -1,7 +1,7 @@
-<% title "Scholarship Database | University of Washington" %>
+<% title "Scholarship Database | OMSFA | University of Washington" %>
 
 <div class="card content" style="padding-bottom: 0px">
-	<h5><%= link_to "UW Office of Merit Scholarships, Fellowships & Awards Scholarships Search", scholarships_path %></h5>
+	<h5><%= link_to "Office of Merit Scholarships, Fellowships & Awards: Scholarships Search", scholarships_path %></h5>
 
 	<div class="row">
 	  <%= search_form_for @search do |f| %>
@@ -12,26 +12,29 @@
 				<%= f.button type: :submit, :class => 'btn waves-effect waves-light' do %>
 						<i class="material-icons left">search</i>Search
 					<% end %>
-			</div>
+			</div>			
 	  <% end %>
+	</div>
+	<div class="row text-indent">
+		<p>•  Not sure what keywords to use? Check out our <a href='https://expd.uw.edu/scholarships/getting-started/start-your-scholarship-search/' target="_blank">tips for preparing your search</a>.</p>
+ 		<p>•  Want a starting point list to jumpstart your search? Try our <a href='https://expd.uw.edu/scholarships/getting-started/lists/' target="_blank">scholarship guides</a>.</p>		 	 		<p>•  Search in multiple databases to find a wider range of scholarships. <a href='https://expd.uw.edu/scholarships/getting-started/tools/' target="_blank">Additional scholarship search tools to try</a>.</p>
 	</div>
 </div>
 
-
-<ul class="collapsible">
+<ul class="collapsible">	
   <li>
-	<div class="collapsible-header"><i class="material-icons iconcollapse">expand_more</i>First time searching for scholarships in our database? </div>
-    <div class="collapsible-body">
-		<i>Using keywords:</i> Each scholarship you apply for might be a good fit for you in a different way. We recommend searching for one keyword at a time. Consider keywords related to your: academic and professional fields of interest, future goals, activities you enjoy, issues you care about, communities you are part of, and identities you hold.
+		<div class="collapsible-header"><i class="material-icons iconcollapse">expand_more</i>First time searching for scholarships in our database? </div>
+	    <div class="collapsible-body">
+			<i>Using keywords:</i> Each scholarship you apply for might be a good fit for you in a different way. We recommend searching for one keyword at a time. Consider keywords related to your: academic and professional fields of interest, future goals, activities you enjoy, issues you care about, communities you are part of, and identities you hold.
 
-		<p><i>Using filters:</i> The filters will restrict your results to show only scholarships that include ALL the criteria you selected. </p>
+			<p><i>Using filters:</i> The filters will restrict your results to show only scholarships that include ALL the criteria you selected. </p>
 
-		<p>If you want to exclude scholarships in a given category to avoid results for which you will NOT be eligible (i.e. you are not a Washington resident), then make that selection and leave it on for all searches. </p>
+			<p>If you want to exclude scholarships in a given category to avoid results for which you will NOT be eligible (i.e. you are not a Washington resident), then make that selection and leave it on for all searches. </p>
 
-		<p>In addition to searching by keywords, if you want to check for scholarships that might specifically apply to you based on the communities you identify with, then select one identity category per search (i.e. LGBTQI community) to see all scholarships related to that identity. You may want to leave the keyword blank or use broad keywords. </p>
+			<p>In addition to searching by keywords, if you want to check for scholarships that might specifically apply to you based on the communities you identify with, then select one identity category per search (i.e. LGBTQI community) to see all scholarships related to that identity. You may want to leave the keyword blank or use broad keywords. </p>
 
-		<p>Found all the relevant scholarships on our database? Check out other databases! We can’t list every scholarship out there, so it’s good to check out a few different <a href="https://expd.uw.edu/scholarships/getting-started/tools/" target="_blank">search platforms</a>.</p>
-    </div>
+			<p>Found all the relevant scholarships on our database? Check out other databases! We can’t list every scholarship out there, so it’s good to check out a few different <a href="https://expd.uw.edu/scholarships/getting-started/tools/" target="_blank">search platforms</a>.</p>
+	    </div>
   </li>
 </ul>
 

@@ -1,6 +1,6 @@
 class ScholarshipsController < ApplicationController
-
-  add_breadcrumb 'OSMFA Home', Unit.find_by_abbreviation('omsfa').home_url
+  unit = Unit.find_by_abbreviation('omsfa')
+  add_breadcrumb unit.name, unit.home_url
   
   skip_before_action :login_required, :add_to_session_history, raise: false
   
