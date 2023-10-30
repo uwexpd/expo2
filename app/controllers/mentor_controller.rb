@@ -197,7 +197,7 @@ class MentorController < ApplicationController
   private
 
   def person_params
-      params.require(:person).permit(:firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip)
+      params.require(:person).permit(:firstname, :lastname, :email, :salutation, :title, :organization, :other_department, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip)
   end
 
   def mentor_letter_params
