@@ -4,18 +4,18 @@
 class Committee < ApplicationRecord
   stampable
   has_many :members, :class_name => "CommitteeMember" do
-    def active
-      find_all{|m| m.currently_active? && m.responded_recently? }
-    end
-    def inactive
-      reject{|m| m.currently_active? }
-    end
-    def permanently_inactive
-      find(:all, :conditions => { :permanently_inactive => true })
-    end
-    def not_responded
-      reject{|m| m.responded_recently? }
-    end
+    # def active
+    #   find_all{|m| m.currently_active? && m.responded_recently? }
+    # end
+    # def inactive
+    #   reject{|m| m.currently_active? }
+    # end
+    # def permanently_inactive
+    #   find(:all, :conditions => { :permanently_inactive => true })
+    # end
+    # def not_responded
+    #   reject{|m| m.responded_recently? }
+    # end
     def of_type(member_type)
       find(:all, :conditions => {:committee_member_type_id => member_type.id})
     end
@@ -26,13 +26,13 @@ class Committee < ApplicationRecord
     
   has_many :committee_quarters do
     def upcoming(limit = 4, reference_quarter = Quarter.current_quarter)
-      reject{|q| q.quarter < reference_quarter}.sort[0..(limit-1)]
+      reject{|q| q.quarter.id < reference_quarter.id}.sort[0..(limit-1)]
     end
   end
   
   has_many :quarters, :through => :committee_quarters, :source => :quarter do
     def upcoming(limit = 4, reference_quarter = Quarter.current_quarter)
-      select{|q| (q <=> reference_quarter) == 1 }
+      reject{|q| q.id < reference_quarter.id}.sort[0..(limit-1)]
     end
   end
   

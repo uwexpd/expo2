@@ -4,8 +4,12 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
   batch_action :destroy, false
   # actions :all, :except => [:destroy]
   config.per_page = [25, 50, 100, 150, 200]
+  config.sort_order = ""
 
-  # scope 'All', :sorting, default: true
+  scope :active, default: true
+  scope :inactive
+  scope :permanently_inactive
+  scope :not_responded
 
   permit_params :committee_member_type_id, :department, :expertise, :website_url, :recommender_id, :inactive, :permanently_inactive, :comment, :notes, committee_member_quarter_attributes: [:active, :comment]
 
@@ -17,6 +21,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
     
   end
 
+  # Ideal: also add active for the quarter if possible
   batch_action :mark_active_as_user_response, confirm: "Are you sure??" do |ids|
     
   end
@@ -39,12 +44,15 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
       small "#{member.expertise}".truncate(50, omission: '... (continued)')
     end
     # upcoming = committee.quarters.upcoming.first
-
     column "Quarter" do |member|
       if member.currently_active? && member.status_cache != "not_responded"
-         for q in committee.quarters.upcoming
-            span 'person_check', :class => 'material-icons md-32' if member.active_for?(q)
+         for q in committee.quarters.upcoming  
+            i 'check_circle', :class => 'material-icons uw_green' if member.active_for?(q)
          end
+      elsif member.status_cache == "not_responded"
+        i 'mail', :class => 'material-icons' if member.contacted_recently?
+      else
+        span member.permanently_inactive? ? "perm." : "inactive", class: "status_tag small"
       end
     end
     column ('Last Response') {|member| relative_timestamp(member.last_user_response_at, :date_only => true, :empty_string => "Never") }

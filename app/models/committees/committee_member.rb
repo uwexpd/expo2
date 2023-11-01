@@ -74,6 +74,17 @@ class CommitteeMember < ApplicationRecord
 
   DEFAULT_RESPONSE_LIFETIME = 9.months
 
+  scope :ordered, -> { includes(:person).order("people.lastname, people.firstname") }
+
+  scope :active, -> { where(id: (where(inactive: false, permanently_inactive: false).select{|m|m.responded_recently?}).map(&:id)).ordered }
+
+  scope :inactive, -> { where(inactive: true).ordered }
+
+  scope :permanently_inactive, -> { where(permanently_inactive: true).ordered }
+
+  scope :not_responded, -> { where(id: (reject{|m|m.responded_recently?}).map(&:id)).ordered }
+
+
   def <=>(o)
     person <=> o.person rescue -1
   end
@@ -250,7 +261,7 @@ class CommitteeMember < ApplicationRecord
 
   # Returns true if this CommitteeMember has any contact_histories that are newer than the Committee +response_lifetime_date+.
   def contacted_recently?
-    !contact_histories.find(:all, :conditions => ["created_at > ?", committee.response_lifetime_date]).empty?
+    !contact_histories.where("created_at > ?", committee.response_lifetime_date).empty?
   end
 
   serialize :task_completion_status_cache

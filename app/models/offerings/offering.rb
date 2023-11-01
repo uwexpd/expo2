@@ -9,7 +9,7 @@ class Offering < ApplicationRecord
   }
   scope :current, -> { left_outer_joins(:quarter_offered).where("quarters.first_day >= ? OR (quarter_offered_id is null and year_offered >= ?)", Quarter.current_quarter.first_day, Time.now.year)}
   scope :sorting_current, -> { sorting.current }
-  scope :sorting_past, -> { where(id: (sorting - sorting_current).map(&:id) )}
+  scope :sorting_past, -> { where(id: (sorting - sorting_current).map(&:id)).left_outer_joins(:quarter_offered).order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC") }
 
   belongs_to :unit
   has_many :applications, :class_name => "ApplicationForOffering"
