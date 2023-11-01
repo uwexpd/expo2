@@ -36,7 +36,7 @@
 		    	<%= yield %>
 			</div>
 		<% else %>
-			<% if @alternate_stylesheet %>
+			<% unless @alternate_stylesheet.blank? %>
 				<div id="apply_header" class="<%= @alternate_stylesheet %>"> <span class="header_title <%= @alternate_stylesheet %>" style="top: auto;"></span></div>
 			<% end %>
 			<div id="main" class="col s9">

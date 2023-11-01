@@ -23,8 +23,10 @@ $am-theme-accent: #b7a57a;
 @import 'material_icons.helpers';
 
 // Custom css
+@import 'shared';
 @import 'buttons';
 @import 'index_table';
+
 
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.

@@ -3,7 +3,9 @@
 <div class="card content">
 	<h5>		
 		<%= link_to @offering.name, apply_path %>
-		<span class="status_tag right"><%= @offering.quarter_offered.title %></span>
+		<% if @offering.quarter_offered %>
+			<span class="status_tag right"><%= @offering.quarter_offered.title %></span>
+		<% end %>
 	</h5>
 	<h6><%= welcome_line %>
 		<span class="heading_inline">Not <%= current_user.person.firstname %>? <%= link_to "Click here", logout_url %>.</span>
