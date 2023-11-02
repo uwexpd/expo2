@@ -78,11 +78,11 @@ class CommitteeMember < ApplicationRecord
 
   scope :active, -> { where(id: (where(inactive: false, permanently_inactive: false).select{|m|m.responded_recently?}).map(&:id)).ordered }
 
-  scope :inactive, -> { where(inactive: true).ordered }
+  scope :inactive, -> { where(inactive: true, permanently_inactive: false).ordered }
 
   scope :permanently_inactive, -> { where(permanently_inactive: true).ordered }
 
-  scope :not_responded, -> { where(id: (reject{|m|m.responded_recently?}).map(&:id)).ordered }
+  scope :not_responded, -> { where(id: (where(inactive: false, permanently_inactive: false).reject{|m|m.responded_recently?}).map(&:id)).ordered }
 
 
   def <=>(o)
