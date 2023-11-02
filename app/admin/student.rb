@@ -3,12 +3,15 @@ actions :index, :show
 batch_action :destroy, false
 menu parent: 'Groups'
 
-  index pagination_total: false do    
+  index pagination_total: false do
     column 'Name' do |student|
-      link_to student.fullname, admin_student_path(student)
+      highlight_text = []
+      highlight_text << params.dig(:q, :firstname_contains) if params.dig(:q, :firstname_contains)
+      highlight_text << params.dig(:q, :lastname_contains) if params.dig(:q, :lastname_contains)
+      link_to highlight(student.fullname, highlight_text), admin_student_path(student)
     end
-    column :email
-    column ('Created At') {|person| "#{time_ago_in_words person.created_at} ago"}
+    column ('Email') {|student| highlight student.email, params.dig(:q, :email_contains) }
+    column ('Created At') {|student| "#{time_ago_in_words student.created_at} ago"}
   end
 
   show do
@@ -18,7 +21,7 @@ menu parent: 'Groups'
       tabs do
          tab 'Student Info' do
             attributes_table title: 'Student Info' do
-              row ('Class standing') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) }
+              row ('Class standi  ng') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) }
               row ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) }
               row ('Minor(s)') {|student| raw(student.sdb.minors_list(true, "<br>")) }
               row ('Current credits') do |student|

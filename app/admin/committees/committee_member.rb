@@ -21,7 +21,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
     
   end
 
-  # Ideal: also add active for the quarter if possible
+  # Ideal: also add for activating for the quarter if possible
   batch_action :mark_active_as_user_response, confirm: "Are you sure??" do |ids|
     
   end
@@ -46,11 +46,16 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
     # upcoming = committee.quarters.upcoming.first
     column "Quarter" do |member|
       if member.currently_active? && member.status_cache != "not_responded"
-         for q in committee.quarters.upcoming  
-            i 'check_circle', :class => 'material-icons uw_green' if member.active_for?(q)
+         committee.quarters.upcoming.each do |quarter|
+          if member.active_for?(quarter)
+            span 'check_circle', class: 'material-icons uw_green'
+            span quarter.abbrev
+          end
          end
+         "" if committee.quarters.upcoming.empty?
+
       elsif member.status_cache == "not_responded"
-        i 'mail', :class => 'material-icons' if member.contacted_recently?
+        i 'mail', class: 'material-icons uw_dark_gold' if member.contacted_recently?
       else
         span member.permanently_inactive? ? "perm." : "inactive", class: "status_tag small"
       end
