@@ -179,13 +179,13 @@ class ApplyController < ApplicationController
     raise ExpoException.new("Invalid Link", "That verification link is not valid. Please ask your primary group member to resend a verification link to you.") and return unless @group_member
     @user_application = @group_member.application_for_offering
     
-    if request.post?
+    if request.patch?
       @group_member.verified = params[:verified] == 'yes' ? true : false
       @group_member.person_id = @person.id
       if @group_member.verified?
         @person.require_validations = true
         @person.require_student_validations = true
-        if @person.update_attributes(params[:person]) && @group_member.save
+        if @person.update_attributes(person_params) && @group_member.save
           flash[:notice] = "Thank you for confirming your group membership, #{@person.firstname}!"
           redirect_to :action => "index" and return
         else
@@ -193,7 +193,7 @@ class ApplyController < ApplicationController
         end
       else
         if @group_member.destroy
-          render :text => "<h1>Thank you.</h1><p>You have been successfully removed from this application.</p>", :layout => true
+          render :text => "<h4>Thank you.</h4><p>You have been successfully removed from this application.</p>".html_safe, :layout => true
         else
           flash[:error] = "Oops, there was a problem removing you from this application."
         end
@@ -492,8 +492,12 @@ class ApplyController < ApplicationController
       #   person_attributes: [:salutation, :firstname, :lastname, :nickname, :email, :phone, :est_grad_qtr])
   end
 
+  def person_params
+    params.require(:person).permit(:salutation, :firstname, :lastname, :nickname, :email, :phone, :institution_id, :major_1, :major_2, :major_3, :class_standing_id, award_ids: {})
+  end
+
   def group_member_params
-      params.require(:group_member).permit(:firstname, :lastname, :uw_student, :email)    
+      params.require(:group_member).permit(:firstname, :lastname, :uw_student, :email)
   end
 
 end

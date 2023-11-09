@@ -3,7 +3,7 @@
 }
 
 .sidebar_nav .collection a.collection-item{
-    color: #039be5;
+  color: #039be5;
 }
 
 .sidebar_nav .collection .collection-item.active, 
@@ -25,12 +25,17 @@
 }
 
 /* Question label focus color */
-.offering_questions .input-field input[type=text] + label, div.select-wrapper + label, {
+.offering_questions .input-field input[type=text] + label, div.select-wrapper + label, .offering_questions .non_input_field label {
   color: rgba(0, 0, 0, 0.87);
 }
 
 .offering_questions div.select-wrapper {
 	padding-top: .5rem;
+}
+
+.offering_questions .non_input_field .inline {
+	color: rgba(0, 0, 0, 0.5);
+	border-bottom: 2.5px dotted rgba(0, 0, 0, 0.42);
 }
 
 div.select-wrapper + label {	
@@ -266,11 +271,6 @@ table.application_review li {
   margin-left: 4em;
 }
 
-// .card-content .col, .card-content .row {
-// 	margin-left:0;
-// 	margin-right:0;
-// }
-
 .row .offering_questions {
 	padding-top: 1rem
 }
@@ -293,3 +293,12 @@ table.application_review li {
 .card .card-content .message p {
 	margin: revert;
 }
+
+#contact_info table tr th{
+	font-weight: bold;
+  padding-right: 1em;
+}
+
+ #contact_info  input[type=text]:not(.browser-default) {
+	font-size: inherit;
+ }

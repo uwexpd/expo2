@@ -14,7 +14,7 @@
 
 <% if show_salutation_field %>
   <tr>
-		<td><label for="salutation">Salutation </label></td>
+		<th>Salutation</th>
 		<td>
 				<%= person_fields.select :salutation, %w( Mr. Mrs. Ms. Miss Professor Dr. Hon. Rev. ) , {:prompt => true}, class: 'browser-default' %>
 		</td>
@@ -22,28 +22,29 @@
 
 <% if obj.nil? || obj.new_record? || obj.firstname.blank? || obj.lastname.blank?  %>
   <tr>
-		<td><label for="firstname">First name <abbr title="required">*</abbr></label></td>
+		<td>First name <abbr title="required">*</abbr></td>
 		<td><%= obj.is_a?(Student) ? obj.formal_firstname : person_fields.text_field(:firstname) %></td>
   </tr>
   <tr>	
-		<td><label for="lastname">Last name <abbr title="required">*</abbr></label></td>
+		<td>Last name <abbr title="required">*</abbr></td>
 		<td><%= obj.is_a?(Student) ? obj.lastname : person_fields.text_field(:lastname) %></td>
   </tr>
 <% else %>
   <tr>
-		<td><label for="name">Name</label></td>
+		<th>Name</th>
 		<td>
 				<%= obj.firstname_first %>
 				<small><%= link_to "(Change #{"my" unless not_self} name)", "javascript:;", data: { link_toggle: "#name_fields"} unless obj.is_a?(Student) %></small>
 
 				<div id="name_fields" class="highlight_box" style="display: none">
-					<i class="material-icons uw_purple middle_align">warning</i>
-					<small>Only change <%= not_self ? "this person's" : "your" %>
-						name if <%= not_self ? "they are" : "you're" %> the same person. <br>
-						<strong>If <%= not_self ? "they aren't" : "you aren't" %> <%= obj.firstname_first %>,
-						then you should <%= not_self ? "create a new account" : link_to("create a new account", signup_path) %>
-						instead.</strong><br>Contact our staff for assistance if you need help.
-					</small>
+					<p style="padding-bottom: 1rem;"><i class="material-icons uw_purple middle_align">warning</i>
+						<small>Only change <%= not_self ? "this person's" : "your" %>
+							name if <%= not_self ? "they are" : "you're" %> the same person. <br>
+							<strong>If <%= not_self ? "they aren't" : "you aren't" %> <%= obj.firstname_first %>,
+							then you should <%= not_self ? "create a new account" : link_to("create a new account", signup_path) %>
+							instead.</strong><br>Contact our staff for assistance if you need help.
+						</small>
+					</p>
 					<p>
 					New first name:
 					<%= obj.is_a?(Student) ? obj.formal_firstname : person_fields.text_field(:firstname) %>
@@ -59,10 +60,9 @@
 	</tr>
 <% end %>
 
-
 <% if obj.is_a?(Student) %>
 	<tr>
-		<td><label for="pref_firstname">Preferred Firstname</label></dt>
+		<td><label>Preferred Firstname</label></dt>
 		<td><%= person_fields.text_field :nickname %>
 			<br><small class="light">If you prefer to be called something other than <strong><%= obj.formal_firstname %></strong>, enter it here.</small>
 		</td>
@@ -71,48 +71,47 @@
 
 <% if show_title_field %>
   <tr>
-		<td><label for='title'>Title</label></td>
+		<th>Title</th>
 		<td><%= person_fields.text_field :title %></td>
 	</tr>
 <% end %>
 
 <% if show.include?(:other_department) %>
 	<tr>
-		<td><label for='department'>department</label></td>
+		<th>department</td>
 	  <td><%= person_fields.text_field :other_department %></td>
   </tr>
 <% end %>
 
 <% if show.include?(:organization) %>
 	<tr>
-		<td><label>organization/<br>institution</label></td>
+		<th>organization/<br>institution</th>
 		<td><%= person_fields.text_field :organization %></td>
 	</tr>
 <% end %>
 
 <tr>
-	<td><label for="email">Email <abbr title="required">*</abbr></label></td>
+	<th>Email <abbr title="required">*</abbr></th>
 	<td><%= obj.is_a?(Student) ? obj.email : person_fields.text_field(:email) %></td>
 </tr>
 
 <% if show.include?(:phone) %>
 	<tr>
-	<td><label for='phone'>Phone</label></td>
-	<td><%= person_fields.text_field :phone %></td>
+		<th>Phone</th>
+		<td><%= person_fields.text_field :phone %></td>
   </tr>
 <% end %>
 
 <% if show.include?(:box_number) %>
 	<tr>
-		<td><label>box number</label></td>
+		<th>box number</th>
 		<td><%= person_fields.text_field :box_no %></td>
 	</tr>
 <% end %>
 
-
 <% if show_address_fields %>
   <tr>
-		<td><label for='address'>Address</label></td>
+		<th>Address</th>
 		<td>Line 1: <%= person_fields.text_field :address1 %>
 			<br>Line 2: <%= person_fields.text_field :address2 %>
 			<br>Line 3: <%= person_fields.text_field :address3 %>
@@ -123,36 +122,38 @@
 <% end %>
 
 <% if show_student_fields && !obj.is_a?(Student) %>	
-	<dt>university</dt>
-	<% institutions = @offering ? @offering.invited_institutions : Institution.all %>
-	<dd><%= person_fields.collection_select :institution_id, 
-								institutions.sort,
-								:id,
-								:name,
-								:include_blank => true %></dd>
-								
-	<dt>majors</dt>
-	<dd>
+	<tr>
+		<th>University</th>
+		<% institutions = Institution.all #@offering ? @offering.invited_institutions : Institution.all %>
+		<td><%= person_fields.collection_select :institution_id, institutions.sort, :id, :name, {include_blank: true}, class: 'chosen-select' %></td>
+	</tr>
+	<tr>
+		<th>Majors</th>
+		<td>
 		Major 1: <%= person_fields.text_field :major_1 %>
-		<br>Major 2: <%= person_fields.text_field :major_2 %>
-		<br>Major 3: <%= person_fields.text_field :major_3 %>
-	</dd>
+			<br>Major 2: <%= person_fields.text_field :major_2 %>
+			<br>Major 3: <%= person_fields.text_field :major_3 %>
+		</td>
+	</tr>
 
-	<dt>class</dt>
-	<dd>
-		<%= person_fields.collection_select :class_standing_id, ClassStanding.undergraduate, :id, :description, :prompt => true %>
-	</dd>
-
+	<tr>
+		<th>Class</th>
+		<td><%= person_fields.collection_select :class_standing_id, ClassStanding.undergraduate, :id, :description, {prompt: true}, class: 'browser-default' %>
+		</td>
+  </tr>
 <% end %>
 
 <% if show_student_fields && obj.is_a?(Student) %>	
-	<dt>university</dt>
-	<dd><%= Rails.configuration.constants[:university_name] %></dd>
+	<tr>
+		<th>University</th>
+		<td><%= Rails.configuration.constants[:university_name] %></td>
+	<tr>
 								
-	<dt>majors</dt>
-	<dd><%= obj.majors_list rescue "#error" %></dd>
+	<tr><th>majors</th><td><%= obj.majors_list rescue "#error" %></td></tr>
 
-	<dt>class</dt>
-	<dd><%= obj.class_standing_description rescue "#error" %></dd>
+	<tr>
+		<th><label></th>
+		<td><%= obj.class_standing_description rescue "#error" %></td>
+	</td>
 
 <% end %>

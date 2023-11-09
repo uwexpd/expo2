@@ -16,7 +16,7 @@ ActiveAdmin.register User do
     
   index pagination_total: false do  
     column 'Username' do |user|
-      span link_to(user.login, admin_user_path(user))
+      span link_to(highlight(user.login,params.dig(:q, :login_contains)), admin_user_path(user))
       span "@u" if user.is_a? PubcookieUser
     end
     column '' do |user|
