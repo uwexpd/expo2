@@ -467,9 +467,10 @@ body.logged_out h2 {
 	padding-bottom: 1em;
 }
 
-#login form label, .session form label {
+#login form label, .session form th {
 	font-weight: bold;    
     padding-right: 1em;
+    text-align: left;
 }
 
 #login form input[type=text], #login form input[type=email], #login form input[type=password], .session form input[type=text], .session form input[type=email], .session form input[type=password], .session form select {

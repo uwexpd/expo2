@@ -90,7 +90,6 @@ Rails.application.routes.draw do
     match 'apply/:offering/submit', to: 'apply#submit', constraints: { offering: /\d+/ }, via: [:post, :put, :patch]
     match 'apply/:offering/files/application_file/file/:id/:filename', to: 'apply#file', via: [:get], as: :apply_file
     match 'apply/:offering/validate/:group_member_id/:token', to: 'apply#group_member_validation', as: :apply_group_member_validation, via: [:get, :post, :put, :patch]
-    get 'apply/:offering/help/:id', to: 'apply#help', as: :apply_help
 
     # Mentor
     get 'mentor', to: 'mentor#index'
