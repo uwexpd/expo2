@@ -10,7 +10,8 @@
 
 <% else %>
 	<div id="switch_applications">
-		<%= link_to "Switch to another application", { :controller => '/apply', :action => 'which' } %>
+		
+		<%= link_to raw("<i class='material-icons md-16 middle_align'>change_circle</i> Switch to another application"), { :controller => '/apply', :action => 'which' }, class: 'btn small' %>
 	</div>
 	
 <% end -%>

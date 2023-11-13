@@ -388,6 +388,7 @@ class ApplyController < ApplicationController
   def apply_alternate_stylesheet
     if @offering.alternate_stylesheet
       @alternate_stylesheet = @offering.alternate_stylesheet
+      logger.debug "DEBUG => #{@alternate_stylesheet}"
     end
   end
   

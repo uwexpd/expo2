@@ -1,24 +1,28 @@
 <% title(@offering.name, (@offering.quarter_offered.title rescue nil)) %>
-<%= render :partial => 'time_left' %>
-<%= render :partial => "switch" if @application_count > 1 || @user_applications.empty? %>
 
-<h1>
-	<%= welcome_line %>
-	<span class="heading_inline">Not <%= current_user.person.firstname %>? <%= link_to "Click here", logout_url %>.</span>
-</h1>
+<div class='card apply_group_member'>
+  <div class="card-content">
+	<h5>
+		<%= welcome_line %>
+		<span class="heading_inline">Not <%= current_user.person.firstname %>? <%= link_to "Click here", logout_url %>.</span>
+	</h5>
+	<%= render :partial => 'time_left', locals: { float_right: :false} %></span>
+	<%= render :partial => "switch" if @application_count > 1 || @user_applications.empty? %>
 
-<fieldset>
+	<div class="card">
+  	  <div class="card-content">
+			<ul class="welcome-links">
+				<li class="application status">
+					<b>Your Current Application Status:</b>
+				 	<%=h @user_application.status.public_title %>
+					<br><%= raw(auto_link(simple_format(@user_application.status.message))) %>
+				</li>
+			</ul>
 
-	<ul class="welcome-links">
-		<li class="application status">
-			<b>Your Current Application Status:</b>
-		 	<%=h @user_application.status.public_title %>
-			<br><%= raw(auto_link(simple_format(@user_application.status.message))) %>
-		</li>
-	</ul>
+			<%= render :partial => "dashboard_items" %>		
+	   </div>
+	</div>
 
-	<%= render :partial => "dashboard_items" %>
-	
-</fieldset>
-
-<%= render :partial => "apply/confirmation/sidebar", :locals => { :hide_welcome_link => true } if @user_application.passed_status?("fully_accepted") %>
+	<%= render :partial => "apply/confirmation/sidebar", :locals => { :hide_welcome_link => true } if @user_application.passed_status?("fully_accepted") %>
+  </div>
+</div>

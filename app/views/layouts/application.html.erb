@@ -31,14 +31,14 @@
    <% end %>
 	
 	<div id="content" class="row">
+		<% unless @alternate_stylesheet.blank? %>
+				<div id="apply_header" class="<%= @alternate_stylesheet %>"> <span class="header_title <%= @alternate_stylesheet %>" style="top: auto;"></span></div>
+		<% end %>
 		<% if yield(:sidebar).blank? %>
 			<div id="main" class="col s12">
 		    	<%= yield %>
 			</div>
-		<% else %>
-			<% unless @alternate_stylesheet.blank? %>
-				<div id="apply_header" class="<%= @alternate_stylesheet %>"> <span class="header_title <%= @alternate_stylesheet %>" style="top: auto;"></span></div>
-			<% end %>
+		<% else %>			
 			<div id="main" class="col s9">
 		    	<%= yield %>
 			</div>
