@@ -11,7 +11,7 @@
 		<span class="heading_inline">Not <%= current_user.person.firstname %>? <%= link_to "Click here", logout_url %>.</span>
 		
 	</h6>	
-	<%= render :partial => 'time_left', locals: { float_right: :false} %></span>
+	<%= render :partial => 'time_left', locals: { float_right: :false} %><br>
 	<%= render :partial => "switch" if @application_count > 1 %>
 </div>
 
