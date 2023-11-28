@@ -1,7 +1,7 @@
 <% title "Mentor Review", "View Student" %>
 <% subtitle link_to("Back to Mentee List", :action => "index") %>
-<div id="mentor_abstract_approval_header" class="<%= @alternate_stylesheet if @alternate_stylesheet %>"> <span class="header_title <%= @alternate_stylesheet if @alternate_stylesheet %>" style="top: auto;"></span></div>
-<div class="card content mentor">
+<div class="card">
+<div class="card-content mentor">
 <h4><b>Abstract</b></h4>
 
 <h6><strong>Project Title: </strong><span class="smaller"><%= strip_tags @mentee_application.project_title %></span></h6>
@@ -31,7 +31,7 @@
 		<big style="vertical-align: 0.6em;">Your academic department(s): </big>
 		<em class="required" style="vertical-align: 0.6em;"> * required</em>
 		
-	    <%= f.select :academic_department, options_for_select(AcademicDepartment.all.collect(&:name).sort, @mentee_application_record.academic_department), { prompt: 'Select Department(s) or Type Keyword for Search' }, {multiple: true, class: 'chosen-select'} %>
+	    <%= f.select :academic_department, AcademicDepartment.all.collect(&:name).sort, {include_hidden: false}, {multiple: true, class: 'chosen-select'} %>
 
 		<% if @error_message %>
 			<i class="material-icons align">error</i><%= @error_message %>

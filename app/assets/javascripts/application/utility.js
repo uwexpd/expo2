@@ -80,6 +80,14 @@ $(document).on('turbolinks:load', function() {
     }
   }
   
+  $(".select2").select2({
+      width: 'resolve'
+    });
+
+  $(".select2.minimum_input").select2({    
+      placeholder: 'Start entering characters',
+      minimumInputLength: 2    
+    });
 
 }); // end of turbolinks:load
 
