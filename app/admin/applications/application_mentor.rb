@@ -56,8 +56,8 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
       f.input :relationship, input_html: { style: 'width:50%;' }
       f.input :application_mentor_type_id, as: :select, collection: (Offering.find(mentor.offering.id).mentor_types.collect{|mt| [mt.title , mt.application_mentor_type_id]})
       f.input :waive_access_review_right, as: :boolean
-    # f.input :academic_department, as: :tags, collection: AcademicDepartment.all.collect(&:name).sort
-      f.input :academic_department, as: :select, collection: AcademicDepartment.all.collect(&:name).sort, input_html: { multiple: true, class: "chosen-select", :style => 'width: 50%'}
+      # Add +include_hidden: false+ to select for empty string removal. Refer to: https://github.com/select2/select2/issues/4484
+      f.input :academic_department, as: :select, collection: AcademicDepartment.all.collect(&:name).sort,  include_hidden: false, input_html: { multiple: 'multiple', class: "select2", :style => 'width: 50%'}
       f.input :approval_response, as: :select, collection: %w(revise approved)
       f.input :approval_comments, as: :text, :input_html => { :class => 'autogrow', :rows => 5, :cols => 40  }
     f.input :approval_at, as: :date_time_picker, input_html: { :style => 'width:50%;' }

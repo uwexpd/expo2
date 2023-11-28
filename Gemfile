@@ -93,6 +93,8 @@ gem 'wicked_pdf' # html to pdf
 gem 'sdoc'
 gem 'rdoc'
 
+gem "select2-rails"
+
 group :production do  
   gem 'omniauth-shibboleth'
 end
