@@ -1,0 +1,42 @@
+<%= title @offering.title, "Special Requests" %>
+
+<%= render :partial => "apply/switch" if @application_count > 1 %>
+<div class='card apply_confirmation'>
+  <div class="card-content">
+	<h4>Do you have any special requests or accommodations requests?</h4>
+
+	<%= textilize ERB.new(@offering.special_requests_text).result(binding) %>
+	
+	<%= form_for @user_application, as: :requests, :url => { :action => 'requests' } do |f| %>
+		
+		<%= render "shared/error_messages", :target => @user_application %>
+		
+		<% if @group_member %>
+			<p class="small warning">Only primary applicants can submit special requests. Please contact your 
+				group's primary applicant to make changes to this page.
+			</p>
+		<% end %>
+
+		<div class='input-field col s12'>
+			<%= f.text_area :special_requests, :disabled => @group_member, class: 'materialize-textarea' %>
+			<%= f.label :special_requests, "Please enter your special requests here" %>
+		</div>
+				
+		<p class='padding_top'>
+			<%= f.submit "Submit", :disable_with => "Submitting...", class: 'btn' %>
+		</p>
+		
+	<% end %>
+  </div>
+
+  <div class="card-action center">
+		<%= button_to "Next: Return to Your Symposium Dashboard →", apply_url(@offering), :method => :get, class: 'btn' %>
+  </div>
+
+</div>
+
+<% content_for(:sidebar) do %>
+	<div class="sideblock card confirmation_nav">
+		<%= render partial: "apply/sidebar/confirmation_nav", locals: { page: 'requests' } %>
+	</div>
+<% end %>

@@ -184,9 +184,9 @@ module ApplicationHelper
     return nil if question.help_text.blank?
     link_text = question.help_link_text.blank? ? "Help" : question.help_link_text
     link_to link_text, 
-          apply_help_url(question.offering, question), 
-          :popup => ['help', 'height=500,width=400,toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=1,resizable=1'],
-          :class => 'help'
+          apply_help_url(question.offering, question),
+          class: 'help',
+          target: '_blank'
     
   end
 

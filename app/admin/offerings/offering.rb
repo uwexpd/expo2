@@ -132,7 +132,7 @@ ActiveAdmin.register Offering do
           f.input :ask_for_mentor_relationship, as: :boolean, hint: "If this box is checked, students are asked 'How do you know this person?' when submitting their mentors' contact information."
           f.input :ask_for_mentor_title, as: :boolean, hint: "If this box is checked, students are asked for their mentors' titles. Usually students are only asked for the mentor's name and email address."
           f.input :final_text, input_html: { class:  "tinymce", rows: 7 }, hint: "This text is displayed to the applicant on the 'Review and Submit' page, directly above the student's digital signature. Example: 'I understand that if awarded this scholarship...'"
-          f.input :alternate_welcome_page_title, label: 'Dashboard title', input_html: { style: "width:50%;" }, hint: "By default, the applicant welcome page (or 'dashboard') is labeled simply as 'Welcome.' To override this, specify a new dashboard title here."
+          f.input :alternate_welcome_page_title, label: 'Dashboard title', input_html: { style: "width:50%;" }, hint: "By default, the applicant welcome page (or 'dashboard') is labeled simply as 'My Application'. To override this, specify a new dashboard title here."
           f.input :revise_abstract_instructions, input_html:{ class: "tinymce", rows: 7}, hint: "These instructions are shown to applicants on the 'Revise Abstract' page."
           if offering.uses_group_members?
             f.input :group_member_validation_email_template_id, label: 'Group Member Validation E-mail Template', as: :select, collection: email_templates, include_blank: 'None', input_html: { class: 'select2', style: 'width: 100%'}, hint: "Choose the email template that should be sent to group members to validate their participation in a group."
@@ -275,7 +275,7 @@ ActiveAdmin.register Offering do
             f.input :disable_confirmation, as: :boolean, hint: 'This prevents applicants from accessing the confirmation process.'
             f.input :confirmation_deadline, as: :datetime_picker, input_html: { style: "width:50%;" }, hint: 'Students can confirm their participations anytime for first time confirmation. However, they cannot change their confirmations by confirmation deadline'
             f.input :confirmation_instructions, input_html: { class: "tinymce", rows: 15 }
-            f.input :confirmation_yes_text, input_html: { class: "tinymce", rows: 15 }
+            f.input :confirmation_yes_text
             f.input :guest_invitation_instructions, input_html: { class: "tinymce", rows: 10 }
             f.input :guest_postcard_layout, input_html: { class: "tinymce", rows: 7 }, hint: 'Note that leave blank here will remove guest invitation section from the confirmation process.'
             f.input :nomination_instructions, input_html: { class: "tinymce", rows: 10 }
@@ -298,7 +298,7 @@ ActiveAdmin.register Offering do
                 f.input :theme_response2_word_limit, input_html: { stlye: 'width: 10%' }
               end
             end
-            f.input :special_requests_text, input_html: { class: "tinymce", rows: 5 }
+            f.input :special_requests_text
           end
         end
       end

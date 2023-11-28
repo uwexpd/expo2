@@ -21,7 +21,7 @@ $(document).on('turbolinks:load', function() {
   $('.timepicker').timepicker();
   $('.collapsible').collapsible();
   $('select.material').formSelect();
-  $('.input-field .charcounter').characterCounter();  
+  $('.input-field .charcounter').characterCounter();
   // End materializecss javascript initialization
   
   M.updateTextFields(); // Materializecss: Prefilling Text Inputs
@@ -36,7 +36,16 @@ $(document).on('turbolinks:load', function() {
     }      
   }
 
-  // initate config of tinymce
+
+  //[TODO] Input filed and textarea word count
+  // $('.input-field .wordcounter').keyup(function(){
+
+  //     var textTrim = $('textarea').val();
+
+  // });
+
+
+  // initiate config of tinymce
   tinymce.init({
       selector: 'textarea.tinymce',
       // https://stackoverflow.com/questions/60834085/how-to-make-textarea-filed-mandatory-when-ive-applied-tinymce/66032994#66032994
@@ -46,7 +55,7 @@ $(document).on('turbolinks:load', function() {
             checkSubmit();
         });
       },
-      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table',
+      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table autoresize',
       toolbar: 'undo redo | cut copy paste searchreplace | italic subscript superscript charmap | preview hr spellchecker removeformat',      
       menubar: false,
       paste_merge_formats: true,

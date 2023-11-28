@@ -1,0 +1,50 @@
+<% page ||= ''; hide_welcome_link ||= false %>
+<% @confirmer ||= (@group_member || @user_application) %>
+
+<div class="page_list on_page">
+	<ul class="collection with-header">
+		<% unless hide_welcome_link %>
+			<li class="welcome_page_link collection-header">
+			<i class="material-icons top_align uw_light_gold">arrow_back</i>  <%= link_to "Back to My Application", apply_url(@offering) %></li>
+		<% end -%>
+
+		<li class="welcome_page_link collection-header">
+			<i class="material-icons top_align uw_light_gold">assignment_turned_in</i>  <%= link_to "Confirmation", {:controller => '/apply/confirmation', :action => "index"} %></li>
+						
+		<li>
+			<%= link_to "#{ "<i class='material-icons md-20 middle_align'>done</i>" if @confirmer.confirmed? } <span class='title'>Confirm Your Participation</span>".html_safe, 
+						{:controller => '/apply/confirmation', :action => "index"}, class: "collection-item #{ 'active' if page == 'index'}" %>
+		</li>
+
+		<!-- <li <%#= "id='current'" if page == 'contact_info' %>
+						<%#= "class='completed'" if (@confirmer.person.contact_info_updated_since(30.days.ago) rescue false) %>>
+						<%#= link_to "<span class='title'>Contact Information</span>", 
+									{:controller => '/apply/confirmation', :action => "contact_info"} %></li> -->
+						
+		<% attending = @user_application.application_type.workshop_event.attending?(@confirmer.person) rescue false %>
+		<% if @offering.application_types.collect(&:workshop_event).compact.size > 0 %>
+		<li <%= "id='current'" if page == 'workshops' %> <%= "class='completed'" if attending %>>
+			<%= link_to "<span class='title'>Workshops</span>".html_safe, 
+						{:controller => '/apply/confirmation', :action => "workshops"}, class: "collection-item" %></li>
+		<% end %>
+		
+		<% unless @offering.guest_invitation_instructions.blank? %>
+		  <li <%= "id='current'" if page == 'guests' %> <%= "class='completed'" unless @confirmer.guests.empty? %>>
+			<%= link_to "<span class='title'>Invite Guests</span>".html_safe, 
+						{:controller => '/apply/confirmation/guests', :action => "index"}, class: "collection-item #{ 'active' if page == 'guests'}" %></li>
+		<% end %>
+
+		<li>
+			<%= link_to "#{ "<i class='material-icons md-20 middle_align'>done</i>" unless @confirmer.nominated_mentor.nil? } <span class='title'>Nominate Your Mentor</span>".html_safe, 
+						{:controller => '/apply/confirmation', :action => "nominate"}, class: "collection-item #{ 'active' if page == 'nominate'}" %></li>
+
+		<% unless @offering.theme_response_title.blank? %>
+		  <li>
+		  <%= link_to "#{"<i class='material-icons md-20 middle_align'>done</i>" unless @confirmer.theme_response.blank? } <span class='title'>#{@offering.theme_response_title || "Theme Response"}</span>".html_safe, {:controller => '/apply/confirmation', :action => "theme"}, class: "collection-item #{ 'active' if page == 'theme'}" %></li>
+		<% end %>
+
+		<li>
+			<%= link_to "#{"<i class='material-icons md-20 middle_align'>done</i>" unless @user_application.special_requests.blank? } <span class='title'>Special Requests</span>".html_safe, 
+						{:controller => '/apply/confirmation', :action => "requests"}, class: "collection-item #{ 'active' if page == 'requests'}" %></li>
+	</ul>
+</div>

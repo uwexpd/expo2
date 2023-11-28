@@ -1,0 +1,76 @@
+<%= title @offering.title, (@offering.theme_response_title || "Theme Response") %>
+
+<%= render :partial => "apply/switch" if @application_count > 1 %>
+
+<div class='card apply_confirmation'>
+  <div class="card-content">
+  	<h4><%= @offering.theme_response_title || "Theme Response" %></h4>
+	<%= form_for @confirmer, as: :theme, :url => { :action => 'theme' } do |f| %>
+		
+		<%= render "shared/error_messages", :target => @confirmer %>
+
+		<p>
+			<%= textilize @offering.theme_response_instructions %>
+		</p>			
+		<div class='input-field col s12'>
+			<% if @offering.theme_response_type == 'textarea' %>
+				<%= f.text_area :theme_response, class: 'materialize-textarea' %>
+			<% else %>
+				<%= f.text_field :theme_response %>
+			<% end -%>
+			<%= f.label :theme_response, "Please enter here" %>
+			<%= "<br><small class=light>#{@offering.theme_response_word_limit.to_s} word limit</small>".html_safe if @offering.theme_response_word_limit.to_i > 0 %>
+		</div>
+
+		<% unless @offering.theme_response2_instructions.blank? %>
+			<br><p>
+				<%= textilize @offering.theme_response2_instructions %>
+				<div class='input-field col s12'>
+					<% if @offering.theme_response2_type == 'textarea' %>
+						<%= f.text_area :theme_response2, class: 'materialize-textarea' %>
+					<% else %>
+						<%= f.text_field :theme_response2 %>
+					<% end %>
+					<%= f.label :theme_response2, "Please enter here" %>
+					<%= "<br><small class=light>#{@offering.theme_response2_word_limit.to_s} word limit</small>".html_safe if @offering.theme_response2_word_limit.to_i > 0 %>
+				</div>
+			</p>
+			<br>
+			<b>For the purpose of these questions, do you give the University of Washington permission to publish your name, major, and academic year along with your responses?</b>
+			<%= f.radio_button :theme_response3, "1" %> 
+			<div class='input-field col s12'>
+			  <p>
+				<label> 
+					<%= f.radio_button :theme_response3, "1", {class: "with-gap"} %>
+					<span>Yes, I give permission.</span>
+				</label>			
+				<label> 
+					<%= f.radio_button :theme_response3, "0", {class: "with-gap"} %>
+					<span>No, please keep my responses anonymous.</span>
+				</label>
+			  </p>
+			</div>
+				 
+		<% end %>
+	
+	<p class='padding_top'>
+		<%= f.submit "Submit", :disable_with => "Submitting...", class: 'btn' %>
+	</p>
+	
+	<% end %>
+
+   </div>
+
+   <div class="card-action center">
+		<%= button_to "Next: Special Requests →", {:action => 'requests'}, :method => :get, class: 'btn' %>
+   </div>
+
+</div>
+
+
+<% content_for(:sidebar) do %>
+	<div class="sideblock card confirmation_nav">
+		<%= render partial: "apply/sidebar/confirmation_nav", locals: { page: 'theme' } %>
+	</div>
+<% end %>
+

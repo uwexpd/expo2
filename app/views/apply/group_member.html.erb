@@ -22,7 +22,7 @@
 			<%= render :partial => "dashboard_items" %>		
 	   </div>
 	</div>
-
-	<%= render :partial => "apply/confirmation/sidebar", :locals => { :hide_welcome_link => true } if @user_application.passed_status?("fully_accepted") %>
+  <% sidebar :apply_nav, locals: { :hide_welcome_link => true } if @user_application.passed_status?("fully_accepted") %>
+	<%#= render :partial => "apply/sidebar/apply_nav", :locals => { :hide_welcome_link => true } if @user_application.passed_status?("fully_accepted") %>
   </div>
 </div>

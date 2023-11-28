@@ -1,0 +1,45 @@
+<%= title @offering.title, "Confirm Your Participation" %>
+
+<%= render :partial => "apply/switch" if @application_count > 1 %>
+
+<div class='card apply_confirmation'>
+  <div class="card-content">
+	<h4>Confirm Your Participation</h4>
+	<%= textilize @offering.confirmation_instructions %>
+	<br>
+	<%= form_for @confirmer, as: :confirmation, url: { action: 'confirm' } do |f| %>
+	
+		<div class="input-field col s12 <%= 'highlight' if !@confirmer.confirmed.nil? && @confirmer.confirmed %>">	
+			<div style="padding-bottom: 3rem;">
+				<label>
+					<%= f.radio_button :confirmed, true, {class: "with-gap"} %>
+					<span><%= textilize ERB.new(@offering.confirmation_yes_text).result(binding) %></span>
+				</label>
+			</div>
+			
+		 	<p class="<%= 'highlight' if !@confirmer.confirmed.nil? && @confirmer.confirmed==false %>">		<label>
+					<%= f.radio_button :confirmed, false, {class: "with-gap"} %>				
+					<span><%= "No, I will not be participating in the #{@offering.title}." %></span>
+					<% unless @is_group_member %>
+						<br><span class="red_color" style="padding-left: 2.4rem;">Note: This will cancel your application.</span>
+					<% end %>
+				</label>
+			</p>
+		</div>
+		<br><br>
+		<div class="progress_nav_buttons">
+			<% if @confirmer.confirmed.nil? || (Time.now <= @offering.confirmation_deadline if @offering.confirmation_deadline) %>
+				<%= f.submit "Submit your confirmation →", :disable_with => "Submitting confirmation...", class: 'btn' %>
+			<% else %>
+				<p><span class="green icon-left complete">You've confirmed your participation Please contact <%= @offering.contact_email %> if you need to change your participation.</span></p>
+			<% end %>
+		</div>
+	<% end %>
+	
+  </div>
+</div>
+<% content_for(:sidebar) do %>
+	<div class="sideblock card confirmation_nav">
+		<%= render partial: "apply/sidebar/confirmation_nav", locals: { page: 'index' } %>
+	</div>
+<% end %>

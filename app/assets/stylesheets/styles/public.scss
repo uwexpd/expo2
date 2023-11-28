@@ -119,6 +119,14 @@ a:hover{
 	padding-left: 1rem;
 }
 
+.padding_bottom {
+	padding-bottom: 1rem;
+}
+
+.padding_top {
+	padding-top: 1rem;
+}
+
 span.highlight_box{
 	padding: 3px 6px;
 }
@@ -169,6 +177,17 @@ i.material-icons.middle_align{
 
 i.material-icons.top_align, i.material-icons.vertical_top {
 	vertical-align: top;
+}
+
+.action.required {
+	background-color: #ffe5e5;
+	padding: 0.75rem 0.75rem 0;
+    margin-left: -0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.action.required i.material-icons {
+	color: #d45f53;
 }
 
 // EXPO Header

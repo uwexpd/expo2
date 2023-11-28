@@ -1,0 +1,31 @@
+<%= title @offering.title, "Nominate Your Outstanding Mentor" %>
+
+
+
+<div class='card apply_confirmation'>
+  <div class="card-content">
+		<h4>Nominate Your Outstanding Mentor</h4>
+		<%= render :partial => "apply/switch" if @application_count > 1 %>
+		
+		<%= textilize @offering.nomination_instructions %>
+
+		<% if @confirmer.nominated_mentor.nil? || !@confirmer.valid? %>
+			<%= render :partial => "nomination_form" %>
+		<% else %>
+			<p>Thank you for nominating your mentor: <%= @confirmer.nominated_mentor.fullname %>!</p>
+		<% end %>
+	</div>
+	<div class="card-action center">
+		<% if @offering.theme_response_title.blank? %>
+		  <%= button_to "Next: Special Requests →", {:action => 'requests'}, :method => :get, class: 'btn' %>
+		<% else %>
+		  <%= button_to "Next: Theme Response →", { :action => "theme" }, :method => :get, class: 'btn' %>
+		<% end %>
+	</div>  
+</div>
+
+<% content_for(:sidebar) do %>
+	<div class="sideblock card confirmation_nav">
+		<%= render partial: "apply/sidebar/confirmation_nav", locals: { page: 'nominate' } %>
+	</div>
+<% end %>
