@@ -5,14 +5,12 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   config.per_page = [20, 50, 100]
-  menu false
-  config.filters = false
+  menu parent: 'Tools'
 
   controller do
-    before_action :fetch_offering, :except => [ :new, :create ]
+    before_action :fetch_application, :except => [ :new, :create ]
 
     def update
-      @app = ApplicationForOffering.find params[:id]
       anchor = params['section'] if params['section']
       update_application_status = false
       if params['application']
@@ -50,9 +48,13 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
     protected
     
-    def fetch_offering
-      if params[:offering_id]
-        @offering = Offering.find params[:offering_id]
+    def fetch_application
+      # if params[:offering_id]
+      #   @offering = Offering.find params[:offering_id]
+      # end
+      if params[:id]
+        @app = ApplicationForOffering.find params[:id]
+        @offering = @app.offering
         require_user_unit @offering.unit
       end
     end
@@ -198,5 +200,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     end
     actions
   end
+
+  filter :person_firstname, as: :string
+  filter :person_lastname, as: :string
+  filter :offering, as: :select, collection: Offering.order('id DESC'), input_html: { class: "select2", multiple: 'multiple'}
 
 end 

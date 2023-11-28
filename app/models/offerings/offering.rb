@@ -449,7 +449,7 @@ class Offering < ApplicationRecord
 
   # Returns "Welcome" unless +alternate_welcome_page_title+ is set to something else, like "MySymposium".
   def welcome_page_title
-    alternate_welcome_page_title.blank? ? "Welcome" : alternate_welcome_page_title
+    alternate_welcome_page_title.blank? ? "My Application" : alternate_welcome_page_title
   end
 
   # Every offering starts with three default statuses: New, In Progress, and Submitted.

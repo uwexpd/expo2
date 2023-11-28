@@ -111,7 +111,7 @@ ActiveAdmin.register ResearchOpportunity do
    
   filter :title, as: :string
   # filter :research_area1_or_research_area2_or_research_area3_or_research_area4_in, as: :select, label: "Discipline Search", collection: ResearchArea.order(:name), input_html: { class: 'chosen-select', multiple: true}
-  filter :research_area1_or_research_area2_or_research_area3_or_research_area4_in, as: :select, label: "Discipline", collection: ResearchArea.order(:name).pluck(:name, :id), input_html: { class: "select2"}
+  filter :research_area1_or_research_area2_or_research_area3_or_research_area4_in, as: :select, label: "Discipline", collection: ResearchArea.order(:name).pluck(:name, :id), input_html: { class: "select2", multiple: 'multiple'}
   filter :title_or_department_or_description_cont, as: :string, label: "Keyword (title, department, and description)"
   filter :name_or_email_or_description_cont, as: :string, label: "Research Mentor/Contact (name, email, and description)"
   filter :active, as: :boolean

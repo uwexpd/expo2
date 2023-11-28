@@ -1,0 +1,32 @@
+<div class='padding_top'>
+<%= form_for @confirmer, as: :nomination, :url => { :action => 'nominate' } do |f| %>
+	
+	<%= render "shared/error_messages", :target => @confirmer %>
+	
+	<p><strong>Which mentor would you like to nominate?</strong></p>
+	
+	<div class='input-field col s12'>
+	<% for mentor in @user_application.mentors %>
+		<p>
+		  <label>
+			<%= f.radio_button :nominated_mentor_id, mentor.id, {class: "with-gap"} %>
+			<span><%= mentor.fullname %></span>			
+		  </label>
+		</p>
+	<% end %>
+	</div>
+	<br>
+	<p><strong>Why do you think your mentor should receive this award?</strong></p>
+	
+	<div class='input-field col s12'>
+		<%= f.text_area :nominated_mentor_explanation, class: 'materialize-textarea' %>
+		<%= f.label :nominated_mentor_explanation, "Please enter your explanation" %>
+		<br><small class="light">Maximum 200 words</small>
+	</div>
+
+	<p>
+		<%= f.submit "Nominate My Mentor", :disable_with => "Saving your nomination...", class: 'btn' %>
+	</p>
+	
+<% end -%>
+</div>

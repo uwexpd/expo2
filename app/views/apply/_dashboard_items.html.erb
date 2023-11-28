@@ -11,13 +11,13 @@
 					<% if dashboard_item.css_class %>
 						<i class='material-icons md-36 middle_align uw_purple'><%= dashboard_item.css_class.split.first %></i>
 					<% end %>					
-					<b><%= raw(render(:inline => dashboard_item.title)) %></b>
+					<b><%= raw(render(inline: dashboard_item.title)) %></b>
 					<br />
-					<div><%= raw(render(:inline => dashboard_item.content)) rescue "Woops! Something is wrong here. Please contact expohelp@uw.edu" %></div>
+					<div><%= render inline: dashboard_item.content.html_safe rescue "Woops! Something is wrong here. Please contact expohelp@uw.edu" %></div>
 				</li>
-			<% end -%>
+			<% end %>
 			
-		<% end -%>
+		<% end %>
 	
-	<% end -%>  
+	<% end %>
 </ul>

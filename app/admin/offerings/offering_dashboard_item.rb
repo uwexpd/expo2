@@ -46,6 +46,7 @@ ActiveAdmin.register OfferingDashboardItem, as: 'dashboard_items' do
   	   	 end
   	   	 row :sequence
   	   	 row :show_group_members
+  	   	 row ('Style'){|item| item.css_class}
   	   end
   	end
 

@@ -318,30 +318,28 @@ class ApplyController < ApplicationController
       flash[:error] = "Your abstract does not need a revision, so you are not allowed to submit a revised one."
       redirect_to :action => "index" and return
     end
-    if request.post?
+    if request.patch?
       @user_application.text("Abstract").body = params[:revised_abstract]
       @user_application.project_title = params[:project_title]
       @user_application.save!
-      if params[:pdf_button]
-        redirect_to :action => "abstract", :format => :pdf and return
-      else
-        if @user_application.in_status?(:conditionally_accepted_full_revision_needed) || @user_application.in_status?(:conditionally_accepted_commented)
-          @user_application.set_status "final_revision_submitted"
-          flash[:notice] = "Thank you for submitting your final revisions."
-        else          
-          # check if there is one of primary OR required_mentors((faculty/post-doc)) who did NOT respond then set status +faculty_approval_needed+
-          # Once ALL primary AND required mentors (faculty/post-doc) have responded, set status +revision_submitted+
-          required_mentors = @user_application.mentors.select{|m| m.primary || m.meets_minimum_qualification?}
 
-          if required_mentors.collect(&:responded?).include?(false)
-            @user_application.set_status "faculty_approval_needed"
-          else
-            @user_application.set_status "revision_submitted"
-          end
-          flash[:notice] = "Thank you for submitting your revised abstract. An email has been sent to your mentor."
+      if @user_application.in_status?(:conditionally_accepted_full_revision_needed) || @user_application.in_status?(:conditionally_accepted_commented)
+        @user_application.set_status "final_revision_submitted"
+        flash[:notice] = "Thank you for submitting your final revisions."
+      else
+        # check if there is one of primary OR required_mentors((faculty/post-doc)) who did NOT respond then set status +faculty_approval_needed+
+        # Once ALL primary AND required mentors (faculty/post-doc) have responded, set status +revision_submitted+
+        required_mentors = @user_application.mentors.select{|m| m.primary || m.meets_minimum_qualification?}
+
+        if required_mentors.collect(&:responded?).include?(false)
+          @user_application.set_status "faculty_approval_needed"
+        else
+          @user_application.set_status "revision_submitted"
         end
-        redirect_to :action => "index" and return
+        flash[:notice] = "Thank you for submitting your revised abstract. An email has been sent to your mentor."
       end
+      redirect_to :action => "index" and return
+
     end
   end
 
@@ -388,7 +386,6 @@ class ApplyController < ApplicationController
   def apply_alternate_stylesheet
     if @offering.alternate_stylesheet
       @alternate_stylesheet = @offering.alternate_stylesheet
-      logger.debug "DEBUG => #{@alternate_stylesheet}"
     end
   end
   

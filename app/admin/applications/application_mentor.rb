@@ -7,7 +7,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
 
   scope "All", :with_name, default: true
 
-  permit_params :primary, :application_for_offering_id, :person_id, :waive_access_review_right, :firstname, :lastname, :email, :email_confirmation, :application_mentor_type_id, :academic_department, :approval_response, :approval_comments, :approval_at, :title, :relationship
+  permit_params :primary, :application_for_offering_id, :person_id, :waive_access_review_right, :firstname, :lastname, :email, :email_confirmation, :application_mentor_type_id, :approval_response, :approval_comments, :approval_at, :title, :relationship, academic_department: []
 
   index do
     column ('Name') {|mentor| link_to mentor.fullname, admin_mentor_path(mentor)}
@@ -54,10 +54,10 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
       f.input :email_confirmation, input_html: { style: 'width:50%;' }
       f.input :title, input_html: {  style: 'width:50%;' }
       f.input :relationship, input_html: { style: 'width:50%;' }
-      f.input :mentor_type, as: :select, collection: (Offering.find(params[:offering_id]).mentor_types rescue [""])
+      f.input :application_mentor_type_id, as: :select, collection: (Offering.find(mentor.offering.id).mentor_types.collect{|mt| [mt.title , mt.application_mentor_type_id]})
       f.input :waive_access_review_right, as: :boolean
     # f.input :academic_department, as: :tags, collection: AcademicDepartment.all.collect(&:name).sort
-      f.input :academic_department, as: :select, collection: AcademicDepartment.all.collect(&:name).sort, :input_html => { multiple: true, class: "chosen-select", :style => 'width: 50%' }
+      f.input :academic_department, as: :select, collection: AcademicDepartment.all.collect(&:name).sort, input_html: { multiple: true, class: "chosen-select", :style => 'width: 50%'}
       f.input :approval_response, as: :select, collection: %w(revise approved)
       f.input :approval_comments, as: :text, :input_html => { :class => 'autogrow', :rows => 5, :cols => 40  }
     f.input :approval_at, as: :date_time_picker, input_html: { :style => 'width:50%;' }

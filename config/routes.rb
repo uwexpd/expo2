@@ -86,11 +86,21 @@ Rails.application.routes.draw do
     match 'apply/:offering/cancel', to: 'apply#cancel', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch]
     match 'apply/:offering/enter_code', to: 'apply#enter_code', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch]
     get 'apply/:offering/cancelled', to: 'apply#cancelled', constraints: { offering: /\d+/ }
+    get 'apply/:offering/help/:id', to: 'apply#help', as: :apply_help
     get 'apply/:offering/review', to: 'apply#review', constraints: { offering: /\d+/ }
     match 'apply/:offering/submit', to: 'apply#submit', constraints: { offering: /\d+/ }, via: [:post, :put, :patch]
     match 'apply/:offering/files/application_file/file/:id/:filename', to: 'apply#file', via: [:get], as: :apply_file
     get 'apply/:offering/group_member', to: 'apply#group_member', constraints: { offering: /\d+/ }
+    match 'apply/:offering/revise_abstract', to: 'apply#revise_abstract', via: [:get, :post, :put, :patch], as: :apply_revise_abstract
     match 'apply/:offering/validate/:group_member_id/:token', to: 'apply#group_member_validation', as: :apply_group_member_validation, via: [:get, :post, :put, :patch]
+    #match.apply_confirmation_guests 'apply/:offering/confirmation/guests/:action/:id', :controller => 'apply/confirmation/guests'
+    get 'apply/:offering/confirmation/', to: 'apply/confirmation#index', as: :apply_confirmation
+    match 'apply/:offering/confirmation/', to: 'apply/confirmation#confirm', via: [:get, :patch]
+    match 'apply/:offering/confirmation/contact_info', to: 'apply/confirmation#contact_info', via: [:get, :patch]
+    match 'apply/:offering/confirmation/workshops', to: 'apply/confirmation#workshops', via: [:get, :patch]
+    match 'apply/:offering/confirmation/nominate', to: 'apply/confirmation#nominate', via: [:get, :patch]
+    match 'apply/:offering/confirmation/theme', to: 'apply/confirmation#theme', via: [:get, :patch]
+    match 'apply/:offering/confirmation/requests', to: 'apply/confirmation#requests', via: [:get, :patch]
 
     # Mentor
     get 'mentor', to: 'mentor#index'
