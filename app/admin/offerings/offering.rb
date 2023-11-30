@@ -274,13 +274,13 @@ ActiveAdmin.register Offering do
             hr
             f.input :disable_confirmation, as: :boolean, hint: 'This prevents applicants from accessing the confirmation process.'
             f.input :confirmation_deadline, as: :datetime_picker, input_html: { style: "width:50%;" }, hint: 'Students can confirm their participations anytime for first time confirmation. However, they cannot change their confirmations by confirmation deadline'
-            f.input :confirmation_instructions, input_html: { class: "tinymce", rows: 15 }
-            f.input :confirmation_yes_text
-            f.input :guest_invitation_instructions, input_html: { class: "tinymce", rows: 10 }
-            f.input :guest_postcard_layout, input_html: { class: "tinymce", rows: 7 }, hint: 'Note that leave blank here will remove guest invitation section from the confirmation process.'
-            f.input :nomination_instructions, input_html: { class: "tinymce", rows: 10 }
+            f.input :confirmation_instructions, input_html: { rows: 10 }
+            f.input :confirmation_yes_text, input_html: { rows: 20 }
+            f.input :guest_invitation_instructions, input_html: { rows: 5 }
+            f.input :guest_postcard_layout, input_html: { rows: 5 }, hint: 'Note that leave blank here will remove guest invitation section from the confirmation process.'
+            f.input :nomination_instructions, input_html: { rows: 10 }
             f.input :theme_response_title, as: :string, hint: 'Leave blank here will remove theme section from the confirmation process.'
-            f.input :theme_response_instructions, input_html: { class: "tinymce", rows: 7 }
+            f.input :theme_response_instructions, input_html: { rows: 7 }
             columns do
               column min_width: "20%", max_width: "20%", style: "margin-right: 0" do
                 f.input :theme_response_type, as: :select, collection: ["textfield", "textarea"]
@@ -289,7 +289,7 @@ ActiveAdmin.register Offering do
                 f.input :theme_response_word_limit, input_html: { stlye: 'width: 10%' }
               end
             end
-            f.input :theme_response2_instructions, input_html: { class: "tinymce", rows: 7 }
+            f.input :theme_response2_instructions, as: :text, input_html: { rows: 3 }
             columns do
               column min_width: "20%", max_width: "20%", style: "margin-right: 0" do
                 f.input :theme_response2_type, as: :select, collection: ["textfield", "textarea"]
