@@ -12,7 +12,8 @@
 		<% if @confirmer.nominated_mentor.nil? || !@confirmer.valid? %>
 			<%= render :partial => "nomination_form" %>
 		<% else %>
-			<p>Thank you for nominating your mentor: <%= @confirmer.nominated_mentor.fullname %>!</p>
+			<br><p>Thank you for nominating your mentor: <%= @confirmer.nominated_mentor.fullname %>!</p><br>
+			<p><%= @confirmer.nominated_mentor_explanation %></p>
 		<% end %>
 	</div>
 	<div class="card-action center">

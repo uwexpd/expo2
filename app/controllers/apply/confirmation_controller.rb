@@ -37,7 +37,7 @@ class Apply::ConfirmationController < ApplyController
     if params[:person]
       @confirmer.person.require_validations = true
       @confirmer.person.require_student_validations = true
-      if @confirmer.person.update_attributes(params[:person])
+      if @confirmer.person.update(params[:person])
         redirect_to :action => "workshops"
       end
     end
@@ -54,9 +54,7 @@ class Apply::ConfirmationController < ApplyController
   def nominate
     if params[:nomination]
       @confirmer.validate_nominated_mentor = true
-      # allowable_fields = %w( nominated_mentor_id nominated_mentor_explanation )
-      # nomination_attributes = params[:nomination].delete_if{|key,v| !allowable_fields.include?(key)}
-      if @confirmer.update_attribute(:nominated_mentor_id, params[:nomination][:nominated_mentor_id]) && @confirmer.update_attribute(:nominated_mentor_explanation, params[:nomination][:nominated_mentor_explanation])
+      if @confirmer.update(nomination_params)
         flash[:notice] = "Thanks for nominating your mentor!"
         redirect_to :action => "theme"
       end
@@ -66,9 +64,7 @@ class Apply::ConfirmationController < ApplyController
   def theme
     if params[:theme]
       @confirmer.validate_theme_responses = true
-      # allowable_fields = %w( theme_response theme_response2 theme_response3)
-      # theme_attribtues = params[:theme].delete_if{|key,v| !allowable_fields.include?(key)}
-      if @confirmer.update_attribute(:theme_response, params[:theme][:theme_response]) && @confirmer.update_attribute(:theme_response2, params[:theme][:theme_response2]) && @confirmer.update_attribute(:theme_response3, params[:theme][:theme_response3])
+      if @confirmer.update(theme_params)
         flash[:notice] = "Thank you for your #{@offering.theme_response_title rescue nil} response!" unless params[:theme][:theme_response].blank?
         redirect_to :action => 'requests'
       end
@@ -111,4 +107,14 @@ class Apply::ConfirmationController < ApplyController
     end
   end
   
+  private
+
+  def theme_params
+    params.require(:theme).permit(:theme_response, :theme_response2, :theme_response3)
+  end
+
+  def nomination_params
+    params.require(:nomination).permit(:nominated_mentor_id, :nominated_mentor_explanation)
+  end
+
 end

@@ -14,12 +14,16 @@
 		</p>			
 		<div class='input-field col s12'>
 			<% if @offering.theme_response_type == 'textarea' %>
-				<%= f.text_area :theme_response, class: 'materialize-textarea' %>
+				<%= f.text_area :theme_response, class: 'materialize-textarea wordcounter', data: {limit: @offering.theme_response_word_limit} %>
 			<% else %>
 				<%= f.text_field :theme_response %>
 			<% end -%>
 			<%= f.label :theme_response, "Please enter here" %>
-			<%= "<br><small class=light>#{@offering.theme_response_word_limit.to_s} word limit</small>".html_safe if @offering.theme_response_word_limit.to_i > 0 %>
+
+			<% if @offering.theme_response_word_limit.to_i > 0 %>
+			 <p class="word_count light"><%= @confirmer.theme_response.split.size %> / <%= @offering.theme_response_word_limit %> words</p>
+			<% end %>
+
 		</div>
 
 		<% unless @offering.theme_response2_instructions.blank? %>
@@ -27,17 +31,18 @@
 				<%= textilize @offering.theme_response2_instructions %>
 				<div class='input-field col s12'>
 					<% if @offering.theme_response2_type == 'textarea' %>
-						<%= f.text_area :theme_response2, class: 'materialize-textarea' %>
+						<%= f.text_area :theme_response2, class: 'materialize-textarea wordcounter', data: {limit: @offering.theme_response2_word_limit}  %>
 					<% else %>
 						<%= f.text_field :theme_response2 %>
 					<% end %>
 					<%= f.label :theme_response2, "Please enter here" %>
-					<%= "<br><small class=light>#{@offering.theme_response2_word_limit.to_s} word limit</small>".html_safe if @offering.theme_response2_word_limit.to_i > 0 %>
+					<% if @offering.theme_response2_word_limit.to_i > 0 %>
+						<p class="word_count light"><%= @confirmer.theme_response2.split.size %> / <%= @offering.theme_response2_word_limit %> words</p>
+					<% end %>
 				</div>
 			</p>
 			<br>
 			<b>For the purpose of these questions, do you give the University of Washington permission to publish your name, major, and academic year along with your responses?</b>
-			<%= f.radio_button :theme_response3, "1" %> 
 			<div class='input-field col s12'>
 			  <p>
 				<label> 

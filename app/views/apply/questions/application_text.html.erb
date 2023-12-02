@@ -5,7 +5,7 @@
 <div class="input-field col s12">
 		<%= help_link question %>
 
-		<%= text_fields.text_area :body, class: "#{question.use_mce_editor? ? 'tinymce' : 'materialize-textarea validate'} #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit} %>
+		<%= text_fields.text_area :body, class: "#{question.use_mce_editor? ? 'tinymce' : 'materialize-textarea validate'} #{'wordcounter' if question.word_limit? } #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit, limit: question.word_limit} %>
 
 		<%= content_tag('span', "", class: 'tinymce_error explanation_box error left') if question.use_mce_editor %>
 

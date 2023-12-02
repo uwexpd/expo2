@@ -113,8 +113,8 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 		         hr
 		         div 'Use these options to impose restrictions on the way this question is answered.', class: 'intro'
 		         f.input :required, label: 'Answer is required', as: :boolean
-		         f.input :character_limit, :input_html => { :style => "width:10%;" }
-		         f.input :word_limit, :input_html => { :style => "width:10%;" }     
+		         f.input :character_limit, :input_html => { :style => "width:15%;" }
+		         f.input :word_limit, :input_html => { :style => "width:15%;" }
 		       end
 		       f.inputs 'Advanced Validations' do
 		       	 panel '' do
