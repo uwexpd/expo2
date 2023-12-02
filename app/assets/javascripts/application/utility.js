@@ -29,21 +29,33 @@ $(document).on('turbolinks:load', function() {
   // Check materialize-textarea if needed to apply AutoResize method
   for (let i=0; i < $('.materialize-textarea').length; i++) {
     
-    var element_id = $('.materialize-textarea')[i]['id']
+    let element_id = $('.materialize-textarea')[i]['id']
 
     if ($.trim($('#' + element_id).val()).length > 0) {
       M.textareaAutoResize($('#'+ element_id));
     }      
   }
 
+  //Input textarea word count
+  for (let i=0; i < $('.materialize-textarea.wordcounter').length; i++) {
 
-  //[TODO] Input filed and textarea word count
-  // $('.input-field .wordcounter').keyup(function(){
+    let element_id = $('.materialize-textarea')[i]['id']
+    let element = $('#' + element_id)
 
-  //     var textTrim = $('textarea').val();
+    element.keyup(function(){
 
-  // });
+        let text_trim = $.trim(element.val());
+        let word_limit = element.data("limit");
 
+        if (text_trim.length > 0) {
+          //finds a white space character and replaces it with a single space then splits it to create an array of words
+          let words = text_trim.replace(/\s+/gi, ' ').split(' ');
+          $('label[for=' + element_id + ']').next().text( words.length +' / '+ word_limit + ' words');
+        }else {
+          $('label[for=' + element_id + ']').next().text( '0 / '+ word_limit + ' words');
+        }
+    });
+  }
 
   // initiate config of tinymce
   tinymce.init({
