@@ -7,7 +7,7 @@
 
 <% if offering.asks_mentor_questions? %>
 	<% for answer in mentor.answers %>
-		<li><%= answer.question.question %>
+		<li><%= raw(answer.question.question) %>
 			<br><span class="light"><%= answer.answer %></span>
 		</li>
 	<% end -%>
