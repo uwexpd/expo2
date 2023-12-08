@@ -156,7 +156,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
          end
          tab 'Review', id: 'review' do
            panel 'Review' do
-              render "review_committee" # [TODO] Need to tune this page...cost almost 5 seconds
+              render "review_committee"
            end
          end
          if @offering.uses_interviews?

@@ -6,7 +6,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
   config.per_page = [25, 50, 100, 150, 200]
   config.sort_order = ""
 
-  scope :active, default: true
+  scope :active_and_responded, default: true
   scope :inactive
   scope :permanently_inactive
   scope :not_responded

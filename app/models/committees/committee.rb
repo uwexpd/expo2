@@ -4,24 +4,12 @@
 class Committee < ApplicationRecord
   stampable
   has_many :members, :class_name => "CommitteeMember" do
-    # def active
-    #   find_all{|m| m.currently_active? && m.responded_recently? }
-    # end
-    # def inactive
-    #   reject{|m| m.currently_active? }
-    # end
-    # def permanently_inactive
-    #   find(:all, :conditions => { :permanently_inactive => true })
-    # end
-    # def not_responded
-    #   reject{|m| m.responded_recently? }
-    # end
     def of_type(member_type)
       find(:all, :conditions => {:committee_member_type_id => member_type.id})
     end
-    def active_for(quarter)
-      find_all{|m| m.active_for?(quarter) }
-    end
+    # def active_for(quarter)
+    #   find_all{|m| m.active_for?(quarter) }
+    # end
   end
     
   has_many :committee_quarters do
