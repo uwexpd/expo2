@@ -16,7 +16,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
     # end
     column ('Email') {|mentor| mentor.email }
     column ('Offering') {|mentor| link_to(mentor.offering.title, admin_offering_path(mentor.offering)) if mentor.offering}
-    column ('Application') {|mentor| link_to(mentor.application_for_offering.stripped_project_title || "(no title)", admin_offering_application_path(mentor.offering.id, mentor.application_for_offering_id))}
+    column ('Project Title') {|mentor| link_to(highlight(mentor.application_for_offering.stripped_project_title, params.dig(:q, :application_for_offering_project_title_contains)) || "(no title)", admin_offering_application_path(mentor.offering.id, mentor.application_for_offering_id))}
     # column ('Created At') {|mentor| "#{time_ago_in_words mentor.created_at} ago"}
     actions
   end
@@ -68,6 +68,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
   filter :firstname, as: :string
   filter :lastname, as: :string
   filter :email, as: :string
-  filter :application_for_offering_id, as: :number
+  filter :application_for_offering_offering_id, label: 'Offering', as: :select, collection: Offering.order('id DESC'), input_html: { class: "select2", multiple: 'multiple'}
+  filter :application_for_offering_project_title, as: :string, label: 'Project Title'
 
 end 

@@ -13,12 +13,12 @@
 
 // 2024 sympoisum
 #apply_header.symposium2024 {
-	background: #7fb439 url(image-path('symposium/2024/header.png'));
-	position: relative;
+	// background: #7fb439 url(image-path('symposium/2024/header.png'));
+	// position: relative;
 }
 
 #apply_header .header_title.symposium2024 {
-	background: url(image-path('symposium/2024/header-title.png')) no-repeat;
+	background: url(image-path('symposium/2024/header-layered.png')) repeat;
 }
 
 .proceedings .header_title.symposium2024 {

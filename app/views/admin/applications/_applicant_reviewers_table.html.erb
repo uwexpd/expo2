@@ -1,3 +1,9 @@
+<% app_reviewers = @app.reviewers
+   committee_quarter = CommitteeQuarter.find_by(committee_id: @app.offering.review_committee.id, quarter_id: @offering.quarter_offered || Quarter.current_quarter)
+%>
+
+<% @offering_reviewers = CommitteeMember.active_for(committee_quarter.id) %>
+
 <table class='borderless'>
 	<tr class="header">
 		<td>Reviewer</td>
@@ -23,7 +29,7 @@
 	</tr>
 	<% end %>
 
-	<% if @app.reviewers.empty? %>
+	<% if app_reviewers.blank? %>
 		<tr class="empty">
 			<td colspan=<%= @offering.review_criterions.size + 3 %>>
 				No reviewers assigned.
@@ -31,22 +37,24 @@
 		</tr>
 	<% end %>
 	
-	<% unless @app.offering.reviewers_for(@app).blank? %>
+	<% unless @offering_reviewers.blank? %>
 		<tr>
 			<td colspan=<%= @offering.review_criterions.size %>>
 				<div id="assign_reviewer">
 					<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
 						<%= f.label :new_reviewer, "Add Another Reviewer:" %>
 						<%= f.collection_select :new_reviewer,
-												@app.offering.reviewers_for(@app).sort,
+												@offering_reviewers,
 												:id,
-												'fullname' %>
-						<%= f.submit "Add", class: 'small' %>
+												'fullname' ,
+												{prompt: true },
+												{class: "select2" } %>
+						<%= f.submit "Add", class: 'small'  %>
 					<% end %>
 				</div>				
 			</td>
 	<% end %>
-	<% unless @app.reviewers.blank? %>
+	<% unless app_reviewers.blank? %>
 		<td colspan = 3>
 			<div id="drop_reviewer">
 				<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
@@ -54,13 +62,15 @@
 					<%= f.collection_select :remove_reviewer, 
 											@app.reviewers.reject{|r|r.committee_member_id.nil?},
 											:committee_member_id,
-											'fullname' %>
+											'fullname',
+											{prompt: false },
+											{class: "select2" } %>
 					<%= f.submit "Drop", :confirm => 'Are you sure you want to drop this reviewer ?', class: 'small'  %>
 					
 				<% end %>
 			</div>			
 		</td>
 	</tr>
-	<% end %>	
+	<% end %>
 	
 </table>
