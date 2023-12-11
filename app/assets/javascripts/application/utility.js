@@ -81,15 +81,19 @@ $(document).on('turbolinks:load', function() {
 
   $(document).on('click', 'input[type=submit]', checkSubmit);
   function checkSubmit() {
-    if ($('textarea.tinymce').length && $('textarea.tinymce').val().trim().length <= 0) {
-      $('.tinymce_error').show();
-      $('.tinymce_error').html('Please fill out content in the input box above');
-      return false;
-    }
-    else{        
-      $('.tinymce_error').hide();
-      $('.tinymce_error').html('');   
-    }
+    $('textarea.tinymce').each( function(index, element){      
+      if ($(this).length && $(this).val().trim().length <= 0) {        
+        $(this).next().next().show();
+        $(this).next().next().html('Please fill out content in the input box above');
+        return false;
+      }
+      else
+      {        
+        $(this).next().next().hide();
+        $(this).next().next().html('');        
+      }
+    });
+      
   }
   
   $(".select2").select2({
