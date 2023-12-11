@@ -15,9 +15,9 @@
 
 			<h5>Project Title</h5>
 
-			<%= text_area_tag :project_title, @user_application.project_title, :id => "project_title_editor", class: 'tinymce' %>
+			<%= f.text_area :project_title, :id => "project_title_editor", class: 'tinymce' %>
 			
-			<br>
+			<%= content_tag('span', "", class: 'tinymce_error explanation_box error left') %><br><br>
 		
 			<h5>Abstract</h5>
 			
@@ -27,8 +27,8 @@
 
 			<%= content_tag('p', "300 word limit", :class => 'question_caption') %>
 
-			<br>
-			<%= submit_tag "Submit Revised Abstract", class: 'btn' %>
+			<br><br>
+			<p><%= submit_tag "Submit Revised Abstract", class: 'btn' %></p>
 
 		<% end %>
 		

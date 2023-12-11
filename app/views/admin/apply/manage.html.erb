@@ -38,7 +38,7 @@
 				<li>
 					<i class='material-icons md-36'>description</i>
 					
-					<%= link_to "All Applications", admin_apply_list_path(@offering) %>
+					<%= link_to "All Applications", admin_offering_applications_path(@offering) %>
 					<div>There are currently <b><%= pluralize @offering.valid_status_applications.size, "application" %></b> in the system.</div>
 					
 				</li>
