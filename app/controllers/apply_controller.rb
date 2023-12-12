@@ -319,9 +319,13 @@ class ApplyController < ApplicationController
       redirect_to :action => "index" and return
     end
     if request.patch?
-      @user_application.text("Abstract").body = params[:revised_abstract]
-      @user_application.project_title = params[:project_title]
-      @user_application.save!
+      if params[:project_title].blank? || params[:revised_abstract].blank?
+        return flash[:error] = "Please fill out content in the project title or abstract"
+      else
+        @user_application.text("Abstract").body = params[:revised_abstract]
+        @user_application.project_title = params[:project_title]
+        @user_application.save!
+      end
 
       if @user_application.in_status?(:conditionally_accepted_full_revision_needed) || @user_application.in_status?(:conditionally_accepted_commented)
         @user_application.set_status "final_revision_submitted"
