@@ -16,7 +16,7 @@ $(document).ready(function(){
 // https://codefor.life/turbolinks-5-rails-5-not-that-bad/
 $(document).on('turbolinks:load', function() {
   // Materializecss javascript components initialization
-  $('.tabs').tabs();  
+  $('.tabs').tabs();
   $('.datepicker').datepicker();
   $('.timepicker').timepicker();
   $('.collapsible').collapsible();
@@ -60,18 +60,18 @@ $(document).on('turbolinks:load', function() {
   // initiate config of tinymce
   tinymce.init({
       selector: 'textarea.tinymce',
+      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table autoresize',
+      toolbar: 'undo redo | cut copy paste searchreplace | italic subscript superscript charmap | preview hr spellchecker removeformat',
+      menubar: false,
+      paste_merge_formats: true,
+      browser_spellcheck: true,
       // https://stackoverflow.com/questions/60834085/how-to-make-textarea-filed-mandatory-when-ive-applied-tinymce/66032994#66032994
       setup: function (editor) {
         editor.on('change', function () {
             tinymce.triggerSave();
             checkSubmit();
         });
-      },
-      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table autoresize',
-      toolbar: 'undo redo | cut copy paste searchreplace | italic subscript superscript charmap | preview hr spellchecker removeformat',      
-      menubar: false,
-      paste_merge_formats: true,
-      browser_spellcheck: true
+      }
   });
 
   // check tinymce if empty before submit for long response question
