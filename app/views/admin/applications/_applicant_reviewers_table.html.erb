@@ -36,41 +36,35 @@
 			</td>
 		</tr>
 	<% end %>
-	
-	<% unless @offering_reviewers.blank? %>
-		<tr>
-			<td colspan=<%= @offering.review_criterions.size %>>
-				<div id="assign_reviewer">
-					<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
-						<%= f.label :new_reviewer, "Add Another Reviewer:" %>
-						<%= f.collection_select :new_reviewer,
-												@offering_reviewers,
-												:id,
-												'fullname' ,
-												{prompt: true },
-												{class: "select2" } %>
-						<%= f.submit "Add", class: 'small'  %>
-					<% end %>
-				</div>				
-			</td>
-	<% end %>
-	<% unless app_reviewers.blank? %>
-		<td colspan = 3>
-			<div id="drop_reviewer">
-				<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
-					<%= f.label :remove_reviewer, "Drop a Reviewer:" %>
-					<%= f.collection_select :remove_reviewer, 
-											@app.reviewers.reject{|r|r.committee_member_id.nil?},
-											:committee_member_id,
-											'fullname',
-											{prompt: false },
-											{class: "select2" } %>
-					<%= f.submit "Drop", :confirm => 'Are you sure you want to drop this reviewer ?', class: 'small'  %>
-					
-				<% end %>
-			</div>			
-		</td>
-	</tr>
-	<% end %>
-	
-</table>
+</table>	
+<br>
+<% unless @offering_reviewers.blank? %>
+	<span id="assign_reviewer" class='left'>
+		<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
+			<%= f.label :new_reviewer, "Add Another Reviewer:" %>
+			<%= f.collection_select :new_reviewer,
+									@offering_reviewers,
+									:id,
+									'fullname' ,
+									{prompt: true },
+									{class: "select2"} %>
+			<%= f.submit "Add", class: 'small'  %>
+		<% end %>
+	</span>
+<% end %>
+<% unless app_reviewers.blank? %>
+	<span id="drop_reviewer" class='left' style='padding-left: 1rem;'>
+		<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
+			<%= f.label :remove_reviewer, "Drop a Reviewer:" %>
+			<%= f.collection_select :remove_reviewer, 
+									@app.reviewers.reject{|r|r.committee_member_id.nil?},
+									:committee_member_id,
+									'fullname',
+									{prompt: true },
+									{class: "select2"} %>
+			<%= f.submit "Drop", :confirm => 'Are you sure you want to drop this reviewer ?', class: 'small'  %>
+			
+		<% end %>
+	</span>
+<% end %>
+<br class='clear'>
