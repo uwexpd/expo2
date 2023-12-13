@@ -1,22 +1,22 @@
 ActiveAdmin.register OfferingDashboardItem, as: 'dashboard_items' do
 	belongs_to :offering
-	batch_action :destroy, false
-	config.filters = false
+	batch_action :destroy, false	
 	config.sort_order = 'sequence_asc'
 
 	permit_params :disabled, :status_lookup_method, :offering_status_id, :offering_application_type_id, :criteria, :sequence, :show_group_members, :disabled, dashboard_item_attributes: [:title, :content, :css_class]
 
 	index do		
 		column ('Title') {|item| link_to item.title, admin_offering_dashboard_item_path(offering, item)}
-	    column ('Creiteria') do |item|
-	    	span [(item.offering_status.private_title rescue nil), 
-			(item.offering_application_type.title rescue nil)].compact.join("<br>").html_safe
-			span(title: "#{item.criteria}") do 
-				"<br>Other Criteria".html_safe
-			end unless item.criteria.blank?
-	    end
-	    toggle_bool_column 'Disabled', :disabled, success_message: "Successfully update the dashboard item!"   
-	    actions
+		column ('Display'){|item| render inline: item.content.html_safe rescue item.content.html_safe }
+    column ('Creiteria') do |item|
+    	span [(item.offering_status.private_title rescue nil), 
+		(item.offering_application_type.title rescue nil)].compact.join("<br>").html_safe
+		span(title: "#{item.criteria}") do 
+			"<br>Other Criteria".html_safe
+		end unless item.criteria.blank?
+    end
+    toggle_bool_column 'Disabled', :disabled, success_message: "Successfully update the dashboard item!"   
+    actions
 	end
 	
 	sidebar "Offering Settings" do
@@ -92,5 +92,8 @@ ActiveAdmin.register OfferingDashboardItem, as: 'dashboard_items' do
 	  end
 	  actions
 	end
+
+	filter :dashboard_item_title, as: :string
+	filter :disabled, as: :boolean
   	
 end
