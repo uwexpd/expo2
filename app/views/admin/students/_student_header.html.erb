@@ -9,7 +9,7 @@
 		<% if mode == :info %>
 			<dl class="id_numbers">
 				<dt>RegID:</dt>
-				<dd><%= student.reg_id %></dd>
+				<dd><%= student.reg_id || "<span class='empty'>unkown</span>".html_safe %></dd>
 				
 				<dt>Student #:</dt>
 				<dd><%= student.student_no %></dd>

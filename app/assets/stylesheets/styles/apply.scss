@@ -39,6 +39,7 @@
 /* Question label focus color */
 .offering_questions .input-field input[type=text] + label, div.select-wrapper + label, .offering_questions .non_input_field label {
   color: rgba(0, 0, 0, 0.87);
+  font-weight: 500;
 }
 
 .offering_questions div.select-wrapper {
@@ -46,8 +47,8 @@
 }
 
 .offering_questions .non_input_field .inline {
-	color: rgba(0, 0, 0, 0.5);
-	border-bottom: 2.5px dotted rgba(0, 0, 0, 0.42);
+	color: rgba(0, 0, 0, 0.65);
+	// border-bottom: 2.5px dotted rgba(0, 0, 0, 0.42);
 }
 
 div.select-wrapper + label {	
@@ -55,7 +56,7 @@ div.select-wrapper + label {
 }
 
 #apply_form .input-field .helper-text {
-  color: rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, 0.4);
 }
 
 #apply_form .non_input_field .helper-text {
@@ -67,8 +68,8 @@ div.select-wrapper + label {
 }    
 
 #apply_form input[type=text]:not(.browser-default):disabled {
-  color: rgba(0, 0, 0, 0.5);
-  border-bottom: 2.5px dotted rgba(0, 0, 0, 0.42);
+  color: rgba(0, 0, 0, 0.65);
+  // border-bottom: 2.5px dotted rgba(0, 0, 0, 0.42);
 }
 
 label.truncate {
