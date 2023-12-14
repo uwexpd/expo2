@@ -1,6 +1,6 @@
 <div class="input-field col s12">
-	 <input disabled type="text" value='<%= (eval "@user_application.person.#{question.attribute_to_update}" rescue "--") + " (readonly)" %>' class="input_readonly">	
-	<%= qf.label('', question.question) %>
+	 <input disabled type="text" value='<%= (eval "@user_application.person.#{question.attribute_to_update}" rescue "--") + " (readonly)" %>' class="input_readonly">
+	<label><%= question.question %></label>
 	<%= display_computed_caption(question.caption) if question.caption? %>
 	
 </div>

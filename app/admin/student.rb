@@ -32,7 +32,7 @@ menu parent: 'Groups'
               row ('Gpa') {|student| student.sdb.gpa}
               row ('Gender') do |student|
                 span "#{student.sdb.gender}"
-                span "(#{student.sws.pronouns})", class: 'light' if student.sws.pronouns
+                span "(#{student.sws.pronouns})", class: 'light' if student.sws.pronouns rescue "<span class='light smaller'>(No pronouns found)</span>".html_safe
               end
               row ('Age') do |student| 
                 span student.sdb.age

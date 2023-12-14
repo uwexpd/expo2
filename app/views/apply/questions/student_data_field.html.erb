@@ -1,5 +1,5 @@
 <div <%= "class= non_input_field" if @user_application.person.is_a?(Student) %>>
-	<%= qf.label('', question.question) %>
+	<label><%= question.question %></label>
 
 	<% if @user_application.person.is_a?(Student) %>
 		<div class="inline">

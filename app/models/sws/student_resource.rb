@@ -29,8 +29,7 @@ class StudentResource < WebServiceResult
     result = self.encapsulate_data(connection.get("#{self.element_path}.json?#{attribute.to_s}=#{search_term.to_s}"))    
     #result_elements = result.css("Person RegID") # this is for parsing xml 
     # puts "Debug => #{result.inspect}"
-    return nil if result.empty?
-    # || result['Persons'].empty?
+    return nil if result.empty? || result['Persons'].empty?
     result_regid = result['Persons'].first['RegID']
     
     fetch_record ? self.find(result_regid) : result_regid
