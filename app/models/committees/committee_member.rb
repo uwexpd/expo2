@@ -76,7 +76,7 @@ class CommitteeMember < ApplicationRecord
 
   scope :ordered, -> { includes(:person).order("people.lastname, people.firstname") }
 
-  scope :active, -> { where(id: (where(inactive: false, permanently_inactive: false)).map(&:id)).ordered }
+  scope :active, -> { where(inactive: false, permanently_inactive: false).ordered }
 
   scope :active_and_responded, -> { where(id: (where(inactive: false, permanently_inactive: false).select{|m|m.responded_recently?}).map(&:id)).ordered }
 

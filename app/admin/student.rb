@@ -135,7 +135,7 @@ menu parent: 'Groups'
     end    
   end
   sidebar "Student Search", only: :show do
-      
+    render "search_student"
   end
 
   member_action :photo, :method => :get do
@@ -155,5 +155,8 @@ menu parent: 'Groups'
   filter :firstname, as: :string
   filter :lastname, as: :string
   filter :email, as: :string
+  # filter :student_no_eq # [FIXME] ActiveRecord::Reflection::ThroughReflection#foreign_key delegated to source_reflection.foreign_key, but source_reflection is nil
+  # filter :system_key_eq # same above
+  # filter :class_standing_id_eq
 
 end

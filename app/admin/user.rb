@@ -85,7 +85,7 @@ ActiveAdmin.register User do
     end
   end
 
-  sidebar "Search Username", only: :show do  
+  sidebar "Search User", only: :show do
       render "search_user"
   end
   
