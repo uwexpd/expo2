@@ -47,10 +47,11 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
     column "Quarter" do |member|
       if member.currently_active? && member.status_cache != "not_responded"
          committee.quarters.upcoming.each do |quarter|
-          if member.active_for?(quarter)
-            span 'check_circle', class: 'material-icons uw_green'
-            span quarter.abbrev
-          end
+           if member.active_for?(quarter)
+             span 'check_circle', class: 'material-icons uw_green'
+             span quarter.abbrev
+             a 'speaker_notes', title: member.quarter_comment_for(quarter), class: 'material-icons uw_metallic_gold tooltip' unless member.quarter_comment_for(quarter).blank?            
+           end
          end
          "" if committee.quarters.upcoming.empty?
 
