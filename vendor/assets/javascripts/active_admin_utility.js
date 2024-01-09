@@ -22,6 +22,7 @@ $(function() {
    $('div.action_items').append('<span class="action_item"><a id="toggle_filters" href="#" class=\'epon\'><i class="mi md-16 sub_align">view_sidebar</i> Sidebar</a></span>')
    // when we request a filtered collection, we won't hide the sidebar
    // if(!window.location.search.includes('Filter')){ $('div#sidebar').hide(); $('a#toggle_filters').removeClass('epon') }
+   if ($('div#sidebar').length == 0){$('a#toggle_filters').hide();}
    $('a#toggle_filters').click(function(){ $('div#sidebar').toggle(); $(this).toggleClass('epon') })
 
    $(".select2").select2({
