@@ -1,0 +1,5 @@
+<% if @email_template %>
+	$("#email_body").val("<%= j @email_template.body.to_s.html_safe %>");
+	$("#email_from").val("<%= j @email_template.from.html_safe %>");
+	$("#email_subject").val("<%= j @email_template.subject.html_safe %>");
+<% end %>

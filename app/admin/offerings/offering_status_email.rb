@@ -55,11 +55,7 @@ ActiveAdmin.register OfferingStatusEmail, as: 'emails'  do
       	row :auto_send
       	row :cc_to_feedback_person      	      
       end
-      panel '' do
-      	div :class => 'content-block' do
-      	  render "admin/communicate/email_preview", { template: emails.email_template }
-      	end
-      end	
+      render "admin/communicate/email_preview", { template: emails.email_template }
     end
 
     form do |f|

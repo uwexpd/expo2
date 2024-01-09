@@ -1,0 +1,127 @@
+<div class='panel'>	
+  <div class='panel_contents email recipients'>
+  	<h2>Compose Message</h2>
+   		<div class='content-block'>  	  
+		    <h4><strong><i class='mi uw_purple'>view_list</i> Recipient List</strong> - sending to <%= pluralize @recipients.size, "recipient" %>. <%= link_to 'View recipient list', 'javascript:;', data: { link_toggle: "#recipient_list" }, class: 'button small' %></h4>
+				<table id='recipient_list' class='borderless' style="display:none">
+					<% @recipients.each_with_index do |recipient, i| %>
+					<tr>
+						<td class="light"><%= i+1 %></td>
+						<td><%= recipient.respond_to?(:fullname) ? recipient.fullname : recipient.person.fullname rescue "#err" %></td>
+						<td><%= auto_link recipient.respond_to?(:email) ? recipient.email : recipient.person.email rescue "#err" %></td>
+						<td class="light"><%= recipient.class %> <%= recipient.id unless recipient.nil? %></td>
+						<td><span class="current_sample_row_note">Current sample</span>
+							<%#= link_to_remote "Use as sample", 
+												{:url => {:action => 'resample_placeholder_codes', 
+														:new_sample_num => i },
+												:indicator => 'global',
+												:submit => "email_write_form"},
+												:class => "use_as_sample_link" %>
+							</td>
+					</tr>
+					<% end %>
+				</table>
+	  	</div>  
+  </div>
+</div>
+
+
+<div class='panel'>
+  <div class='panel_contents email_write'>	  
+  	<h2>Message Contents</h2>
+	<%= form_for :email, url: { :action => "queue" }, html: { id: "email_write_form" } do |f| %>
+
+	  <fieldset class="inputs">
+		<div class="email_preview string input">
+			<table class='borderless highlightless'>
+				<tbody>
+					<tr>
+						<th>To</th>
+						<td><%= text_field_tag "email[to]", "#{pluralize(@recipients.size, "recipient")}", disabled: true %></td>
+					</tr>
+					<tr>
+						<th>From</th>
+						<td><%= text_field_tag "email[from]" %></td>
+					</tr>
+					<tr>
+						<th>Subject</th>
+						<td><%= text_field_tag "email[subject]", (params[:email][:subject] rescue nil), :id => 'email_subject' %></td>
+					</tr>
+					
+					<tr class="text input">
+						<th>Body</th>
+						<td><%= text_area_tag "email[body]", (params[:email][:body] rescue nil), :rows => 25, :cols => 100, :id => 'email_body' %></td>
+					</tr>
+					<tr class="select input">
+						<th>Apply a template</th>
+						<td>
+							<%= f.collection_select(:template_id, 
+										EmailTemplate.all, 
+										:id, :title,
+										{include_blank: 'Please select a template', selected: (params[:email_template_id].to_i)},
+										{class: 'select2'}) %>
+						</td>
+					</tr>
+					<tr id="update_email_template_form" style="display:none">
+						<th></th>
+						<td class="input boolean">
+							<label for="update_email_template">
+								<%= check_box_tag :update_email_template, true %>Update this template with my changes above.</label>
+						</td>
+					</tr>
+					<tr>
+						<th></th>
+						<td class="input boolean">
+							<label for="create_email_template">
+								<%= check_box_tag :create_email_template, true %>Create a new template with the text above</label>
+						</td>
+					</tr>
+					<tr>
+						<th></th>
+						<td class="input boolean">
+							<label for="html_format">
+								<%= check_box_tag :html_format, true %>Send email template with HTML format</label>
+						</td>
+					</tr>
+				</tbody>				
+			</table>
+		</div>
+	  </fieldset>
+
+	  <fieldset class="actions">
+		<ol><li class="action input_action " id="email_queue_submit_action">
+				<%= f.submit "Queue E-mails" %>
+			</li>
+			<li class="cancel"><%= link_to 'Cancel', :back %></li>
+		</ol>
+	  </fieldset>	  
+		<%= hidden_field_tag "select[#{@recipients.first.class.to_s}]", @recipients.pluck(:id).to_json %>
+		<%# @recipients.map(&:id).each do |id| %>
+		  <%#= hidden_field_tag "select[#{@recipients.first.class.to_s}][]", id %>
+		<%# end %>
+		<%#= select_tag "select[#{@recipients.first.class.to_s}]", 'recipient_ids', {}, @recipients.pluck(:id) %>
+
+		<% end %>
+  </div>
+</div>
+<script type="text/javascript">
+    $('#email_template_id').on('change', function(){
+        var email_template_id = $(this).val();
+        // alert(email_template_id);
+    		// ajax request
+		    $.ajax({
+		      url: "/expo/admin/communicate/apply_template",
+		      method: "GET",
+		      data: {
+		        email_template_id: email_template_id
+		      },
+		      complete: function () {
+     				if (email_template_id){
+     					$('#update_email_template_form').show(600);
+     				}else{
+     					$('#update_email_template_form').hide(600);
+     				}
+     			}
+		    });		    
+    })
+</script>

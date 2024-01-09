@@ -27,6 +27,13 @@ en:
       offering:
         #new_model: 'Create Offering'
 
+    batch_actions:
+      labels:
+        member_active: "Mark as active"
+        member_active_user_response: "Mark as active with quarter (as user response)"
+        member_inactive: "Mark as inactive"
+        member_permanently_inactive: "Mark permanently inactive"
+
   errors:
     messages:
       carrierwave_processing_error: failed to be processed

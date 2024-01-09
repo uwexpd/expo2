@@ -15,10 +15,13 @@ Rails.application.routes.draw do
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
     get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter    
     get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
-    post 'admin/base/vicarious_login', :to => 'admin/base#vicarious_login', as: :admin_vicarious_login
-    get 'admin/base/remove_vicarious_login', :to => 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
+    post 'admin/base/vicarious_login', to: 'admin/base#vicarious_login', as: :admin_vicarious_login
+    get 'admin/base/remove_vicarious_login', to: 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
     get 'admin/application_for_offerings', to: 'admin/applications#index'
     get 'admin/service_learning_placements', to: 'admin/dashboard#index' # [TODO] update when SLP is ready
+    get 'admin/communicate/write', to: 'admin/email#write', as: :email_write
+    post 'admin/communicate/queue', to: 'admin/email#queue', as: :email_queue
+    get 'admin/communicate/apply_template', to: 'admin/email#apply_template'
 
     ActiveAdmin.routes(self)    
     namespace :admin do
@@ -112,6 +115,9 @@ Rails.application.routes.draw do
     match 'mentor/offering/:offering_id/mentee_abstract_approve/:id', to: 'mentor#mentee_abstract_approve', via: [:get, :post, :put, :patch]
     match 'mentor/mentee_abstract_approve/:id', to: 'mentor#mentee_abstract_approve', via: [:get, :post, :put, :patch], as: :mentee_abstract_approve
     get 'mentor/:id/letter/:filename', to: 'mentor#letter', as: :mentor_letter
+
+    # Committee Members
+    get 'committee_member/map/:committee_member_id/:token', to: 'committee_member#map', as: :committee_member_map
 
     # OMSFA Scholarship Sesarch
     resources :scholarships, only: [:show, :index], param: :page_stub

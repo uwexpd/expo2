@@ -64,7 +64,7 @@ class EmailQueue < ApplicationRecord
     if email.class.name == "TMail::Mail"
       email['to'].as_json['body'] rescue ""
     else
-      email.to rescue "error"
+      email.to.join(", ") rescue "error"
     end
 
   end

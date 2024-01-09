@@ -1,6 +1,6 @@
 class TemplateMailer < ActionMailer::Base
 
-  def template_email(obj, from_text = "", subject_text = "", text = "", link = "", alternate_recipients = nil)
+  def text_message(obj, from_text = "", subject_text = "", text = "", link = "", alternate_recipients = nil)
     @text = text
     @object = obj
     @link = link
@@ -18,7 +18,8 @@ class TemplateMailer < ActionMailer::Base
     mail(to: alternate_recipients || (obj.respond_to?("email") ? obj.email : obj.person.email),
          subject: eval_subject_text(subject_text, obj),
          from: from_text,
-         date: Time.now
+         date: Time.now,
+         content_type: "text/html"
         )
   end
 
