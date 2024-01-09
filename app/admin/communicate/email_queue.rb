@@ -68,16 +68,16 @@ ActiveAdmin.register EmailQueue do
   	actions
   end
 
-  show :title => proc{|queue| "Send to: " + queue.email_to rescue ""} do
-    render 'show', { queue: email_queue}
-    # attributes_table do
-    #    row ('To') {|queue| queue.email[:to].to_s || "" }
-    #    row ('Cc') {|queue| queue.email[:cc].to_s || "" }
-    #    row ('Bcc') {|queue| queue.email[:bcc].to_s || "" }
-    #    row ('From') {|queue| queue.email[:from].to_s || "" }
-    #    row ('Subject') {|queue| queue.email.subject  || "" }
-    #    row ('Body') {|queue| queue.email.body }
-    # end
+  show :title => proc{|queue| "Send to: " + queue.email_to rescue ""} do |queue|
+    # render 'show', { queue: email_queue}
+    attributes_table do
+       row ('To') {|queue| queue.email_to rescue "" }       
+       row ('From') {|queue| queue.email_from rescue "" }
+       row ('Subject') {|queue| queue.email.subject  || "" }
+       row ('Cc') {|queue| queue.email.cc.join(',').to_s rescue "" } if queue.email.cc
+       row ('Bcc') {|queue| queue.email.bcc.join(',') rescue "" } if queue.email.bcc
+       row ('Body'){|queue| simple_format(queue.email.body.to_s) }
+    end
   end
 
   form partial: 'edit'

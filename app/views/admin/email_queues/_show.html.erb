@@ -16,14 +16,18 @@
 						<th>Subject</th>
 						<td><%= queue.email.subject || "" %></td>
 					</tr>
-					<tr class="row">
-						<th>Cc</th>
-						<td><%= queue.email.cc.join(',') rescue "" %></td>
-					</tr>
-					<tr class="row">
-						<th>Bcc</th>
-						<td><%= queue.email.bcc.join(',') rescue "" %></td>
-					</tr>
+					<% if queue.email.cc %>
+						<tr class="row">
+							<th>Cc</th>
+							<td><%= queue.email.cc.join(',') rescue "" %></td>
+						</tr>
+					<% end %>
+					<% if queue.email.bcc %>
+						<tr class="row">
+							<th>Bcc</th>
+							<td><%= queue.email.bcc.join(',') rescue "" %></td>
+						</tr>
+					<% end %>
 					<tr class="row">
 						<th>Body</th>
 						<td><%= simple_format(queue.email.body.to_s) %></td>

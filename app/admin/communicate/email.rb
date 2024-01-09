@@ -11,16 +11,16 @@ ActiveAdmin.register_page "Email" do
   	end
 
   	def queue
-  		if params[:update_email_template]
+  		if params[:update_email_template]        
         @template = EmailTemplate.find params[:email][:template_id]
         @template.update(body: params[:email][:body])
       end
-      if params[:create_email_template] && params[:new_email_template_name]
-        @email_template = EmailTemplate.new(:name => params[:new_email_template_name], 
-                                        :body => params[:email][:body], 
-                                        :subject => params[:email][:subject],
-                                        :from => params[:email][:from])
-        unless @email_template.save
+      if params[:create_email_template] && params[:new_email_template_name]        
+        @email_template = EmailTemplate.new(name: params[:new_email_template_name], 
+                                        body: params[:email][:body], 
+                                        subject: params[:email][:subject],
+                                        from: params[:email][:from])        
+        unless @email_template.save          
           # session[:breadcrumbs].add "Compose Message"
           return render :action => "write"
         end
@@ -32,12 +32,11 @@ ActiveAdmin.register_page "Email" do
         email_subject = params[:email][:subject]
         email_body = params[:email][:body]
 
-        if params[:html_format].nil? || params[:html_format] == false          
+        if params[:html_format].nil? || params[:html_format] == false
           template = TemplateMailer.text_message(recipient, email_from, email_subject, email_body).message
-        else 
+        else          
           template = TemplateMailer.html_message(recipient, email_from, email_subject, email_body).message
-        end
-        logger.debug "Debug before queued => #{template.inspect}"
+        end        
         EmailQueue.queue(person_id, template, nil, command_after_delivery, nil, recipient)
       end
       flash[:notice] = "Successfully queued #{@recipients.size} messages."

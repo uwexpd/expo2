@@ -16,7 +16,7 @@ ActiveAdmin.register TextTemplate, as: 'template'  do
     attributes_table do
        row ('To') {|template| "(recipient's name)" }
        row :from
-       row :subject
+       row :subject       
        row ('body'){|template| simple_format(template.body.to_s) }
    	end
   end
