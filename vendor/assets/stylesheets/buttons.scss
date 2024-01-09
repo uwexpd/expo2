@@ -58,7 +58,7 @@ a.button.has_many_add, a.button.has_many_remove {
 
 //https://github.com/google/material-design-icons/issues/206
 // .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, .session .material-icons
-.material-icons {
+.material-icons, .mi {
     display: inline-flex;
     align-items: center;
     vertical-align: middle;
@@ -81,11 +81,7 @@ a.action_icon:hover, a .material-icons:hover {
 	text-decoration: none;
 }
 
-i.material-icons.middle_align{
-	vertical-align: middle;
-}
-
-i.material-icons.sub_align{
+.material-icons.sub_align, .mi.sub_align {
 	vertical-align: sub;
 }
 

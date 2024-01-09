@@ -71,7 +71,7 @@ ActiveAdmin.register Offering do
           f.input :year_offered, as: :select, collection: 1995..Time.now.year+5, include_blank: true, hint: 'Specify a year instead of a quarter if this offering spans more time or only happens annually.'
           f.input :alternate_stylesheet, label: 'Alt. Stylesheet', input_html: { style: 'width:50%'}, hint: 'Offerings can be styled differently to match a specific brand or event "look." Choosing a stylesheet here will automatically apply it after the default styles on the student side, the mentor side, the reviewer side, etc.'
           f.input :destroy_by, :input_html => { :style => "width:30%;" }, hint: 'This date is added to the top of pages when printed or converted to PDF.'
-          f.input :notes, :input_html => {  :class => "tinymce", :rows => 4, :style => "width:100%;" }, hint: 'Use this space to track internal notes about this offering.'
+          f.input :notes, :input_html => { :class => "tinymce", :rows => 4, :style => "width:100%;" }, hint: 'Use this space to track internal notes about this offering.'
         end
         f.inputs 'Accountability Settings' do
           hr

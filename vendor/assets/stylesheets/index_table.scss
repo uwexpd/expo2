@@ -1,4 +1,14 @@
 /* @index table column width size */
+.table_tools {
+	// background-color: #e8e3d3;
+	background-color: #eeebe0;
+	padding: 8px 16px;
+}
+
+.batch_actions_selector.dropdown_menu {
+	padding: 16px;
+}
+
 #index_table_scholarships .col-title, #index_table_scholarships .col-deadlines {
 	min-width: 110px;
 }
@@ -6,7 +16,6 @@
 #index_table_units .col-unit, #index_table_units .col-email, #index_table_units .col-phone, #index_table_offerings .col-unit, #index_table_offerings .col-quarter {
 	white-space: nowrap;
 }
-
 #index_table_offerings .col-unit, { min-width: 80px; }
 #index_table_offerings .col-quarter { min-width: 120px; }
 #index_table_events .col-type { min-width: 110px; }
@@ -25,4 +34,6 @@
 #index_table_dashboard_items td.col-title {min-width: 5rem;}
 #index_table_dashboard_items td.col-display {max-width: 95rem;}
 #index_table_dashboard_items td.col-creiteria {min-width: 1rem;}
+#index_table_mentors .col-offering { width: 30%; }
+#index_table_mentors .col-application {	width: 20%;	}
 /* end index table column width */

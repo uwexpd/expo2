@@ -1,5 +1,7 @@
 class CommitteeMember < ApplicationRecord
   stampable
+  include Rails.application.routes.url_helpers
+
   belongs_to :committee
   belongs_to :person
   belongs_to :recommender, :class_name => "CommitteeMember", :foreign_key => "recommender_id"
@@ -125,7 +127,7 @@ class CommitteeMember < ApplicationRecord
     new_status = new_status.to_sym
     case new_status
     when :active then update_attribute(:inactive, false) && update_attribute(:permanently_inactive, false)
-    when :inactive then update_attribute(:inactive, true)
+    when :inactive then update_attribute(:inactive, true) && update_attribute(:permanently_inactive, false)
     when :permanently_inactive then update_attribute(:permanently_inactive, true)
     end
     self.update_status_cache!
@@ -169,7 +171,7 @@ class CommitteeMember < ApplicationRecord
 
   def login_url
     token.generate rescue create_token
-    "http://#{CONSTANTS[:base_system_url]}/committee_member/map/#{id}/#{token.token}"
+    committee_member_map_url(:host => Rails.configuration.constants["base_app_url"], committee_member_id: id, token: token.token)
   end
   
   def current_symposium_session

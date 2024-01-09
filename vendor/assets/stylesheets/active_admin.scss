@@ -133,7 +133,6 @@ br.clear {
 	clear: both;
 }
 
-
 table.borderless {
 	border-spacing: 0;
 }
@@ -198,117 +197,6 @@ em.required {
 .input > label, .input .label > label {
 	font: 600 0.8rem/16px "RobotoDraft", sans-serif;
 }
-
-// a:link, a:visited {
-// 	color: #08d;
-// }
-
-// // link_to button and material icon style
-// a.button, .action_item a{
-// 	font-size: 14px;
-//     font-size: 0.875rem;
-//     font-weight: 500;
-//     letter-spacing: 0.01em;
-//     line-height: 0.75rem;
-//     text-transform: uppercase;
-//     // color: rgba(0, 0, 0, 0.7);
-//     // background: transparent;
-//     border-radius: 2px;
-//     border: 0;
-//     cursor: pointer;
-//     display: inline-block;
-//     line-height: 18px;
-//     margin: 0px;
-//     padding: 12px 8px;
-//     position: relative;
-//     text-align: center;
-//     text-transform: uppercase;
-//     transition: 0.25s all;
-//     user-select: none;
-//     vertical-align: middle;
-//     -moz-osx-font-smoothing: grayscale;
-//     -webkit-font-smoothing: antialiased;
-
-//     background-color: #4b2e83;
-//     color: white;
-//     box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.15);
-//     // font-weight: 600;
-//     min-width: 88px;
-// }
-
-// a.button.small {
-// 	line-height: 6px;
-// 	font-size: smaller;
-// }
-
-// a.button.add {
-// 	margin-top: 1rem;
-// }
-
-// a.button.has_many_add, a.button.has_many_remove {
-// 	margin: 0 1rem 1rem 1rem;
-// }
-
-
-// #titlebar_right .action_item a{
-// 	background-color: #4b2e83;
-// 	color: white;
-// 	box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.15);
-// }
-
-// //https://github.com/google/material-design-icons/issues/206
-// // .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, .session .material-icons
-// .material-icons {
-//     display: inline-flex;
-//     align-items: center;
-//     vertical-align: middle;
-// }
-
-// a.button .material-icons {
-// 	display: inline-flex;
-//     align-items: center;
-//     vertical-align: bottom;
-// }
-
-// a.button:hover, #titlebar_right .action_item a:hover {
-// 	text-decoration: none;
-// 	color: white;
-// 	opacity: 0.8;
-// }
-
-// a.action_icon:hover, a .material-icons:hover {
-// 	opacity: 0.6;
-// 	text-decoration: none;
-// }
-
-// i.material-icons.middle_align{
-// 	vertical-align: middle;
-// }
-
-// i.material-icons.sub_align{
-// 	vertical-align: sub;
-// }
-
-// .material-icons.md-42, .mi.md-42 {
-// 	font-size: 42px;
-// }
-
-// .material-icons.md-32, .mi.md-32 {
-// 	font-size: 32px;
-// }
-
-// .material-icons.md-20, .mi.md-20 {
-// 	font-size: 20px;
-// }
-
-// .material-icons.md-16, .mi.md-16 {
-// 	font-size: 16px;
-// }
-
-// input[type="submit"].small, input[type="reset"].small, input[type="button"].small {
-// 	padding: 6px 8px;
-// 	font-size: smaller;
-// }
 
 form fieldset.inputs ol li.text div.mce-tinymce {
 /*	float: left;*/
@@ -590,6 +478,7 @@ form .inline-hints {
   padding: 5px;
   -webkit-font-smoothing: antialiased;
   color: whitesmoke;
+  border-radius: 2px;
 }
 
 .scope.selected a span {
@@ -973,9 +862,7 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 }
 
 .sidebar_section .information,
-#applications_sidebar_section .panel_contents,
-.sidebar_section.panel .panel_contents
-{
+#applications_sidebar_section .panel_contents {
 	padding: 1rem;
 	border-bottom: 1px solid #efefef;
 }
@@ -1183,16 +1070,14 @@ div.alert.error {
     padding: 15px 15px 0px 15px;
 }
 
-#index_table_mentors .col-offering {
-	width: 30%;
-}
-
-#index_table_mentors .col-application {
-	width: 20%;	
+td.input.boolean {
+	padding-top: 1.5rem;
 }
 
 .input.boolean > label > input{
-	font-size: 16px;	
+	vertical-align: middle;
+    width: 1rem;
+    height: 1rem;
 }
 
 #search_status_sidebar_section .panel_contents {
@@ -1325,15 +1210,26 @@ ul.icons {
     padding-left: 0px;
 }
 
-.applicant_reviewers_table table tbody tr td{
+.applicant_reviewers_table table tbody tr td {
 	min-width: 110px;
 }
 
-.applicant_reviewers_table table tbody tr.header td{
+.applicant_reviewers_table table tbody tr.header td {
 	font-size: 0.7rem;
 }
 
-.applicant_reviewers_table tr.total td{
+.applicant_reviewers_table tr.total td {
 	background: #f1f1f1 repeat-x 0 top;
     font-weight: bold;
 }
+
+.email_preview table th, .email_preview table td {
+	border-bottom: none;
+}
+
+.email_preview table.highlightless tr:hover th, .email_preview table.highlightless tr:hover td{
+	border-bottom: none;
+	box-shadow: none;
+}
+
+

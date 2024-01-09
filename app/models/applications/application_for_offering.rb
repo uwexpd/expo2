@@ -362,7 +362,7 @@ class ApplicationForOffering < ApplicationRecord
       if deliver_emails_now
         EmailContact.log self.person.id, email_object.deliver_now, status
       else
-        EmailQueue.queue self.person.id, email_object.deliver_later, status
+        EmailQueue.queue self.person.id, email_object.message, status
       end
     elsif email.send_to == "staff"
       if deliver_emails_now
@@ -391,11 +391,11 @@ class ApplicationForOffering < ApplicationRecord
     if send_to == "mentors"
       self.mentors.each do |mentor|
         unless mentor.no_email
-          EmailQueue.queue mentor.person_id, ApplyMailer.mentor_status_update(mentor, EmailTemplate.find(email_template_id), mentor.email).deliver_later
+          EmailQueue.queue mentor.person_id, ApplyMailer.mentor_status_update(mentor, EmailTemplate.find(email_template_id), mentor.email).message
         end
       end
     else
-      EmailQueue.queue self.person.id, ApplyMailer.status_update(self, EmailTemplate.find(email_template_id), self.person.email).deliver_later
+      EmailQueue.queue self.person.id, ApplyMailer.status_update(self, EmailTemplate.find(email_template_id), self.person.email).message
     end
   end
 
@@ -405,7 +405,7 @@ class ApplicationForOffering < ApplicationRecord
     if deliver_emails_now
       EmailContact.log mentor.person_id, ApplyMailer.mentor_status_update(mentor, email.email_template, mentor.email, nil, link).deliver_now, status
     else
-      EmailQueue.queue mentor.person_id, ApplyMailer.mentor_status_update(mentor, email.email_template, mentor.email, nil, link).deliver_later, status
+      EmailQueue.queue mentor.person_id, ApplyMailer.mentor_status_update(mentor, email.email_template, mentor.email, nil, link).message, status
     end
   end
   
@@ -415,7 +415,7 @@ class ApplicationForOffering < ApplicationRecord
     if deliver_emails_now
       EmailContact.log group_member.person_id, ApplyMailer.group_member_status_update(group_member, email.email_template, group_member.email, nil, link).deliver_now, status
     else
-      EmailQueue.queue group_member.person_id, ApplyMailer.group_member_status_update(group_member, email.email_template, group_member.email, nil, link).deliver_later, status
+      EmailQueue.queue group_member.person_id, ApplyMailer.group_member_status_update(group_member, email.email_template, group_member.email, nil, link).message, status
     end
   end
   

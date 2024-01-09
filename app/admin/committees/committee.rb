@@ -9,8 +9,8 @@ ActiveAdmin.register Committee do
 
   index do
     column ('Name')	{|committee| link_to committee.name, admin_committee_path(committee)}
-    column ('Members') {|committee| committee.members.size }
-    column ('Meetings') {|committee| committee.meetings.size}
+    column ('Members') {|committee| link_to committee.members.size, admin_committee_members_path(committee) }
+    column ('Meetings') {|committee| link_to committee.meetings.size, admin_committee_meetings_path(committee)}
   	actions
   end
 

@@ -2,7 +2,7 @@
 class ApplicationMentor < ApplicationRecord
   self.per_page = 12
   # include ActionController::UrlWriter
-  include Rails.application.routes.url_helpers  
+  include Rails.application.routes.url_helpers
 
   stampable  
   belongs_to :application_for_offering

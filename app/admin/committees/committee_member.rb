@@ -13,25 +13,61 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
 
   permit_params :committee_member_type_id, :department, :expertise, :website_url, :recommender_id, :inactive, :permanently_inactive, :comment, :notes, committee_member_quarter_attributes: [:active, :comment]
 
-  batch_action :send_emails, confirm: "Are you sure??" do |ids|
-    
+  batch_action :send_emails, confirm: "Are you sure to send mass emails?" do |ids|
+    members = []
+    batch_action_collection.find(ids).each do |member|
+      members << member if member
+    end
+    redirect_to email_write_path("select[#{members.first.class.to_s}]": members)
   end
 
-  batch_action :mark_as_active, confirm: "Are you sure??" do |ids|
-    
+  batch_action :member_active, confirm: "Are you sure??" do |ids|
+    members = []
+    batch_action_collection.find(ids).each do |member|
+        member.status = "active" if member
+        members << member if member
+    end
+    redirect_to collection_path, notice: "Set status for #{members.size} member(s) to active"
   end
 
-  # Ideal: also add for activating for the quarter if possible
-  batch_action :mark_active_as_user_response, confirm: "Are you sure??" do |ids|
-    
+  # Also activating for the quarter if possible
+  batch_action :member_active_user_response, confirm: "Are you sure??" do |ids|
+    members = []
+    committee = Committee.find(params[:committee_id])
+    active_quarter = committee.quarters.upcoming.first
+    active_cq = CommitteeQuarter.find_by(committee_id: committee.id, quarter_id: active_quarter.id)
+
+    batch_action_collection.find(ids).each do |member|
+        member.status = "active"
+        if active_cq
+          cmq = member.committee_member_quarters.find_or_create_by(committee_quarter_id: active_cq.id)
+          unless cmq.active?
+            cmq.update(active: true)
+          end
+        else
+          redirect_to collection_path, alert: "Could not find active member quarter with this member: #{member.fullname}"
+        end
+        members << member if member
+    end
+    redirect_to request.referer, notice: "Set status for #{members.size} member(s) to active for #{active_quarter.title} as user response"
   end
 
-  batch_action :mark_as_inactive, confirm: "Are you sure??" do |ids|
-    
+  batch_action :member_inactive, confirm: "Are you sure??" do |ids|
+    members = []
+    batch_action_collection.find(ids).each do |member|
+        member.status = "inactive" if member
+        members << member if member
+    end
+    redirect_to collection_path, notice: "Set status for #{members.size} member(s) to inactive"
   end
 
-  batch_action :mark_as_permanently_inactive, confirm: "Are you sure??" do |ids|
-    
+  batch_action :member_permanently_inactive, confirm: "Are you sure??" do |ids|
+    members = []
+    batch_action_collection.find(ids).each do |member|
+        member.status = "permanently_inactive" if member
+        members << member if member
+    end
+    redirect_to request.referer, notice: "Set status for #{members.size} member(s) to permanently_inactive"
   end
 
   index do

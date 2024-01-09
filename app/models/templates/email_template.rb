@@ -11,7 +11,7 @@ class EmailTemplate < TextTemplate
     if object.is_a?(Array)
       return object.collect{|r| self.create_email_to(r, link, alternate_recipient)}
     else      
-      return TemplateMailer.template_email(object, from, subject, body, link, alternate_recipient)
+      return TemplateMailer.text_message(object, from, subject, body, link, alternate_recipient)
     end
   end
   
