@@ -1,11 +1,11 @@
 <div class='panel'>	
   <div class='panel_contents email recipients'>
-  	<h2>Compose Message</h2>
-   		<div class='content-block'>  	  
-		    <h4><strong><i class='mi uw_purple'>view_list</i> Recipient List</strong> - sending to <%= pluralize @recipients.size, "recipient" %>. <%= link_to 'View recipient list', 'javascript:;', data: { link_toggle: "#recipient_list" }, class: 'button small' %></h4>
+  	<h1>Compose Message</h1>
+   		<!-- <div class='content-block'> -->
+		    <h2><i class='mi uw_purple'>view_list</i> Recipient List - sending to <%= pluralize @recipients.size, "recipient" %>. <%= link_to "View recipient list <i class='mi md-20'>visibility</i>".html_safe, 'javascript:;', data: { link_toggle: "#recipient_list" }, class: 'button small' %></h2>
 				<table id='recipient_list' class='borderless' style="display:none">
 					<% @recipients.each_with_index do |recipient, i| %>
-					<tr>
+					<tr <%= "class=current_sample_row" if i == @recipient_sample_num %> id="recipient_<%= i %>">
 						<td class="light"><%= i+1 %></td>
 						<td><%= recipient.respond_to?(:fullname) ? recipient.fullname : recipient.person.fullname rescue "#err" %></td>
 						<td><%= auto_link recipient.respond_to?(:email) ? recipient.email : recipient.person.email rescue "#err" %></td>
@@ -21,15 +21,20 @@
 					</tr>
 					<% end %>
 				</table>
-	  	</div>  
+	  	<!-- </div> -->
   </div>
 </div>
-
-
+<br>
+<%= form_for :email, url: { action: "queue" }, html: { id: "email_write_form" } do |f| %>
+<% select_params = "select[#{@recipients.first.class.to_s}]"
+	 recipients_id_json = @recipients.pluck(:id).to_json
+%>
 <div class='panel'>
-  <div class='panel_contents email_write'>	  
-  	<h2>Message Contents</h2>
-	<%= form_for :email, url: { :action => "queue" }, html: { id: "email_write_form" } do |f| %>
+  <div class='panel_contents email_write' id="message_contents">
+  	<h2><i class='mi uw_purple'>edit</i> Message Contents
+  			<%#= link_to "<i class='mi md-20'>preview</i> Preview Sample".html_safe, admin_email_sample_preview_path(select_params => recipients_id_json), remote: true, method: :post, class: 'button small' %>
+  			<%= link_to "Preview Sample <i class='mi md-20'>preview</i>".html_safe, admin_email_sample_preview_path, class: 'button small', id: 'preview_sample_button' %>
+  	</h2>
 
 	  <fieldset class="inputs">
 		<div class="email_preview string input">
@@ -89,7 +94,7 @@
 					</tr>
 				</tbody>				
 			</table>
-		</div>
+		</div>	
 	  </fieldset>
 
 	  <fieldset class="actions">
@@ -99,37 +104,12 @@
 			<li class="cancel"><%= link_to 'Cancel', :back %></li>
 		</ol>
 	  </fieldset>	  
-		<%= hidden_field_tag "select[#{@recipients.first.class.to_s}]", @recipients.pluck(:id).to_json %>	
+		<%= hidden_field_tag select_params, recipients_id_json %>	
+		<%= hidden_field_tag "current_sample_num", @recipient_sample_num %>
 
-		<% end %>
   </div>
-</div>
-<script type="text/javascript">
-    $('#email_template_id').on('change', function(){
-        var email_template_id = $(this).val();
-        // alert(email_template_id);
-    		// ajax request
-		    $.ajax({
-		      url: "/expo/admin/communicate/apply_template",
-		      method: "GET",
-		      data: {
-		        email_template_id: email_template_id
-		      },
-		      complete: function () {
-     				if (email_template_id){
-     					$('#update_email_template_form').show(600);
-     				}else{
-     					$('#update_email_template_form').hide(600);
-     				}
-     			}
-		    });		    
-    })
 
-    $('#create_email_template').on('change', function(){
-    	if(this.checked) {
-    		$('#new_email_template_name').show()
-    	}else{
-				$('#new_email_template_name').hide()
-    	} 
-    })
-</script>
+  <div class="panel_contents email_write" id="sample_preview" style="display:none"></div>
+  
+</div>
+<% end %>

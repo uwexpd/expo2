@@ -3,10 +3,11 @@ ActiveAdmin.register_page "Email" do
 
   controller do
   	before_action :get_recipients, :except => [ :apply_template ]
-
   	
   	def write
   		# logger.debug "Debug => #{@recipients.inspect}"
+      @recipient_sample = @recipients.try(:first)
+      @recipient_sample_num = 0
 
   	end
 
@@ -21,7 +22,6 @@ ActiveAdmin.register_page "Email" do
                                         subject: params[:email][:subject],
                                         from: params[:email][:from])        
         unless @email_template.save          
-          # session[:breadcrumbs].add "Compose Message"
           return render :action => "write"
         end
       end
@@ -48,8 +48,24 @@ ActiveAdmin.register_page "Email" do
       @email_template = EmailTemplate.find(params[:email_template_id]) unless params[:email_template_id].blank?
       respond_to do |format|
         format.js
+      end
     end
-  end
+
+    def resample_placeholder_codes
+      @recipient_sample_num = params[:new_sample_num].to_i rescue 0
+      respond_to do |format|
+        format.js
+      end
+    end
+
+    def sample_preview
+      @recipient_sample_num = params[:current_sample_num].to_i rescue 0
+      @recipient_sample = @recipients[@recipient_sample_num] rescue @recipients.first rescue nil
+      respond_to do |format|
+        format.html { render :write }
+        format.js
+      end
+    end
 
   	protected
 

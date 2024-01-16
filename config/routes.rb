@@ -19,9 +19,10 @@ Rails.application.routes.draw do
     get 'admin/base/remove_vicarious_login', to: 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
     get 'admin/application_for_offerings', to: 'admin/applications#index'
     get 'admin/service_learning_placements', to: 'admin/dashboard#index' # [TODO] update when SLP is ready
-    get 'admin/communicate/write', to: 'admin/email#write', as: :email_write
-    post 'admin/communicate/queue', to: 'admin/email#queue', as: :email_queue
-    get 'admin/communicate/apply_template', to: 'admin/email#apply_template'
+    get 'admin/communicate/write', to: 'admin/email#write', as: :admin_email_write
+    post 'admin/communicate/email/queue', to: 'admin/email#queue', as: :admin_queue_email
+    get 'admin/communicate/email/apply_template', to: 'admin/email#apply_template'
+    match 'admin/communicate/email/sample_preview', to: 'admin/email#sample_preview', via: [:get, :post], as: :admin_email_sample_preview
 
     ActiveAdmin.routes(self)    
     namespace :admin do

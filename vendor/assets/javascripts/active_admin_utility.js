@@ -50,3 +50,17 @@ $(document).on("click", "a[data-link-toggle]", function(){
       $(obj).toggle(400);
    }
 });
+
+$(document).on("click", "a[data-link-show]", function(){
+   var obj=$(this).attr('data-link-show');
+   if (Object.keys(obj).length > 0){
+      $(obj).show();
+   }
+});
+
+$(document).on("click", "a[data-link-hide]", function(){
+   var obj=$(this).attr('data-link-hide');
+   if (Object.keys(obj).length > 0){
+      $(obj).hide();
+   }
+});

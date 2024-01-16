@@ -49,10 +49,11 @@
     <div class="input-field col s12">
     	<%= f.text_field :end_date, id: "end_date", class: "datepicker validate", required:"", 'aria-required': "true" %>
     	<label for="end_date">Auto-remove Date<abbr title="required">*</abbr></label>
+      <span class="helper-text" data-error="Auto-remove date needs to be input or can't be in the past" data-success=""></span>
     </div>
     <div class="input-field col s12">      
       <%= f.select :location, options_for_select(['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other'], @research_opportunity.location), {include_blank: "Choose your location"}, required:"", class: 'material validate'  %>
-      <label>Location<abbr title="required">*</abbr></label>
+      <label>Location<abbr title="required">*</abbr></label>       
     </div>
     <div class="input-field col s12">
       <p><label>Compensation (check all that apply)</label></p>
