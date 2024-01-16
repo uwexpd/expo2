@@ -1,0 +1,25 @@
+<h2><i class='mi uw_purple'>preview</i> Sample Preview
+	<%= link_to "Edit <i class='mi md-18'>edit</i> ".html_safe, 'javascript:;', data: { link_hide: "#sample_preview", link_show: "#message_contents" }, class: 'button small' %></h2>
+
+<div class="content-block email_preview">
+	<table class='borderless highlightless'>
+	  <tbody>
+		<tr>
+		  <th>To</th>
+		  <td id='email_preview_to'><%= @recipient_sample.respond_to?(:email) ? @recipient_sample.email : @recipient_sample.person.email rescue "#err" %></td>
+	  	</tr>
+	  	<tr>
+		  <th>From</th>
+		  <td id='email_preview_from'><%= params[:email][:from].blank? ? "&nbsp;" : h(params[:email][:from]) %></td>
+	  	</tr>
+	  	<tr>
+	  		<% subject_parsed = (params[:email][:subject]).gsub(/\%([a-z0-9_.]+)\%/) { |a| "<span class='highlight'>" + eval("@recipient_sample.#{a.gsub!(/\%/,'')}") + "</span>" rescue "<span class='highlight red'>%#{a}%</span>" } %>
+		  <th>Subject</th>
+		  <td id='email_preview_subject'><%= params[:email][:subject].blank? ? "&nbsp;" : raw(subject_parsed) %></td>
+	  	</tr>
+	  	<tr>
+		  <td colspan="2" id='email_preview_body'><%= raw(simple_format(TextTemplate.parse(params[:email][:body], @recipient_sample, nil, :sample => true))) %></td>
+	  	</tr>
+	  </tbody>
+	</table>	
+</div>

@@ -18,9 +18,11 @@ ActiveAdmin.register Committee do
   	render 'show', { committee: committee}
   end
 
-  sidebar 'Functions', only: [:show, :edit] do
-      i 'person_add', :class => 'material-icons md-32'
-      link_to "Add new committee member", new_admin_committee_member_path(committee)
+  sidebar 'Functions', only: [:show, :edit] do      
+      # i 'person_add', class: 'material-icons md-24'
+      div class: 'content-block' do
+        link_to "<i class='mi md-24'>person_add</i> Add new committee member".html_safe, new_admin_committee_member_path(committee)
+      end
   end
 
   form do |f|

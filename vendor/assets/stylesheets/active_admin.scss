@@ -3,15 +3,14 @@
 // To view the variables that Active Admin provides, take a look at
 // `app/assets/stylesheets/active_admin/mixins/_variables.scss` in the
 // Active Admin source.
-//
-// For example, to change the sidebar width:
-// $sidebar-width: 242px;
 
 // Active Admin's got SASS!
 @import "active_admin/mixins";
 // @import "active_admin/base";
 
-/* Custom active material theme variables for UW look and feel */
+/* Custom active material theme variables for UW look and feel 
+   Refer to UW Brand Color: https://www.washington.edu/brand/graphic-elements/primary-color-palette/
+*/
 $am-theme-primary: #4b2e83;
 $am-theme-accent: #b7a57a;
 @import 'activeadmin_addons/all';
@@ -105,6 +104,10 @@ For example, to change the default status-tag color: */
 	padding: 8px 12px;
 }
 
+.highlight.red {
+	background: #d45f53;
+}
+
 .flash {
 	animation: 2s am-snackbar-fade, 0.6s am-snackbar-fade reverse 9s forwards;	
 }
@@ -135,6 +138,11 @@ br.clear {
 
 table.borderless {
 	border-spacing: 0;
+}
+
+mark {
+	background-color: mark;
+	color: inherit;
 }
 
 .panel_contents table.highlightless tbody tr:hover{
@@ -498,8 +506,9 @@ form .inline-hints {
     padding: 0px 16px 5px;
 }
 
-.panel_contents h2, .panel_contents h3 {
+.panel_contents h1, .panel_contents h2, .panel_contents h3 {
 	padding: 1.5rem 1rem 1rem;
+	font-weight: bold;
 }
 
 .panel_contents h1 {
@@ -1232,6 +1241,16 @@ ul.icons {
 	box-shadow: none;
 }
 
+.email_preview .headers {
+	padding-bottom: 1rem;
+}
+
+
 #new_email_template_name{
 	padding-top: 0.75rem;
+}
+
+#email_preview_body {
+	border-top: 1px solid #ddd;
+	padding: 1rem;
 }

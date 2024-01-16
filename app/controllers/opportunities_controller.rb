@@ -1,11 +1,12 @@
 class OpportunitiesController < ApplicationController
-	add_breadcrumb 'URP Home', Unit.find_by_abbreviation('urp').home_url
+  unit = Unit.find_by_abbreviation('urp')
+	add_breadcrumb "#{unit.name} Home", unit.home_url
     skip_before_action :login_required, raise: false
     before_action :uw_netid_required_student_login_if_possible, :only => ['index', 'show']
     before_action :login_required, :only => ['research', 'form', 'submit']
     before_action :check_if_uwnetid, :only => ['index', 'show']
 
-  def index	    
+  def index
 	    @search = ResearchOpportunity.active.ransack(params[:q])
 	    @research_opportunities = @search.result(distinct: true).page(params[:page]).order('submitted_at DESC, name ASC')
 	    
@@ -72,15 +73,17 @@ class OpportunitiesController < ApplicationController
     add_breadcrumb "Research Opportunities Posting", opportunity_research_path
     add_breadcrumb "Research Opportunities Submission"
     @research_opportunity ||= ResearchOpportunity.find(params[:id])
+    unit = Unit.find_by_abbreviation('urp')
     
     if request.patch?
       if params['method'] == "remove"
+        @research_opportunity.require_validations = false
         if @research_opportunity.update(:submitted => nil, :active => nil)
           urp_template = EmailTemplate.find_by_name("research opportunity deactivate notification")
           urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
           flash[:notice] = "Successfully deactivated the opportunity and notified URP staff" and return
-        else
-          flash[:error] = "Something went wrong. Unable to deactivate research opportunity. Please try again."
+        else          
+          flash[:error] = "Something went wrong. Unable to deactivate research opportunity. Please try again or contact #{unit.name} at #{unit.email}" and return
         end
       end
 
@@ -89,7 +92,7 @@ class OpportunitiesController < ApplicationController
           urp_template = EmailTemplate.find_by_name("research opportunity approval request")
           urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
       else
-        flash[:error] = "Something went wrong. Unable to submit research opportunity. Please try again."
+        flash[:error] = "Something went wrong. Unable to submit research opportunity. Please try again or contact #{unit.name} at #{unit.email}."
       end
      end
   end

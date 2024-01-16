@@ -6,19 +6,19 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
   config.per_page = [25, 50, 100, 150, 200]
   config.sort_order = ""
 
-  scope :active_and_responded, default: true
+  scope 'Active & Responded', :active_and_responded, default: true
+  scope 'Active but not responded', :not_responded
   scope :inactive
   scope :permanently_inactive
-  scope :not_responded
-
-  permit_params :committee_member_type_id, :department, :expertise, :website_url, :recommender_id, :inactive, :permanently_inactive, :comment, :notes, committee_member_quarter_attributes: [:active, :comment]
+  
+  permit_params :person_id, :committee_member_type_id, :department, :expertise, :website_url, :recommender_id, :inactive, :permanently_inactive, :comment, :notes, :status_cache, committee_member_quarter_attributes: [:active, :comment]
 
   batch_action :send_emails, confirm: "Are you sure to send mass emails?" do |ids|
     members = []
     batch_action_collection.find(ids).each do |member|
       members << member if member
     end
-    redirect_to email_write_path("select[#{members.first.class.to_s}]": members)
+    redirect_to admin_email_write_path("select[#{members.first.class.to_s}]": members)
   end
 
   batch_action :member_active, confirm: "Are you sure??" do |ids|
@@ -39,6 +39,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
 
     batch_action_collection.find(ids).each do |member|
         member.status = "active"
+        member.update(last_user_response_at: Time.now)
         if active_cq
           cmq = member.committee_member_quarters.find_or_create_by(committee_quarter_id: active_cq.id)
           unless cmq.active?
