@@ -10,12 +10,12 @@
 	  	</tr>
 	  	<tr>
 		  <th>From</th>
-		  <td id='email_preview_from'><%= params[:email][:from].blank? ? "&nbsp;" : h(params[:email][:from]) %></td>
+		  <td id='email_preview_from'><%= params[:email][:from].blank? ? "<span class='empty'>Empty</span>".html_safe : h(params[:email][:from]) %></td>
 	  	</tr>
 	  	<tr>
 	  		<% subject_parsed = (params[:email][:subject]).gsub(/\%([a-z0-9_.]+)\%/) { |a| "<span class='highlight'>" + eval("@recipient_sample.#{a.gsub!(/\%/,'')}") + "</span>" rescue "<span class='highlight red'>%#{a}%</span>" } %>
 		  <th>Subject</th>
-		  <td id='email_preview_subject'><%= params[:email][:subject].blank? ? "&nbsp;" : raw(subject_parsed) %></td>
+		  <td id='email_preview_subject'><%= params[:email][:subject].blank? ? "<span class='empty'>Empty</span>".html_safe : raw(subject_parsed) %></td>
 	  	</tr>
 	  	<tr>
 		  <td colspan="2" id='email_preview_body'><%= raw(simple_format(TextTemplate.parse(params[:email][:body], @recipient_sample, nil, :sample => true))) %></td>

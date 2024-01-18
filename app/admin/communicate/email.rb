@@ -53,7 +53,9 @@ ActiveAdmin.register_page "Email" do
 
     def resample_placeholder_codes
       @recipient_sample_num = params[:new_sample_num].to_i rescue 0
+      @recipient_sample = @recipients[@recipient_sample_num] rescue @recipients.first rescue nil
       respond_to do |format|
+        format.html { render :write }
         format.js
       end
     end
