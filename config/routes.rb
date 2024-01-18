@@ -23,6 +23,7 @@ Rails.application.routes.draw do
     post 'admin/communicate/email/queue', to: 'admin/email#queue', as: :admin_queue_email
     get 'admin/communicate/email/apply_template', to: 'admin/email#apply_template'
     match 'admin/communicate/email/sample_preview', to: 'admin/email#sample_preview', via: [:get, :post], as: :admin_email_sample_preview
+    match 'admin/communicate/email/resample', to: 'admin/email#resample_placeholder_codes', via: [:get, :post], as: :admin_email_resample
 
     ActiveAdmin.routes(self)    
     namespace :admin do
@@ -54,7 +55,7 @@ Rails.application.routes.draw do
       resources :contact_histories
       resources :committees do
         resources :members
-        resources :committee_quarters
+        resources :quarters
         resources :meetings
       end      
       resources :notes      

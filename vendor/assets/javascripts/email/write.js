@@ -29,22 +29,38 @@ $(function() {
 
 	$('#preview_sample_button').on('click', function(e){
 	  e.preventDefault(); // Prevent the default link behavior
-	   // $('#email_write_form').attr('action', 'email/sample_preview');
-	   // $('#email_write_form').trigger('submit.rails');
 	   // Serialize the form data
 	  let formData = $('#email_write_form').serialize();
 
 	  // Submit the form using AJAX
 	  $.ajax({
 	    type: 'POST',
-	    url: 'email/sample_preview',
+	    url: $(this).attr('href'),
 	    data: formData,
-	    dataType: 'script', 
-	    success: function(data) {	      
-	      console.log('Success:', data);
-	      // You can also perform actions based on the response
+	    dataType: 'script',
+	    success: function(data) {
+	      // console.log('Success:', data);
 	    },
-	    error: function(xhr, status, error) {	      
+	    error: function(xhr, status, error) {
+	      console.error('Error:', error);
+	    }
+	  });
+	})
+
+	$('a.use_as_sample_link').on('click', function(e){
+	  e.preventDefault(); // Prevent the default link behavior
+	  let formData = $('#email_write_form').serialize();
+
+	  // Submit the form using AJAX
+	  $.ajax({
+	    type: 'POST',
+	    url: $(this).attr('href'),
+	    data: formData,
+	    dataType: 'script',
+	    success: function(data) {
+	      // console.log('Success:', data);
+	    },
+	    error: function(xhr, status, error) {
 	      console.error('Error:', error);
 	    }
 	  });

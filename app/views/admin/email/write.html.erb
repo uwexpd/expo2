@@ -1,8 +1,8 @@
 <div class='panel'>	
-  <div class='panel_contents email recipients'>
-  	<h1>Compose Message</h1>
-   		<!-- <div class='content-block'> -->
-		    <h2><i class='mi uw_purple'>view_list</i> Recipient List - sending to <%= pluralize @recipients.size, "recipient" %>. <%= link_to "View recipient list <i class='mi md-20'>visibility</i>".html_safe, 'javascript:;', data: { link_toggle: "#recipient_list" }, class: 'button small' %></h2>
+  <div class='panel_contents email write recipients'>
+		<h1>Compose Message</h1>
+	   <h2><i class='mi uw_purple'>view_list</i> Recipient List - sending to <%= pluralize @recipients.size, "recipient" %>. <%= link_to "View recipient list <i class='mi md-20'>visibility</i>".html_safe, 'javascript:;', data: { link_toggle: "#recipient_list" }, class: 'button small' %></h2>
+		  <div class='content-block'>
 				<table id='recipient_list' class='borderless' style="display:none">
 					<% @recipients.each_with_index do |recipient, i| %>
 					<tr <%= "class=current_sample_row" if i == @recipient_sample_num %> id="recipient_<%= i %>">
@@ -10,18 +10,13 @@
 						<td><%= recipient.respond_to?(:fullname) ? recipient.fullname : recipient.person.fullname rescue "#err" %></td>
 						<td><%= auto_link recipient.respond_to?(:email) ? recipient.email : recipient.person.email rescue "#err" %></td>
 						<td class="light"><%= recipient.class %> <%= recipient.id unless recipient.nil? %></td>
-						<td><span class="current_sample_row_note">Current sample</span>
-							<%#= link_to_remote "Use as sample", 
-												{:url => {:action => 'resample_placeholder_codes', 
-														:new_sample_num => i },
-												:indicator => 'global',
-												:submit => "email_write_form"},
-												:class => "use_as_sample_link" %>
+						<td><span class="current_sample_row_note">Current sample <i class='mi md-16'>done_outline</i></span>
+							<%= link_to "Use as sample <i class='mi md-20'>forward</i>".html_safe, admin_email_resample_path(new_sample_num: i), class: "use_as_sample_link" %>
 							</td>
 					</tr>
 					<% end %>
 				</table>
-	  	<!-- </div> -->
+			</div>
   </div>
 </div>
 <br>
@@ -30,7 +25,7 @@
 	 recipients_id_json = @recipients.pluck(:id).to_json
 %>
 <div class='panel'>
-  <div class='panel_contents email_write' id="message_contents">
+  <div class='panel_contents email write' id="message_contents">
   	<h2><i class='mi uw_purple'>edit</i> Message Contents
   			<%#= link_to "<i class='mi md-20'>preview</i> Preview Sample".html_safe, admin_email_sample_preview_path(select_params => recipients_id_json), remote: true, method: :post, class: 'button small' %>
   			<%= link_to "Preview Sample <i class='mi md-20'>preview</i>".html_safe, admin_email_sample_preview_path, class: 'button small', id: 'preview_sample_button' %>

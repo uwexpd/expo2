@@ -917,7 +917,7 @@ ul.link-list li a:hover,  ul.link-list li:hover {
     text-align: right;
 }
 
-#vicarious_login .panel{
+#admin_vicarious_login .panel{
 	padding: 8px 16px;
 }
 
@@ -1254,3 +1254,33 @@ ul.icons {
 	border-top: 1px solid #ddd;
 	padding: 1rem;
 }
+
+/* @group Write Email */
+
+textarea#email_body {
+	// font-family: "Courier New", Courier, mono;
+}
+
+.email.write .current_sample_row {
+	background: #fef5d4;
+}
+
+.email.write .current_sample_row_note {
+	display: none;
+	color: green;
+	font-weight: bold;
+}
+
+.email.write .current_sample_row .current_sample_row_note {
+	display: inline;
+}
+
+.email.write .current_sample_row .use_as_sample_link {
+	display: none;
+}
+
+.email.write tr.current_sample_row:hover .use_as_sample_link {
+	// display: none;
+}
+
+/* @end */

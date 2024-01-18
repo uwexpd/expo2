@@ -1,11 +1,11 @@
-<div id="vicarious_login" style="display:none">
+<div id="admin_vicarious_login" style="display:none">
 	<div class="panel">
 	<small>To login temporarily as another user, enter their username and choose an identity type below:</small><br>
 
 	<%= form_tag({controller: 'base', action: 'vicarious_login'}) do %>
 
 		<p><label for="vicarious_login">Username:</label>
-		<%= text_field_tag :vicarious_login %></p>
+		<%= text_field_tag "vicarious_login" %></p>
 			
 		<p><label for="identity_type">Identity Type:</label>
 		<%= select_tag :identity_type, options_for_select([["Standard User", ""], ["Student", "Student"]]) %></p>
