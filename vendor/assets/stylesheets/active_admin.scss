@@ -712,10 +712,6 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 /* END @group Sidebar */
 
 
-#index_table_events tbody .col-sponsor, #index_table_offerings tbody .col-unit {
-	font-variant: small-caps;
-}
-
 .panel_contents .student_header {
 	padding: 0.75rem;
 }
@@ -1232,6 +1228,10 @@ ul.icons {
     font-weight: bold;
 }
 
+.email_preview table tbody tr th{
+	width: 15%;
+}
+
 .email_preview table th, .email_preview table td {
 	border-bottom: none;
 }
@@ -1256,7 +1256,6 @@ ul.icons {
 }
 
 /* @group Write Email */
-
 textarea#email_body {
 	// font-family: "Courier New", Courier, mono;
 }
@@ -1282,5 +1281,45 @@ textarea#email_body {
 .email.write tr.current_sample_row:hover .use_as_sample_link {
 	// display: none;
 }
-
 /* @end */
+
+.sample_text {
+	font-size: 10.5px;
+	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	color: #999;
+	margin-left: .5em;
+	padding-left: .5em;
+	// margin-right: .5em;
+	border-left: 1px solid #cbcbcb;
+}
+
+#placeholder_codes_sideblock {
+	word-wrap: break-word;
+}
+
+#placeholder_codes_sideblock h4 {
+	font-weight: bold;
+	padding: 0.5rem 1rem;
+}
+
+.placeholder_codes_block {
+	padding-left: 1rem;
+}
+
+.placeholder_code_text{
+	padding-bottom: .75rem;
+}
+
+a.placeholder_text_link {
+	color: inherit;
+	border-bottom: 1px solid #c5dafd;
+	background: #e5f4ff;
+	margin: 5px .5em 0 0;
+	padding: .2rem .5rem;
+}
+
+a.placeholder_text_link:hover {
+	background: #f1f9ff;
+	text-decoration: none;
+	cursor: W-resize;
+}

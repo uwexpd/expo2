@@ -1,8 +1,9 @@
+$('#placeholder_codes_sideblock').html("<%= j render partial: 'admin/email/placeholder_codes' %>");
 
 $('.current_sample_row').removeClass("current_sample_row");
 
 $('#recipient_' + '<%= @recipient_sample_num %>').addClass('current_sample_row');
 
-$('#sample_preview').html("<%= j render partial: 'admin/email/sample_preview' %>"); 
+$('#sample_preview').html("<%= j render partial: 'admin/email/sample_preview' %>");
 
 $('#current_sample_num').val('<%= @recipient_sample_num %>')

@@ -164,10 +164,10 @@ ActiveAdmin.register Offering do
           f.inputs 'Mentor Instructions' do
           hr
             f.input :mentor_instructions, input_html: { class: "tinymce", rows: 15 }
-            codes = %w(waived_right_note released_access_note firstname lastname his_her he_she)
+            codes = %w(waived_right_note released_access_note firstname lastname)
             div "Valid placeholder codes: ", class: 'label' do
               codes.each do |code|
-                span code, class: 'placeholder_text'
+                span link_to "<i class='mi md-20'>playlist_add</i> #{code}".html_safe, 'javascript:;', data: {insert_text_tinymce: 'offering_mentor_instructions', insert_text: "%#{code}%" }, class: 'placeholder_text_link'
               end
             end
           end

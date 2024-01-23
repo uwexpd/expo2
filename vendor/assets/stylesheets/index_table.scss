@@ -1,7 +1,7 @@
 /* @index table column width size */
 .table_tools {
-	// background-color: #eeebe0;
-	background-color: #d9d9d9;
+	background-color: #e8e3d3;
+	// background-color: #d9d9d9;
 	padding: 8px 16px;
 }
 
@@ -16,6 +16,11 @@
 #index_table_units .col-unit, #index_table_units .col-email, #index_table_units .col-phone, #index_table_offerings .col-unit, #index_table_offerings .col-quarter {
 	white-space: nowrap;
 }
+
+#index_table_events tbody .col-sponsor, #index_table_offerings tbody .col-unit {
+	font-variant: small-caps;
+}
+
 #index_table_offerings .col-unit, { min-width: 80px; }
 #index_table_offerings .col-quarter { min-width: 120px; }
 #index_table_events .col-type { min-width: 110px; }

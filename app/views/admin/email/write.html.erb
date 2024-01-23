@@ -20,11 +20,13 @@
   </div>
 </div>
 <br>
+
 <%= form_for :email, url: { action: "queue" }, html: { id: "email_write_form" } do |f| %>
 <% select_params = "select[#{@recipients.first.class.to_s}]"
 	 recipients_id_json = @recipients.pluck(:id).to_json
 %>
 <div class='panel'>
+
   <div class='panel_contents email write' id="message_contents">
   	<h2><i class='mi uw_purple'>edit</i> Message Contents
   			<%#= link_to "<i class='mi md-20'>preview</i> Preview Sample".html_safe, admin_email_sample_preview_path(select_params => recipients_id_json), remote: true, method: :post, class: 'button small' %>
@@ -59,7 +61,7 @@
 										EmailTemplate.all, 
 										:id, :title,
 										{include_blank: 'Please select a template', selected: (params[:email_template_id].to_i)},
-										{class: 'select2'}) %>
+										{class: 'select2', style: 'width: 100%'}) %>
 						</td>
 					</tr>
 					<tr id="update_email_template_form" style="display:none">
@@ -104,7 +106,6 @@
 
   </div>
 
-  <div class="panel_contents email_write" id="sample_preview" style="display:none"></div>
-  
+  <div class="panel_contents email write" id="sample_preview" style="display:none"></div>
 </div>
 <% end %>

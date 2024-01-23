@@ -4,7 +4,7 @@ $(function() {
 	    // alert(email_template_id);
 			// ajax request
 		    $.ajax({
-		      url: "email/apply_template",
+		      url: "apply_template",
 		      method: "GET",
 		      data: {
 		        email_template_id: email_template_id

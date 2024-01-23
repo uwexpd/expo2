@@ -1,0 +1,15 @@
+<% @recipient_sample ||= @recipients.first %>
+<div class="placeholder_codes_block">
+
+	<% prefix ||= nil %>
+	<% codes.each do |code|  %>
+		<% code_text = prefix.nil? ? "#{code}" : "#{prefix}.#{code}" %>
+		<% sample_error = "<span class=\"sample_error\">can't sample</span>" %>
+		<% sample_text = truncate(h(eval("@recipient_sample.#{code_text}")), :length => 400) rescue "#{sample_error}" if @recipient_sample %>
+		<div class='placeholder_code_text'>
+		<%= link_to "<i class='mi md-20'>playlist_add</i>#{code} <span class='sample_text'>#{sample_text}</span>".html_safe, 'javascript:;', data: {field_id: 'email_body', insert_text: "%#{code_text}%" }, class: 'placeholder_text_link' %>		
+		</div>
+	
+	<% end %>
+	
+</div>

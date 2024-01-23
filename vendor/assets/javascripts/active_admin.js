@@ -9,3 +9,4 @@
 //= require active_admin_utility
 //= require editable_text_column
 //= require email/write
+//= require insert_at_cursor
