@@ -110,6 +110,9 @@ class Person < ApplicationRecord
 
   scope :non_student, -> { where(type: nil) }
 
+  PLACEHOLDER_CODES = %w(fullname formal_fullname firstname lastname his_her him_her he_she email salutation formal_greeting class_standing_description majors_list institution_name awards_list pipeline_email_stop)
+  PLACEHOLDER_ASSOCIATIONS = %w()
+
   attr_accessor :require_validations, :require_name_validations, :require_address_validations, :require_student_validations
 
   # Fullname search with ransack where firstname + lastname in People model
@@ -260,7 +263,7 @@ class Person < ApplicationRecord
   def him_her
     "them"
     # gender.blank? ? "him or her" : gender == "F" ? "her" : "him"
-  end    
+  end
   
   # Returns true if the students has been placed into a ServiceLearningPlacement for a given ServiceLearningCourse.
   def placed_for?(service_learning_course)

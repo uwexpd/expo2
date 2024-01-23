@@ -111,4 +111,8 @@ ActiveAdmin.register_page "Email" do
 	  
   end
 
+  sidebar "Placeholder Codes", only: :write do
+    render "admin/email/placeholder_codes"
+  end
+
 end

@@ -1,0 +1,28 @@
+<div id="placeholder_codes_sideblock">
+<%  
+   @recipient_sample_num ||= 0 
+   @recipient_sample ||= @recipients[@recipient_sample_num]
+   @recipients_count ||= @recipients.count 
+
+   codes = @recipients.first.class::PLACEHOLDER_CODES rescue nil
+   associations = @recipients.first.class::PLACEHOLDER_ASSOCIATIONS rescue nil 
+%>
+
+
+<% if codes %>
+	<h4><%= @recipients.first.class.to_s.titleize %></h4>
+	<%= render "admin/email/codes", {codes: codes}  %>
+<% end %>
+
+<% if associations %>
+	<% for association in associations %>
+		<% if codes = eval("@recipients.first.#{association}.class::PLACEHOLDER_CODES") rescue false %>
+			<h4><%= association.titleize %></h4>
+			<%= render "admin/email/codes", { :codes => codes, :prefix => association } %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<br class="clear">
+
+</div>

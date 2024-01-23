@@ -38,29 +38,41 @@ $(function() {
 
 
 $(document).on("click", "input[data-link-toggle]", function(){ 
-   var obj=$(this).attr('data-link-toggle');
+   let obj=$(this).attr('data-link-toggle');
    if (Object.keys(obj).length > 0){
       $(obj).toggle(400);
    }
 });
 
 $(document).on("click", "a[data-link-toggle]", function(){ 
-   var obj=$(this).attr('data-link-toggle');
+   let obj=$(this).attr('data-link-toggle');
    if (Object.keys(obj).length > 0){
       $(obj).toggle(400);
    }
 });
 
 $(document).on("click", "a[data-link-show]", function(){
-   var obj=$(this).attr('data-link-show');
+   let obj=$(this).attr('data-link-show');
    if (Object.keys(obj).length > 0){
       $(obj).show();
    }
 });
 
 $(document).on("click", "a[data-link-hide]", function(){
-   var obj=$(this).attr('data-link-hide');
+   let obj=$(this).attr('data-link-hide');
    if (Object.keys(obj).length > 0){
       $(obj).hide();
    }
+});
+
+$(document).on("click", "a[data-field-id]", function(){
+   let field_id = $(this).attr('data-field-id');
+   let insert_text = $(this).attr('data-insert-text');
+   insertAtCursor($('#'+field_id), insert_text);
+});
+
+$(document).on("click", "a[data-insert-text-tinymce]", function(){
+   let tinymce_instance = tinymce.get($(this).attr('data-insert-text-tinymce'));
+   let insert_text = $(this).attr('data-insert-text');
+   tinymce_instance.execCommand('mceInsertContent', true, insert_text)
 });

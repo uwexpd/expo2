@@ -35,7 +35,7 @@ ActiveAdmin.register User do
   end
     
   show do
-    div class: 'panel panel_contents content-block' do
+    div class: 'panel panel_contents' do
         # if user.picture.attached?
         #   span class: "left", style: "margin-right: 1rem;" do
         #     image_tag url_for(user.picture), size: "100x100"
