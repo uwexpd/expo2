@@ -123,6 +123,7 @@ class ServiceLearningPosition < ApplicationRecord
   
   scope :pending, -> { where("approved IS NULL OR approved = 0") } 
   scope :for_unit,  -> (unit){ where(:unit_id => unit.is_a?(Unit) ? unit.id : unit)}
+  scope :current_quarter, -> { left_outer_joins(:organization_quarter).where("organization_quarters.quarter_id=?", Quarter.current_quarter).order(:title) }
   
   has_and_belongs_to_many :skill_types
   has_and_belongs_to_many :social_issue_types

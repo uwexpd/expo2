@@ -158,25 +158,21 @@ abbr[title="required"]{
 	line-height: 20px;
 }
 
-.material-icons.md-20, .mi.md-20 {
-	font-size: 20px;
-}
-
-.material-icons.md-32, .mi.md-32 {
-	font-size: 32px;
-}
-
 // Align matieral-icons with text
-i.material-icons.align, i.material-icons.bottom_align {
+.material-icons.align, .material-icons.bottom_align, .mi.bottom_align {
 	vertical-align: bottom;
 }
 
-i.material-icons.middle_align{
+.material-icons.middle_align, .mi.middle_align {
 	vertical-align: middle;
 }
 
-i.material-icons.top_align, i.material-icons.vertical_top {
+.material-icons.top_align, .material-icons.vertical_top, .mi.top_align {
 	vertical-align: top;
+}
+
+.material-icons.sub_align, .mi.sub_align {
+	vertical-align: sub;
 }
 
 .action.required {

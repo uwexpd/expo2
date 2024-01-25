@@ -12,10 +12,10 @@ ActiveAdmin.register ContactHistory do
   end
 
   index pagination_total: false do
-    column('Date'){|contact| contact.updated_at}
+    column('Date'){|contact| link_to contact.updated_at.to_s(:long_time12), admin_contact_history_path(contact) }
     column('To'){|contact| contact.email_to unless contact.email.nil?}
     column('Subject'){|contact| contact.email.subject unless contact.email.nil?}
-    column('View'){|contact| link_to "View", admin_contact_history_path(contact), target: "_blank"}    
+    column('View'){|contact| link_to "View", admin_contact_history_path(contact)}
   end
   
   show do

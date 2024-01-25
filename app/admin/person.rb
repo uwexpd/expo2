@@ -136,10 +136,10 @@ ActiveAdmin.register Person do
            panel "Contact History" do
               paginated_collection(person.contact_histories.page(params[:page]).per(20).order('id DESC'), params: {anchor: 'contact_history' }, download_links: false) do
                 table_for(collection, sortable: false) do            
-                  column('Date'){|contact| contact.updated_at}
+                  column('Date'){|contact| link_to contact.updated_at.to_s(:long_time12),  admin_contact_history_path(contact), target: "_blank" }
                   column('From'){|contact| contact.email_from unless contact.email.nil?}
                   column('Subject'){|contact| contact.email.subject unless contact.email.nil?}
-                  column('View'){|contact| link_to "View", admin_contact_history_path(contact), target: "_blank"}
+                  column('View'){|contact| link_to "View", admin_contact_history_path(contact), target: "_blank" }
                 end
               end
            end
@@ -148,7 +148,7 @@ ActiveAdmin.register Person do
   end
 
   sidebar "People Search", only: :show do
-      
+      render "search_person"
   end
   
   form do |f|

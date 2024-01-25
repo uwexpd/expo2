@@ -1,0 +1,17 @@
+<form method="get" id="q_search" class="filter_form" action="/expo/admin/people" accept-charset="UTF-8">
+   <div class="string input optional stringish filter_form_field filter_string select_and_search">
+     <label for="q_email" class="label">Email</label>
+     <input type="text" name="q[email_contains]" id="q_email" />
+  </div>
+  <div class="string input optional stringish filter_form_field filter_string select_and_search">
+     <label for="q_firstname" class="label">Firstname</label>
+     <input type="text" name="q[firstname_contains]" id="q_email" />
+  </div>
+  <div class="string input optional stringish filter_form_field filter_string select_and_search">
+     <label for="q_lastname" class="label">Lastname</label>
+     <input type="text" name="q[lastname_contains]" id="q_email" />     
+   </div>
+   <div class='buttons'>
+     <input type="submit" value="Search" name="commit" id="q_submit" />
+   </div>   
+</form>

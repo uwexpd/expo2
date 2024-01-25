@@ -58,7 +58,9 @@ Rails.application.routes.draw do
         resources :quarters
         resources :meetings
       end      
-      resources :notes      
+      resources :notes
+      resources :service_learning_positions
+
     end
     
     # -------------------------------------------------------------------------------------------

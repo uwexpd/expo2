@@ -65,6 +65,7 @@ a.button.has_many_add, a.button.has_many_remove {
 }
 
 a.button .material-icons {
+// , a.button .mi {
 	display: inline-flex;
     align-items: center;
     vertical-align: bottom;
@@ -79,10 +80,6 @@ a.button:hover, #titlebar_right .action_item a:hover {
 a.action_icon:hover, a .material-icons:hover {
 	opacity: 0.6;
 	text-decoration: none;
-}
-
-.material-icons.sub_align, .mi.sub_align {
-	vertical-align: sub;
 }
 
 .material-icons.md-42, .mi.md-42 {
