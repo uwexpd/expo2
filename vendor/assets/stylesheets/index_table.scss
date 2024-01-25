@@ -41,4 +41,8 @@
 #index_table_dashboard_items td.col-creiteria {min-width: 1rem;}
 #index_table_mentors .col-offering { width: 30%; }
 #index_table_mentors .col-application {	width: 20%;	}
+#index_table_mentors .col-name { width: 20%; }
+#index_table_service_learning_positions .col-filled, #index_table_service_learning_positions .col-total, #index_table_service_learning_positions .col-unallocated { text-align: center;}
+#index_table_service_learning_positions .col-unit { min-width: 120px; }
+#index_table_service_learning_positions .col-title { min-width: 30%; }
 /* end index table column width */

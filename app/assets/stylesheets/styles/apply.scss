@@ -1,40 +1,44 @@
-.apply_nav, .confirmation_nav{
+// Navigation sidebar group
+.apply_nav, .confirmation_nav, .sidebar_nav {
 	padding:0;
 }
 
-.apply_nav .collection a.collection-item, .confirmation_nav .collection a.collection-item{
+.apply_nav .collection a.collection-item, .confirmation_nav .collection a.collection-item, .sidebar_nav .collection a.collection-item {
   color: #039be5;
 }
 
 .apply_nav .collection .collection-item.active,
 .apply_nav .collection li.collection-item.active a,
 .confirmation_nav .collection .collection-item.active,
-.confirmation_nav .collection li.collection-item.active a {
+.confirmation_nav .collection li.collection-item.active a,
+.sidebar_nav .collection .collection-item.active,
+.sidebar_nav .collection li.collection-item.active a {
 	// background-color: #4b2e83;
 	color: #eafaf9;
 }
 
-.apply_nav .collection.with-header .collection-header, .confirmation_nav .collection.with-header .collection-header {
+.apply_nav .collection.with-header .collection-header, .confirmation_nav .collection.with-header .collection-header, .sidebar_nav .collection.with-header .collection-header {
 	font-weight: 700;
 	background-color: #4b2e83;
 	padding: 15px 20px;
 }
 
-.apply_nav .collection.with-header .collection-header a, .confirmation_nav .collection.with-header .collection-header a {
+.apply_nav .collection.with-header .collection-header a, .confirmation_nav .collection.with-header .collection-header a, .sidebar_nav .collection.with-header .collection-header a{
 	color: white;
 }
 
-.apply_nav .collection.with-header .collection-header a:hover, .confirmation_nav .collection.with-header .collection-header a:hover {
+.apply_nav .collection.with-header .collection-header a:hover, .confirmation_nav .collection.with-header .collection-header a:hover, .sidebar_nav .collection.with-header .collection-header a:hover {
 	color: #b7a57a;
 }
 
-.apply_nav ul.collection li a.collection-item, .confirmation_nav ul.collection li a.collection-item {
+.apply_nav ul.collection li a.collection-item, .confirmation_nav ul.collection li a.collection-item, .sidebar_nav ul.collection li a.collection-item {
 	padding-left: 3rem;
 }
 
 .apply_nav .collection a.collection-item i.material-icons, .confirmation_nav .collection a.collection-item i.material-icons {
 	margin-left: -1.2em;
 }
+// Navigation sidebar group
 
 /* Question label focus color */
 .offering_questions .input-field input[type=text] + label, div.select-wrapper + label, .offering_questions .non_input_field label {

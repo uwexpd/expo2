@@ -23,7 +23,7 @@ ActiveAdmin.register CommitteeQuarter do
 	        column ('Type') {|member| member.committee_member.committee_member_type.name rescue "<span class=light>None</span>".html_safe }
 	        column ('Expertise') {|member| member.committee_member.expertise.truncate(50) rescue nil}
 	        column ('Comment') do |member|
-              span(member.comment, class: 'caption')
+              span(member.comment, class: 'light smaller')
 	        end
 	        column ('Last Response') {|member| relative_timestamp(member.committee_member.last_user_response_at, :date_only => true, :empty_string => "Never") rescue nil}
 	      end
