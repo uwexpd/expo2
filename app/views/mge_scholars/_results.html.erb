@@ -23,7 +23,7 @@
 			<tr>
 				<td width = '20%'><%= scholar.person.firstname_first(false) %></td>
 				<td width = '25%'><%= scholar.offering.name %></td>
-				<td width = '15%'><%= scholar.offering.quarter_offered.title %></td>
+				<td width = '15%'><%= scholar.offering.quarter_offered.title rescue scholar.offering.year_offered rescue nil %></td>
 				<td width = '20%'><%= scholar.person.majors_list(true, ", ",scholar.offering.quarter_offered) %></td>
 				<td width = '20%'>
 				<% if scholar.primary_mentor %>

@@ -5,7 +5,7 @@ ActiveAdmin.register ServiceLearningPosition do
   menu parent: 'Tools'
   
   scope "#{Quarter.current_quarter.title}", :current_quarter, default: true
-  # scope "All", :default_scope
+  scope "All", :sorting
 
   permit_params :title, :organization_quarter_id
   
@@ -22,7 +22,7 @@ ActiveAdmin.register ServiceLearningPosition do
    
   show do
     attributes_table do
-      row :name
+      row :title
       row :description 
     end
   end
@@ -30,15 +30,16 @@ ActiveAdmin.register ServiceLearningPosition do
   form do |f|
     semantic_errors *f.object.errors.keys
     f.inputs do  
-      f.input :name, :input_html => { :style => 'width:50%;' }
-      f.input :description, :input_html => { :rows => 3, :style => 'width:50%;' }
+      f.input :title
+      f.input :description, :input_html => { :rows => 3 }
     end
     f.actions
   end
    
   filter :title  
+  filter :organization_quarter_quarter_id, label: 'Quarter', as: :select, collection: (Quarter.current_and_future_quarters(3) + Quarter.past_quarters(60)).sort.reverse!.map{|a|[a.title, a.id]}, input_html: { class: "select2", multiple: 'multiple'}
+  filter :organization_quarter_organization_name, as: :string, label: 'Organization'
   filter :unit, input_html: { class: 'select2', multiple: 'multiple'}
-  filter :organization_quarter_quarter_id, label: 'Quarter', as: :select, collection: (Quarter.current_and_future_quarters(4) + Quarter.past_quarters(60)).sort.reverse!.map{|a|[a.title, a.id]}, input_html: { class: "select2", multiple: 'multiple'}
   
   
 end
