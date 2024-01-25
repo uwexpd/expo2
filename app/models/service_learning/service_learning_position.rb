@@ -45,9 +45,7 @@ ServiceLearningCourses also have one pipeline_course_filter
   This allows you to apply filters to a service learning course from that admin side that are forced on the student side
 =end
 
-class ServiceLearningPosition < ApplicationRecord
-
-  default_scope {order('service_learning_positions.title')}
+class ServiceLearningPosition < ApplicationRecord  
   
   include ActionView::Helpers::TextHelper
   stampable
@@ -121,6 +119,7 @@ class ServiceLearningPosition < ApplicationRecord
   
   has_many :placement_courses, :through => :placements, :source => :course
   
+  scope :sorting, -> { order('title')}
   scope :pending, -> { where("approved IS NULL OR approved = 0") } 
   scope :for_unit,  -> (unit){ where(:unit_id => unit.is_a?(Unit) ? unit.id : unit)}
   scope :current_quarter, -> { left_outer_joins(:organization_quarter).where("organization_quarters.quarter_id=?", Quarter.current_quarter).order(:title) }
