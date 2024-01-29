@@ -21,7 +21,7 @@ menu parent: 'Groups'
       tabs do
          tab 'Student Info' do
             attributes_table title: 'Student Info' do
-              row ('Class standi  ng') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) }
+              row ('Class Standing') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) }
               row ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) }
               row ('Minor(s)') {|student| raw(student.sdb.minors_list(true, "<br>")) }
               row ('Current credits') do |student|

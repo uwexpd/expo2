@@ -8,6 +8,13 @@ ActiveAdmin.register Unit do
   
   permit_params :name, :abbreviation, :logo_uri, :description, :home_url, :engage_url, :show_on_expo_welcome, :phone, :email
   
+  # Completely replace the record retrieving code (e.g., you have a custom to_param implementation in your models), override the resource method on the controller:
+  controller do
+    def find_resource
+      scoped_collection.where(abbreviation: params[:id]).first! if params[:id]
+    end
+  end
+
   index do
     column 'Unit', sortable: :name do |unit|
       link_to unit.name, admin_unit_path(unit)
@@ -16,13 +23,6 @@ ActiveAdmin.register Unit do
     column :email
     column :phone
     actions
-  end
-  
-  # Completely replace the record retrieving code (e.g., you have a custom to_param implementation in your models), override the resource method on the controller:
-  controller do    
-    def find_resource
-      scoped_collection.where(abbreviation: params[:id]).first! if params[:id]
-    end
   end
   
   show do
