@@ -1,5 +1,5 @@
 ActiveAdmin.register Committee do
-  includes :members, :meetings, :committee_quarters
+  includes :members, :meetings, :committee_quarters, :quarters
   batch_action :destroy, false
   menu parent: 'Modules', :priority => 30
   config.per_page = [30, 50, 75]

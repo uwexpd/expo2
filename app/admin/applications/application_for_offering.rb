@@ -209,6 +209,6 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   filter :offering, as: :select, collection: Offering.order('id DESC'), input_html: { class: "select2", multiple: 'multiple'}, if: proc { @offering.blank? }
   filter :project_title, as: :string
   filter :project_description, as: :string
-  filter :current_application_status_application_status_type_id, label: 'Current Status', as: :select, collection: ApplicationStatusType.order('name asc').map{|a|[a.name_pretty, a.id]}, input_html: { class: "select2", multiple: 'multiple'}
+  filter :current_application_status_application_status_type_id, label: 'Current Status', as: :select, collection: proc { @offering.blank? ? ApplicationStatusType.order('name asc').map{|a|[a.name_pretty, a.id]} : @offering.statuses.map{|s|[s.application_status_title, s.application_status_type.id]} }, input_html: { class: "select2", multiple: 'multiple'}
 
 end 

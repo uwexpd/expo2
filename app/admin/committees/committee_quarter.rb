@@ -1,5 +1,6 @@
 ActiveAdmin.register CommitteeQuarter do
 	belongs_to :committee
+	includes :quarter
 	config.filters = false
 	batch_action :destroy, false
 	actions :all, :except => [:destroy]
@@ -14,7 +15,7 @@ ActiveAdmin.register CommitteeQuarter do
 
 	show do
 	  active_quarter_members = committee_quarter.committee_member_quarters.active
-		div :class => 'panel panel_contents content-block' do
+		div class: 'panel panel_contents content-block', id: 'committee_quarter' do
 		  h2 committee_quarter.title do
 		    span("» #{pluralize(active_quarter_members.size, 'active member')}", class: 'smaller gray')
 		  end

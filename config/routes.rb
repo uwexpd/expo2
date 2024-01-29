@@ -60,6 +60,7 @@ Rails.application.routes.draw do
       end      
       resources :notes
       resources :service_learning_positions
+      resources :quarter
 
     end
     

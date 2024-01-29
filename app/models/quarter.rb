@@ -38,9 +38,9 @@ class Quarter < ApplicationRecord
   PLACEHOLDER_CODES = %w(title abbrev first_day quarter_code_id year academic_year)
     
   # Overrides ActiveRecord#to_param so that we can use the abbreviation instead of the ID of this object, e.g. "SPR2008" instead of "13".
-  def to_param
-    abbrev
-  end
+  # def to_param
+  #   abbrev
+  # end
 
   # Returns the record for this quarter out of the SDB's calendar table. Returns a StudentCalendarQuarter object.
   def sdb

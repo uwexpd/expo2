@@ -72,7 +72,7 @@ ActiveAdmin.register Appointment do
     f.actions
   end
   
-  filter :unit_id, as: :select, collection: Unit.all.pluck(:name, :id)
+  filter :unit_id, as: :select, collection: Unit.all.pluck(:name, :id), input_html: { class: 'select2', multiple: 'multiple'}
   filter :start_time, label: 'Date', as: :date_range
   filter :check_in_time, label: 'Checkin Date', as: :date_range
 end

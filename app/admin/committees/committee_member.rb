@@ -10,8 +10,16 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
   scope 'Active but not responded', :not_responded
   scope :inactive
   scope :permanently_inactive
+  scope 'All', :ordered
   
   permit_params :person_id, :committee_member_type_id, :department, :expertise, :website_url, :recommender_id, :inactive, :permanently_inactive, :comment, :notes, :status_cache, committee_member_quarter_attributes: [:active, :comment]
+
+  controller do
+    before_action :set_committee_id, only: :index
+    def set_committee_id
+      @committee = Committee.find(params[:committee_id])
+    end
+  end
 
   batch_action :send_emails, confirm: "Are you sure to send mass emails?" do |ids|
     members = []
@@ -170,5 +178,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
 
   filter :person_firstname, label: 'Member firstname', as: :string
   filter :person_lastname, label: 'Member lastname', as: :string
+  filter :committee_member_quarters_active, label: 'Active quarter?', as: :boolean
+  filter :committee_member_quarters_committee_quarter_id, label: 'Member quarters', as: :select, collection: proc {@committee.committee_quarters.sort_by(&:title).reverse!.map{|cq| [cq.title, cq.id]} }, input_html: { class: 'select2', multiple: 'multiple'}
 
 end
