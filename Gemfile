@@ -94,6 +94,7 @@ gem 'sdoc'
 gem 'rdoc'
 
 gem "select2-rails"
+gem 'leaflet-rails'
 
 group :production do  
   gem 'omniauth-shibboleth'

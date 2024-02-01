@@ -23,3 +23,4 @@
 //= require select2
 //= require_tree ./application
 //= require ./service_learning/service_learnings
+//= require leaflet

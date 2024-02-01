@@ -1,0 +1,64 @@
+<%= stylesheet_link_tag 'https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css' %>
+<%= javascript_include_tag 'https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js' %>
+
+<div class='input-field col s12'>
+  <%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %>
+
+  <% input_location = eval "@user_application.#{question.full_attribute_name}" %>
+  <% if input_location %>
+      <p><b>Your saved location:</b> <%= JSON.parse(input_location)["locationName"] %></p>
+      <%= hidden_field_tag "input_location", input_location %>
+  <% end%>
+
+  <%= qf.hidden_field question.attribute_to_update, class: 'geocoding-result-hidden-field' %>
+
+  <div id="map" style="height: 400px; margin-top: 1rem"></div>
+</div>
+
+<script type="text/javascript">
+  var usBounds = L.latLngBounds(L.latLng(24.396308, -125.000000), L.latLng(49.384358, -66.934570));
+
+  if ($('#input_location').length) {
+    var inputLocation = JSON.parse($('#input_location').val()); 
+    var inputLat = inputLocation['coordinates']['lat'];
+    var inputLng = inputLocation['coordinates']['lng'];    
+  }else{
+    // Default: Universtiy of Washington
+    var inputLat = 47.6553
+    var inputLng = -122.3075 
+  }
+
+  var map = L.map('map', {maxBounds: usBounds, maxBoundsViscosity: 0.8}).setView([inputLat, inputLng], 15);
+  var searchControl = L.Control.geocoder({    
+    collapsed: false,
+    position: 'topleft',
+    placeholder: "Search your service/leadership activity located..",
+    geocoder: new L.Control.Geocoder.nominatim({
+        geocodingQueryParams: {
+            "countrycodes": "us"
+        }
+    })
+  }).addTo(map);
+
+  // Add a marker at the initial coordinates
+  var initialMarker = L.marker([inputLat, inputLng]).addTo(map);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Handle geocode events
+  searchControl.on('markgeocode', function (e) {
+    var result = e.geocode;
+    var latlng = e.geocode.center;
+    map.setView(latlng, 15);
+    // Extract relevant information
+    var locationName = result.name;
+    var coordinates = result.center;
+
+    // Set the value of the hidden field
+    $('.geocoding-result-hidden-field').val(JSON.stringify({ locationName: locationName, coordinates: coordinates }));
+
+  });  
+
+</script>
