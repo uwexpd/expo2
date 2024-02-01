@@ -224,6 +224,9 @@ GEM
       activerecord
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
+    leaflet-rails (1.9.4)
+      actionpack (>= 4.2.0)
+      railties (>= 4.2.0)
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -479,6 +482,7 @@ DEPENDENCIES
   invisible_captcha (~> 1.1)
   jquery-rails
   json
+  leaflet-rails
   material_icons (~> 4.0)
   materialize-sass (~> 1.0.0)
   meta_request

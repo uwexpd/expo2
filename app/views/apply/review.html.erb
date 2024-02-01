@@ -1,66 +1,64 @@
 <div class="card">
 	<div class="card-content">
-	<% title(@offering.name, (@offering.quarter_offered.title rescue nil)) %>
-	<%= content_tag('strong', 'Final Step', :id => 'application_page_number') %>
-	<%= render :partial => 'time_left' %>
-	<%= content_tag('h5', 'Review & Submit Your Application', :id => 'application_page_title') %>
+		<% title(@offering.name, (@offering.quarter_offered.title rescue nil)) %>
+		<%= content_tag('strong', 'Final Step', :id => 'application_page_number') %>
+		<%= render :partial => 'time_left' %>
+		<%= content_tag('h5', 'Review & Submit Your Application', :id => 'application_page_title') %>
 
-	<% if @user_application.passes_validations? %>
-		<p class="page_intro">Your application is ready to submit.  You can review your responses below, and when you're ready to submit, click the button at the bottom of the page.  Be aware that once you click this button you will no longer be able to make changes to your application.
-		</p>
-	<% else %>
-		<p class="page_intro">Your application is <strong>not ready</strong> to submit. Please review the sections below marked as Incomplete and return to those sections to make corrections.  You can then return to this page to submit your application.
-		</p>
-	<% end %>
-	<br>
-	<table class="application_review">
-		<%= render :partial => "page_review", :collection => @user_application.pages %>
-	</table>
-
+		<% if @user_application.passes_validations? %>
+			<p class="page_intro">Your application is ready to submit.  You can review your responses below, and when you're ready to submit, click the button at the bottom of the page.  Be aware that once you click this button you will no longer be able to make changes to your application.
+			</p>
+		<% else %>
+			<p class="page_intro">Your application is <strong>not ready</strong> to submit. Please review the sections below marked as Incomplete and return to those sections to make corrections.  You can then return to this page to submit your application.
+			</p>
+		<% end %>
+		<br>
+		<table class="highlight application_review">
+			<%= render :partial => "page_review", :collection => @user_application.pages %>
+		</table>
 	</div>
 
 	<div class="card-action">
-	<% if @user_application.passes_validations? && @user_application.user_editable? %>
-	<%= form_for @user_application, as: :user_application, url: { action: :submit } do |f| %>	
+		<% if @user_application.passes_validations? && @user_application.user_editable? %>
+			<%= form_for @user_application, as: :user_application, url: { action: :submit } do |f| %>
 
-	  <% unless @offering.disable_signature? %>
-		<div class="row z-depth-2 highlight_box">
-		  <div class="col s12 digital_signature">
-			<p>By entering my full legal name below, I hereby affirm that the information presented in this application is true and is my work. <%= raw(@offering.final_text) %></p>		  			
-		        <strong>Electronic Signature: </strong>
-		        <div class="input-field inline" style="width: 50%">
-		        	<i class="material-icons prefix">create</i>
-		        	<%= f.text_field :electronic_signature, id: "electronic_signature", class: "validate", required:true, 'aria-required': "true" %>
-		          <label class="active" for="electronic_signature">Type your full legal name<abbr title="required">*</abbr></label>
-		        </div>
-		        <span style="margin-left: 3rem"><strong>Date:</strong> <%= Time.now.to_date.to_s(:long) %></span>		    
-		  </div>
-		</div>
-	  <% end %>
-
-	  <div class='final_submit'>
-			<p>
-			When you are ready to submit your application, click the button below. Once you click the button, 
-			you will not be able to make changes to your application.</p>
-			<%= submit_tag "Submit Your Application", disable_with: "Submitting your application...", class: "btn" %>
-	  </div>			
-	<% end %>
-	<% end %>
-
-	<% unless @user_application.user_editable? || @offering.disable_signature? %>
-		<div class="row z-depth-2 highlight_box">
-		  <div class="col s12 digital_signature">
-			<p>By entering my full legal name below, I hereby affirm that the information presented in this application is true and is my work. <%= raw(@offering.final_text) %></p>
-
-				<div id="electronic_signature" class='bold'>					
-					Electronic Signature (full legal name): 
-					<span id="signature_text"><%= @user_application.electronic_signature %></span>
-					(<span id="signature_date"><%= @user_application.electronic_signature_date %></span>)
+			  <% unless @offering.disable_signature? %>
+				<div class="row z-depth-2 highlight_box">
+				  <div class="col s12 digital_signature">
+					<p>By entering my full legal name below, I hereby affirm that the information presented in this application is true and is my work. <%= raw(@offering.final_text) %></p>
+				        <strong>Electronic Signature: </strong>
+				        <div class="input-field inline" style="width: 50%">
+                            <i class="material-icons prefix">create</i>
+                            <%= f.text_field :electronic_signature, id: "electronic_signature", class: "validate", required:true, 'aria-required': "true" %>
+				          <label class="active" for="electronic_signature">Type your full legal name<abbr title="required">*</abbr></label>
+				        </div>
+				        <span style="margin-left: 3rem"><strong>Date:</strong> <%= Time.now.to_date.to_s(:long) %></span>
+				  </div>
 				</div>
-		  </div>
-		</div>
-	<% end %>
+			  <% end %>
 
+			  <div class='final_submit'>
+					<p>
+					When you are ready to submit your application, click the button below. Once you click the button,
+					you will not be able to make changes to your application.</p>
+					<%= submit_tag "Submit Your Application", disable_with: "Submitting your application...", class: "btn" %>
+			  </div>
+			<% end %>
+		<% end %>
+
+		<% unless @user_application.user_editable? || @offering.disable_signature? %>
+			<div class="row z-depth-2 highlight_box">
+			  <div class="col s12 digital_signature">
+				<p>By entering my full legal name below, I hereby affirm that the information presented in this application is true and is my work. <%= raw(@offering.final_text) %></p>
+
+					<div id="electronic_signature" class='bold'>
+						Electronic Signature (full legal name):
+						<span id="signature_text"><%= @user_application.electronic_signature %></span>
+						(<span id="signature_date"><%= @user_application.electronic_signature_date %></span>)
+					</div>
+			  </div>
+			</div>
+		<% end %>
 	</div>
 
 </div>

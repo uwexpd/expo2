@@ -241,9 +241,9 @@ table#mentors td.title {
 	padding-left: 2rem;
 }
 
-table.application_review td.page_status{
-	width: 25%;
-}
+// table.application_review td.page_status{
+// 	width: 25%;
+// }
 
 tr.completed td.page_status span.status_tag{
 	background-color: #4CAF50;
@@ -262,9 +262,9 @@ table.application_review li {
 	padding-bottom: 3px;
 }
 
-.card-content ul.welcome-links li strong {
-	padding: 5px;
-}
+// .card-content ul.welcome-links li strong {
+// 	padding: 5px;
+// }
 
 .card-content ul.welcome-links li div {
 	padding-left: 3.1rem;
@@ -312,3 +312,13 @@ table.application_review li {
  #contact_info  input[type=text]:not(.browser-default) {
 	font-size: inherit;
  }
+
+ .message ul li {
+ 	 	margin-left: 2rem;
+ 	  list-style-type: disc;
+ }
+
+ .leaflet-control-geocoder-form input {
+    min-width: 275px !important;
+    font-size: 12px !important;
+  }

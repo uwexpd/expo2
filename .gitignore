@@ -29,7 +29,7 @@ storage/
 /config/uwca.crt
 /config/email.yml
 /config/secrets.yml
-
+/config/gmaps_api_key.yml
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
