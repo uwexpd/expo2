@@ -7,6 +7,8 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   config.per_page = [20, 50, 100]
   menu parent: 'Tools'
 
+  scope 'All', :valid, default: true
+
   controller do
     before_action :fetch_application, :except => [ :new, :create ]
 

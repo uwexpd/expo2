@@ -104,7 +104,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 				simply viewing of the answer.".html_safe, class: 'intro'
 				f.input :dynamic_answer, label: "Don't link to a specific field in the database", as: :boolean, required: true
 				f.input :model_to_update, label: 'model_to_update', as: :select, collection: { 'Person' => 'person', 'Student Database' => 'person.sdb' }, :include_blank => "Application"
-				f.input :attribute_to_update, label: 'Field name', input_html: { style: 'width:50%;font-family: "Courier New", Courier, mono;'}
+				f.input :attribute_to_update, label: 'Field name', input_html: { class: 'code half_width'}
 			  end
 		  end
 		  if !f.object.new_record?

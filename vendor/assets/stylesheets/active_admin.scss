@@ -26,7 +26,6 @@ $am-theme-accent: #b7a57a;
 @import 'buttons';
 @import 'index_table';
 
-
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.
 For example, to change the default status-tag color: */
@@ -130,6 +129,14 @@ For example, to change the default status-tag color: */
 .success-message {
 	color: green;
 	font-weight: bold;
+}
+
+.code {
+	font-family: "Courier New", Courier, mono !important;
+}
+
+.half_width {
+	width:50%;
 }
 
 br.clear {
@@ -1322,4 +1329,8 @@ a.placeholder_text_link:hover {
 	background: #f1f9ff;
 	text-decoration: none;
 	cursor: W-resize;
+}
+
+.question_review_title {
+	font-weight: bold;
 }

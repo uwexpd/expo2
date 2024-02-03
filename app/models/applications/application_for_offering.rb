@@ -113,6 +113,8 @@ class ApplicationForOffering < ApplicationRecord
     end
   end
 
+  scope :valid, -> {includes({current_application_status: :application_status_type }).where('current_application_status_id is not null')}
+
   scope :awardees, -> { joins('LEFT OUTER JOIN application_review_decision_types review on review.id = application_for_offerings.application_review_decision_type_id LEFT OUTER JOIN application_interview_decision_types interview on interview.id = application_for_offerings.application_interview_decision_type_id LEFT OUTER JOIN application_final_decision_types final on final.id = application_for_offerings.application_final_decision_type_id').where("case offerings.award_basis 
   when 'review'    then case when application_review_decision_type_id is null then 0 else review.yes_option end
   when 'interview' then case when application_interview_decision_type_id is null then 0 else interview.yes_option end 
@@ -247,8 +249,7 @@ class ApplicationForOffering < ApplicationRecord
     else
       option_answer = answers.find_by(offering_question_option_id: offering_question_option_id)
       answer = option_answer.nil? ? "false" : option_answer.answer
-      self.class.send :define_method, "dynamic_answer_#{offering_question_id.to_s}_#{offering_question_option_id.to_s}=",
-                                             Proc.new {|argv| set_answer(offering_question_id, argv, offering_question_option_id)}
+      self.class.send :define_method, "dynamic_answer_#{offering_question_id.to_s}_#{offering_question_option_id.to_s}=", Proc.new {|argv| set_answer(offering_question_id, argv, offering_question_option_id)}
     end    
     type_cast_dynamic_answer(answer)    
   end

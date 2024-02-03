@@ -24,3 +24,4 @@
 //= require_tree ./application
 //= require ./service_learning/service_learnings
 //= require leaflet
+//= require ./lib/leaflet_control_geocoder
