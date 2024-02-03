@@ -1,8 +1,6 @@
-<%= stylesheet_link_tag 'https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css' %>
-<%= javascript_include_tag 'https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js' %>
-
 <div class='input-field col s12'>
   <%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %>
+  <%= display_computed_caption(question.caption) if question.caption? %>
 
   <% input_location = eval "@user_application.#{question.full_attribute_name}" %>
   <% if input_location %>
@@ -59,6 +57,6 @@
     // Set the value of the hidden field
     $('.geocoding-result-hidden-field').val(JSON.stringify({ locationName: locationName, coordinates: coordinates }));
 
-  });  
+  });
 
 </script>
