@@ -405,7 +405,7 @@ class Person < ApplicationRecord
     return nil if attrs.empty?
     if !attrs[:email].blank?
       puts "Email provided; searching for results." if @debug
-      email_results = Person.find_all_by_email_and_type(attrs[:email], nil)
+      email_results = Person.where(email: attrs[:email], type: nil)
       puts "Found #{email_results.size} email results" if @debug
       if email_results.size == 1
         return email_results.first
@@ -431,7 +431,7 @@ class Person < ApplicationRecord
       end
     else # email was not given, so search for an exact name match and return it only if we find a unique record
       puts "No email provided; searching for exact name match." if @debug
-      fullname_results = Person.find_all_by_firstname_and_lastname_and_type(attrs[:firstname], attrs[:lastname], nil)
+      fullname_results = Person.where(firstname: attrs[:firstname], lastname: attrs[:lastname], type: nil)
       puts "   Found #{fullname_results.size} full name results" if @debug
       return fullname_results.first if fullname_results.size == 1
     end

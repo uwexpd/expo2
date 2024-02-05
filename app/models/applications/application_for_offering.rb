@@ -1285,7 +1285,7 @@ class ApplicationForOffering < ApplicationRecord
   # For checkbox, set answer with +offering_quesiton_option_id+ 
   def define_dynamic_answer_setters!
     if offering
-      offering.questions.find_all_by_dynamic_answer(true).each do |oq|
+      offering.questions.where(dynamic_answer: true).each do |oq|
         if oq.display_as.include?("checkbox_options")
            oq.options.each do |option|
              self.class.send :define_method, "dynamic_answer_#{oq.id.to_s}_#{option.id.to_s}=", Proc.new {|argv| set_answer(oq.id, argv, option.id)}
