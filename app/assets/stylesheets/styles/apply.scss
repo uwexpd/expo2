@@ -21,6 +21,7 @@
 	font-weight: 700;
 	background-color: #4b2e83;
 	padding: 15px 20px;
+	color: white
 }
 
 .apply_nav .collection.with-header .collection-header a, .confirmation_nav .collection.with-header .collection-header a, .sidebar_nav .collection.with-header .collection-header a{
@@ -38,6 +39,15 @@
 .apply_nav .collection a.collection-item i.material-icons, .confirmation_nav .collection a.collection-item i.material-icons {
 	margin-left: -1.2em;
 }
+
+.sidebar_nav .collection-item small.light {
+	padding-right: .5rem;	
+}
+
+.sidebar_nav .collection-item.active small.light {
+	color: white;
+}
+
 // Navigation sidebar group
 
 /* Question label focus color */

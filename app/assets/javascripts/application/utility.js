@@ -13,7 +13,6 @@ $(document).ready(function(){
 
 // Turbolinks fix:
 // Refer to: https://stackoverflow.com/questions/18770517/rails-4-how-to-use-document-ready-with-turbo-links
-// https://codefor.life/turbolinks-5-rails-5-not-that-bad/
 $(document).on('turbolinks:load', function() {
   // Materializecss javascript components initialization
   $('.tabs').tabs();
@@ -105,22 +104,32 @@ $(document).on('turbolinks:load', function() {
       minimumInputLength: 2    
     });
 
-}); // end of turbolinks:load
+  $(document).on("click", "a[data-link-toggle]", function(){ 
+    var obj=$(this).attr('data-link-toggle');
+    if (Object.keys(obj).length > 0){
+        $(obj).toggle(400);
+     }
+  });
 
-$(document).on("click", "a[data-link-toggle]", function(){ 
-  var obj=$(this).attr('data-link-toggle');
-  if (Object.keys(obj).length > 0){
-      $(obj).toggle(400);
-   }
-});
-
-function toggle_card(obj, display){
-  if (display) {
-      $(obj).parent().show();
-  }else{
-      $(obj).parent().hide();
+  function toggle_card(obj, display){
+    if (display) {
+        $(obj).parent().show();
+    }else{
+        $(obj).parent().hide();
+    }
   }
-}
+
+  $(document).ready(function() {
+     $('input[data-checkbox]').change(function() {
+        if ($(this).prop('checked')) {
+          // Uncheck the other checkboxes
+          var checkboxes = $(this).attr('data-checkbox').split(' ');
+          $.each(checkboxes, function(index, checkbox){
+            $('.'+ checkbox).prop('checked', false);
+          });
+        }
+     });
+  });
 
 
-
+}); // end of turbolinks:load

@@ -1,0 +1,14 @@
+<% title(@committee.name, "Committee Login") %>
+
+<div class="card content">
+	<h5>Welcome, <%= @person.firstname %>.</h5>
+
+	<%= textilize @committee.intro_text %>
+
+	<div class="highlight_box center">
+		<p><strong>Please enter your availability on the next page:</strong></p>
+		<%= button_to "Continue →", {action: 'availability'}, {class: "btn"} %>
+		<br>
+	</div>
+</div>
+<% sidebar :which, :sidebar_nav %>

@@ -1,0 +1,78 @@
+<% title(@committee.name, "Committee Login") %>
+<div class="card content">
+<h5>Update Your Availability</h5>
+
+<%= form_for @committee_member, url: { action: 'availability' } do |f| %>
+
+<dl class="big numbers">
+
+<dt>1</dt>
+<dd><strong>Confirm Your Participation</strong>
+	<p>For each of the following, please confirm that you will be able to participate on the committee.</p>
+
+	<ul style="padding-left:3rem;">
+	<% for committee_member_quarter in @committee_member.committee_member_quarters.upcoming(2) %>
+		<%= fields_for "committee_member[committee_member_quarter_attributes][#{committee_member_quarter.id}]", committee_member_quarter do |cmq_form| %>
+	
+			<li style="margin-top: 1rem; list-style-type: disc;"><%= committee_member_quarter.title %>
+				<br>
+				<label>
+					<%= cmq_form.check_box :active, data: {checkbox: 'inactive_checkbox permanently_inactive_checkbox'}, class: 'filled-in active_checkbox' %>					
+					<span class='gray'><%= @committee.active_action_text + ' ' + committee_member_quarter.title + '.' %></span>
+				</label>
+				<br>
+				<div class="input-field">					
+					<%= cmq_form.text_field :comment %>
+					<%= cmq_form.label :comment, committee_member_quarter.comments_prompt_text %> 
+				</div>
+			</li>
+	
+		<% end -%>
+	<% end -%>
+	</ul>
+</dd>
+
+<dt>2</dt>
+<dd><strong>Can't Participate?</strong>
+	<p>If you will not be able to participate this year, please let us know.</p>
+
+	<p class="left-indent">
+	  <label>
+		<%= f.check_box :inactive, data: {checkbox: 'active_checkbox'}, class: 'filled-in inactive_checkbox' %>
+		<span class='gray'>I will not be able to join the team this year; please contact me in the future.</span>	
+	  <label>
+	</p>		
+	
+	<% if @committee.show_permanently_inactive_option? %>
+	<p class="left-indent">
+		<label>
+			<%= f.check_box :permanently_inactive, data: {checkbox: 'active_checkbox'}, class: 'filled-in permanently_inactive_checkbox' %>
+			<span class='gray'>I have left the UW or am not able to participate in the selection process in the future.</span>
+		</label>		
+	</p>
+	
+	<% end %>
+	
+	 <div class="input-field" style="margin-left: 3rem;">
+		<%= f.text_area :comment, class: 'materialize-textarea'  %>
+		<%= f.label :comment, "Comments?" %>
+	</div>
+
+	<% if @committee.ask_for_replacement? %>
+		<div class="input-field" style="margin-left: 3rem;">
+			<%= f.text_area :replacement_recommendation, class: 'materialize-textarea'  %>
+			<%= f.label :replacement_recommendation, "Can you recommend another faculty member that we should invite to participate?" %>		
+		</p>
+	<% end %>
+	
+</dd>
+
+</dl>
+
+<center>
+	<%= f.submit "Next →", :disable_with => 'Submitting...', class: 'btn' %>
+</center>
+
+<% end %>
+</div>
+<% sidebar :which, :sidebar_nav %>
