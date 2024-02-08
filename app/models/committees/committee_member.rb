@@ -13,7 +13,7 @@ class CommitteeMember < ApplicationRecord
   end
   has_many :committee_member_quarters do
     def upcoming(limit = 4, reference_quarter = Quarter.current_quarter)
-      reject{|q| q.quarter < reference_quarter}.sort[0..(limit-1)]
+      reject{|q| q.quarter.id < reference_quarter.id}.sort[0..(limit-1)]
     end
   end
   

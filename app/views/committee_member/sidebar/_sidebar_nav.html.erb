@@ -1,0 +1,58 @@
+<div class="page_list on_page">
+<ul class="collection with-header">
+	<li class='collection-header'>Progress</li>
+	<% i = 1 %>
+	<li class="collection-item <%= "active" if action_name == 'index' %>">
+		<%= link_to "<small class='light'>#{i} </small>Welcome".html_safe, 
+					:action => 'index' %>
+	</li>
+
+	<% i += 1 %>
+	<li class="collection-item <%= "active" if action_name == 'availability' %>">
+		<%= link_to "<small class='light'>#{i} </small>Update your Availability".html_safe, 
+					:action => 'availability' %>
+	</li>
+
+	<% i += 1 %>
+	<li class="collection-item <%= "active" if action_name == 'specialty' %>">
+		<%= link_to "<small class='light'>#{i} </small>Identify your Specialty".html_safe, 
+					:action => 'specialty' %>
+	</li>
+	
+	<% unless @committee_member.committee_member_meetings.future.empty? %>
+	<% i += 1 %>
+	<li class="collection-item <%= "active" if action_name == 'meetings' %>">
+		<%= link_to raw("<small class='light'>#{i} </small>#{@committee.meetings_alt_title.blank? ? "Meetings &amp; Trainings" : @committee.meetings_alt_title}"), 
+					:action => 'meetings' %>
+	</li>
+	<% end %>
+		
+	<% offering_id = @committee_member.committee.interview_offering_id %>
+	<% unless offering_id.blank? %>
+
+	<% i += 1 %>
+	<li class="collection-item <%= "active" if action_name == 'welcome' %>">
+		<%= link_to "<small class='light'>#{i} </small>Input your Recusal".html_safe,
+			interviewer_path(:offering => offering_id,		 
+							 :committee => @committee_member.committee,
+							 :no_meeting => @committee_member.committee_member_meetings.future.empty?) %>
+	</li>	
+	
+	<% i += 1 %>
+	<li class="collection-item <%= "active" if action_name == 'TBD' %>">
+		<%= link_to "<small class='light'>#{i} </small>Input your Availability for Interviews".html_safe, interviewer_availability_path(:offering => offering_id, 							 
+							 :committee => @committee_member.committee, 
+							 :no_meeting => @committee_member.committee_member_meetings.future.empty?) %>
+	</li>
+	
+	<% end %>	
+	
+	<% i += 1 %>
+	<li class="collection-item <%= "active" if action_name == 'complete' %>">
+		<%= link_to "<small class='light'>#{i} </small>Complete".html_safe, 
+					:action => 'complete' %>
+	</li>
+
+	
+</ul>
+</div>

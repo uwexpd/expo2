@@ -1,14 +1,9 @@
 class CommitteeMemberController < ApplicationController  
-  # helper_method :get_breadcrumbs
-  before_action :initialize_breadcrumbs
   before_action :map_to_committee_member
   before_action :fetch_person
   before_action :fetch_committee_members, :except => [:map]
   before_action :assign_committee_member, :except => [:map, :which]
-
-  def get_breadcrumbs
-    breadcrumbs
-  end
+  before_action :initialize_breadcrumbs
   
   def which
     if params[:committee_member]
@@ -24,10 +19,10 @@ class CommitteeMemberController < ApplicationController
   end
   
   def availability
-    session[:breadcrumbs].add "Availability"
+    add_breadcrumb "Availability"
     if params[:committee_member]
       params[:committee_member][:last_user_response_at] = Time.now
-      if @committee_member.update_attributes(params[:committee_member])
+      if @committee_member.update(committee_member_params)
         flash[:notice] = "Availability saved successfully."
         redirect_to :action => "complete", :inactive => "true" and return unless @committee_member.currently_active?
         chose_quarters = @committee_member.committee_member_quarters.upcoming(2).collect(&:active?).include?(true)
@@ -40,19 +35,16 @@ class CommitteeMemberController < ApplicationController
   end
 
   def specialty
-    session[:breadcrumbs].add "Specialty"
+    add_breadcrumb "Specialty"
     if params[:committee_member]
-      if @committee_member.update_attributes(params[:committee_member])
+      if @committee_member.update(committee_member_params)
         flash[:notice] = "Specialty saved successfully."        
         if @committee_member.committee_member_meetings.future.empty?      
             if @committee_member.committee.interview_offering_id.blank?
               redirect_to :action => "complete"
             else
               Offering.find(@committee_member.committee.interview_offering_id).offering_interviewers.create(:person_id => @committee_member.person_id)
-              redirect_to interviewer_path(:offering => @committee_member.committee.interview_offering_id , 
-                                           :action => 'welcome',
-                                           :committee => @committee_member.committee, 
-      					                            :no_meeting => @committee_member.committee_member_meetings.future.empty?) and return                
+                redirect_to interviewer_path(:offering => @committee_member.committee.interview_offering_id , :action => 'welcome', :committee => @committee_member.committee, :no_meeting => @committee_member.committee_member_meetings.future.empty?) and return
             end
         else
           redirect_to :action => "meetings"
@@ -64,7 +56,7 @@ class CommitteeMemberController < ApplicationController
   end
 
   def meetings
-    session[:breadcrumbs].add "#{@committee_member.committee.meetings_title_display}"
+    add_breadcrumb "#{@committee_member.committee.meetings_title_display}"
     if params[:committee_member]
       if @committee_member.update_attributes(params[:committee_member])
         flash[:notice] = "All information saved."
@@ -84,7 +76,7 @@ class CommitteeMemberController < ApplicationController
   end
 
   def profile
-    session[:breadcrumbs].add "Edit My Profile"
+    add_breadcrumb "Edit My Profile"
     if params[:person]
       @person.attributes = params[:person]
       @person.require_validations = true
@@ -113,10 +105,8 @@ class CommitteeMemberController < ApplicationController
   protected
 
   def initialize_breadcrumbs
-    session[:breadcrumbs] = BreadcrumbTrail.new
-    session[:breadcrumbs].start
-    session[:breadcrumbs].add "EXP-Online", "/expo/committee_member", {:class => "home"}
-    session[:breadcrumbs].add "Committee Member", "/expo/committee_member"
+    add_breadcrumb "Committee Member", committee_member_path
+    add_breadcrumb "#{@person.fullname}"    
   end
 
   # Maps this person to a CommitteeMember record if a valid token is sent with the URL. Note that EXPo always uses the rule that
@@ -155,6 +145,12 @@ class CommitteeMemberController < ApplicationController
     redirect_to :action => "which" and return if @committees.size > 1 && !session[:committee_member_id]
     @committee_member = @committees.size == 1 ? @committee_members.first : @committee_members.find(session[:committee_member_id])
     @committee = @committee_member.committee
+  end
+
+  private
+
+  def committee_member_params
+      params.require(:committee_member).permit(:last_user_response_at, :inactive, :comment, :department, :expertise, :website_url, committee_member_quarter_attributes: [:id, :active, :comment])
   end
   
 end

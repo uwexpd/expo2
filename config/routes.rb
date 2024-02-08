@@ -122,7 +122,19 @@ Rails.application.routes.draw do
     get 'mentor/:id/letter/:filename', to: 'mentor#letter', as: :mentor_letter
 
     # Committee Members
+    get 'committee_member', to: 'committee_member#index'
+    match 'committee_member/which', to: 'committee_member#which', via: [:get, :post]
+    match 'committee_member/availability', to: 'committee_member#availability', via: [:get, :post, :put, :patch]
+    match 'committee_member/specialty', to: 'committee_member#specialty', via: [:get, :post, :put, :patch]
+    match 'committee_member/meetings', to: 'committee_member#meetings', via: [:get, :post, :put, :patch]
+    get 'committee_member/complete', to: 'committee_member#complete'
+    get 'committee_member/profile', to: 'committee_member#profile'
     get 'committee_member/map/:committee_member_id/:token', to: 'committee_member#map', as: :committee_member_map
+
+    # Interviewer
+    get 'interviewer/:offering/weclome/:committee', to: 'interviewer#welcome', as: :interviewer
+    get 'interviewer/:offering/availability/:committee', to: 'interviewer#availability', as: :interviewer_availability, via: [:get, :post]
+
 
     # OMSFA Scholarship Sesarch
     resources :scholarships, only: [:show, :index], param: :page_stub
