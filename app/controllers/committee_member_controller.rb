@@ -18,8 +18,8 @@ class CommitteeMemberController < ApplicationController
   def complete
   end
   
-  def availability
-    add_breadcrumb "Availability"
+  def interview_availability
+    add_breadcrumb "Interview Availability"
     if params[:committee_member]
       params[:committee_member][:last_user_response_at] = Time.now
       if @committee_member.update(committee_member_params)

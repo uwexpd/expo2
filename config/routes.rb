@@ -133,7 +133,7 @@ Rails.application.routes.draw do
 
     # Interviewer
     get 'interviewer/:offering/weclome/:committee', to: 'interviewer#welcome', as: :interviewer
-    get 'interviewer/:offering/availability/:committee', to: 'interviewer#availability', as: :interviewer_availability, via: [:get, :post]
+    get 'interviewer/:offering/availability/:committee', to: 'interviewer#interview_availability', as: :interviewer_availability, via: [:get, :post]
 
 
     # OMSFA Scholarship Sesarch

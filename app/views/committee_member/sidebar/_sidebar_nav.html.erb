@@ -39,7 +39,7 @@
 	</li>	
 	
 	<% i += 1 %>
-	<li class="collection-item <%= "active" if action_name == 'TBD' %>">
+	<li class="collection-item <%= "active" if action_name == 'interview_availability' %>">
 		<%= link_to "<small class='light'>#{i} </small>Input your Availability for Interviews".html_safe, interviewer_availability_path(:offering => offering_id, 							 
 							 :committee => @committee_member.committee, 
 							 :no_meeting => @committee_member.committee_member_meetings.future.empty?) %>

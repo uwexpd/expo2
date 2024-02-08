@@ -5,8 +5,8 @@ class InterviewerController < ApplicationController
   before_action :check_if_contact_info_is_current, :except => [:update, :inactive]
   before_action :initialize_breadcrumbs
 
-  helper 'admin/base'
-  layout 'admin'
+  # helper 'admin/base'
+  # layout 'admin'
 
   def index
     @interviews = @offering_interviewer.offering_interviews
