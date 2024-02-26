@@ -6,9 +6,11 @@ class Course < StudentInfo
   self.primary_keys = :ts_year, :ts_quarter, :course_branch, :course_no, :dept_abbrev, :section_id
   
   has_many :service_learning_course_courses
-  has_many :service_learning_courses, :through => :service_learning_course_courses
-  has_many :course_extra_enrollees, :foreign_key => [:ts_year, :ts_quarter, :course_branch, :course_no, :dept_abbrev, :section_id]
-  has_many :extra_enrollees, :through => :course_extra_enrollees, :source => :person  
+  has_many :service_learning_courses, through: :service_learning_course_courses
+  has_many :course_extra_enrollees, foreign_key: [:ts_year, :ts_quarter, :course_branch, :course_no, :dept_abbrev, :section_id]
+  has_many :extra_enrollees, through: :course_extra_enrollees, :source => :person
+  has_many :course_meeting_times, foreign_key: [:ts_year, :ts_quarter, :course_branch, :course_no, :dept_abbrev, :section_id]
+
 
   def <=>(o)
     short_title <=> o.short_title
@@ -89,10 +91,8 @@ class Course < StudentInfo
   end
   
   def registrants_count
-    @registrants_count ||= StudentRegistrationCourse.count(:all, 
-                                    :conditions => ["regis_yr = ? AND regis_qtr = ? AND sln = ? AND 
-                                                    (request_status = 'A' OR request_status = 'C' OR request_status = 'R')",
-                                                    ts_year, ts_quarter, sln])
+    @registrants_count ||= StudentRegistrationCourse.where("regis_yr = ? AND regis_qtr = ? AND sln = ? AND (request_status = 'A' OR request_status = 'C' OR request_status = 'R')",
+                                                    ts_year, ts_quarter, sln)
   end
   
   # Returns the full group of Students who are enrolled or registered for this class, both officially in the SDB and unofficially
@@ -179,6 +179,11 @@ class Course < StudentInfo
     return false unless quarter.sdb.include?(start_time) # are we even in the right quarter?
     return false unless instance_eval("#{start_time.strftime("%A").downcase}?")
     meets_at_time?(start_time, end_time)
+  end
+
+
+  def prerequisites
+     CoursePrerequisite.where(course_branch: self.course_branch, department_abbrev: self.dept_abbrev,course_number: self.course_no)
   end
 
   private

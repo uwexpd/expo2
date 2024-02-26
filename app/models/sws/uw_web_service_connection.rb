@@ -6,9 +6,9 @@ class UwWebServiceConnection < ActiveResource::Connection
   # Execute a GET request.
   # Used to get (find) resources.
   def get(path, headers = {})
-    begin      
+    begin
       body = nil
-      time = Benchmark::realtime { body = request(:get, path).body }    
+      time = Benchmark::realtime { body = request(:get, path).body }
       sws_log "GET #{path}", time
       body
     rescue

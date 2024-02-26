@@ -1,0 +1,18 @@
+
+<form method="get" id="q_search" class="filter_form" action="/expo/admin/offerings/<%= offering_id %>/applications" accept-charset="UTF-8">
+   <div class="string input optional stringish filter_form_field filter_string select_and_search">
+     <label for="q_person_email" class="label">Email</label>
+     <input type="text" name="q[person_email_contains]" id="q_email" />
+  </div>
+  <div class="string input optional stringish filter_form_field filter_string select_and_search">
+     <label for="q_person_firstname" class="label">Firstname</label>
+     <input type="text" name="q[person_firstname_contains]" id="q_email" />
+  </div>
+  <div class="string input optional stringish filter_form_field filter_string select_and_search">
+     <label for="q_person_lastname" class="label">Lastname</label>
+     <input type="text" name="q[person_lastname_contains]" id="q_email" />     
+   </div>
+   <div class='buttons'>
+     <input type="submit" value="Search" name="commit" id="q_submit" />
+   </div>   
+</form>

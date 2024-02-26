@@ -74,14 +74,18 @@ class OfferingInterviewer < ApplicationRecord
   # for a specific set of tasks, pass the task as a parameter.
   def update_task_completion_status_cache!(tasks = nil)
     self.task_completion_status_cache ||= {}
-    tasks ||= offering.tasks.find(:all, :conditions => "context = 'interviewers' AND context_object_completion_criteria != ''")
-    tasks = [tasks] unless tasks.is_a?(Array)
+    tasks ||= offering.tasks.where("context = 'interviewers' AND context_object_completion_criteria != ''")
+    tasks = tasks.to_a unless tasks.is_a?(Array)    
     for task in tasks
-      tcs = task_completion_statuses.find_or_create_by_task_id(task.id)
+      tcs = task_completion_statuses.find_or_initialize_by(task_id: task.id)
       tcs.result = self.instance_eval(task.context_object_completion_criteria.to_s)
       tcs.complete = tcs.result == true
       tcs.save
-      self.task_completion_status_cache[task.id] = tcs.attributes
+       # Covert time object to string in attributes in order to be compatible with ruby 1.8
+        tcs_attr = tcs.attributes
+        tcs_attr["created_at"] = tcs_attr["created_at"].to_s if tcs_attr["created_at"]
+        tcs_attr["updated_at"] = tcs_attr["updated_at"].to_s if tcs_attr["updated_at"]
+        self.task_completion_status_cache[task.id] = tcs_attr
     end
     task_completion_status_cache
   end
@@ -98,11 +102,14 @@ class OfferingInterviewer < ApplicationRecord
   def complete_task(task)
     self.task_completion_status_cache ||= {}
     task = OfferingAdminPhaseTask.find(task) unless task.is_a?(OfferingAdminPhaseTask)
-    tcs = task_completion_statuses.find_or_create_by_task_id(task.id)
+    tcs = task_completion_statuses.find_or_create_by(task_id: task.id)
     tcs.result = true
     tcs.complete = true
     tcs.save
-    self.task_completion_status_cache[task.id] = tcs.attributes
+    tcs_attr = tcs.attributes
+    tcs_attr["created_at"] = tcs_attr["created_at"].to_s if tcs_attr["created_at"]
+    tcs_attr["updated_at"] = tcs_attr["updated_at"].to_s if tcs_attr["updated_at"]
+    self.task_completion_status_cache[task.id] = tcs_attr
     tcs
   end
   

@@ -1,18 +1,15 @@
 class InterviewerController < ApplicationController
   skip_before_action :check_if_contact_info_blank
-  before_action :fetch_offering, :fetch_person
+  before_action :fetch_offering, :fetch_person, :fetch_committee_member
   before_action :fetch_offering_interviewer, :except => [:inactive]
   before_action :check_if_contact_info_is_current, :except => [:update, :inactive]
   before_action :initialize_breadcrumbs
-
-  # helper 'admin/base'
-  # layout 'admin'
 
   def index
     @interviews = @offering_interviewer.offering_interviews
     @interviews.sort! { |x,y| x.start_time <=> y.start_time }
     
-    render :action => 'index_scored', :layout => @layout if @offering.uses_scored_interviews?
+    render :action => 'index_scored' if @offering.uses_scored_interviews?
   end
 
   def show
@@ -28,7 +25,7 @@ class InterviewerController < ApplicationController
       return render :partial => "review_committee", :locals => { :audience => :reviewer } if params[:section] == 'review_committee'
       return render :partial => "admin/apply/section/#{params[:section]}", :locals => { :audience => :reviewer } 
     else
-      return render :action => 'show_scored', :layout => @layout if @offering.uses_scored_interviews?
+      return render :action => 'show_scored' if @offering.uses_scored_interviews?
     end
     
     if params['view'] == 'essay'
@@ -87,17 +84,16 @@ class InterviewerController < ApplicationController
     end
   end
 
-  def welcome
-    if params[:welcome]
-      unless params[:welcome][:special_notes].nil?
-        @offering_interviewer.special_notes = params[:welcome][:special_notes]
-        @offering_interviewer.save
-        flash[:notice] = "Special requests and notes saved. Thank you."
-        if params[:committee] && params[:no_meeting]
-          redirect_to :action => 'welcome',  :committee => params[:committee], :no_meeting => params[:no_meeting], :layout => @layout and return 
-        end        
-      end
+  def welcome    
+    if params[:offering_interviewer]
+      @offering_interviewer.special_notes = params[:offering_interviewer][:special_notes]
+      @offering_interviewer.save
+      flash[:notice] = "Special requests and notes saved. Thank you."
+      if params[:committee] && params[:no_meeting]
+        redirect_to :action => 'welcome',  :committee => params[:committee], :no_meeting => params[:no_meeting] and return 
+      end        
     end
+    
     yes_option_id = @offering.application_review_decision_types.find_by_yes_option(true)
     @apps = @offering.applications_with_status(:complete) + @offering.application_for_offerings.with_status(:submitted)
     
@@ -110,12 +106,10 @@ class InterviewerController < ApplicationController
       end
       flash[:notice] = "Conflicts of interest saved. Thank you."
       if params[:committee] && params[:no_meeting]
-        redirect_to :action => 'welcome',  :committee => params[:committee], :no_meeting => params[:no_meeting], :layout => @layout and return 
+        redirect_to action: 'welcome', committee: params[:committee], no_meeting: params[:no_meeting] and return 
       end      
     end
-    
-    render :action => 'welcome', :layout => @layout
-    
+    render action: 'welcome'    
   end
   
   def update
@@ -146,26 +140,23 @@ class InterviewerController < ApplicationController
     end
   end
   
-  def availability
+  def interview_availability
     if params[:commit]
       flash[:notice] = "Thank you for submitting your availability! We will contact you as soon as interviews are scheduled."
       redirect_to committee_member_path(:action => 'complete') unless params[:committee].blank?
     end
-
-    # render availability.html.erb
   end
   
   # Marks a person available for a specific interview timeslot
   def mark_available
-    t = @offering_interviewer.interview_availabilities.find_or_create_by_time_and_offering_interview_timeblock_id(
-                                                                          params[:time].to_time, params[:timeblock_id])
+    t = @offering_interviewer.interview_availabilities.find_or_create_by(time: params[:time].to_time, offering_interview_timeblock_id: params[:timeblock_id])
+
     render :partial => "apply/timeslot_available", :locals => { :b => params[:timeblock_id], :ti => params[:ti], :time => params[:time] }
   end
   
   # Marks a person as unavailable for a specific interview timeslot
   def mark_unavailable
-    t = @offering_interviewer.interview_availabilities.find_by_time_and_offering_interview_timeblock_id(
-                                                                params[:time].to_time, params[:timeblock_id])
+    t = @offering_interviewer.interview_availabilities.find_by(time: params[:time].to_time, offering_interview_timeblock_id: params[:timeblock_id])
     t.destroy
     render :partial => "apply/timeslot_not_available", :locals => { :b => params[:timeblock_id], :ti => params[:ti], :time => params[:time] }
   end
@@ -244,16 +235,18 @@ class InterviewerController < ApplicationController
   end
   
   def fetch_offering
-    @offering = Offering.find params[:offering]
-    # @layout = @offering.uses_scored_interviews? ? 'admin' : 'public'
-    @layout = 'admin'
+    @offering = Offering.find params[:offering]    
   end
 
   def fetch_offering_interviewer
-    @offering_interviewer = @person.offering_interviewers.find_by_offering_id(@offering)
+    @offering_interviewer = @person.offering_interviewers.find_by_offering_id(@offering)    
     if @offering_interviewer.nil?
       redirect_to :action => "inactive"
     end
+  end
+
+  def fetch_committee_member
+    @committee_member = CommitteeMember.where(person_id: @person.id, committee_id: params[:committee]).first if params[:committee]
   end
 
   # Checks to see if the contact information for this mentor is current. This is done by checking for a value in
@@ -266,11 +259,8 @@ class InterviewerController < ApplicationController
   end
 
   def initialize_breadcrumbs
-    session[:breadcrumbs] = BreadcrumbTrail.new
-    session[:breadcrumbs].start
-    session[:breadcrumbs].add "EXP-Online", "/expo", {:class => "home"}
-    session[:breadcrumbs].add "Interviewer Interface", interviewer_path(@offering)
-    session[:breadcrumbs].add @offering.name, interviewer_path(@offering)
+    add_breadcrumb "Interviewer Interface", offering_interviewer_path(@offering)
+    add_breadcrumb @offering.name    
   end
 
 

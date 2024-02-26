@@ -44,24 +44,26 @@ class Apply::ConfirmationController < ApplyController
   end
   
   def workshops
-    @event = @user_application.application_type.workshop_event rescue nil
+    @event = @user_application.application_type.workshop_event rescue nil    
     if @event.nil?
-      flash[:notice] = "Your application type does not have any associated workshops. Redirected to next step."
+      flash[:notice] = "Your application type does not have any associated workshops. Redirected to next step."      
       redirect_to :action => "nominate" and return
     end
   end
 
   def nominate
+    redirect_to :action => "theme" if @offering.nomination_instructions.blank?
     if params[:nomination]
-      @confirmer.validate_nominated_mentor = true
-      if @confirmer.update(nomination_params)
-        flash[:notice] = "Thanks for nominating your mentor!"
-        redirect_to :action => "theme"
-      end
+        @confirmer.validate_nominated_mentor = true
+        if @confirmer.update(nomination_params)
+          flash[:notice] = "Thanks for nominating your mentor!"
+          redirect_to :action => "theme"
+        end
     end
   end
   
   def theme
+    redirect_to :action => "requests" if @offering.theme_response_title.blank?
     if params[:theme]
       @confirmer.validate_theme_responses = true
       if @confirmer.update(theme_params)
@@ -101,7 +103,7 @@ class Apply::ConfirmationController < ApplyController
       flash[:error] = "We're sorry, but the confirmation process is currently disabled."
       redirect_to apply_url(@offering) and return
     end
-    unless @user_application.passed_status?("fully_accepted") || @user_application.passed_status?("fully_accepted_vad")
+    unless @user_application.passed_status?("fully_accepted") || @user_application.passed_status?("fully_accepted_vad") || @user_application.passed_status?("confirmed")
       flash[:error] = "You cannot go through the confirmation process until your application has been fully accepted."
       redirect_to apply_url(@offering) and return
     end

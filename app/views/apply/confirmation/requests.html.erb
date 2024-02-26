@@ -20,7 +20,7 @@
 		<div class='input-field col s12'>
 			<%= f.text_area :special_requests, :disabled => @group_member, class: 'materialize-textarea wordcounter', data: {limit: 300} %>
 			<%= f.label :special_requests, "Please enter your special requests here" %>
-			<p class="word_count light"><%= @confirmer.special_requests.split.size %> / 300 words</p>
+			<p class="word_count light"><%= @confirmer.special_requests.blank? ? 0 : @confirmer.special_requests.split.size %> / 300 words</p>
 		</div>
 				
 		<p class='padding_top'>

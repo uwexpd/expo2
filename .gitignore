@@ -46,3 +46,6 @@ storage/
 /package.json
 /package-lock.json
 /yarn.lock
+
+# Ingore outputs folder
+/outputs

@@ -5,7 +5,7 @@ ActiveAdmin.register Person do
   menu :priority => 5
   menu parent: 'Groups'
   
-  permit_params :firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip
+  permit_params :firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip, :fullname
 
   controller do  
     def note_params
@@ -138,7 +138,7 @@ ActiveAdmin.register Person do
                 table_for(collection, sortable: false) do            
                   column('Date'){|contact| link_to contact.updated_at.to_s(:long_time12),  admin_contact_history_path(contact), target: "_blank" }
                   column('From'){|contact| contact.email_from unless contact.email.nil?}
-                  column('Subject'){|contact| contact.email.subject unless contact.email.nil?}
+                  column('Subject'){|contact| contact.email.subject.force_encoding('UTF-8') unless contact.email.nil?}
                   column('View'){|contact| link_to "View", admin_contact_history_path(contact), target: "_blank" }
                 end
               end
@@ -157,6 +157,7 @@ ActiveAdmin.register Person do
        f.input :salutation, as: :select, collection: %w( Mr. Mrs. Ms. Miss Professor Dr. Hon. Rev. ), :include_blank => 'Please select'
        f.input :firstname
        f.input :lastname
+       f.input :fullname
        f.input :title
        f.input :organization, label: 'Organization/Institution'
        f.input :email

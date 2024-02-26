@@ -34,9 +34,11 @@
 						{:controller => '/apply/confirmation/guests', :action => "index"}, class: "collection-item #{ 'active' if page == 'guests'}" %></li>
 		<% end %>
 
-		<li>
+		<% unless @offering.nomination_instructions.blank? %>
+		  <li>
 			<%= link_to "#{ "<i class='material-icons md-20 middle_align'>done</i>" unless @confirmer.nominated_mentor.nil? } <span class='title'>Nominate Your Mentor</span>".html_safe, 
 						{:controller => '/apply/confirmation', :action => "nominate"}, class: "collection-item #{ 'active' if page == 'nominate'}" %></li>
+		<% end %>
 
 		<% unless @offering.theme_response_title.blank? %>
 		  <li>

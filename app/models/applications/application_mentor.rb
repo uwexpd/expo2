@@ -353,7 +353,7 @@ class ApplicationMentor < ApplicationRecord
       tcs_attr = tcs.attributes
       tcs_attr["created_at"] = tcs_attr["created_at"].to_s if tcs_attr["created_at"]
       tcs_attr["updated_at"] = tcs_attr["updated_at"].to_s if tcs_attr["updated_at"]
-      self.task_completion_status_cache[task.id] = tcs_attr      
+      self.task_completion_status_cache[task.id] = tcs_attr
       tcs
   end
 

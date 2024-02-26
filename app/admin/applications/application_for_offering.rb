@@ -191,8 +191,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     end
   end
 
-  sidebar "Student Search", only: :show do
-      
+  # proc {"Applicant Search for #{application.offering.title}"} is not working
+  sidebar "Applicant Search", only: :show do
+      render "search_applicant", {offering_id: application.offering.id}
   end
 
   form do |f|

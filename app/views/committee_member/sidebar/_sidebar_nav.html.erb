@@ -4,26 +4,26 @@
 	<% i = 1 %>
 	<li class="collection-item <%= "active" if action_name == 'index' %>">
 		<%= link_to "<small class='light'>#{i} </small>Welcome".html_safe, 
-					:action => 'index' %>
+					committee_member_path %>
 	</li>
 
 	<% i += 1 %>
 	<li class="collection-item <%= "active" if action_name == 'availability' %>">
 		<%= link_to "<small class='light'>#{i} </small>Update your Availability".html_safe, 
-					:action => 'availability' %>
+					committee_member_availability_path %>
 	</li>
 
 	<% i += 1 %>
 	<li class="collection-item <%= "active" if action_name == 'specialty' %>">
 		<%= link_to "<small class='light'>#{i} </small>Identify your Specialty".html_safe, 
-					:action => 'specialty' %>
+					committee_member_specialty_path %>
 	</li>
 	
 	<% unless @committee_member.committee_member_meetings.future.empty? %>
 	<% i += 1 %>
 	<li class="collection-item <%= "active" if action_name == 'meetings' %>">
 		<%= link_to raw("<small class='light'>#{i} </small>#{@committee.meetings_alt_title.blank? ? "Meetings &amp; Trainings" : @committee.meetings_alt_title}"), 
-					:action => 'meetings' %>
+					committee_member_meetings_path %>
 	</li>
 	<% end %>
 		
@@ -33,7 +33,7 @@
 	<% i += 1 %>
 	<li class="collection-item <%= "active" if action_name == 'welcome' %>">
 		<%= link_to "<small class='light'>#{i} </small>Input your Recusal".html_safe,
-			interviewer_path(:offering => offering_id,		 
+			offering_interviewer_path(:offering => offering_id,		 
 							 :committee => @committee_member.committee,
 							 :no_meeting => @committee_member.committee_member_meetings.future.empty?) %>
 	</li>	
@@ -50,7 +50,7 @@
 	<% i += 1 %>
 	<li class="collection-item <%= "active" if action_name == 'complete' %>">
 		<%= link_to "<small class='light'>#{i} </small>Complete".html_safe, 
-					:action => 'complete' %>
+					committee_member_complete_path %>
 	</li>
 
 	
