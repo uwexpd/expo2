@@ -311,29 +311,17 @@ class Offering < ApplicationRecord
     apps = []
     
     if respect_sequence
-      offering_status = statuses.find(:first, 
-                                      :joins => :application_status_type, 
-                                      :conditions => { "application_status_types.name" => status_name.to_s })
+      offering_status = statuses.joins(:application_status_type).where("application_status_types.name=?", status_name.to_s).first
+
       status_sequence_mapping = {}
-      for os in statuses.find(:all)
+      for os in statuses
         status_sequence_mapping[os.application_status_type_id] = os.sequence
       end
     end
     
-    app_ids = ApplicationForOffering.find(:all,
-      :select => "application_for_offerings.id",
-      :joins => { :statuses => :application_status_type },
-      :conditions => {  :offering_id => self.id, 
-                        "application_status_types.name" => status_name.to_s 
-                      }
-    ).collect(&:id)
+    app_ids = ApplicationForOffering.joins(statuses: :application_status_type).where("offering_id=? AND application_status_types.name=?", self.id,  status_name.to_s).ids
     
-    raw_apps = ApplicationForOffering.find(app_ids.uniq, 
-      :select => "application_for_offerings.*",
-      :include => [{:current_application_status => :application_status_type }, :person],
-      :joins => :person,
-      :order => "lastname, firstname"
-    )
+    raw_apps = ApplicationForOffering.includes(current_application_status: :application_status_type).joins(:person).where(id: app_ids.uniq).order("lastname, firstname")
     
     for app in raw_apps
       next if !include_cancelled && app.current_status_name == 'cancelled'

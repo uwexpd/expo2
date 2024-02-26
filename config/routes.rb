@@ -122,18 +122,21 @@ Rails.application.routes.draw do
     get 'mentor/:id/letter/:filename', to: 'mentor#letter', as: :mentor_letter
 
     # Committee Members
-    get 'committee_member', to: 'committee_member#index'
+    get 'committee_member', to: 'committee_member#index', as: :committee_member
     match 'committee_member/which', to: 'committee_member#which', via: [:get, :post]
-    match 'committee_member/availability', to: 'committee_member#availability', via: [:get, :post, :put, :patch]
-    match 'committee_member/specialty', to: 'committee_member#specialty', via: [:get, :post, :put, :patch]
-    match 'committee_member/meetings', to: 'committee_member#meetings', via: [:get, :post, :put, :patch]
-    get 'committee_member/complete', to: 'committee_member#complete'
+    match 'committee_member/availability', to: 'committee_member#availability', via: [:get, :post, :put, :patch], as: :committee_member_availability
+    match 'committee_member/specialty', to: 'committee_member#specialty', via: [:get, :post, :put, :patch], as: :committee_member_specialty
+    match 'committee_member/meetings', to: 'committee_member#meetings', via: [:get, :post, :put, :patch], as: :committee_member_meetings
+    get 'committee_member/complete', to: 'committee_member#complete', as: :committee_member_complete
     get 'committee_member/profile', to: 'committee_member#profile'
     get 'committee_member/map/:committee_member_id/:token', to: 'committee_member#map', as: :committee_member_map
 
     # Interviewer
-    get 'interviewer/:offering/weclome/:committee', to: 'interviewer#welcome', as: :interviewer
-    get 'interviewer/:offering/availability/:committee', to: 'interviewer#interview_availability', as: :interviewer_availability, via: [:get, :post]
+    # get 'interviewer/:offering', to: 'interviewer#welcome', as: :interviewer
+    match 'interviewer/:offering/weclome/:committee', to: 'interviewer#welcome', as: :offering_interviewer, via: [:get, :post, :put, :patch]
+    match 'interviewer/:offering/availability/:committee', to: 'interviewer#interview_availability', as: :interviewer_availability, via: [:get, :post, :put, :patch]
+    get 'interviewer/:offering/not_this_quarter/:committee', to: 'interviewer#not_this_quarter'
+    get 'interviewer/:offering/inactive/:committee', to: 'interviewer#inactive'
 
 
     # OMSFA Scholarship Sesarch

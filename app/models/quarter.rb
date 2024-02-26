@@ -143,13 +143,17 @@ class Quarter < ApplicationRecord
   end
 
   # Finds all courses in the time schedule for this quarter that have the "ts_research" flag set to "Y".
-  def research_courses
-    Course.find :all, :conditions => { :ts_year => year, :ts_quarter => quarter_code, :ts_research => true }
+  def research_courses    
+    Course.where(ts_year: year, ts_quarter: quarter_code, ts_research: true)
   end
 
   # Finds all courses in the time schedule for this quarter that have the "ts_service" flag set to "Y".
   def service_courses
-    Course.find :all, :conditions => { :ts_year => year, :ts_quarter => quarter_code, :ts_service => true }
+    Course.where(ts_year: year, ts_quarter: quarter_code, ts_service: true)
+  end
+
+  def diversity_courses
+    Course.where(ts_year: year, ts_quarter: quarter_code, diversity_crs: true)
   end
 
   def include?(date)

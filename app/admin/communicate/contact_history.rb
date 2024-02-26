@@ -29,7 +29,7 @@ ActiveAdmin.register ContactHistory do
     end
   end
 
-  filter :person_id, label: 'Search by Expo Pesron ID',  as: :string
+  filter :person_id, label: 'Search by Expo Pesron ID'
 
 
 end

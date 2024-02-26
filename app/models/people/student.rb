@@ -19,13 +19,13 @@ class Student < Person
      :name     => 1.month,
      :class_standing  => 1.month,
      :gender     => 1.year,
-     :email    => 1.week
+     :email    => 1.month
    }
 
    # Checks if the SDB-based contact information for this record is out-of-date by comparing the current +sdb_update_at+
    # with the constants SDB_CACHE_VALIDITY_LENGTH. This method is called during any methods that pull student name or 
    # email information.
-   def sdb_update(attr_group)
+   def sdb_update(attr_group)     
      valid_length = SDB_CACHE_VALIDITY_LENGTH[attr_group]
      self.fetch_sdb_updates if valid_length.nil? || sdb_update_at.nil? || Time.now - sdb_update_at > valid_length
    end
@@ -34,15 +34,15 @@ class Student < Person
      log_with_color "UWSDB Fetch", "Fetching student data update for Student #{self.id}"
      return false if sdb.nil?
      attrs = { 
-       :fullname => sws ? (sws.fullname rescue sdb.fullname) : sdb.fullname,
-       :firstname => sws ? (sws.firstname rescue sdb.firstname) : sdb.firstname,
-       :lastname => sws ? (sws.lastname rescue sdb.lastname) : sdb.lastname,
+       :fullname => sws.nil? ? sdb.fullname : (sws.fullname rescue sdb.fullname),
+       :firstname => sws.nil? ? sdb.firstname : (sws.firstname rescue sdb.firstname),
+       :lastname => sws.nil? ? sdb.lastname : (sws.lastname rescue sdb.lastname),
        :email => sdb.email,
  	     :gender => sdb.s1_gender,
  	     :class_standing_id => sdb.class_standing,
-       :sdb_update_at => Time.now 
+       :sdb_update_at => Time.now
      }
-     update_attributes!(attrs)
+     update!(attrs)
    end   
    
    def sws

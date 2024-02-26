@@ -43,8 +43,8 @@ class CommitteeMemberController < ApplicationController
             if @committee_member.committee.interview_offering_id.blank?
               redirect_to :action => "complete"
             else
-              Offering.find(@committee_member.committee.interview_offering_id).offering_interviewers.create(:person_id => @committee_member.person_id)
-                redirect_to interviewer_path(:offering => @committee_member.committee.interview_offering_id , :action => 'welcome', :committee => @committee_member.committee, :no_meeting => @committee_member.committee_member_meetings.future.empty?) and return
+              Offering.find(@committee_member.committee.interview_offering_id).offering_interviewers.create(person_id: @committee_member.person_id)
+                redirect_to interviewer_path(offering: @committee_member.committee.interview_offering_id , committee: @committee_member.committee, :no_meeting => @committee_member.committee_member_meetings.future.empty?) and return
             end
         else
           redirect_to :action => "meetings"
@@ -106,7 +106,7 @@ class CommitteeMemberController < ApplicationController
 
   def initialize_breadcrumbs
     add_breadcrumb "Committee Member", committee_member_path
-    add_breadcrumb "#{@person.fullname}"    
+    add_breadcrumb "#{@person.fullname}"
   end
 
   # Maps this person to a CommitteeMember record if a valid token is sent with the URL. Note that EXPo always uses the rule that

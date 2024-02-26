@@ -21,7 +21,7 @@
 	<div class='input-field col s12'>
 		<%= f.text_area :nominated_mentor_explanation, class: 'materialize-textarea wordcounter', data: {limit: 200} %>
 		<%= f.label :nominated_mentor_explanation, "Please enter your explanation" %>
-		<p class="word_count light"><%= @confirmer.nominated_mentor_explanation.split.size %> / 200 words</p>
+		<p class="word_count light"><%= @confirmer.nominated_mentor_explanation.blank? ? 0 : @confirmer.nominated_mentor_explanation.split.size  %> / 200 words</p>
 	</div>
 
 	<p>

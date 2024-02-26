@@ -1,0 +1,63 @@
+<% title(@offering.name, @offering.quarter_offered.title) %>
+<div class="card content">
+
+<% unless params[:committee] %> 
+<h3>Welcome, <%= @person.firstname %>.</h3>
+<% end %>
+
+<p>We are excited to have you involved as an interviewer this quarter. Please provide the following information so that we can begin forming interview groups and scheduling interviews with students.</p>
+
+<h4>1. Not this Quarter?</h4>
+<p>If you <strong>cannot</strong> serve on the committee this quarter, please 
+	<%= link_to "click here", action: 'not_this_quarter', :id => @offering_interviewer.id %>.</p>
+<br>
+<h4>2. Conflicts of Interest (optional)</h4>
+<%= form_for :conflict_of_interests do |f| %>	
+	<p>Below you will find the list of students who may be interviewed this quarter. If you feel that you need to recuse yourself from interviewing a specific student due to a conflict of interest, please check the box next to the student's name and click the "Recuse Myself from Selected Interviews" button.</p>
+
+	<table class='responsive-table highlight'>
+	<% @apps.in_groups_of(4).each do |group| %>
+		<tr>
+			<% group.compact.each do |app| %>
+			<td>
+				<label>
+					<%= check_box_tag "recuse[]", app.id, @offering_interviewer.recused_from?(app), class: 'filled-in' %>
+					<span><%= app.person.fullname %></span>
+				</label>
+			</td>
+			<% end %>
+		</tr>
+	<% end %>
+	</table>
+	<%= hidden_field_tag :conflict_of_interests %>
+	<p><%= f.submit "Recuse Myself from Selected Interviews", class: 'btn' %></p>
+	<%= hidden_field_tag 'committee', params[:committee].blank? ? nil : params[:committee] %>
+	<%= hidden_field_tag 'no_meeting', params[:no_meeting].blank? ? nil : params[:no_meeting] %>
+<% end %>
+<br>
+
+<%= form_for @offering_interviewer, url: {action: :welcome} do |f| %>
+	<h4>3. Special Requests or Notes?</h4>	
+	<div class="input-field">
+		<%= f.text_area :special_notes, class: 'materialize-textarea' %>
+		<%= f.label :special_notes, "If you have any special notes for the program staff, enter them here" %>
+	</div>
+	<p><%= f.submit "Submit Special Requests or Notes", class: 'btn' %></p>
+
+	<%= hidden_field_tag 'committee', params[:committee].blank? ? nil : params[:committee] %>
+	<%= hidden_field_tag 'no_meeting', params[:no_meeting].blank? ? nil : params[:no_meeting] %>
+	
+<% end %>
+<br>
+<h4>4. Submit Your Availability for Interviews</h4>
+<p>You can submit your availability using our online system. This will help us to more easily schedule interviews with students.</p>
+<p><%= button_to "Submit Your Availability →", {action: :interview_availability,
+											   committee: params[:committee].blank? ? nil : params[:committee],
+											   no_meeting: params[:no_meeting].blank? ? nil : params[:no_meeting]}, {:class => "btn"} %></p>
+
+<% content_for(:sidebar) do %>
+	<div class="sideblock card sidebar_nav">
+		<%= render partial: "committee_member/sidebar/sidebar_nav" %>
+	</div>
+<% end %>
+</div>

@@ -6,16 +6,16 @@
 			<table class="highlightless borderless">
 			<% question.options.sort_by{|o|o.ordering || o.id.to_s}.in_groups_of(display_column).each do |group|%>
 			    <tr class="highlightless">
-					<% group.compact.each do |checkbox| %>		
-						  <td>
-						  	 <label>
-							    <%= hidden_field_tag "user_application[#{question.attribute_to_update}_#{checkbox.id}]", false %>
-								<%= check_box_tag "user_application[#{question.attribute_to_update}_#{checkbox.id}]", "#{checkbox.value}", 
-														  @user_application.get_answer(checkbox.offering_question_id ,checkbox.id),
-									class: 'filled-in' %>
-								<span><%= checkbox.title %></span>
-							 </label>
-						  </td>
+					<% group.compact.each do |checkbox| %>
+					  <td>
+                        <label>
+						    <%= hidden_field_tag "user_application[#{question.attribute_to_update}_#{checkbox.id}]", false %>
+							<%= check_box_tag "user_application[#{question.attribute_to_update}_#{checkbox.id}]", "#{checkbox.value}",
+													  @user_application.get_answer(checkbox.offering_question_id ,checkbox.id),
+								class: 'filled-in' %>
+							<span><%= checkbox.title %></span>
+						 </label>
+					  </td>
 					<% end %>
 				</tr>
 			<% end %>
