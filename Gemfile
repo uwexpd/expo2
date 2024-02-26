@@ -127,5 +127,5 @@ group :development do
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'  
   gem 'meta_request'
   gem 'zip'
-  gem 'axlsx'
+  gem 'axlsx', require: false
 end
