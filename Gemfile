@@ -96,6 +96,8 @@ gem 'rdoc'
 gem "select2-rails"
 gem 'leaflet-rails'
 
+gem 'axlsx'
+
 group :production do  
   gem 'omniauth-shibboleth'
 end
@@ -126,6 +128,5 @@ group :development do
   gem 'ed25519', '>= 1.2', '< 2.0'
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'  
   gem 'meta_request'
-  gem 'zip'
-  gem 'axlsx', require: false
+  gem 'zip'  
 end
