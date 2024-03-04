@@ -16,7 +16,7 @@
 			<ul class="icons">
 				<% for contact_history in application_status.contact_histories %>
 					<li class="email"><span class='material-icons uw_purple'>forward_to_inbox</span> E-mail sent to <%= contact_history.person.fullname rescue "(name unknown)" %>
-						<%#= link_to "(View)", contact_history_path(contact_history), :popup => true %>
+						<%= link_to "(View)", admin_contact_history_path(contact_history), target: '_blank' %>
 					</li>
 				<% end -%>
 			</ul>

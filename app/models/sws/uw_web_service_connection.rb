@@ -11,7 +11,22 @@ class UwWebServiceConnection < ActiveResource::Connection
       time = Benchmark::realtime { body = request(:get, path).body }
       sws_log "GET #{path}", time
       body
-    rescue
+      # Process the successful response
+    rescue ActiveResource::Redirection => e
+      # Handle redirection (3xx status code)
+      Rails.logger.error "Redirection error: #{e.response.code} - #{e.response.message}"
+    rescue ActiveResource::ResourceNotFound => e
+      # Handle resource not found (404 status code)
+      Rails.logger.error "Resource not found error: #{e.response.code} - #{e.response.message}"
+    rescue ActiveResource::ServerError => e
+      # Handle server errors (5xx status codes)
+      Rails.logger.error "Server error: #{e.response.code} - #{e.response.message}"
+    rescue ActiveResource::ClientError => e
+      # Handle other client errors (4xx status codes)
+      Rails.logger.error "Client error: #{e.response.code} - #{e.response.message}"
+    rescue => e
+      # Handle other exceptions
+      Rails.logger.error "Unexpected error: #{e.message}"
       nil
     end
   end

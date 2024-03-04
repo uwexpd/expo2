@@ -6,7 +6,7 @@
 	<dt>Organization</dt>
 	<dd><%= service_learning_position.organization.name %>
 		<p class="smaller">
-		<%= link_to "About this organization", '#', data: { link_toggle: "#about_organization"} %></p>
+		<%= link_to "About this organization", 'javascript:;', data: { link_toggle: "#about_organization"} %></p>
 		<div id="about_organization" style="display:none">
 			<p><%= sanitize @position.organization.mission_statement %></p>
 			<p>Website: <%= link_to sanitize(@position.organization.website_url), @position.organization.website_url, :target => "_blank" %></a></p>

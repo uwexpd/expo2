@@ -26,7 +26,10 @@ ActiveAdmin.register Person do
 
   index pagination_total: false do
     column 'Name' do |person|
-      link_to person.fullname, admin_person_path(person)
+      link_to person.fullname, admin_person_path(person)      
+    end
+    column '' do |person|
+      status_tag 'student', class: 'small' if person.type
     end
     column :email
     column ('Created At') {|person| "#{time_ago_in_words person.created_at} ago" rescue ""}

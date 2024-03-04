@@ -55,7 +55,7 @@ ActiveAdmin.register OfferingStatus, as: 'statuses' do
 				f.input :disallow_user_edits, as: :boolean
 				f.input :disallow_all_edits, as: :boolean
 				f.input :message, input_html: {  class: "tinymce", rows: 15, style: "width:100%;" }
-				f.input :sequence, as: :select, collection: 1..(offering.statuses.max.sequence+1 rescue 1)
+				f.input :sequence, prompt: true, as: :select, collection: 1..(offering.statuses.max.sequence+1 rescue 1)
 				div 'Restrictions', class: 'label'
 				f.input :allow_application_edits, as: :boolean, label: 'Allow user to edit application details'
 				f.input :allow_abstract_revisions, as: :boolean, label: 'Allow user to submit a revised abstract'

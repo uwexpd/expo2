@@ -274,12 +274,12 @@ class Offering < ApplicationRecord
 
   # Returns the earliest time that an OfferingInterviewTimeblock starts
   def earliest_interview_timeblock_start
-    interview_timeblocks.find(:first, :order => 'start_time').start_time
+    interview_timeblocks.order('start_time').first.start_time
   end
   
   # Returns the latest time that an OfferingInterviewTimeblock ends
   def latest_interview_timeblock_end
-    interview_timeblocks.find(:first, :order => 'end_time DESC').end_time
+    interview_timeblocks.order('end_time DESC').first.end_time
   end
 
   # Returns all applications that were invited for interview for this Offering
@@ -497,17 +497,17 @@ class Offering < ApplicationRecord
 
   # Returns the OfferingApplicationType that is assigned to the "Poster Session" application type.
   def poster_application_type
-    application_types.find(:first, :joins => :application_type, :conditions => { "application_types.title" => "Poster Presentation" })
+    application_types.joins(:application_type).where("application_types.title=?", "Poster Presentation" ).first
   end
 
   # Returns the OfferingApplicationType that is assigned to the "Oral Session" application type.
   def oral_application_type
-    application_types.find(:first, :joins => :application_type, :conditions => { "application_types.title" => "Oral Presentation" })
+    application_types.joins(:application_type).where("application_types.title=?", "Oral Presentation" ).first
   end  
 
   # Returns the OfferingApplicationType that is assigned to the "Visual Arts & Design" application type.
   def visual_arts_application_type
-    application_types.find(:first, :joins => :application_type, :conditions => { "application_types.title" => "Visual Arts & Design" })
+    application_types.joins(:application_type).where("application_types.title=?", "Visual Arts & Design Presentation" ).first
   end
 
   # Returns a new or existing Population with the requested starting set. The starting set can be any valid association

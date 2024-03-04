@@ -1,5 +1,5 @@
 <% @ti ||= 0; view_only ||= false; %>
-<tr <%= "class='hour_row'" if timeslot_row.min==0 %>>
+<tr <%= "class=hour_row" if timeslot_row.min==0 %>>
 	<%= content_tag('td', timeslot_row.strftime("%I:%M %p"), :class => "time") if timeslot_row.min%15==0 %>
 
 	<% @offering.interview_timeblocks.each do |b| %>
