@@ -18,8 +18,8 @@ class CommitteeMemberController < ApplicationController
   def complete
   end
   
-  def interview_availability
-    add_breadcrumb "Interview Availability"
+  def availability
+    add_breadcrumb "Availability"
     if params[:committee_member]
       params[:committee_member][:last_user_response_at] = Time.now
       if @committee_member.update(committee_member_params)
@@ -44,7 +44,7 @@ class CommitteeMemberController < ApplicationController
               redirect_to :action => "complete"
             else
               Offering.find(@committee_member.committee.interview_offering_id).offering_interviewers.create(person_id: @committee_member.person_id)
-                redirect_to interviewer_path(offering: @committee_member.committee.interview_offering_id , committee: @committee_member.committee, :no_meeting => @committee_member.committee_member_meetings.future.empty?) and return
+                redirect_to offering_interviewer_path(offering: @committee_member.committee.interview_offering_id , committee: @committee_member.committee, :no_meeting => @committee_member.committee_member_meetings.future.empty?) and return
             end
         else
           redirect_to :action => "meetings"

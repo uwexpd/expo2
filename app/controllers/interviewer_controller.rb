@@ -3,7 +3,7 @@ class InterviewerController < ApplicationController
   before_action :fetch_offering, :fetch_person, :fetch_committee_member
   before_action :fetch_offering_interviewer, :except => [:inactive]
   before_action :check_if_contact_info_is_current, :except => [:update, :inactive]
-  before_action :initialize_breadcrumbs
+  before_action :initialize_breadcrumbs, except: [:mark_available, :mark_unavailable]
 
   def index
     @interviews = @offering_interviewer.offering_interviews
@@ -143,22 +143,40 @@ class InterviewerController < ApplicationController
   def interview_availability
     if params[:commit]
       flash[:notice] = "Thank you for submitting your availability! We will contact you as soon as interviews are scheduled."
-      redirect_to committee_member_path(:action => 'complete') unless params[:committee].blank?
+      redirect_to committee_member_complete_path unless params[:committee].blank?
     end
   end
   
   # Marks a person available for a specific interview timeslot
   def mark_available
     t = @offering_interviewer.interview_availabilities.find_or_create_by(time: params[:time].to_time, offering_interview_timeblock_id: params[:timeblock_id])
-
-    render :partial => "apply/timeslot_available", :locals => { :b => params[:timeblock_id], :ti => params[:ti], :time => params[:time] }
+    @b = params[:timeblock_id]
+    @ti = params[:ti]
+    @time = params[:time]
+    respond_to do |format|
+      format.html { render action: :interview_availability, notice: 'Time slot marked as available.' }
+      format.js
+    end
   end
   
   # Marks a person as unavailable for a specific interview timeslot
   def mark_unavailable
     t = @offering_interviewer.interview_availabilities.find_by(time: params[:time].to_time, offering_interview_timeblock_id: params[:timeblock_id])
-    t.destroy
-    render :partial => "apply/timeslot_not_available", :locals => { :b => params[:timeblock_id], :ti => params[:ti], :time => params[:time] }
+    @b = params[:timeblock_id]
+    @ti = params[:ti]
+    @time = params[:time]
+    if t
+      t.destroy
+      respond_to do |format|
+        format.html { render action: :interview_availability, notice: 'Time slot marked as unavailable.' }
+        format.js
+      end
+    else      
+      respond_to do |format|
+        format.html { render action: :interview_availability, alert: 'Time slot not found.' }
+        format.js { render plain: 'Time slot not found.', status: :not_found }
+      end
+    end
   end
   
   def inactive

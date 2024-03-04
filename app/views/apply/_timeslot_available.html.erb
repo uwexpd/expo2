@@ -2,10 +2,9 @@
 <%= 
 if view_only
 	"<a class='available view_only'>available</a>"
-else
-	link_to_remote "available",
-	    :url => { :action => "mark_unavailable", :time => time, :timeblock_id => b, :ti => ti },
-		:update => "timeblock[#{ti}]",
-		:html => { :class => "available" } 
+else	
+	link_to "available",
+	    { action: "mark_unavailable", time: time, timeblock_id: b, ti: ti },
+		{ remote: true, class: "available" }
 end
 %>

@@ -1,0 +1,86 @@
+/* @group Availability Table */
+
+table.availability {
+	border-collapse: collapse;
+}
+
+table.availability th {
+	text-align: center;
+}
+
+table.availability td {
+	padding: 0;
+	margin: 0;
+	height: 5px;
+	overflow: hidden;
+}
+
+table.availability td a {
+	overflow: hidden;	
+}
+
+table.availability td.time {
+	text-align: center;
+	background: #f7f7f7;	
+	color: #999;
+}
+
+table.availability tr.hour_row td {
+	border-top: 1px solid #999;
+}
+
+table.availability tr.hour_row td.time {
+	font-weight: bold;
+	color: #515151;
+}
+
+table.availability td {
+	padding: 0;
+	margin: 0;
+	border-right: 1px solid #d9d9d9;
+}
+
+table.availability tr:hover {
+	background-color: inherit;
+}
+
+table.availability tr:hover td {
+	background-color: #fef1ca;
+}
+
+table.availability a.available {	
+	display: block;
+	text-decoration: none;
+	color: #fff;
+	text-align: center;
+	font-size: 90%;
+	padding: 1px;
+	background: #00c313;
+}
+
+table.availability a.available:hover {
+	color: #fff;
+	background: red;
+}
+
+table.availability a.available.view_only:hover {
+	background: #00c313;
+	color: #fff;
+}
+
+table.availability a.not.available {
+	background: #fff;
+	// color: #eee;
+}
+
+table.availability a.not.available:hover {
+	// color: #999;
+	background: #00c313;
+}
+
+table.availability a.not.available.view_only {
+	color: #eee;
+	background: #fff;
+}
+
+/* @end */

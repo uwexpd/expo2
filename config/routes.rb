@@ -132,11 +132,13 @@ Rails.application.routes.draw do
     get 'committee_member/map/:committee_member_id/:token', to: 'committee_member#map', as: :committee_member_map
 
     # Interviewer
-    # get 'interviewer/:offering', to: 'interviewer#welcome', as: :interviewer
+    get 'interviewer/:offering', to: 'interviewer#index', as: :interviewer
     match 'interviewer/:offering/weclome/:committee', to: 'interviewer#welcome', as: :offering_interviewer, via: [:get, :post, :put, :patch]
     match 'interviewer/:offering/availability/:committee', to: 'interviewer#interview_availability', as: :interviewer_availability, via: [:get, :post, :put, :patch]
     get 'interviewer/:offering/not_this_quarter/:committee', to: 'interviewer#not_this_quarter'
     get 'interviewer/:offering/inactive/:committee', to: 'interviewer#inactive'
+    match 'interviewer/:offering/mark_available', to: 'interviewer#mark_available', via: [:get, :patch]
+    match 'interviewer/:offering/mark_unavailable', to: 'interviewer#mark_unavailable', via: [:get, :patch]
 
 
     # OMSFA Scholarship Sesarch
