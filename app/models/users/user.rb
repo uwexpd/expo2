@@ -5,10 +5,10 @@ class User < ApplicationRecord
   
   belongs_to :person
   has_many :roles, :class_name => "UserUnitRole", :foreign_key => "user_id" do
-      def for(unit_id); find(:all, :conditions => { :unit_id => unit_id }); end
+      def for(unit_id); where(unit_id: unit_id); end
   end
   has_many :units, :through => :roles do
-      def minus_exp; find(:all, :conditions => "abbreviation != 'exp'"); end
+      def minus_expd; where("abbreviation != 'expd'"); end
   end
   
   has_many :logins, :class_name => "LoginHistory"
@@ -49,6 +49,8 @@ class User < ApplicationRecord
   
   before_save :encrypt_password
   
+  accepts_nested_attributes_for :roles, allow_destroy: true
+
   scope :admin, -> { where(admin: true) }
   
 

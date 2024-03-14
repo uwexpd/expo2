@@ -914,3 +914,19 @@ div.uploaded_letter {
 	padding: 1.5rem;
 	background: #f7f7f7;
 }
+
+table.reviewer tr.finalized, table.interviewer tr.finalized, tr.unavaiable {	
+	background: url(image-path('app/unavailable-xtile.gif')) fixed;
+}
+
+tr.rowset-header td {
+	font-weight: bold;
+    background: #eee !important;
+    border-bottom: 1px solid #aaa;
+    color: #333;
+    padding: 7px;
+}
+
+.sideblock.help {
+	font-size: 90%;
+}

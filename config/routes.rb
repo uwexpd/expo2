@@ -61,7 +61,6 @@ Rails.application.routes.draw do
       resources :notes
       resources :service_learning_positions
       resources :quarter
-
     end
     
     # -------------------------------------------------------------------------------------------
@@ -140,6 +139,9 @@ Rails.application.routes.draw do
     match 'interviewer/:offering/mark_available', to: 'interviewer#mark_available', via: [:get, :patch]
     match 'interviewer/:offering/mark_unavailable', to: 'interviewer#mark_unavailable', via: [:get, :patch]
 
+    # Reviewer
+    get 'reviewer/:offering', to: 'reviewer#index', as: :offering_reviewer
+    get 'reviewer/:offering/show/:id', to: 'reviewer#show'
 
     # OMSFA Scholarship Sesarch
     resources :scholarships, only: [:show, :index], param: :page_stub

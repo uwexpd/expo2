@@ -16,7 +16,7 @@ class InterviewerController < ApplicationController
     @offering_interview_interviewer = OfferingInterviewInterviewer.find params[:id]
     @app = ApplicationForOffering.find @offering_interview_interviewer.offering_interview.applicant_id
 
-    session[:breadcrumbs].add @app.fullname
+    add_breadcrumb @app.fullname
 
     # Initialize score card if needed
     @offering_interview_interviewer.create_scores unless @viewing_past_app
@@ -278,7 +278,7 @@ class InterviewerController < ApplicationController
 
   def initialize_breadcrumbs
     add_breadcrumb "Interviewer Interface", offering_interviewer_path(@offering)
-    add_breadcrumb @offering.name    
+    add_breadcrumb @offering.name
   end
 
 

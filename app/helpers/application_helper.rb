@@ -61,6 +61,13 @@ module ApplicationHelper
   def phone_number(number)
     number.nil? ? "" : number_to_phone(number.to_s.strip[0..9], :area_code => true, :extension => number.to_s.strip[10..20])
   end
+
+  def mark_as_confidential(note = nil)
+    note ||= "CONFIDENTIAL"
+    content_for(:confidentiality_note) do
+      "&bull; #{note} &bull;"
+    end
+  end
   
   def address_block(obj, delimiter = "<br>")
     if obj.is_a? Person

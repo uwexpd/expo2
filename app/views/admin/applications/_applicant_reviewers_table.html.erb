@@ -1,5 +1,5 @@
 <% app_reviewers = @app.reviewers
-   committee_quarter = CommitteeQuarter.find_by(committee_id: @app.offering.review_committee.id, quarter_id: @offering.quarter_offered) || Quarter.current_quarter
+   committee_quarter = CommitteeQuarter.find_by(committee_id: @app.offering.review_committee.try(:id), quarter_id: @offering.quarter_offered) || Quarter.current_quarter
 %>
 
 <% @offering_reviewers = CommitteeMember.active_for(committee_quarter.id) %>

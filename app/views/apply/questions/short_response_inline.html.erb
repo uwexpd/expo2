@@ -2,5 +2,7 @@
   <%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %>
   <div class="input-field inline">
 	<%= qf.text_field question.attribute_to_update, required: question.required? ? true : false , :size => question.width %>
+  
+  <%= display_computed_caption(question.caption) if question.caption? %>
   </div>
 </div>

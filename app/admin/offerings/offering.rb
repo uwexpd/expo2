@@ -145,7 +145,7 @@ ActiveAdmin.register Offering do
           f.inputs 'Mentor' do
           hr
             f.input :max_number_of_mentors, label: 'Maximun', input_html: { style: "width:7%;"}, hint: 'Students cannot have more mentors than this.'
-            f.input :min_number_of_mentors, label: 'Maximun', input_html: { style: "width:7%;"}, hint: 'Students cannot have less mentors than this. If students can only have a specific number of mentors (e.g., one mentor), set both the minimum and maximum to the same value.'
+            f.input :min_number_of_mentors, label: 'Minimun', input_html: { style: "width:7%;"}, hint: 'Students cannot have less mentors than this. If students can only have a specific number of mentors (e.g., one mentor), set both the minimum and maximum to the same value.'
             f.input :mentor_deadline, as: :datetime_picker, input_html: { style: "width:50%;"}, hint: 'Specify a time by which mentors should complete their task (as defined by the Mentor Mode, below). This is blank by default and has no binding effect unless the "Deny mentor access after mentor deadline" checkbox is marked below. Otherwise, this is just used to provide an informational deadline for mentors when they log in.'
             f.input :deny_mentor_access_after_mentor_deadline, as: :boolean, hint: 'If this box is checked, mentors cannot get in to the mentor interface after the deadline defined above. If you leave this box unchecked, mentors can still get in after the deadline.'
             f.input :allow_hard_copy_letters_from_mentors, as: :boolean, hint: 'By default, we expect mentors to upload their letters using our online form. If your application process demands that mentors be allowed to submit letters in a different form, check this box. Applicants will be presented with a check box that says: "If your mentor cannot access the Internet and will need to submit a hard copy letter, please check here."'
@@ -174,7 +174,7 @@ ActiveAdmin.register Offering do
 
           f.inputs 'Mentor Types' do
           hr
-            f.has_many :mentor_types, allow_destroy: true do |mentor_type|
+            f.has_many :mentor_types, allow_destroy: true, heading: false do |mentor_type|
                 mentor_type.input :application_mentor_type_id, as: :select, collection: ApplicationMentorType.all, :prompt => "Choose a mentor type"
                 mentor_type.input :meets_minimum_qualification, as: :boolean
             end
@@ -182,7 +182,7 @@ ActiveAdmin.register Offering do
 
           f.inputs 'Mentor Questions' do
           hr
-            f.has_many :mentor_questions, allow_destroy: true do |mentor_question|
+            f.has_many :mentor_questions, allow_destroy: true, heading: false do |mentor_question|
                 mentor_question.input :question, :input_html => { class: "tinymce", rows: 5, style: 'width: 70%' }
                 mentor_question.input :required, as: :boolean
                 mentor_question.input :must_be_number, as: :boolean
@@ -209,7 +209,7 @@ ActiveAdmin.register Offering do
         end
         f.inputs 'Review Criteria' do
           hr
-          f.has_many :review_criterions, allow_destroy: true do |criterion|
+          f.has_many :review_criterions, allow_destroy: true, heading: false do |criterion|
               criterion.input :title, input_html: { style: 'width: 35%'}
               criterion.input :max_score, input_html: { style: 'width: 35%'}
               criterion.input :description, input_html: { class: "tinymce", rows: 5}
