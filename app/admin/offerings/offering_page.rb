@@ -64,9 +64,10 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
         render "admin/offerings/pages/pages", { offering: offering, offering_page: pages }
   	end
 
-	form do |f|	  
+	form do |f|
 	  f.semantic_errors *f.object.errors.keys
-	  ordering = offering.pages.size==0 ? [1] : offering.pages.blank? ? [1] : (1..offering.pages.collect(&:ordering).compact.max()+1).to_a.reverse
+	  ordering = offering.pages.size==0 ? [1] : (1..offering.pages.collect(&:ordering).compact.max()+1).to_a.reverse rescue [1]
+
 	  f.inputs do
 	    f.input :title, as: :string
 	    f.input :ordering, label: 'Order', as: :select, collection: ordering, include_blank: false

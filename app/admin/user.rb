@@ -1,10 +1,10 @@
-ActiveAdmin.register User do  
+ActiveAdmin.register User do
   actions :all, :except => [:new, :destroy]
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   menu parent: 'Groups'
   
-  permit_params :admin, :email, :picture
+  permit_params :admin, :email, :picture, roles_attributes: [:role_id, :unit_id, :_destroy, :id]
 
   before_action -> { check_permission("user_manager") }
 
@@ -59,6 +59,9 @@ ActiveAdmin.register User do
       tabs do
           tab "Units & Roles (#{user.roles.size})", id: 'unit_roles' do
             panel '' do
+              div class: 'right padding_right' do
+                link_to "Assign new role", edit_admin_user_path(user), class: 'button small'
+              end
               table_for user.roles.order('unit_id ASC') do
                 column ('Unit') {|role| role.unit ? role.unit.name : 'Global' }
                 column ('Role') {|role| role.name }
@@ -93,9 +96,18 @@ ActiveAdmin.register User do
     f.semantic_errors *f.object.errors.keys
     f.inputs "Edit #{user.login}" do
       f.input :email, as: :string
-      f.input :admin, label: 'User can access admin aera', as: :boolean
-      f.input :picture, as: :file
+      f.input :admin, label: 'User can access admin aera', as: :boolean      
+      f.input :picture, as: :file      
+    end   
+
+    f.inputs 'User roles' do
+      hr      
+        f.has_many :roles, allow_destroy: true, heading: false do |role|
+          role.input :role_id, as: :select, collection: [["[User]", nil]] + Role.all.map{|r| [r.title, r.id]}, include_blank: "[User]", prompt: "-- Select a Role --"
+          role.input :unit_id, as: :select, collection: [["[Global]", nil]] + Unit.all.map{|u| [u.name, u.id]}, prompt: "-- Select a Unit --"
+        end      
     end
+    
     f.actions do
        f.action(:submit)
        f.cancel_link(admin_user_path(user))

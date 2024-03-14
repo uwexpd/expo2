@@ -32,16 +32,6 @@ class UwWebServiceConnection < ActiveResource::Connection
   end
 
   private
-
-    def http
-      configure_http(new_http_with_debug)
-    end
-
-    def new_http_with_debug
-      h = new_http
-      h.set_debug_output(debug == true ? $stderr : nil)
-      h
-    end
     
     def sws_log(msg, time = nil)
       caller_class_s = caller_class.to_s == "Class" ? self.class.to_s : (caller_class.to_s || self.class.to_s)

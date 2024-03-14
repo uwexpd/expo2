@@ -4,7 +4,7 @@ ActiveAdmin.register TextTemplate, as: 'template'  do
   config.per_page = [30, 50, 100, 200]
   menu parent: 'Modules', label: 'Email Templates', :priority => 35
 
-  permit_params :body, :name, :subject, :from
+  permit_params :body, :name, :subject, :from, :type
 
   index do
     column ('Name') {|template| link_to template.title, admin_template_path(template) }
@@ -36,6 +36,7 @@ ActiveAdmin.register TextTemplate, as: 'template'  do
     	# 	end
     	# end  
     	f.input :body, :input_html => { :style => 'width:80%;', :rows => 25 }
+      f.input :type, as: :hidden, input_html: {value: "EmailTemplate"}
     end
     # script do
     #   raw '$(document).ready(function($) {console.log("insert page initialization code here");})'

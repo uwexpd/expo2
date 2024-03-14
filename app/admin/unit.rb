@@ -55,7 +55,9 @@ ActiveAdmin.register Unit do
     semantic_errors *f.object.errors.keys
     inputs "#{unit.name}" do
       input :name
-      # input :abbreviation
+      if f.object.new_record?
+        input :abbreviation
+      end
       input :description, :input_html => { :rows => 5, :style => "width:100%;" }
       input :phone
       input :email
