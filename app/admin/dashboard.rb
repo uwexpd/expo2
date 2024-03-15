@@ -36,10 +36,10 @@ ActiveAdmin.register_page "Dashboard" do
         end
       end
       column max_width: '33%' do
-        panel "Student Search" do
-          para ''
-          para ''
-        end
+        # panel "Student Search" do
+        #   para ''
+        #   para ''
+        # end
 
         if current_user.has_role?(:vicarious_login)
           panel "Vicarious Login" do

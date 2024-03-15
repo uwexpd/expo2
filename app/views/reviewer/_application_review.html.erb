@@ -1,6 +1,5 @@
-<% @app = application %>
 <hr class='header'>
-<table class="borderless highlightless">
+<table class="highlight application_review">
 	<%= render partial: "/apply/page_review",
                collection: pages,
                locals: { links: :false, user_application: @app, admin_view: true} %>

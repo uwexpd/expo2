@@ -1,3 +1,16 @@
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.caption {
+	font-size: 80%;
+	color: #999;	
+}
+
 .uw_green{
 	color: #4CAF50;
 }
@@ -32,4 +45,70 @@
 
 .uw_metallic_bg_gold {
 	background-color: #85754d;
+}
+
+.transcript .general-info {
+	border: 1px solid #dadada;
+	background: #f7f7f7;
+	padding: 5px 10px;
+	margin-top: 10px;
+}
+
+.empty, tr.empty td, td.empty {
+	padding: 30px;
+	/*padding-left: 5px;*/
+	color: #b2b2b2;
+	text-align: center;
+	font-size: 110%;
+}
+
+.empty a, tr.empty td a, td.empty a {
+	color: #6f9eba;
+}
+
+//https://github.com/google/material-design-icons/issues/206
+// .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, .session .material-icons
+.material-icons, .mi {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+}
+
+// a.button .material-icons {
+// , a.button .mi {
+// 	display: inline-flex;
+//     align-items: center;    
+// }
+
+// Align matieral-icons with text
+.material-icons.align, .material-icons.bottom_align, .mi.bottom_align {
+    vertical-align: bottom;
+}
+
+.material-icons.middle_align, .mi.middle_align {
+    vertical-align: middle;
+}
+
+.material-icons.top_align, .material-icons.vertical_top, .mi.top_align {
+    vertical-align: top;
+}
+
+.material-icons.sub_align, .mi.sub_align {
+    vertical-align: sub;
+}
+
+.material-icons.md-42, .mi.md-42 {
+	font-size: 42px;
+}
+
+.material-icons.md-32, .mi.md-32 {
+	font-size: 32px;
+}
+
+.material-icons.md-20, .mi.md-20 {
+	font-size: 20px;
+}
+
+.material-icons.md-16, .mi.md-16 {
+	font-size: 16px;
 }

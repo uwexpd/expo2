@@ -13,7 +13,7 @@
 </table>
 <hr class='divider'><br>
 <strong>Mentor Department:</strong>
-<%= @app.mentor_department || "<span class=\"light\">Not yet known</span>".html_safe %>
+<%= @app.mentor_department.blank? ? "<span class=\"light\">Not yet known</span>".html_safe : @app.mentor_department %>
 
 <% if admin_view %>
 	<small>(<%= link_to 'Override', 'javascript:;', data: { link_toggle: "#mentor_department_form"} %>)</small>

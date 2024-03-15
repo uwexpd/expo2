@@ -69,10 +69,10 @@
 </table>
 
 <% if @ready_for_finalization && !@do_not_finalize %>
-	<div class="yellow box center">
-		<h3>Are you ready to submit your scores?</h3>
+	<div class="highlight_box">
+		<h5>Are you ready to submit your scores?</h5>
 		<blockquote>If you are satisfied with your scores, press the button below to submit your scores as final. Once you click this button, you will not be able to change your scores or comments.</blockquote>
-		<%= button_to "Submit My Scores", :action => 'finalize', :commit => 'true' %>
+		<%= link_to "Submit My Scores", reviewer_finalize_path(commit: true), class: "btn" %>
 	</div>
 <% end -%>
 

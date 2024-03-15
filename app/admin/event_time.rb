@@ -4,6 +4,8 @@ ActiveAdmin.register EventTime, as: 'times' do
   config.filters = false
   config.sort_order = 'start_time_asc'
   
+  permit_params :start_time, :end_time, :location_text, :title, :facilitator, :capacity, :notes
+
   index do  
     column ('Times') {|event_time| link_to event_time.time_detail, admin_event_time_path(event, event_time) }
     column ('Location') {|event_time| event_time.location_text.blank? ? "TBD" : event_time.location_text}
@@ -26,7 +28,7 @@ ActiveAdmin.register EventTime, as: 'times' do
        row ('Times') {|event_time| event_time.time_detail }      
        row ('Location') {|event_time| event_time.location_text }
        row ('Capacity') {|event_time| event_time.capacity }
-       row ('Notes') {|event_time| event_time.notes }
+       row ('Notes') {|event_time| event_time.notes.html_safe }
     end
     panel 'Invitees' do
        table_for times.invitees.joins(:person).order((params[:order] ? params[:order] : 'lastname asc').gsub('_asc', ' asc').gsub('_desc', ' desc')), sortable: true do
@@ -49,7 +51,7 @@ ActiveAdmin.register EventTime, as: 'times' do
         div "Store a staff person's name or other information.", class: 'caption'
       f.input :capacity, :input_html => { :style => 'width:10%;' }
         div 'Leave blank for unlimited.', class: 'caption'
-      f.input :notes, as: :text, :input_html => { :rows => 4, :cols => 50}
+      f.input :notes, as: :text, :input_html => { class: "tinymce",  rows: 4, cols: 50}
     end
     f.actions
   end

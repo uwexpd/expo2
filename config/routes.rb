@@ -96,7 +96,7 @@ Rails.application.routes.draw do
     get 'apply/:offering/help/:id', to: 'apply#help', as: :apply_help
     get 'apply/:offering/review', to: 'apply#review', constraints: { offering: /\d+/ }
     match 'apply/:offering/submit', to: 'apply#submit', constraints: { offering: /\d+/ }, via: [:post, :put, :patch]
-    match 'apply/:offering/files/application_file/file/:id/:filename', to: 'apply#file', via: [:get], as: :apply_file
+    get 'apply/:offering/files/application_file/file/:id/:filename', to: 'apply#file', as: :apply_file
     get 'apply/:offering/group_member', to: 'apply#group_member', constraints: { offering: /\d+/ }
     match 'apply/:offering/revise_abstract', to: 'apply#revise_abstract', via: [:get, :post, :put, :patch], as: :apply_revise_abstract
     match 'apply/:offering/validate/:group_member_id/:token', to: 'apply#group_member_validation', as: :apply_group_member_validation, via: [:get, :post, :put, :patch]
@@ -142,6 +142,7 @@ Rails.application.routes.draw do
     # Reviewer
     get 'reviewer/:offering', to: 'reviewer#index', as: :offering_reviewer
     get 'reviewer/:offering/show/:id', to: 'reviewer#show'
+    match 'reviewer/:offering', to: 'reviewer#finalize', via: [:get, :post, :put, :patch], as: :reviewer_finalize
 
     # OMSFA Scholarship Sesarch
     resources :scholarships, only: [:show, :index], param: :page_stub
