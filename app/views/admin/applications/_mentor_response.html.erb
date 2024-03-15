@@ -28,7 +28,7 @@
 		<% else %>		
 			<i class="material-icons middle_align uw_purple md-32">picture_as_pdf</i>
 			<%= link_to mentor.public_filename, admin_apply_letter_path(@offering, id: @app.id, mentor: mentor.id) %>
-			<span class='caption'>
+			<span class='light'>
 				(<%= mentor.letter_content_type << ", " if mentor.letter_content_type %>
 				<%= number_to_human_size(mentor.letter_size) %>)				
 				<% if admin_view%>

@@ -20,7 +20,7 @@ menu parent: 'Groups'
     div :class => 'tabsview' do
       tabs do
          tab 'Student Info' do
-            attributes_table title: 'Student Info' do
+            attributes_table title: 'Student Information' do
               row ('Class Standing') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) }
               row ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) }
               row ('Minor(s)') {|student| raw(student.sdb.minors_list(true, "<br>")) }

@@ -12,7 +12,7 @@
 	<% else %>
 		<% for app in @app.past_applications %>
 		<tr>
-			<td width= '120px' class="grey"><%= raw(relative_timestamp(app.created_at, "<br>")) %></td>
+			<td width= '120px'><%= raw(relative_timestamp(app.created_at, "<br>")) %></td>
 			<td><%= link_to app.offering.title, admin_apply_manage_path(app.offering) %></td>
 			<td>
 				<% if audience == :reviewer %>

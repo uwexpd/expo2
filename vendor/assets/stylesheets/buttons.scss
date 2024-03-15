@@ -56,21 +56,6 @@ a.button.has_many_add, a.button.has_many_remove {
 	box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.15);
 }
 
-//https://github.com/google/material-design-icons/issues/206
-// .welcome-links .material-icons, .sidebar_section .material-icons, #login .material-icons, .session .material-icons
-.material-icons, .mi {
-    display: inline-flex;
-    align-items: center;
-    vertical-align: middle;
-}
-
-a.button .material-icons {
-// , a.button .mi {
-	display: inline-flex;
-    align-items: center;
-    vertical-align: bottom;
-}
-
 a.button:hover, #titlebar_right .action_item a:hover {
 	text-decoration: none;
 	color: white;
@@ -80,22 +65,6 @@ a.button:hover, #titlebar_right .action_item a:hover {
 a.action_icon:hover, a .material-icons:hover {
 	opacity: 0.6;
 	text-decoration: none;
-}
-
-.material-icons.md-42, .mi.md-42 {
-	font-size: 42px;
-}
-
-.material-icons.md-32, .mi.md-32 {
-	font-size: 32px;
-}
-
-.material-icons.md-20, .mi.md-20 {
-	font-size: 20px;
-}
-
-.material-icons.md-16, .mi.md-16 {
-	font-size: 16px;
 }
 
 input[type="submit"].small, input[type="reset"].small, input[type="button"].small {

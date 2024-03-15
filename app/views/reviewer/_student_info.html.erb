@@ -1,0 +1,28 @@
+<% student = @app.person %>
+<hr class='header'>
+<div class='content-block'>
+	<table>
+		<tr class='row'>
+			<th>Class Standing<th>
+			<td><%= student.class_standing_description(show_upcoming_graduation: true) %></td>
+		</tr>
+		<tr class='row'>
+			<th>Major(s)<th>
+			<td><%= raw(student.majors_list(true, "<br>")) %></td>
+		</tr>
+		<% if student.is_a?(Student) %>
+			<tr class='row'>
+				<th>Current Credits<th>
+				<td>
+					<span><%= student.current_credits(@offering.quarter_offered || Quarter.current_quarter) %></span>
+					<span class='light'><%= "(#{(@offering.quarter_offered || Quarter.current_quarter).title})" %></span>
+					<span clas= 'status_tag'><%= 'full-time' if student.full_time?(@offering.quarter_offered || Quarter.current_quarter) %>
+				</td>
+			</tr>
+		<% end %>		
+		<tr class='row'>
+			<th>Email<th>
+			<td><%= student.email %></td>
+		</tr>
+	</table>
+</div>

@@ -3,8 +3,8 @@
 <div class='content-block'>
 <% @app.files.each do |app_file| %>
 	
-  <h2><%= app_file.title %>:</h2>
-  <div class="left-indent"> 	
+  <h3><%= app_file.title %>:</h3>
+  <div class="left-indent">
 	<% unless app_file.file.file.nil? %>
 	  <div class='filename'>
 			<i class="material-icons middle_align uw_purple md-36">picture_as_pdf</i>

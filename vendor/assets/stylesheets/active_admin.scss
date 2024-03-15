@@ -63,11 +63,6 @@ For example, to change the default status-tag color: */
 	color: #aaaaaa;
 }
 
-.caption {
-	font-size: 80%;
-	color: #999;	
-}
-
 .gray, .grey {
 	color: gray;
 }
@@ -82,14 +77,6 @@ For example, to change the default status-tag color: */
 
 .larger {
 	font-size: larger;
-}
-
-.left {
-	float: left;
-}
-
-.right {
-	float: right;
 }
 
 .padding_left {
@@ -1190,21 +1177,6 @@ dl.inline-definitions dd {
 	padding-left: 150px;
 }
 
-.transcript .general-info {
-	border: 1px solid #dadada;
-	background: #f7f7f7;
-	padding: 0 10px;
-	margin-top: 10px;
-}
-
-.transcript .general-info dl {
-	margin-top: 0.35rem;
-}
-
-.transcript .general-info dd {
-	margin-bottom: .5em;
-}
-
 tr.rowset-header td {
 	font-weight: bold;
 	background: #eee;
@@ -1342,4 +1314,12 @@ a.placeholder_text_link:hover {
 
 .question_review_title {
 	font-weight: bold;
+}
+
+.transcript .general-info dl {
+	margin-top: 0.35rem;
+}
+
+.transcript .general-info dd {
+	margin-bottom: .5em;
 }

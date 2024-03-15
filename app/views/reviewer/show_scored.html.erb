@@ -1,44 +1,68 @@
 <% mark_as_confidential @offering.confidentiality_note %>
-<% make_main_content_blocked %>
 <% virtual_proceeding = @app.offering.virtual_proceeding %>
 
-<div class="content-block">
-	<h3 style="margin-bottom: 0"><%= @app.person.fullname %>
-		<span><%= @app.person.student_no %></span>
-		<span class="light right"><%= render :partial => "composite_report_maker" %></span>
-		</h3>
-	<h4 style="margin-top: 0;"><%= @app.project_title %></h4>
-	
-	<%= content_tag(:h5, @app.offering.title) if @viewing_past_app %>
+<div class="card content">
+  <div class="row">
+  	<div class="col s12">
+			  <h4><%= @app.person.fullname %>
+					<span class="caption smaller"><%= @app.person.student_no %></span>
+					<span class="light"><%#= render :partial => "composite_report_maker" %></span><br>
+					<strong style="font-size: 50%;"><%= @app.project_title %></strong>
+				</h4>
+			  <!-- </div> -->
+			  <%= content_tag(:h5, @app.offering.title) if @viewing_past_app %>
 
-	<%= content_tag('div', "<strong>Special Note from Program Staff:</strong> " + @app.special_notes, :class => 'special-note') unless @app.special_notes.blank? %>
-</div>
+			  <%= content_tag('div', "<strong>Special Note from Program Staff:</strong> " + @app.special_notes, :class => 'special-note') unless @app.special_notes.blank? %>
 
-<div class="tabview">
+		  
+       <ul class="tabs">
+         <li class="tab col"><a href="#student_info">Student Info</a></li>
+         <li class="tab col"><a href="#application_review">Application Details</a></li>
+         <% if @offering.uses_mentors? %> 
+         	<li class="tab col"><a href="#mentor_letter">Mentors</a></li>
+         <% end %>
+         <% unless @app.files.empty? %>
+         	<li class="tab col"><a href="#essay">Essay & File</a></li>
+         <% end %>
+         <% unless virtual_proceeding %>
+         	<li class="tab col"><a href="#transcript">Transcript</a></li>
+         <% end %>                 
+         <% unless virtual_proceeding %>
+         	<li class="tab col"><a href="#past_applications">Past Applications</a></li>
+         <% end %>
+       </ul>
+    
 
-	<div id="tabs">
-		<ul>
-		<%= link_to_tab("Student Info", "student_info", { :action => "show", :id => @app, :section => "student_info" }, "tabview_content") unless virtual_proceeding %>
-		<%= link_to_tab("Application Details", "application_review", { :action => "show", :id => @app, :section => "application_review" }, "tabview_content") %>
-		<%= link_to_tab("Transcript", "transcript", { :action => "show", :id => @app, :section => "transcript" }, "tabview_content") unless virtual_proceeding %>
-		<%= link_to_tab("Essay & Files", "essay", { :action => "show", :id => @app, :section => "essay" }, "tabview_content") unless @app.files.empty? %>
-		<%= link_to_tab("#{@offering.mentor_title.pluralize}", "mentor_letter", { :action => "show", :id => @app, :section => "mentor_letter" }, "tabview_content") if @offering.uses_mentors? %>
-		<%= link_to_tab("Past Applications", "past_applications", { :action => "show", :id => @app, :section => "past_applications" }, "tabview_content") unless virtual_proceeding %>
-		</ul>
-	</div>
-
-	<div id="frame">
-		<%= content_tag 'div', indicator_image + 'Loading...', indicator_options %>
+			<div id="student_info" class="col s12">
+				<h5>Student Information</h5>
+				<%= render "student_info" %>
+			</div>
+			<div id="application_review" class="col s12">
+				<h5>Application Details</h5>
+				<%= render "application_review", { pages: @app.pages.reject{|p|p.hide_in_reviewer_view?} } %>
+		  </div>
+		  <div id="essay" class="col s12">
+				<h5>Essay & File</h5>
+				<%= render "admin/applications/essay" %>
+			</div>
+			<div id="mentor_letter" class="col s12">
+				<h5>Mentors</h5>
+				<%= render "admin/applications/mentor_letter" %>
+			</div>
+			<div id="transcript" class="col s12">
+				<h5>Transcript</h5>
+				<%= render "admin/applications/transcript" %>
+			</div>	
+			<div id="past_applications" class="col s12">
+				<h5>Past Applications</h5>
+				<%= render "admin/applications/past_applications", {application: @app} %>
+			</div>
 		
-		<div class="content" id="tabview_content">
-			<noscript>
-				<%= render :partial => "admin/apply/section/application_review", :locals => { :audience => :reviewer } %>
-			</noscript>
-			<div class="loading">Loading...</div>
-		</div>
-	</div>
-
+			<!-- <noscript>
+				<%#= render :partial => "admin/apply/section/application_review", :locals => { :audience => :reviewer } %>
+			</noscript> -->	
+		  </div>
+	  </div>
 </div>
-<%= autoload_tab("tabview_content", url_for({ :action => "show", :id => @app, :section => "" }), "application_review") %>
 
 <%# sidebar :scoring, :class => 'fixed' if @application_reviewer %>
