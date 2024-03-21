@@ -15,7 +15,7 @@ a:hover{
 .bold {
 	font-weight: bold;
 }
-
+textarea
 .smaller {
 	font-size: 85%;
 }
@@ -32,7 +32,7 @@ a:hover{
 	color: gray;
 }
 
-.required {	
+.required, .warning {	
     color: #d45f53;
 }
 
@@ -80,6 +80,15 @@ a:hover{
 
 span.highlight_box{
 	padding: 3px 6px;
+}
+
+span.highlight, .row_active {
+	background: #fef5d4;	
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
 }
 
 ul.list_style {
@@ -875,4 +884,28 @@ table.transcript h4 {
 
 table.mentor_letter tr{
 	border: none;
+}
+
+.sideblock.scoring textarea {
+	height: auto;
+}
+
+.sideblock.scoring tr.rowset-header td{
+	padding: 0.5rem;
+}
+
+.sideblock.scoring table.paddingless td {
+	padding: 1px;
+}
+
+.scored_selection .spread {
+    border-left: 2px solid #dadada;
+    border-right: 1px solid #dadada;
+    text-align: center;
+}
+
+.scored_selection .average_score {
+    border-left: 2px solid #dadada;
+    text-align: center;
+    background-color: #f6f6f6; 
 }

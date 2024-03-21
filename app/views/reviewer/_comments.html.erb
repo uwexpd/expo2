@@ -4,7 +4,7 @@
 	<div class="comments">
 		<h3>Track Your Personal Comments:</h3>
 	
-		<% form_for :application_reviewer, @application_reviewer, :url => { :action => 'update', :id => @app } do |f| %>
+		<%= form_for @application_reviewer, :url => { :action => 'update', :id => @app } do |f| %>
 
 			<%= f.text_area :comments, :cols => 24 %>
 			<br/>

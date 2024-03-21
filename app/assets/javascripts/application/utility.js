@@ -131,5 +131,17 @@ $(document).on('turbolinks:load', function() {
      });
   });
 
+  $(document).on('click', '.show-more-link', function(e) {
+    e.preventDefault();
+    var $link = $(this);
+    var fullText = $link.data('full-text');
+    // console.log("Debug full text => ", fullText)
+        
+    // Replace truncated text with full text
+    $('#reviewer_welcome').html(fullText);
+    
+  });
+
+
 
 }); // end of turbolinks:load

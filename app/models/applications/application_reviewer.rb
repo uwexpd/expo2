@@ -28,9 +28,9 @@ class ApplicationReviewer < ApplicationRecord
   
 
   # Mass-assign new attributes for this ApplicationReviewer's scores.
-  def score=(score_attributes)
-    score_attributes.each do |score_id, score_attributes|
-      scores.find(score_id).update_attributes(score_attributes)
+  def score_attributes=(score_attributes)
+    score_attributes.each do |score_id, attributes|
+      scores.find(score_id.to_i).update(attributes)
     end
   end
 
@@ -80,9 +80,9 @@ class ApplicationReviewer < ApplicationRecord
   
   # Creates an ApplicationReviewScore object for each associated OfferingReviewCriterion for this ApplicationForOffering's Offering.
   # Use this method to initialize a reviewer's score card before they begin reviewing with the reviewer interface.
-  def create_scores
+  def create_scores    
     for review_criterion in application_for_offering.offering.review_criterions
-      scores.create(offering_review_criterion_id: review_criterion.id) unless scores.find_by(offering_review_criterion_id: review_criterion)
+      scores.build(offering_review_criterion_id: review_criterion.id) unless scores.find_by(offering_review_criterion_id: review_criterion)
     end
   end
 

@@ -8,7 +8,7 @@
 <p>Here are the students for you to review. Please read and score each application, then click the "Submit my Reviews" button.</p>
 
 <table class='reviewer'>
-	<tr>
+	<tr class='small'>
 		<th width=30%>Student/Project</th>
 		<% for review_criterion in @offering.review_criterions.sort %>
 			<th width=60 class="center"><%= review_criterion.title %></th>
@@ -71,12 +71,13 @@
 <% if @ready_for_finalization && !@do_not_finalize %>
 	<div class="highlight_box">
 		<h5>Are you ready to submit your scores?</h5>
-		<blockquote>If you are satisfied with your scores, press the button below to submit your scores as final. Once you click this button, you will not be able to change your scores or comments.</blockquote>
-		<%= link_to "Submit My Scores", reviewer_finalize_path(commit: true), class: "btn" %>
+		<blockquote>If you are satisfied with your scores, press the button below to submit your scores as final. Once you click this button, you will not be able to change your scores or comments.</blockquote>		
+		<%= button_to "Submit My Scores", { action: "finalize", commit: true }, class: 'btn' %>
 	</div>
-<% end -%>
+<% end %>
 
 </div>
+
 <% sidebar :help if @offering.reviewer_help_text %>
 <%# sidebar :multi_composite_report, :class => 'download' if !@offering.virtual_proceeding && (@ready_for_finalization || @do_not_finalize) %>
-<%# sidebar :input_committee_score if @offering.review_committee_submits_committee_score? %>
+<% sidebar :input_committee_score if @offering.review_committee_submits_committee_score? %>

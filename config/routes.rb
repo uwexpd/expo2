@@ -142,7 +142,15 @@ Rails.application.routes.draw do
     # Reviewer
     get 'reviewer/:offering', to: 'reviewer#index', as: :offering_reviewer
     get 'reviewer/:offering/show/:id', to: 'reviewer#show'
-    match 'reviewer/:offering', to: 'reviewer#finalize', via: [:get, :post, :put, :patch], as: :reviewer_finalize
+    post 'reviewer/:offering/finalize', to: 'reviewer#finalize'
+    get 'reviewer/:offering/criteria', to: 'reviewer#criteria', as: :reviewer_criteria
+    get 'reviewer/:offering/extra_instructions', to: 'reviewer#extra_instructions'    
+    match 'reviewer/:offering/update/:id', to: 'reviewer#update', via: [:post, :put, :patch]
+    get 'reviewer/:offering/committee', to: 'reviewer/committee#index', as: :review_committee
+    get 'reviewer/:offering/committee/show/:id', to: 'reviewer/committee#show', as: :review_committee_show
+    get 'reviewer/:offering/committee/criteria', to: 'reviewer/committee#criteria'
+    post 'reviewer/:offering/committee/finalize', to: 'reviewer/committee#finalize'
+    match 'reviewer/:offering/committee/update/:id', to: 'reviewer/committee#update', via: [:post, :put, :patch]
 
     # OMSFA Scholarship Sesarch
     resources :scholarships, only: [:show, :index], param: :page_stub
