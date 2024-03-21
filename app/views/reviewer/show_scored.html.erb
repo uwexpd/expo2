@@ -1,3 +1,4 @@
+<% title "Application Review", "View Student" %>
 <% mark_as_confidential @offering.confidentiality_note %>
 <% virtual_proceeding = @app.offering.virtual_proceeding %>
 
@@ -17,7 +18,7 @@
 		  
        <ul class="tabs">
          <li class="tab col"><a href="#student_info">Student Info</a></li>
-         <li class="tab col"><a href="#application_review">Application Details</a></li>
+         <li class="tab col"><a class="active" href="#application_review">Application Details</a></li>
          <% if @offering.uses_mentors? %> 
          	<li class="tab col"><a href="#mentor_letter">Mentors</a></li>
          <% end %>
@@ -65,4 +66,4 @@
 	  </div>
 </div>
 
-<%# sidebar :scoring, :class => 'fixed' if @application_reviewer %>
+<% sidebar :scoring, :class => 'fixed' if @application_reviewer %>

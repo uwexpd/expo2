@@ -8,8 +8,7 @@ class ReviewerController < ApplicationController
   
   def index
     @apps = @apps.sort_by(&:fullname)
-    render :action => 'index_scored'
-    # , :layout => @layout if @offering.uses_scored_review?
+    render :action => 'index_scored' if @offering.uses_scored_review?    
   end
 
   def show
@@ -103,18 +102,18 @@ class ReviewerController < ApplicationController
   end
   
   def criteria
-    render :action => 'criteria', :layout => 'popup'
+    render :action => 'criteria'
   end
   
   def extra_instructions
-    render :action => "extra_instructions", :layout => 'popup'
+    render :action => "extra_instructions"
   end
   
   def update
     if params[:application_reviewer] # this is for the scored review version
       return redirect_to :action => "index" if @application_reviewer.finalized?
-      if @application_reviewer.update_attributes params[:application_reviewer]
-        flash[:notice] = "Review saved successfully."
+      if @application_reviewer.update(application_reviewer_params)
+        flash[:notice] = "Review and scores saved successfully."
         respond_to do |format|
           format.html { return redirect_to :action => 'index' }
           format.js   { return render :text => "Review auto-saved at #{Time.now.to_s(:time12)}." }
@@ -133,13 +132,13 @@ class ReviewerController < ApplicationController
         flash[:error] = "Could not save your decision or comments."
       end
     end
-    return render :action => "show", :layout => @layout
+    return render :action => "show"
   end
     
   def finalize
     if params[:commit]
       for application_reviewer in @application_reviewers
-        application_reviewer.update_attribute(:finalized, true) if application_reviewer.started_scoring? && !application_reviewer.finalized?
+        application_reviewer.update(finalized: true) if application_reviewer.started_scoring? && !application_reviewer.finalized?
       end
     end
     flash[:notice] = "Thank you! Your finalized scores were submitted."
@@ -204,5 +203,11 @@ class ReviewerController < ApplicationController
     add_breadcrumb "Reviewer Interface", offering_reviewer_path(@offering)
     add_breadcrumb @offering.name
   end  
+
+  private
+
+  def application_reviewer_params
+    params.require(:application_reviewer).permit(:application_review_decision_type_id, :feedback_person_id, :finalized, :committee_score, :comments, score_attributes: [:id, :score, :comments])
+  end
   
 end

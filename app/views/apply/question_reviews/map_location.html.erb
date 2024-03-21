@@ -1,4 +1,4 @@
 <% location = eval "@user_application.#{question.full_attribute_name}" %>
 
-<%= JSON.parse(location)["locationName"] %>
+<%= JSON.parse(location)["locationName"] rescue "<span class='warning'>Not input yet</span>".html_safe %>
 

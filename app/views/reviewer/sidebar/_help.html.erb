@@ -1,3 +1,5 @@
 <h5><strong>Welcome!</strong></h5>
-
-<%= textilize auto_link(@offering.reviewer_help_text) %>
+<div id='reviewer_welcome'>
+<%= textilize(auto_link(truncate(@offering.reviewer_help_text, length: 600))) %>
+<%= link_to 'Show More <i class=mi md-16>expand_more</i>'.html_safe, '#', class: 'show-more-link', data: { full_text: textilize(auto_link(@offering.reviewer_help_text)) } %>
+</div>

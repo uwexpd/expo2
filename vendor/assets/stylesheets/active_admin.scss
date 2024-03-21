@@ -67,26 +67,6 @@ For example, to change the default status-tag color: */
 	color: gray;
 }
 
-.smaller {
-	font-size: smaller;
-}
-
-.small {
-	font-size: small;
-}
-
-.larger {
-	font-size: larger;
-}
-
-.padding_left {
-	padding-left: 1rem;
-}
-
-.padding_right {
-	padding-right: 1rem;
-}
-
 .highlight {
 	background: #fef5d4;
 	padding: 3px 6px;
@@ -1025,46 +1005,6 @@ body.active_admin .progress .bar{
 
 .select2-container--default .select2-results > .select2-results__options {
 	max-height: 250px;
-}
-
-/* Tooltip container */
-.tooltip {
-	position: relative;
-	// display: inline-block;
-	border-bottom: 1px dotted #08d;	
-}
-
-.tooltip.noborder {
-	border-bottom: none;
-}
-
-.tooltip:hover {
-	cursor: help;
-	color: #c0b08b;
-}
-
-/* Tooltip text */
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 200px;
-  background-color: #555;
-  color: #fcfcfc;
-  text-align: left;
-  padding: 5px 1em 10px 1em;
-  margin: 25px 0px;
-  border-radius: 6px;
-  font-size: 90%;
-  line-height: 15px;
-  transition: opacity .6s;
- 
-  /* Position the tooltip text */
-  position: absolute;
-  z-index: 1;
-}
-
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
-  visibility: visible;
 }
 
 body.edit #main_content > form .email_preview .row th {

@@ -1,0 +1,5 @@
+$('#app_fullname').text("<%= @app.fullname %>");
+$('#scoring_pane').html("<%= j render partial: 'reviewer/sidebar/scoring' %>");
+
+$('tr.row_active').removeClass('row_active');
+$('#app_<%= @app.id%>').addClass('row_active');

@@ -2,7 +2,7 @@
 	<h3><%= link_to_function "Input Final Review Committee Decision", "Element.toggle('final_decision')" %></h3>
 	
 	<div class="expansion" id="final_decision" <%= "style=display:none" unless @app.reviewed? %>>
-		<% form_for :application_for_offering, @app, :url => { :action => 'update', :id => @app } do |f| %>
+		<%= form_for @app, :url => { :action => 'update', :id => @app } do |f| %>
 			<p>You should only use this part of the form to input the final, collective decision by the Review Committee.
 				Once you click "Submit this Decision" you will not be able to change it. However, you will always be able to add/edit
 				the Committee Comments.</p>
