@@ -1,7 +1,7 @@
 <% title "Application Review", "View Transcript" %>
-<% subtitle link_to("Back to Student List", :action => "index") %>
 <% mark_as_confidential @offering.confidentiality_note %>
 
+<div class='card content'>
 <%= render :partial => "student_header" %>
 
 <% 
@@ -10,9 +10,10 @@
 	@full_view = true
 %>
 
-<div class="transcript" style="width:75%">
+<div class="transcript">
 	<%= render :partial => "admin/students/transcript", :object => @app.person %>
 </div>
 
-<%= render :partial => "page_list" %>
-<%= render :partial => "comments" %>
+</div>
+<% sidebar :sidebar_nav %>
+<% sidebar :comments %>

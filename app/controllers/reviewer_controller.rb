@@ -1,14 +1,12 @@
 class ReviewerController < ApplicationController
   before_action :fetch_person, :fetch_offering, :fetch_review_committee_member, :fetch_apps
   before_action :fetch_app, :except => [:index, :criteria, :extra_instructions, :finalize, :multi_composite_report]
-  before_action :fetch_application_reviewer, :only => [:show, :update, :composite_report]
-  before_action :initialize_breadcrumbs
-  # layout 'admin'
-  # helper 'admin/base'
+  before_action :fetch_application_reviewer, :only => [:show, :update, :composite_report, :transcript]
+  before_action :initialize_breadcrumbs  
   
   def index
     @apps = @apps.sort_by(&:fullname)
-    render :action => 'index_scored' if @offering.uses_scored_review?    
+    render :action => 'index_scored' if @offering.uses_scored_review?  
   end
 
   def show
@@ -20,10 +18,8 @@ class ReviewerController < ApplicationController
     if params['section']
       render :partial => "admin/apply/section/#{params[:section]}", :locals => { :audience => :reviewer } and return
     else
-      render :action => 'show_scored'
-      # , :layout => @layout and return if @offering.uses_scored_review?
-    end
-    
+      render :action => 'show_scored' if @offering.uses_scored_review?      
+    end    
   end
 
   def transcript
@@ -122,9 +118,9 @@ class ReviewerController < ApplicationController
         flash[:error] = "Could not save your responses."
       end
     end
-    if params['application_for_offering'] # this is for the non-scored review version
+    if params[:application_for_offering] # this is for the non-scored review version
       @app.set_status "reviewed" unless @app.reviewed? && @app.passed_status?("reviewed")
-      @app.attributes = params['application_for_offering']
+      @app.attributes = application_for_offering_params
       if @app.save
         flash[:notice] = "Decision and comments saved."
         return redirect_to :action => 'index'
@@ -208,6 +204,10 @@ class ReviewerController < ApplicationController
 
   def application_reviewer_params
     params.require(:application_reviewer).permit(:application_review_decision_type_id, :feedback_person_id, :finalized, :committee_score, :comments, score_attributes: [:id, :score, :comments])
+  end
+
+  def application_for_offering_params
+    params.require(:application_for_offering).permit(:application_review_decision_type_id, :feedback_person_id, :review_committee_notes)
   end
   
 end

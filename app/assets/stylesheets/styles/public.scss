@@ -32,20 +32,16 @@ textarea
 	color: gray;
 }
 
-.required, .warning {	
-    color: #d45f53;
-}
-
-.red_color {
-	color: #F44336;
-}
-
 .show_block {
 	display: block;
 }
 
 .hide_block {
 	display: none;
+}
+
+.inline {
+	display: inline;
 }
 
 .word_wrap {
@@ -199,7 +195,7 @@ nav .nav-wrapper a:hover{
 }
 
 thead th, tbody td, tbody th{
-	font-size: 0.9em;	
+	font-size: 0.9em;
 	padding: 15px;
 }
 
@@ -209,6 +205,14 @@ tbody th{
 }
 
 table.borderless tr, table.borderless td {
+	border-bottom: none;
+}
+
+tr.row_header {
+	background-color: rgba(242, 242, 242, 1);
+}
+
+tr.borderless {
 	border-bottom: none;
 }
 
@@ -886,7 +890,7 @@ table.mentor_letter tr{
 	border: none;
 }
 
-.sideblock.scoring textarea {
+textarea.auto_height, .sideblock.scoring textarea {
 	height: auto;
 }
 
@@ -895,7 +899,7 @@ table.mentor_letter tr{
 }
 
 .sideblock.scoring table.paddingless td {
-	padding: 1px;
+	padding-bottom: 1px;
 }
 
 .scored_selection .spread {

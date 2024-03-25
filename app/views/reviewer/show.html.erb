@@ -1,7 +1,7 @@
 <% title "Application Review", "View Student" %>
-<% subtitle link_to("Back to Student List", :action => "index") %>
 <% mark_as_confidential @offering.confidentiality_note %>
 
+<div class='card content'>
 <%= render :partial => "student_header" %>
 
 <% 
@@ -11,21 +11,16 @@
 %>
 
 <% if params['view'] %>
-	<% @mentee = @app.person %>
-	
-	<% 
-	begin 
-		concat render(:partial => "mentor/application_view/#{params['view']}", :locals => { :student => @app.person })
-	rescue => e: concat "<span class='error'>#{e.message}</span>" 
-	end %>				
-	 %>
+	<% @mentee = @app.person %>	
+	<%= render :partial => "mentor/application_view/#{params['view']}", :locals => { :student => @app.person } %>
 	
 <% else %>
 	<%= render :partial => "intro" %>
 <% end %>
 
-<%= render :partial => "page_list" %>
-<%= render :partial => "comments" %>
+<% sidebar :sidebar_nav, :comments %>
 <%= render :partial => "decision" %>
 
 <%= render :partial => "interviewer/decision" if @viewing_past_app && @app.interview_decision_made? %>
+<br><br>
+</div>

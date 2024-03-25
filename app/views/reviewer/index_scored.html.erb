@@ -41,7 +41,7 @@
 		<% else %>
 		
 			<td colspan=<%= @offering.review_criterions.size + 1 %> class="empty" style="padding: 15px">Not yet reviewed.</td>
-			<td align=right valign=middle><%= link_to "Review Now &#x2192;", :action => 'show', :id => app %></td>
+			<td align=right valign=middle><%= link_to "Review Now &#x2192;".html_safe, :action => 'show', :id => app %></td>
 			
 			<% @do_not_finalize = true %>
 			
