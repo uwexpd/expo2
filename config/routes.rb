@@ -142,6 +142,8 @@ Rails.application.routes.draw do
     # Reviewer
     get 'reviewer/:offering', to: 'reviewer#index', as: :offering_reviewer
     get 'reviewer/:offering/show/:id', to: 'reviewer#show'
+    get 'reviewer/:offering/view/:id', to: 'reviewer#view'
+    get 'reviewer/:offering/transcript/:id', to: 'reviewer#transcript'
     post 'reviewer/:offering/finalize', to: 'reviewer#finalize'
     get 'reviewer/:offering/criteria', to: 'reviewer#criteria', as: :reviewer_criteria
     get 'reviewer/:offering/extra_instructions', to: 'reviewer#extra_instructions'    

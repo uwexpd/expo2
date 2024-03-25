@@ -1,8 +1,7 @@
-<% current = "active" if params["view"]=="project_details" %>
 <div class="page_list on_page">
 <ul class="collection with-header">
 	<li class="collection-header"><%= link_to "<i class='mi top_align uw_light_gold'>cloud_upload</i> Your Letter of Support".html_safe %>
-	<li class="collection-item <%= current %>"><%= link_to "<i class='mi top_align'>assignment</i> View Student's Application".html_safe, { :view => :project_details } %></li>
+	<li class="collection-item <%= "active" if params["view"]=="project_details" %>"><%= link_to "<i class='mi top_align'>assignment</i> View Student's Application".html_safe, { :view => :project_details } %></li>
 	<% @mentee_application.files.each do |file| %>
 		<li class="collection-item">
 			<% unless file.file.file.nil? %>

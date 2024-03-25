@@ -1,7 +1,8 @@
 # An "Offering" in EXPo is anything that a student (or other user, potentially) can apply for.  Common examples would be scholarships, fellowships, programs (like a summer program), internships, courses that require an application process, etc. test
 class Offering < ApplicationRecord
+  # include StringHelper #[TODO] It does not work with Tinymce format. 
   stampable
-  
+    
   scope :sorting, -> {
     left_outer_joins(:quarter_offered).
     where(unit_id: current_user.blank? ? Unit.all.collect(&:id) : current_user.units.collect(&:id)).

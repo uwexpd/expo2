@@ -1,6 +1,6 @@
 class ApplicationTextVersion < ApplicationRecord
-  stampable
-  
+  include StringHelper
+  stampable  
   validates_presence_of :application_text_id
   
   SANITIZE_REMOVE_STRINGS = ["class=\"MsoNormal\"", "<!--StartFragment-->", "<!--EndFragment-->", "<p ></p>", "<p>&nbsp;</p>"]

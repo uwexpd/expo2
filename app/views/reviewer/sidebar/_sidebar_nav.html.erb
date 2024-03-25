@@ -1,0 +1,18 @@
+<div class="page_list on_page">
+<ul class="collection with-header">
+	<li class="collection-header"><%= link_to "<i class='mi top_align uw_light_gold'>person</i> Student Summary".html_safe, { action: :show, id: @app.id } %>
+	<li class="collection-item <%= "active" if params["view"]=="project_details" %>"><%= link_to "<i class='mi top_align'>assignment</i> Application Details".html_safe, { action: :show, id: @app.id, view: :project_details } %></li>
+	<% @mentee_application.files.each do |file| %>
+		<li class="collection-item">
+			<% unless file.file.file.nil? %>
+				<%= link_to "<i class='mi top_align'>file_download</i> #{file.title}".html_safe, apply_file_path(@offering, file.id, file.file_identifier) %>
+			<% else %>
+				<span class='gray'>No  <%= file.title %> file</span>
+			<% end %>
+		</li>
+	<% end %>
+	<!-- <li class="collection-item <%#= "active" if params["view"]=="transcript" %>">
+		<%#= link_to "<i class='mi top_align'>description</i> Student's Transcript".html_safe, { action: :transcript, id: @app.id, view: :transcript } %>		
+	</li>	-->
+</ul>
+</div>

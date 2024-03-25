@@ -1,6 +1,6 @@
 <% show_view_link ||= true; comments ||= 'show'
    @a = application_for_review
-   @s = application_for_review.person
+   @s = application_for_review.person   
     if @review_committee_member.nil?
    		@a_r = @a.reviewers.find_by_offering_reviewer_id @person.offering_reviewers.find_by_offering_id(@offering)
 	else
@@ -10,12 +10,12 @@
  %>
 
 <tr class="borderless">
-	<td><h3 class="inline"><%= @s.fullname %></h3> &nbsp; <%= @s.student_no %></td>
+	<td><b class="inline"><%= link_to @s.fullname, action: "show", id: @a.id %></b> &nbsp; <%= @s.student_no %></td>
 	<td>Major: 				<strong><%= @s.sdb.majors_list %></strong></td>
 	<td>GPA: 				<strong><%= @s.sdb.gpa %></strong></td>
 	<td>Class: 				<strong><%= @s.sdb.class_standing_description %></strong></td>
 	<td>Current Credits:	<strong><%= @s.current_credits(@a.offering.quarter_offered) %></strong></td>
-	<td><%= link_to "View Application Materials and Add Comments &#x2192;", :action => "show", :id => @a unless show_view_link == :false%></td>
+	<td><%= link_to "View Application Materials and Add Comments &#x2192;".html_safe, :action => "show", :id => @a unless show_view_link == :false %></td>
 </tr>
 
 <% if @viewing_past_app %>
@@ -26,9 +26,11 @@
 </tr>
 <% end -%>
 
+<% if @a.project_title %>
 <tr class="borderless">
 	<td colspan=7 class="left-indent"><strong><%= @a.project_title %></strong></td>
 </tr>
+<% end %>
 
 <tr class="borderless">
 	<td colspan=7 class="left-indent"><strong>Mentor:</strong> <%= @a.mentors_list %></td>

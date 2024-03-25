@@ -60,9 +60,10 @@ ActiveAdmin.register_page "Dashboard" do
     
     columns do
       column do
-        panel 'Offerings by Unit' do
-          @offering_by_unit = Offering.group(:unit).count.map{|k,v| [k.name, v]}
-          render partial: 'charts/offering_by_unit', locals: { offering_by_unit: @offering_by_unit }
+        panel 'Total Applications by Unit' do
+          @app_by_unit = ApplicationForOffering.joins(offering: :unit).group('units.name').count.map { |unit_name, count| [unit_name, count] }
+          #@offering_by_unit = Offering.group(:unit).count.map{|k,v| [k.name, v]}
+          render partial: 'charts/app_by_unit', locals: { app_by_unit: @app_by_unit }
         end
       end
     end

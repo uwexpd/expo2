@@ -10,7 +10,7 @@
 					<span class="light"><%#= render :partial => "composite_report_maker" %></span><br>
 					<strong style="font-size: 50%;"><%= @app.project_title %></strong>
 				</h4>
-			  <!-- </div> -->
+			  
 			  <%= content_tag(:h5, @app.offering.title) if @viewing_past_app %>
 
 			  <%= content_tag('div', "<strong>Special Note from Program Staff:</strong> " + @app.special_notes, :class => 'special-note') unless @app.special_notes.blank? %>
@@ -33,7 +33,6 @@
          <% end %>
        </ul>
     
-
 			<div id="student_info" class="col s12">
 				<h5>Student Information</h5>
 				<%= render "student_info" %>
@@ -58,10 +57,7 @@
 				<h5>Past Applications</h5>
 				<%= render "admin/applications/past_applications", {application: @app} %>
 			</div>
-		
-			<!-- <noscript>
-				<%#= render :partial => "admin/apply/section/application_review", :locals => { :audience => :reviewer } %>
-			</noscript> -->	
+					
 		  </div>
 	  </div>
 </div>

@@ -13,7 +13,6 @@
 	<div class="autosave center" id="scores_autosave"></div>
 	<br>
 	
-	<%#= form_for @application_reviewer, url: reviewer_update_path(offering: @offering.id, id: @app.id), method: :patch do |f| %>
 	<%= form_for @application_reviewer, :url => { :action => 'update', :id => @app }, id: 'score_form'  do |f| %>
 
 		<table class="highlightless borderless paddingless scoring" style="font-size: 105%">
@@ -59,7 +58,7 @@
 				<div class="input-field">
 					<%= f.collection_select :feedback_person_id, @app.reviewers.without_committee_scores, :id, :fullname, {include_blank: true}, {class: 'browser-default'} %>
 				</div>
-			<% end %>		
+			<% end %>
 		<% end -%>
 
 		<center style="padding-top:1rem">
