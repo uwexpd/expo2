@@ -5,7 +5,12 @@ class ActivityProject < Activity
   belongs_to :student, :class_name => "StudentRecord", :foreign_key => "system_key"
 
   # Only return records with quarters that match the requested quarter
-  scope :for_quarter, -> (quarter) { joins(:quarters).where("activity_quarters.quarter_id IN (#{quarter.is_a?(Array) ? quarter.collect(&:id).join(",") : quarter.id})").uniq }
+  # scope :for_quarter, -> (quarter) { joins(:quarters).where("activity_quarters.quarter_id IN (#{quarter.is_a?(Array) ? quarter.collect(&:id).join(",") : quarter.id})").uniq }
+  scope :for_quarter, ->(q) {
+    joins(:quarters)
+    .select("DISTINCT activities.*")
+    .where("activity_quarters.quarter_id IN (?)", q.is_a?(Array) ? q.pluck(:id) : q.id)
+  }
   
   # Only return records assigned to this department
   scope :for_department, -> (d) {

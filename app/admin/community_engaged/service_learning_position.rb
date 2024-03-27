@@ -88,7 +88,7 @@ ActiveAdmin.register ServiceLearningPosition do
       li raw "Students placed: #{service_learning_position.placements.filled.size}"
     end
     table_for service_learning_position.placements.where.not(person_id: nil).sort_by { |p| p.person&.fullname || '' } do
-       column ('Fullname'){|placement| link_to placement.person.fullname, admin_person_path(placement.person)}
+       column ('Fullname'){|placement| link_to placement.person.fullname, placement.person.is_a?(Student) ? admin_student_path(placement.person) : admin_person_path(placement.person)}
        column ('Course'){|placement| placement.course.title }
        # link_to truncate(placement.course.title, 12), service_learning_course_path(@unit, @quarter, placement.course),:title => placement.course.title unless placement.course.nil?       
     end
