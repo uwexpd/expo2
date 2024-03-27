@@ -185,7 +185,8 @@ class ApplyController < ApplicationController
       if @group_member.verified?
         @person.require_validations = true
         @person.require_student_validations = true
-        if @person.update_attributes(person_params) && @group_member.save
+        group_member_validation_params = @person.is_a?(Student) ? student_params : person_params
+        if @person.update(group_member_validation_params) && @group_member.save
           flash[:notice] = "Thank you for confirming your group membership, #{@person.firstname}!"
           redirect_to :action => "index" and return
         else
@@ -496,6 +497,10 @@ class ApplyController < ApplicationController
 
   def person_params
     params.require(:person).permit(:salutation, :firstname, :lastname, :nickname, :email, :phone, :institution_id, :major_1, :major_2, :major_3, :class_standing_id, award_ids: {})
+  end
+
+  def student_params
+    params.require(:student).permit(:salutation, :firstname, :lastname, :nickname, :email, :phone, :institution_id, :major_1, :major_2, :major_3, :class_standing_id, award_ids: {})
   end
 
   def group_member_params
