@@ -2,8 +2,8 @@
 	<div class='panel_contents'>
 		<div class='content-block apply'>
 			<h1><%= @offering.title %></h1>
-			<table class="admin_phases">
-			  <tr>
+			<table class="admin_phases highlightless">
+			  <tr class='phases'>
 				<% first = true %>
 				<% for phase in @offering.admin_phases.sort %>
 
@@ -15,8 +15,7 @@
 					<td id="<%= id %>" class="<%= klass %>">
 						
 						<%= link_to raw("<div class='sequence'>#{phase.sequence}</div>
-							 <div class='name'>#{phase.name}</div>
-							 <div class='arrow'></div>"), admin_apply_manage_path(@offering) %>
+							 <div class='name'>#{phase.name}</div>"), admin_apply_manage_path(@offering) %>
 					</td>
 				<% end %>
 			  </tr>

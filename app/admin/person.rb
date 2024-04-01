@@ -182,4 +182,5 @@ ActiveAdmin.register Person do
   filter :email, as: :string
   filter :firstname, as: :string
   filter :lastname, as: :string
+  # filter :student_no_eq, label: 'Student Number'
 end

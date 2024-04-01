@@ -7,5 +7,10 @@ class HighSchool < StudentInfo
   def name
     high_school_name.strip
   end
+
+  def self.find_by_table_key(key)
+    padded_key = key.to_s.rjust(6, '0')
+    where(table_key: padded_key).first
+  end
   
 end

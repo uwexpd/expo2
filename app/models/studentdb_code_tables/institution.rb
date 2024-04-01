@@ -2,13 +2,18 @@
 class Institution < StudentInfo
   self.table_name = "sys_tbl_02_ed_inst_info"
   self.primary_key = :table_key
-  
+
   def <=>(o)
     name <=> o.name rescue 0
   end
   
   def id
     read_attribute(:table_key).to_i
+  end
+  
+  def self.find_by_table_key(key)
+    padded_key = key.to_s.rjust(6, '0')
+    where(table_key: padded_key).first
   end
 
   def name

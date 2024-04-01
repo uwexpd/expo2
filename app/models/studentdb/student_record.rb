@@ -80,8 +80,8 @@ class StudentRecord < StudentInfo
     read_attribute('student_no').to_s.rjust(7,'0')
   end
   
-  def last_institution_name
-    last_institution.try(:name)
+  def last_institution_name    
+    Institution.find_by_table_key(last_sch_code).try(:name)  
   end
   
   def high_school_name
