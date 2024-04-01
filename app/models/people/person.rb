@@ -28,7 +28,8 @@ class Person < ApplicationRecord
   has_many :organization_contacts, -> { where current: true }
   has_many :organizations, through: :organization_contacts
   has_many :former_organization_contacts, -> { where current: false }, :class_name => "OrganizationContact"
-  has_many :former_organizations, through: :former_organization_contacts
+  # [FIXME] ActiveRecord::Reflection::ThroughReflection#foreign_key delegated to source_reflection.foreign_key, but source_reflection is nil  
+  has_many :former_organizations, through: :former_organization_contacts, source: :organization
   has_many :service_learning_course_instructors
   has_many :service_learning_courses, through: :service_learning_course_instructors do
     def for(quarter); where(quarter_id: quarter.id); end

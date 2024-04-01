@@ -517,6 +517,11 @@ form .inline-hints {
 	padding: 1.5rem 1rem 1rem;
 }
 
+div.apply {
+	background-color: #f3f8fd;
+}
+
+
 /* @Tab style*/
 .nav-tabs {
 	padding: 0px;
@@ -768,47 +773,57 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 // Admin phase
 .admin_phases {
 	background: inherit;
+	background-color: #f3f8fd !important;
+}
+
+.admin_phases div {
+	line-height: 1.2rem !important;
+	font-size: 12px;
 }
 
 .admin_phases td {
-	text-align: center;
-	background: #fff;
-	color: #b1b1b1;
-	padding: 5px 5px 0px 15px;
-	border:none;
+	text-align: center;	
+	color: #b1b1b1;	
+	border-bottom: none !important;
+	background: url(image-path('app/arrow_right_sm.png')) no-repeat left center;
+	padding: 5px 5px 0px 15px !important;
 }
 
 .admin_phases td.first {
-	// background: none;
+	background: none;
 	padding-left: 0;
 }
 
 .admin_phases a {
-	color: #b1b1b1;
 	display: block;
-	padding: 5px 10px 10px 10px;
+	padding: 15px 10px;
 	position: relative;	
 }
 
-.admin_phases a:hover {
-	background-color: #d8dfea;	
-	color: #08d;
-	// border: 1px solid #9abadb;
-	// margin: -1px;
-	// border-bottom: none;
+.admin_phases .current a, .admin_phases a:hover {
+	background-color: #fff;	
+	border: 1px solid #9abadb;	
+	margin: -1px;	
 	text-decoration: none;
+	border-radius: 5px;
+	color: #006699;
+	font-weight: bold;
+	font-size: 110%;
 }
 
-.admin_phases tr:hover {
-	background: inherit;
+.panel_contents table.admin_phases tbody tr:hover {
+	background: none !important;
+	border-top:none !important;
 }
 
 .admin_phases td:hover {
 	color: #5f5f5f;
 }
 
-.admin_phases .current a, .admin_phases .current .sequence{
+.admin_phases .current .sequence{
 	color: #006699;
+	font-weight: bold;
+	font-size: 110%;
 }
 
 .admin_phases .sequence {
@@ -817,6 +832,7 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 	color: #b7d9f8;
 	padding-bottom: 5px;
 }
+
 // end admin phase
 
 .welcome-links {

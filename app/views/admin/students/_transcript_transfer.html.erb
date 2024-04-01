@@ -5,7 +5,9 @@
 		<dl class="inline-definitions">
 	
 			<dt>Institution:</dt>
-			<dd><%= transcript_transfer.institution.name rescue 'unknown' %></dd>
+			<dd><%#= transcript_transfer.institution.name rescue 'unknown' %>
+				<%= transcript_transfer.institution_from_code.name rescue 'unknown' %>
+			</dd>
 
 			<dt>Attended:</dt>
 			<dd><%= transcript_transfer.year_beginning %>-<%= transcript_transfer.year_ending %></dd>
