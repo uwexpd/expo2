@@ -153,10 +153,12 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
              end
            end
          end
-         tab "#{@offering.mentor_title.pluralize} (#{application.mentors.size})", id: 'mentor_letter' do
-            panel "#{@offering.mentor_title.pluralize}" do
-              render "mentor_letter", {admin_view: true}
-            end
+         if @offering.uses_mentors?
+           tab "#{@offering.mentor_title.pluralize} (#{application.mentors.size})", id: 'mentor_letter' do
+              panel "#{@offering.mentor_title.pluralize}" do
+                render "mentor_letter", {admin_view: true}
+              end
+           end
          end
          tab 'Review', id: 'review' do
            panel 'Review' do
