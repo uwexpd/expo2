@@ -1,0 +1,28 @@
+<div id="tasks">
+	
+	<% if @phase.tasks.empty? %>
+
+		<table>
+			<tr class="empty"><td>No tasks for this phase.</td></tr>
+		</table>
+
+	<% else %>
+
+		<%= form_tag admin_apply_phase_task_mass_update_path(@offering, @phase), remote: true do |f| %>
+
+		<table id="tasks_table" class="boardless highlightless">
+			<%= render :partial => "admin/apply/phases/tasks/sidebar_task", :collection => @phase.tasks, :locals => { :f => f } %>
+		</table>		
+	
+		<br>
+
+		<center>
+			<%= submit_tag "Save", class: 'button small' %>
+			<%# <div class="autosave" id="save_note"></div> %>
+		</center>
+	
+		<% end %>
+	
+	<% end %>
+	
+</div>

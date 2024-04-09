@@ -1,0 +1,43 @@
+<div class='panel'>
+ <div class='panel_contents'>
+  <div class='content-block apply'>
+  	<h4><%= @offering.title %></h4>
+		<%= render partial: "phase_timeline" %>
+  </div>
+ </div> 
+</div>
+
+<div class='panel'>
+  <div class='panel_contents'>
+	<div class='content-block'>
+		<br><strong><%= @task.title %>
+			<small class='light'><%= "<i class='mi md-16 uw_green'>task_alt</i> Completed #{relative_timestamp(@task.updated_at)}".html_safe if @task.complete? %></small>
+			<% unless @task.notes.blank? %>
+			  <%= link_to "<i class='mi md-16'>sticky_note_2</i> Notes".html_safe, 'javascript:;', data: {link_toggle: '#task_notes' }, class: 'button small flat right' %>
+			<% end %>			
+		</strong>
+
+		<div>			
+			<small class="grey">Part of the <%= link_to @phase.name, :action => 'phase', :id => @phase %> phase.</small>
+		</div>
+
+		<% unless @task.notes.blank? %>
+			<div id="task_notes" class="highlight_box" style="display: none;">
+				<h4><i class='mi uw_purple'>sticky_note_2</i> <b>Process Notes</b></h4>
+				<%= textilize @task.notes.encode("Windows-1252").force_encoding("UTF-8") %>
+			</div>
+		<% end %>
+		
+		<div id="phase_task_contents_<%= @task.id %>">
+			<% 
+				#begin 
+					concat render(:partial => "admin/apply/phase/#{@task.display_as}", 
+							:locals => { :phase_task => @task, :task => @task })
+				#rescue => e 
+					#concat "<span class='phase error'>#{e.message}</span>"
+				#end
+			%>
+		</div>
+	</div>
+  </div>
+</div>

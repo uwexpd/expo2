@@ -1,4 +1,4 @@
-ActiveAdmin.register_page "Apply" do  
+  ActiveAdmin.register_page "Apply" do
   menu false
   
   breadcrumb do 
@@ -9,10 +9,11 @@ ActiveAdmin.register_page "Apply" do
   	]
   end
 
-  controller do
-  	
+  controller do    
   	before_action :fetch_offering
-  	before_action :fetch_apps
+  	before_action :fetch_apps, only: [:list]
+    before_action :fatch_phase, only: [:task, :mass_update]
+    # before_action :fetch_task, only: [:task, :mass_update]
 
   	def manage
   		@phase = @offering.current_offering_admin_phase
@@ -24,6 +25,28 @@ ActiveAdmin.register_page "Apply" do
     # def awardees
   		
     # end
+
+    def phase      
+      @phase = @offering.phases.find params[:id]
+      @page_title = "#{@phase.name}"
+    end
+
+    def task      
+      @task = @phase.tasks.find(params[:id]) 
+      # [TODO] make this work: add_breadcrumb "#{@phase.name}", admin_apply_phase_path(@offering, @phase)
+    end
+
+    def mass_update
+      if params[:tasks]
+        params[:tasks].each do |task,values|          
+          @phase.tasks.find(task).update(complete: values[:complete])
+        end
+      end      
+      respond_to do |format|
+        format.js 
+        # { render :partial => "admin/apply/phases/tasks/sidebar_task", :collection => @phase.tasks }
+      end
+    end
 
     def show
       @app = @offering.application_for_offerings.find params[:id]
@@ -50,7 +73,7 @@ ActiveAdmin.register_page "Apply" do
       send_file(file_path, x_sendfile: true) unless file_path.nil?
     end
 
-  	private
+  	protected
   
     def fetch_offering
         if params[:offering]
@@ -62,13 +85,23 @@ ActiveAdmin.register_page "Apply" do
     def fetch_apps
       @apps ||= @offering.application_for_offerings.sort_by(&:fullname)
     end
+
+    def fatch_phase
+      @phase = @offering.phases.find(params[:phase])
+    end
 	  
   end 
   
-  sidebar "Quick Access", only: [:list, :show, :manage] do
+  sidebar "Quick Access", only: [:list, :show, :manage, :phase, :task] do
 
   end 
   sidebar "Filter", only: [:list, :show, :manage] do
+      
+  end
+  sidebar "Task for this Phase", only: [:phase, :task] do
+    render "admin/apply/phases/tasks/sidebar/tasks" 
+  end
+  sidebar "Switch to this Phase", only: [:phase] do
       
   end
 

@@ -19,7 +19,7 @@ ActiveAdmin.register OfferingDashboardItem, as: 'dashboard_items' do
 
 	index do		
 		column ('Title') {|item| link_to item.title, admin_offering_dashboard_item_path(offering, item)}
-		column ('Display'){|item| render inline: item.content.html_safe rescue item.content.html_safe }
+		column ('Display'){|item| render inline: textilize(item.content) rescue item.content.html_safe }
     	column ('Creiteria') do |item|
 	    	span [(item.offering_status.private_title rescue nil), 
 			(item.offering_application_type.title rescue nil)].compact.join("<br>").html_safe
@@ -43,7 +43,7 @@ ActiveAdmin.register OfferingDashboardItem, as: 'dashboard_items' do
   	   attributes_table do
   	   	 row ('Item Display') do |item| 
   	   	 	b item.title
-  	   	 	div item.content.html_safe rescue '#error'
+  	   	 	div textilize(item.content) #rescue '#error'
   	   	 end
   	   	 row ('criteria') do |item|
   	   	 	if item.offering_status

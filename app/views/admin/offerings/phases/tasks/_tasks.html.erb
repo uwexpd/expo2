@@ -1,5 +1,5 @@
 <ul class="link-list">
-	<% phase.tasks.each do |task| %>
+	<% @phase.tasks.each do |task| %>
 		<li <%= "class=active" if phase_task == task %>><%= link_to "#{task.title}", admin_offering_phase_task_path(phase.offering, phase, task) %></li>
 	<% end %>
 	

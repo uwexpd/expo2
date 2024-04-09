@@ -38,11 +38,11 @@ module ActiveAdmin::ApplyHelper
   def status_email_view_links_array(application_status_type_name, offering, popup = true, options = {})
     links = []
     status_type = ApplicationStatusType.find_by_name(application_status_type_name)
-    offering_status = OfferingStatus.find_or_create_by_offering_id_and_application_status_type_id(offering, status_type.id)
+    offering_status = OfferingStatus.find_or_create_by(offering_id: offering, application_status_type_id: status_type.id)
     emails = status_type.emails_for(offering.id)
     if emails.empty?
       links << "<small class='grey'>No e-mails are defined for this status change. 
-                #{link_to "Add one.", new_offering_status_email_path(offering, offering_status), :popup => popup}</small>"
+                #{link_to "Add one.", new_admin_offering_status_email_path(offering, offering_status), target: '_blank'}</small>"
     else
       emails.each do |email|
   			link = link_to("to " + email.send_to, admin_communicate_template_path(email.email_template), :popup => popup)

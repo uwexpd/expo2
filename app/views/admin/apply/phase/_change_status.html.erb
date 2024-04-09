@@ -1,40 +1,40 @@
 <% unless @task.new_application_status_types.empty? %>
 	<div class="big-border box">
-		<h4 class="icon-left edit-email">Update e-mails:</h4>
-		<table>
+		<h4><i class='mi uw_purple'>mail_outline</i> Update e-mails:</h4>
+		<table class='borderless'>
 			<% @task.new_application_status_types.each do |t| %>
 				<tr><td width=40%><%= t.name.titleize %></td>
-					<td width=60%><%= status_email_view_links_array(t.name, @offering).join("<br>") %></td>
+					<td width=60%><%= raw status_email_view_links_array(t.name, @offering).join("<br>") %></td>
 				</tr>
-			<% end -%>
+			<% end %>
 		</table>
 	</div>
-<% end -%>
+<% end %>
 
-<% form_for :change_status, 
+<%#= form_for :change_status, 
 			:url => admin_apply_action_url(:offering => @offering, :action => "mass_status_change"), 
 			:html => {:id => "change_status_form_#{@task.id}"} do |f| %>
 
 <% 
 @apps = []
-@task.application_status_types.each{|t| @apps << @offering.applications_with_status(t.name)}
+@task.application_status_types_array.each{|t| @apps << @offering.applications_with_status(t.name)}
 @apps = @apps.flatten.uniq
 %>
 
 <div class="big-border box">
-	<h4 class="icon-left select-list">Select applicants:</h4>
+	<h4><i class='mi uw_purple'>playlist_add_check</i> Select applicants:</h4>
 	<%= render :partial => "admin/apply/phase/applicant_list", :locals => { :phase_task => @phase_task, :task => @task } %>
 </div>
 
-<div id="change_status_<%= @task.id %>_functions" class="big-border box" style="display:none">
+<div id="change_status_<%= @task.id %>_functions" class="highlight_box" style="display:none">
 	<h4 class="icon-left make-change">Set new status:</h4>
-	<%= observe_form "change_status_form_#{@task.id}", :function => "$('change_status_#{@task.id}_functions').show()" %>
+	<%#= observe_form "change_status_form_#{@task.id}", :function => "$('change_status_#{@task.id}_functions').show()" %>
 	Set new status to:
 	<select name="new_status">
-		<%= options_from_collection_for_select @task.new_application_status_types, :name, :name_pretty %>
+		<%#= options_from_collection_for_select @task.new_application_status_types, :name, :name_pretty %>
 	</select>
-	<%= hidden_field_tag :redirect_to_action, 'phase' %>
-	<%= f.submit "Change Statuses and E-mail Notifications" %>
+	<%#= hidden_field_tag :redirect_to_action, 'phase' %>
+	<%#= f.submit "Change Statuses and E-mail Notifications" %>
 </div>
 
-<% end %>
+<%# end %>

@@ -198,6 +198,10 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 	padding: 0 0 0 16px;
 }
 
+#page_title {
+	font-size: 1rem;
+}
+
 .logged_in #footer {
 	position: inherit;
 	padding: 0 30px 30px 30px;
@@ -491,6 +495,11 @@ form .inline-hints {
 
 .panel_contents h1, .panel_contents h2, .panel_contents h3 {
 	padding: 1.5rem 1rem 1rem;
+	font-weight: bold;
+}
+
+.panel_contents h4 {
+	padding: 0.5rem 0;
 	font-weight: bold;
 }
 
@@ -801,12 +810,18 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 	position: relative;	
 }
 
-.apply_admin_phases .current a, .apply_admin_phases a:hover {
+.apply_admin_phases a:hover, .apply_admin_phases #viewing a, .apply_admin_phases #viewing a:hover {	
 	background-color: #fff;	
 	border: 1px solid #9abadb;	
 	margin: -1px;	
 	text-decoration: none;
 	border-radius: 5px;
+	color: #006699;
+	font-weight: bold;
+	font-size: 110%;
+}
+
+.apply_admin_phases .current a{
 	color: #006699;
 	font-weight: bold;
 	font-size: 110%;
@@ -1039,7 +1054,7 @@ td.input.boolean {
 	padding-top: 1.5rem;
 }
 
-.input.boolean > label > input{
+.input.boolean > label > input, input[type="checkbox"] {
 	vertical-align: middle;
     width: 1rem;
     height: 1rem;
@@ -1139,7 +1154,7 @@ tr.rowset-header td {
 	background: #eee;
 	// border-bottom: 1px solid #aaa;
 	color: #333;
-	padding: 5px !important;
+	padding: 0px 10px !important;
 }
 
 tr.rowset-header td.default td {
@@ -1279,4 +1294,42 @@ a.placeholder_text_link:hover {
 
 .transcript .general-info dd {
 	margin-bottom: .5em;
+}
+
+#phase_notes, #task_notes {
+	overflow: visible;
+	margin-top: 20px;
+}
+
+.box {
+	border: 1px solid #ddd;
+	padding: 10px;
+	margin: 1em 0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.big-border.box {
+    border: 3px solid #cde1f2;
+}
+
+.big-border.box h4 {
+	margin: -10px;
+	padding: 5px;
+	padding-left: 20px !important;
+	background-position: 5px 5px;
+	margin-bottom: 10px;
+	background-color: #cde1f2;
+}
+
+.th_break {
+  // max-width: 125px;
+  white-space: normal !important; 
+  overflow-wrap: break-word; /* Breaks long words when needed */
+  word-wrap: break-word; /* Older property name for the same behavior */
+}
+
+table.phase_task tr.rowset-header td {
+	border-bottom: 1px solid #aaa;	
 }
