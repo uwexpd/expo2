@@ -1,19 +1,19 @@
-<%= javascript_include_tag 'tablesort' %>
+<%#= javascript_include_tag 'tablesort' %>
 
 <% show_history ||= false %>
 
-<table class="sortable" id="sortable-table-0">
+<table class="borderless sortable phase_task" id="sortable-table-0">
 
-	<tr class="small left">
-		<th><div class="sort-icon"><%= select_all_check_box @task.id %>Student</div></th>
-		<th><div class="sort-icon">Project</div></th>
+	<tr class="small">
+		<th><%#= select_all_check_box @task.id %>Student</th>
+		<th>Project</th>
 		<% @task.extra_fields.each do |t| %>
-			<th><div class="sort-icon"><%= t.title %></div></th>
+			<th class='th_break'><%= t.title %></th>
 		<% end -%>
-		<th><div class="sort-icon">Current Status</div></th>
+		<th width='100px'>Current Status</th>
 	</tr>
 
-	<% @task.application_status_types.each do |t| %>
+	<% @task.application_status_types_array.each do |t| %>
 	
 		<% 
 		if show_history || @task.show_history?
@@ -29,7 +29,7 @@
 
 		<tr class="rowset-header">
 			<td colspan=<%= 3 + @task.extra_fields.size %>>
-				<%= select_all_check_box t.name %>
+				<%#= select_all_check_box t.name %>
 				<a title="<%= t.description %>" class="tooltip"><%= t.name.titleize %></a>
 				<span class="light">&raquo;	<%= pluralize apps.size, "application" %></span>
 			</td>
@@ -37,16 +37,16 @@
 
 		<% apps.each do |a| %>
 
-			<tr <%= "class=not_current" if !@task.application_status_types.collect(&:name).include?(a.current_status_name) %>>
-				<td><%= select_check_box(a, a.current_status_name) %>
+			<tr <%= "class=not_current" if !@task.application_status_types_array.collect(&:name).include?(a.current_status_name) %>>
+				<td><%#= select_check_box(a, a.current_status_name) %>
 					<%= a.person.fullname %></td>
-				<td><%= link_to a.project_title || "View Application", admin_app_path(@offering, a.id) %></td>
+				<td><%= link_to raw(a.project_title || "View Application"), admin_offering_application_path(@offering, a.id), target: '_blank' %></td>
 
 				<% @task.extra_fields.each do |t| %>
 					<td><%= t.display(a) %></td>
-				<% end -%>
+				<% end %>
 				
-				<td><%= print_status(a) %></td>
+				<td><%= print_status(a).html_safe %></td>
 			</tr>
 
 			<% current_status_name = a.current_status_name %>

@@ -1,0 +1,31 @@
+<div class='panel'>
+ <div class='panel_contents'>
+  <div class='content-block apply'>
+  	<h4><%= @offering.title %></h4>
+		<%= render partial: "phase_timeline" %>
+  </div>
+ </div> 
+</div>
+
+<div class='panel'>
+	<div class='panel_contents'>
+		<div class='content-block'>
+			<br><strong><%= @phase.name %>
+				<span class="right">
+					<% unless @phase.notes.blank? %>
+						<%= link_to "<i class='mi md-16'>sticky_note_2</i> Notes".html_safe, 'javascript:;', data: {link_toggle: '#phase_notes' }, class: 'button small flat' %>
+					<% end %>
+				</span>
+			</strong>
+
+			<% unless @phase.notes.blank? %>
+				<div id="phase_notes" class="highlight_box">
+					<h4><i class='mi uw_purple'>sticky_note_2</i> <b>Phase Notes</b></h4>
+					<%= textilize @phase.notes.encode("Windows-1252").force_encoding("UTF-8") %>
+				</div>
+			<% end %>
+			<br>
+			Start you first task here!
+		</div>
+	</div>
+</div>

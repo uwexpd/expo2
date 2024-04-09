@@ -3,7 +3,7 @@
   <%= display_computed_caption(question.caption) if question.caption? %>
 
   <% input_location = eval "@user_application.#{question.full_attribute_name}" %>
-  <% if input_location %>
+  <% unless input_location.blank? %>
       <p><b>Your saved location:</b> <%= JSON.parse(input_location)["locationName"] %></p>
       <%= hidden_field_tag "input_location", input_location %>
   <% end%>

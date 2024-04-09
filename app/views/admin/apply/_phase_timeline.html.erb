@@ -1,0 +1,25 @@
+<%# <div class='panel'>
+	<div class='panel_contents'>
+		<div class='content-block apply'> %>
+			
+			<table class="apply_admin_phases highlightless">
+			  <tr class='phases'>
+				<% first = true %>
+				<% for phase in @offering.admin_phases.sort %>
+
+					<% id=""; klass="" %>
+					<% id = "viewing" if @phase == phase %>
+					<% klass = "current" if phase == @offering.current_offering_admin_phase %> 
+					<% klass += " first" if first %> <% first=false %>
+
+					<td id="<%= id %>" class="<%= klass %>">
+						
+						<%= link_to raw("<div class='sequence'>#{phase.sequence}</div>
+							 <div class='name'>#{phase.name}</div>"), admin_apply_phase_path(@offering, phase.id) %>
+					</td>
+				<% end %>
+			  </tr>
+			</table>
+<%# 		</div>
+	</div>
+</div> %>

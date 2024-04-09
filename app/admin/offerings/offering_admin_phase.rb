@@ -51,8 +51,8 @@ ActiveAdmin.register OfferingAdminPhase, as: 'phases' do
 	  f.semantic_errors *f.object.errors.keys
 	  f.inputs do
 	    f.input :name, input_html: {style: 'width: 50%'} 
-	    f.input :sequence, input_html: {style: 'width: 5%'}
-	    f.input :notes, input_html: { rows: 4, style: 'width: 100%'}
+	    f.input :sequence, input_html: {style: 'width: 5rem;'}
+	    f.input :notes, input_html: { class: 'tinymce' ,rows: 4, style: 'width: 100%'}
 	    div 'Options', class: 'label'	    
 	    f.input :show_progress_completion, as: :boolean, 
 	    # input_html: { data: { if: 'not_checked', then: 'fade', target: '#relevant_field_for_show_progress_completion'} }, 

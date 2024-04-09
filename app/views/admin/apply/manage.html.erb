@@ -1,27 +1,10 @@
 <div class='panel'>
-	<div class='panel_contents'>
-		<div class='content-block apply'>
-			<h1><%= @offering.title %></h1>
-			<table class="apply_admin_phases highlightless">
-			  <tr class='phases'>
-				<% first = true %>
-				<% for phase in @offering.admin_phases.sort %>
-
-					<% id=""; klass="" %>
-					<% id = "viewing" if @phase == phase %>
-					<% klass = "current" if phase == @offering.current_offering_admin_phase %> 
-					<% klass += " first" if first %> <% first=false %>
-
-					<td id="<%= id %>" class="<%= klass %>">
-						
-						<%= link_to raw("<div class='sequence'>#{phase.sequence}</div>
-							 <div class='name'>#{phase.name}</div>"), admin_apply_manage_path(@offering) %>
-					</td>
-				<% end %>
-			  </tr>
-			</table>
-		</div>
-	</div>
+ <div class='panel_contents'>
+  <div class='content-block apply'>
+  	<h1><%= @offering.title %></h1>
+		<%= render partial: "phase_timeline" %>
+  </div>
+ </div> 
 </div>
 
 <div class='panel'>
@@ -38,7 +21,10 @@
 					<i class='material-icons md-36'>description</i>
 					
 					<%= link_to "All Applications", admin_offering_applications_path(@offering) %>
-					<div>There are currently <b><%= pluralize @offering.valid_status_applications.size, "application" %></b> in the system.</div>
+					<div>There are currently <b><%= pluralize @offering.valid_status_applications.size, "application" %></b> in the system.
+						<p class="light smaller"><%= render :partial => "status_counts" %></p>
+					</div>
+
 					
 				</li>
 				<% unless @offering.application_for_offerings.awarded.empty? %>
