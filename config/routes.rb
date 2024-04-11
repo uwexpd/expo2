@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     get 'admin/service_learning_placements', to: 'admin/dashboard#index' # [TODO] update when SLP is ready
     get 'admin/communicate/email/write', to: 'admin/email#write', as: :admin_email_write
     post 'admin/communicate/email/queue', to: 'admin/email#queue', as: :admin_queue_email
-    get 'admin/communicate/email/apply_template', to: 'admin/email#apply_template'
+    get 'admin/communicate/email/apply_template', to: 'admin/email#apply_template'    
     match 'admin/communicate/email/sample_preview', to: 'admin/email#sample_preview', via: [:get, :post], as: :admin_email_sample_preview
     match 'admin/communicate/email/resample', to: 'admin/email#resample_placeholder_codes', via: [:get, :post], as: :admin_email_resample
 

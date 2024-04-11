@@ -719,7 +719,7 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 	width: 100%;
 }
 
-.student_header img.student_photo {
+.student_header img.student_photo, {
 	float: left;
 	margin-right:1rem;	
 	background: #dadada url(image-path('app/blank_avatar.png')) no-repeat;	
@@ -1325,6 +1325,7 @@ a.placeholder_text_link:hover {
 
 .th_break {
   // max-width: 125px;
+  min-width: 100px;
   white-space: normal !important; 
   overflow-wrap: break-word; /* Breaks long words when needed */
   word-wrap: break-word; /* Older property name for the same behavior */

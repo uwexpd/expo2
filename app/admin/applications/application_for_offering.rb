@@ -211,6 +211,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
   filter :person_firstname, as: :string
   filter :person_lastname, as: :string
+  filter :id, label: 'Application ID'  
   filter :offering, as: :select, collection: Offering.order('id DESC'), input_html: { class: "select2", multiple: 'multiple'}, if: proc { @offering.blank? }
   filter :project_title, as: :string
   filter :project_description, as: :string
