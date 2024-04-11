@@ -3,7 +3,35 @@ actions :index, :show
 batch_action :destroy, false
 menu parent: 'Groups'
 
+  member_action :photo, :method => :get do
+      begin
+        student_photo = StudentPhoto.find(params[:reg_id])
+        file_path = student_photo.try(:image_path, params[:size])
+        if file_path
+          send_file file_path, :disposition => 'inline', :type => 'image/jpeg' # TODO :x_sendfile => true in production
+        else
+          send_default_photo(params[:size])
+        end
+      rescue ActiveResource::ResourceNotFound
+        send_default_photo(params[:size])
+      end    
+  end
+
+  controller do
+    def scoped_collection
+      if params[:q].present? && params[:q][:student_number_eq].present?
+        Student.student_number_eq(params[:q][:student_number_eq])        
+      else
+        # If no student number filter is provided, return all students
+        Student.all
+      end
+    end
+  end
+
   index pagination_total: false do
+    column 'Photo' do |student|
+      image_tag url_for(action: :photo, id: student.id, reg_id: student.reg_id), class: 'student_photo', style: 'width: 40px;height: 50px'      
+    end
     column 'Name' do |student|
       highlight_text = []
       highlight_text << params.dig(:q, :firstname_contains) if params.dig(:q, :firstname_contains)
@@ -11,6 +39,9 @@ menu parent: 'Groups'
       link_to highlight(student.fullname, highlight_text), admin_student_path(student)
     end
     column ('Email') {|student| highlight student.email, params.dig(:q, :email_contains) }
+    column ('Student No.') {|student| highlight student.student_no, params.dig(:q, :student_no_eq) }
+    column ('Class') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true)}
+    column ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) }
     column ('Created At') {|student| "#{time_ago_in_words student.created_at} ago"}
   end
 
@@ -136,25 +167,12 @@ menu parent: 'Groups'
   end
   sidebar "Student Search", only: :show do
     render "search_student"
-  end
-
-  member_action :photo, :method => :get do
-  	begin
-  	  student_photo = StudentPhoto.find(params[:reg_id])
-  	  file_path = student_photo.try(:image_path, params[:size])
-      if file_path
-        send_file file_path, :disposition => 'inline', :type => 'image/jpeg' # TODO :x_sendfile => true in production
-      else
-        send_default_photo(params[:size])
-      end
-    rescue ActiveResource::ResourceNotFound
-      send_default_photo(params[:size])
-    end    
   end  
 
   filter :firstname, as: :string
   filter :lastname, as: :string
   filter :email, as: :string
-  filter :student_no_eq, label: 'Student Number'
+  # filter :student_no_eq, label: 'Student Number' # [TODO] Didn't work if the student_no is empty in Person record.
+  filter :student_number_eq, label: 'Student Number'
 
 end

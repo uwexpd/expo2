@@ -8,7 +8,7 @@
 <% if offering.asks_mentor_questions? %>
 	<% for answer in mentor.answers %>
 		<li><%= raw(answer.question.question) %>
-			<br><span class="light"><%= answer.answer %></span>
+			<span class="light"><%= answer.answer %></span>
 		</li>
 	<% end -%>
 <% end -%>
@@ -21,7 +21,7 @@
 			<li><strong>Comments:</strong> <%= mentor.approval_comments %></li>
 		<% end -%>		
 <% elsif offering.mentor_mode != 'no_interaction' %>
-	<div>
+	<div class='filename' style="padding-top:1rem">
 		<% if mentor.letter.file.nil? %>
 			<em>No mentor letter received</em>
 			<br><%= link_to 'Upload a letter', 'javascript:;', data: { link_toggle: "#update_mentor_form_#{mentor.id}"} if admin_view %>
@@ -31,7 +31,7 @@
 			<span class='light'>
 				(<%= mentor.letter_content_type << ", " if mentor.letter_content_type %>
 				<%= number_to_human_size(mentor.letter_size) %>)				
-				<% if admin_view%>
+				<% if admin_view %>
 				| <i class="material-icons middle_align uw_purple">upload</i>
 				<%= link_to 'Upload new letter', 'javascript:;', data: { link_toggle: "#update_mentor_form_#{mentor.id}"} %>
 			</span>

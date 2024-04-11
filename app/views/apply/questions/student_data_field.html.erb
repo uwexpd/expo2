@@ -1,5 +1,8 @@
-<div <%= "class= non_input_field" if @user_application.person.is_a?(Student) %>>
-	<label><%= question.question %></label>
+<div class="<%= @user_application.person.is_a?(Student) ? 'non_input_field' : 'input-field col s12' %>">
+	<label>
+	  <%= question.question %>
+      <%= content_tag('em', '*', :class => 'required') if question.required? %>		 
+	</label>
 
 	<% if @user_application.person.is_a?(Student) %>
 		<div class="inline">
@@ -8,11 +11,15 @@
 	<% else %>
 	
 		<% if question.attribute_to_update == "fullname" %>
-				First: <%= qf.text_field :firstname, :size => question.width %>
-						<%= content_tag('em', '*', :class => 'required') if question.required? %>
-				Last: <%= qf.text_field :lastname, :size => question.width %>
-						<%= content_tag('em', '*', :class => 'required') if question.required? %>
-		<% end -%>
+		  <div class='input-field' style="margin-top:2.2rem">
+			<div class="col s6">	
+				<label>First Name:</label> <%= qf.text_field :firstname, :size => question.width %>
+			</div>
+			<div class="col s6">	
+				<label>Last Name:</label> <%= qf.text_field :lastname, :size => question.width %>
+			</div>
+		  </div>
+		<% end %>
 	
 		<% if question.attribute_to_update == "majors_list" %>
 			<div class="question_block">
@@ -24,20 +31,17 @@
 		<% end %>
 
 		<% if question.attribute_to_update == "class_standing_description" %>
-			<%= qf.collection_select :class_standing_id, ClassStanding.undergraduate, :id, :description, :prompt => true %>
-			<%= content_tag('em', '*', :class => 'required') if question.required? %>
+			<%= qf.collection_select :class_standing_id, ClassStanding.undergraduate, :id, :description, :prompt => true %>			
 		<% end -%>
 
 		<% if question.attribute_to_update == "institution_name" %>
 			<% institutions = @offering.invited_institutions.empty? ? Institution.all : @offering.invited_institutions %>
-			<%= qf.collection_select :institution_id, institutions.sort, :id, :name, :prompt => true %>
-			<%= content_tag('em', '*', :class => 'required') if question.required? %>
+			<%= qf.collection_select :institution_id, institutions.sort, :id, :name, :prompt => true %>			
 		<% end -%>
 		
-		<% if question.attribute_to_update == "email" %>
-			<%= qf.text_field :email, :size => question.width %>
-			<%= content_tag('em', '*', :class => 'required') if question.required? %>
-		<% end -%>
+		<% if question.attribute_to_update == "email" %>			
+			<%= qf.text_field :email, :size => question.width %>		
+		<% end %>
 		
 		<% if question.attribute_to_update == "student_no" %>
 			<span class="light">n/a</span>

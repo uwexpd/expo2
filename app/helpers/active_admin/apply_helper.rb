@@ -28,10 +28,10 @@ module ActiveAdmin::ApplyHelper
     unless offering.nil? || application_status_type.nil? || application_status_type.emails_for(offering.id).empty?  
 			application_status_type.emails_for(offering.id).each do |offering_status_email|
 			  links << link_to(offering_status_email.send_to, 
-			                    admin_communicate_template_path(offering_status_email.email_template), 
+			                    admin_template_path(offering_status_email.email_template), 
       						        :popup => popup)
 		  end
-		  "<span class='#{options[:class]}'>#{intro_text} #{links.join(' | ')}</span>"
+		  "<span class='#{options[:class]}'>#{intro_text} #{links.join(' | ')}</span>".html_safe
 		end
   end
 
@@ -42,16 +42,16 @@ module ActiveAdmin::ApplyHelper
     emails = status_type.emails_for(offering.id)
     if emails.empty?
       links << "<small class='grey'>No e-mails are defined for this status change. 
-                #{link_to "Add one.", new_admin_offering_status_email_path(offering, offering_status), target: '_blank'}</small>"
+                #{link_to "Add one.", new_admin_offering_status_email_path(offering, offering_status), target: '_blank'}</small>".html_safe
     else
       emails.each do |email|
-  			link = link_to("to " + email.send_to, admin_communicate_template_path(email.email_template), :popup => popup)
+  			link = link_to("to " + email.send_to, admin_template_path(email.email_template), target: '_blank')
         link << "<small class='grey'> - Updated #{time_ago_in_words(email.email_template.updated_at) rescue "unknown"} ago 
-  				        by #{email.email_template.updater.person.fullname rescue "unknown"}</small>"
+  				        by #{email.email_template.updater.person.fullname rescue "unknown"}</small>".html_safe
   		  links << link
 		  end
       links << "<small class='grey'>#{link_to "Add, edit, and delete status e-mails for ths status", 
-                offering_status_emails_path(offering, offering_status), :popup => popup}</small>"
+                admin_offering_status_emails_path(offering, offering_status), target: '_blank'}</small>".html_safe
 	  end
 		links
   end
