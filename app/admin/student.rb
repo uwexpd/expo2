@@ -39,7 +39,7 @@ menu parent: 'Groups'
       link_to highlight(student.fullname, highlight_text), admin_student_path(student)
     end
     column ('Email') {|student| highlight student.email, params.dig(:q, :email_contains) }
-    column ('Student No.') {|student| highlight student.student_no, params.dig(:q, :student_no_eq) }
+    column ('Student No.') {|student| highlight student.student_no, params.dig(:q, :student_number_eq) }
     column ('Class') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true)}
     column ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) }
     column ('Created At') {|student| "#{time_ago_in_words student.created_at} ago"}
@@ -169,10 +169,9 @@ menu parent: 'Groups'
     render "search_student"
   end  
 
+  filter :email, as: :string
+  filter :student_number_eq, label: 'Student Number'
   filter :firstname, as: :string
   filter :lastname, as: :string
-  filter :email, as: :string
-  # filter :student_no_eq, label: 'Student Number' # [TODO] Didn't work if the student_no is empty in Person record.
-  filter :student_number_eq, label: 'Student Number'
 
 end

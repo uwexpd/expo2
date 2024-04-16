@@ -3,11 +3,17 @@ ActiveAdmin.register ApplicationGroupMember, as: 'group_member' do
   config.filters = false
   config.sort_order = 'created_at_asc'
 
-  permit_params :person_id, :verified, :firstname, :lastname, :email, :uw_student, :confirmed, :nominated_mentor_id, :nominated_mentor_explanation, :theme_response, :theme_response2, :requests_printed_program
+  permit_params :person_id, :verified, :firstname, :lastname, :email, :uw_student, :confirmed, :nominated_mentor_id, :nominated_mentor_explanation, :theme_response, :theme_response2, :requests_printed_program, :return_to
 
   controller do
 		nested_belongs_to :offering, :application
 		before_action :fetch_app
+
+		def create
+			super do |format|
+        redirect_to params[:application_group_member][:return_to] and return if resource.valid? && params[:application_group_member][:return_to].present?
+      end
+		end
 
 		def destroy
 			@group_member = @app.group_members.find(params[:id])
@@ -75,6 +81,7 @@ ActiveAdmin.register ApplicationGroupMember, as: 'group_member' do
 	      input :theme_response, input_html: { :rows => 4, :style => "width:100%;" }
 	      input :theme_response2, input_html: { :rows => 4, :style => "width:100%;" }
 	      input :requests_printed_program, label: 'Printed Proceedings?'
+	      input :return_to, as: :hidden, input_html: { value: params[:return_to] } if params[:return_to].present?
 	    end
     actions
   end

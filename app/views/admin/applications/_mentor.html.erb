@@ -32,10 +32,11 @@
 			<!-- <div id="options_panel_<%#= mentor.id %>" class="panel" style="display:none"> -->
 				<div>
 				<%= link_to "Edit", edit_admin_mentor_path(mentor.id, :return_to => request.url) %>
-				<br>
+				<br>				
+
 				<%= link_to "Delete", 
-							admin_mentor_path(mentor.id, :return_to => request.url), 
-							:method => :delete, :confirm => "Are you sure?" %>
+							admin_mentor_path(mentor.id, :return_to => request.url),
+							:method => :delete, data: { confirm:'Are you sure you want to remove this mentor?'} %>
 				</div>
 			<!-- </div> -->
 		<% end %>

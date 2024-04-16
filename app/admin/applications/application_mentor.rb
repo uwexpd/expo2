@@ -1,5 +1,4 @@
-ActiveAdmin.register ApplicationMentor, as: 'mentor' do   
-  actions :all, :except => [:destroy]
+ActiveAdmin.register ApplicationMentor, as: 'mentor' do  
   batch_action :destroy, false
   config.per_page = [30, 50, 100, 200]
   config.sort_order = 'created_at_desc'
@@ -7,7 +6,27 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
 
   scope "All", :with_name, default: true
 
-  permit_params :primary, :application_for_offering_id, :person_id, :waive_access_review_right, :firstname, :lastname, :email, :email_confirmation, :application_mentor_type_id, :approval_response, :approval_comments, :approval_at, :title, :relationship, academic_department: []
+  permit_params :primary, :application_for_offering_id, :person_id, :waive_access_review_right, :firstname, :lastname, :email, :email_confirmation, :application_mentor_type_id, :approval_response, :approval_comments, :approval_at, :title, :relationship, :return_to, academic_department: []
+
+  controller do
+    def create
+      super do |format|
+        redirect_to params[:application_mentor][:return_to] and return if resource.valid? && params[:application_mentor][:return_to].present?
+      end
+    end
+
+    def update
+      super do |format|
+        redirect_to params[:application_mentor][:return_to] and return if resource.valid? && params[:application_mentor][:return_to].present?
+      end
+    end
+
+    def destroy
+      super do |format|
+        redirect_to params[:return_to] and return if resource.valid? && params[:return_to].present?
+      end
+    end
+  end
 
   index do
     column ('Name') {|mentor| link_to mentor.fullname, admin_mentor_path(mentor)}
@@ -60,7 +79,8 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
       f.input :academic_department, as: :select, collection: AcademicDepartment.all.collect(&:name).sort,  include_hidden: false, input_html: { multiple: 'multiple', class: "select2", :style => 'width: 50%'}
       f.input :approval_response, as: :select, collection: %w(revise approved)
       f.input :approval_comments, as: :text, :input_html => { :class => 'autogrow', :rows => 5, :cols => 40  }
-    f.input :approval_at, as: :date_time_picker, input_html: { :style => 'width:50%;' }
+      f.input :approval_at, as: :date_time_picker, input_html: { :style => 'width:50%;' }
+      f.input :return_to, as: :hidden, input_html: { value: params[:return_to] } if params[:return_to].present?
     end
     f.actions
   end
