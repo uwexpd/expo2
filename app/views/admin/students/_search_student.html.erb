@@ -1,13 +1,21 @@
-<form method="get" id="q_search" class="filter_form" action="/expo/admin/students" accept-charset="UTF-8">   
-      <div class='string input optional stringish filter_form_field filter_string'>
-        <label for="q_email" class="label">Email</label>
-        <input type="text" name="q[email_contains]" id="q_email" />
-      </div>
-      <div class="string input optional stringish filter_form_field filter_string">
-        <label for="q_email" class="label">Student Number</label>
-        <input type="text" name="q[student_no_eq]" id="q_student_no" />
-      </div>
-      <div class='buttons'>
-        <input type="submit" value="Search" name="commit" id="q_submit" />
-      </div>   
+<form method="get" id="q_search" class="filter_form" action="/expo/admin/students" accept-charset="UTF-8">    
+    <div class='string input optional stringish filter_form_field filter_string'>
+      <label for="q_email" class="label">Email</label>
+      <input type="text" name="q[email_contains]" id="q_email" />
+    </div>
+    <div class="string input optional stringish filter_form_field filter_string">
+      <label for="q_student_number" class="label">Student Number</label>
+      <input type="text" name="q[student_number_eq]" id="q_student_number" />
+    </div>
+    <div class='string input optional stringish filter_form_field filter_string'>
+        <label for="q_firstname" class="label">Firstname</label>
+        <input type="text" name="q[firstname_contains]" id="q_firstname" />
+    </div>
+    <div class='string input optional stringish filter_form_field filter_string'>
+        <label for="q_lastname" class="label">Lastname</label>
+        <input type="text" name="q[lastname_contains]" id="q_lastname" />
+    </div>
+    <div class='buttons'>
+      <input type="submit" value="Search" name="commit" id="q_submit" />
+    </div>
 </form>

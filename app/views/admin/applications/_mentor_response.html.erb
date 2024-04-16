@@ -19,7 +19,7 @@
 			<%= "<span class='timestamp'>(#{relative_timestamp(mentor.approval_at)})</span>".html_safe if mentor.approval_at %></li>
 		<% unless mentor.approval_comments.blank? %>
 			<li><strong>Comments:</strong> <%= mentor.approval_comments %></li>
-		<% end -%>		
+		<% end %>		
 <% elsif offering.mentor_mode != 'no_interaction' %>
 	<div class='filename' style="padding-top:1rem">
 		<% if mentor.letter.file.nil? %>

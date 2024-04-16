@@ -45,6 +45,7 @@ class ApplicationMentor < ApplicationRecord
   attr_accessor :should_destroy
   attr_accessor :require_validations
   attr_accessor :send_invite_email_now
+  attr_accessor :return_to
 #  attr_accessor :email_confirmation
   
   scope :with_name, -> { where.not(firstname: [nil, ""]) }

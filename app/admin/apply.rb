@@ -2,18 +2,24 @@
   menu false
   
   breadcrumb do 
-  	[
-  		link_to('Expo', "/expo"), 
-  		link_to('Online Applications', '/expo/admin/offerings'),
-      link_to("#{controller.instance_variable_get(:@offering).title}", "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}" )
-  	]
+  	breadcrumbs = [
+      link_to('Expo', "/expo"), 
+      link_to('Online Applications', '/expo/admin/offerings'),
+      link_to(controller.instance_variable_get(:@offering).title, "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}")
+    ]
+
+    if controller.respond_to?(:task)      
+      task_link = link_to(controller.instance_variable_get(:@phase).name, "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}/phases/#{controller.instance_variable_get(:@phase).id}")
+      breadcrumbs << task_link
+    end
+
+    breadcrumbs
   end
 
   controller do    
   	before_action :fetch_offering
   	before_action :fetch_apps, only: [:list]
-    before_action :fatch_phase, only: [:task, :mass_update]
-    # before_action :fetch_task, only: [:task, :mass_update]
+    before_action :fatch_phase, only: [:task, :mass_update]    
 
   	def manage
   		@phase = @offering.current_offering_admin_phase
@@ -32,7 +38,8 @@
     end
 
     def task      
-      @task = @phase.tasks.find(params[:id]) 
+      @task = @phase.tasks.find(params[:id])
+      @page_title = "#{@task.title}"
       # [TODO] make this work: add_breadcrumb "#{@phase.name}", admin_apply_phase_path(@offering, @phase)
     end
 

@@ -13,7 +13,7 @@ class ApplicationGroupMember < ApplicationRecord
 
   # has_many :event_invitees, :include => {:event_time => :event}, :as => 'invitable' do
   #   def for_event(event); find(:all).select{|e| e.event == event }; end
-  # end
+  # end  
 
   validates :application_for_offering_id, :lastname, :firstname, :email, presence: true
   
@@ -23,6 +23,7 @@ class ApplicationGroupMember < ApplicationRecord
   validate :valid_uw_netid?
   validate :not_primary_applicant?
   
+  attr_accessor :return_to
   #before_validation_on_create :connect_to_student_record
 
   PLACEHOLDER_CODES = %w(validation_link fullname firstname lastname email verified? confirmed?)
