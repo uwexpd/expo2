@@ -625,7 +625,7 @@ ul.sherlock-buttons{
 
 #tools a {
 	background-image: url(image-path('sprite-navigation-white.png'));	
-	background-position: -32px -0px;
+	background-position: -30px 1px;
 	// background-image: url(image-path('sprite-action-white.png'));
 	// background-position: -159px -128px;
 	width: 32px;
@@ -640,6 +640,19 @@ ul.sherlock-buttons{
 	height: 32px;
 	margin-right: 47px;
 }
+
+#databases a {
+	background-image: url(image-path('sprite-action-white.png'));
+	background-position: -126px 1px;
+	width: 32px;
+	height: 32px;
+	margin-right: 70px;
+}
+
+.has_nested ul li {
+	padding: 0.75rem 0;
+	border-bottom: thin solid #eee;
+}	
 
 .has_nested ul li a {
 	display: inline;

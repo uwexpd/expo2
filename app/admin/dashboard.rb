@@ -75,7 +75,7 @@ ActiveAdmin.register_page "Dashboard" do
           SELECT TABLE_NAME, TABLE_ROWS
           FROM INFORMATION_SCHEMA.TABLES
           WHERE TABLE_SCHEMA = '#{Rails.configuration.database_configuration[Rails.env]['database']}' AND
-          TABLE_NAME in ('users','people','appointments','service_learning_placements','events','application_for_offerings')
+          TABLE_NAME in ('users','people','appointments','service_learning_placements','events','application_for_offerings', 'application_mentors')
           order by TABLE_ROWS DESC;")
 
         all_models_count = records.collect{ |row| [row[0], row[1].to_i]}

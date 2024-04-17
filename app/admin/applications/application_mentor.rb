@@ -2,7 +2,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
   batch_action :destroy, false
   config.per_page = [30, 50, 100, 200]
   config.sort_order = 'created_at_desc'
-  menu parent: 'Groups'
+  menu parent: 'Groups', label: "<i class='mi padding_right'>supervised_user_circle</i> Mentors".html_safe
 
   scope "All", :with_name, default: true
 

@@ -2,7 +2,7 @@ ActiveAdmin.register Appointment do
   actions :all
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
-  menu parent: 'Modules', :priority => 15
+  menu parent: 'Modules', :priority => 15, label: "<i class='mi padding_right'>schedule</i> Appointments".html_safe
   scope :all, default: true
   scope 'Today', :today
   scope 'Tomorrow', :tomorrow

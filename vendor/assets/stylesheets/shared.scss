@@ -167,6 +167,10 @@
     vertical-align: sub;
 }
 
+.material-icons.padding_right, .mi.padding_right {
+	padding-right: 0.25rem;
+}
+
 .material-icons.md-42, .mi.md-42 {
 	font-size: 42px;
 }
@@ -190,3 +194,4 @@
 table.paddingless td {
 	padding: 0px;
 }
+

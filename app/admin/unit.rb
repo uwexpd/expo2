@@ -2,7 +2,7 @@ ActiveAdmin.register Unit do
   config.filters = false
   batch_action :destroy, false
   config.sort_order = 'name_asc'
-  menu parent: 'Groups'
+  menu parent: 'Groups', label: "<i class='mi padding_right'>apartment</i> Units".html_safe
 
   before_action -> { check_permission("unit_manager") }
   

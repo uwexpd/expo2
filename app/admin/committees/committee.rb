@@ -1,7 +1,7 @@
 ActiveAdmin.register Committee do
   includes :members, :meetings, :committee_quarters, :quarters
   batch_action :destroy, false
-  menu parent: 'Modules', :priority => 30
+  menu parent: 'Modules', priority: 30, label: "<i class='mi padding_right'>groups</i> Committees".html_safe
   config.per_page = [30, 50, 75]
   config.sort_order = 'created_at_asc'
 
