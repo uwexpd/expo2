@@ -1,11 +1,13 @@
 require 'tmail'
-ActiveAdmin.register ContactHistory do  
+ActiveAdmin.register ContactHistory do
   config.sort_order = 'created_at_desc'
   config.per_page = [30, 50]
   batch_action :destroy, false
   config.action_items.delete_if {|item| (item.name == :edit || item.name == :destroy) && item.display_on?(:show) }  
-  menu label: "Contact History"
   menu parent: 'Tools'
+
+  scope :all, default: true
+  scope ('Sent By Me') { |contact| contact.from_user(current_user.id) }
 
   action_item :resend, only: :show do
     link_to 'Resend this message', admin_contact_history_path

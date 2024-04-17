@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     post 'admin/base/vicarious_login', to: 'admin/base#vicarious_login', as: :admin_vicarious_login
     get 'admin/base/remove_vicarious_login', to: 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
     get 'admin/application_for_offerings', to: 'admin/applications#index'
+    get 'admin/application_mentors', to: 'admin/mentors#index'
     get 'admin/service_learning_placements', to: 'admin/dashboard#index' # [TODO] update when SLP is ready
     get 'admin/communicate/email/write', to: 'admin/email#write', as: :admin_email_write
     post 'admin/communicate/email/queue', to: 'admin/email#queue', as: :admin_queue_email

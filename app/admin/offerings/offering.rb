@@ -1,7 +1,7 @@
 ActiveAdmin.register Offering do
   includes :quarter_offered, :admin_phases
   batch_action :destroy, false
-  menu parent: 'Modules', label: 'Online Apps', :priority => 25
+  menu parent: 'Modules', label: "<i class='mi padding_right'>assignment</i> Online Apps".html_safe, priority: 25
   config.sort_order = ['created_at_desc', 'unit_id_asc']
   config.per_page = [30, 50, 100, 200]
 

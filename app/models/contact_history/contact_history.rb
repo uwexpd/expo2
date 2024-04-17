@@ -11,7 +11,7 @@ class ContactHistory < ApplicationRecord
   belongs_to :contactable, :polymorphic => true
 
   scope :to_person, -> (person_id) { where('person_id = ?', person_id) }
-  scope :from_user, -> (user_id) { where('person_id = ?', user_id) }
+  scope :from_user, -> (user_id) { where('creator_id is not null AND creator_id = ?', user_id) }
 
   # for activeadmin breadcrumb title display
   def display_name

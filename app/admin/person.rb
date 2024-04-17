@@ -2,8 +2,7 @@ ActiveAdmin.register Person do
   actions :all, :except => [:destroy]
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
-  menu :priority => 5
-  menu parent: 'Groups'
+  menu parent: 'Groups', priority: 5, label: "<i class='mi padding_right'>portrait</i> People".html_safe
   
   permit_params :firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip, :fullname
 

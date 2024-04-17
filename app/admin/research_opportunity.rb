@@ -1,7 +1,7 @@
 ActiveAdmin.register ResearchOpportunity do
   batch_action :destroy, false
   config.sort_order = 'submitted_at_desc'
-  menu parent: 'Tools'
+  menu parent: 'Databases', priority: 30, label: "<i class='mi padding_right'>school</i> Research Opportunities".html_safe
 
   permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit
   

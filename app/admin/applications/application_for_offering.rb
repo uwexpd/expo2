@@ -5,7 +5,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   config.per_page = [20, 50, 100]
-  menu parent: 'Tools'
+  menu parent: 'Databases', priority: 10, label: "<i class='mi padding_right'>feed</i> Applications".html_safe
 
   scope 'All', :valid, default: true
 

@@ -2,7 +2,7 @@ ActiveAdmin.register TextTemplate, as: 'template'  do
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   config.per_page = [30, 50, 100, 200]
-  menu parent: 'Modules', label: 'Email Templates', :priority => 35
+  menu parent: 'Modules', label: "<i class='mi padding_right'>drafts</i> Email Templates".html_safe, priority: 35
 
   permit_params :body, :name, :subject, :from, :type
 

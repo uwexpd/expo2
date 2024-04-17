@@ -2,7 +2,7 @@ ActiveAdmin.register User do
   actions :all, :except => [:new, :destroy]
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
-  menu parent: 'Groups'
+  menu parent: 'Groups', label: "<i class='mi padding_right'>account_circle</i> Users".html_safe
   
   permit_params :admin, :email, :picture, roles_attributes: [:role_id, :unit_id, :_destroy, :id]
 

@@ -1,7 +1,7 @@
 ActiveAdmin.register Student do 
 actions :index, :show
 batch_action :destroy, false
-menu parent: 'Groups'
+menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_search</i> Student".html_safe
 
   member_action :photo, :method => :get do
       begin
