@@ -11,9 +11,8 @@
 	</div>
 <% end %>
 
-<%#= form_for :change_status, 
-			:url => admin_apply_action_url(:offering => @offering, :action => "mass_status_change"), 
-			:html => {:id => "change_status_form_#{@task.id}"} do |f| %>
+<%= form_for :change_status, 
+			url: admin_apply_change_status_path(@offering, @phase, @task), html: {id: "change_status_form_#{@task.id}"} do |f| %>
 
 <% 
 @apps = []
@@ -26,15 +25,15 @@
 	<%= render :partial => "admin/apply/phase/applicant_list", :locals => { :phase_task => @phase_task, :task => @task } %>
 </div>
 
-<div id="change_status_<%= @task.id %>_functions" class="highlight_box" style="display:none">
+<div id="change_status_<%= @task.id %>_functions" class="big-border box">
 	<h4 class="icon-left make-change">Set new status:</h4>
 	<%#= observe_form "change_status_form_#{@task.id}", :function => "$('change_status_#{@task.id}_functions').show()" %>
 	Set new status to:
 	<select name="new_status">
-		<%#= options_from_collection_for_select @task.new_application_status_types, :name, :name_pretty %>
+		<%= options_from_collection_for_select @task.new_application_status_types, :name, :name_pretty %>
 	</select>
-	<%#= hidden_field_tag :redirect_to_action, 'phase' %>
-	<%#= f.submit "Change Statuses and E-mail Notifications" %>
+	<%= hidden_field_tag :redirect_to_action, 'phase' %>
+	<%= f.submit "Change Statuses and E-mail Notifications" %>
 </div>
 
-<%# end %>
+<% end %>

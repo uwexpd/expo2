@@ -11,7 +11,7 @@
   <div class='panel_contents'>
 	<div class='content-block'>
 		<br><strong><%= @task.title %>
-			<small class='light'><%= "<i class='mi md-16 uw_green'>task_alt</i> Completed #{relative_timestamp(@task.updated_at)}".html_safe if @task.complete? %></small>
+			<small class='light'><%= "<i class='mi md-20 uw_green'>check_circle</i> Completed #{relative_timestamp(@task.updated_at)}".html_safe if @task.complete? %></small>
 			<% unless @task.notes.blank? %>
 			  <%= link_to "<i class='mi md-16'>sticky_note_2</i> Notes".html_safe, 'javascript:;', data: {link_toggle: '#task_notes' }, class: 'button small flat right' %>
 			<% end %>			

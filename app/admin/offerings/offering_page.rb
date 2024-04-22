@@ -8,7 +8,7 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 	permit_params :title, :description, :introduction, :hide_in_admin_view, :hide_in_reviewer_view, :ordering
 
 	member_action :form_builder, :method => :get do
-
+		# TODO: We could implment a form_builder
 	end
 
 	index do

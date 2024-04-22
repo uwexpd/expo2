@@ -8,14 +8,14 @@
 		</span>
 		<span class='left'>
 			<%= mentor.fullname %>
-			<%=  mentor.person.nil? ? "(no person record)" : link_to("edit", edit_admin_person_path(mentor.person, return_to: url_for(:action => 'show', section: 'mentor_letter'))) if admin_view %>
+			<%=  mentor.person.nil? ? "(no person record)" : link_to("edit person", edit_admin_person_path(mentor.person, return_to: url_for(:action => 'show', section: 'mentor_letter'))) if admin_view %>
 			<br><%= mentor.no_email? ? "<span class='error-message'>No e-mail</span>".html_safe : mentor.email %>
 			<%= raw "<br><span class='light smaller'>Primary #{@offering.mentor_title}</span>" if mentor.primary? %>
 		</span>
 	</td>
 	
 	<td>
-		<%= raw([mentor.person.title, 
+		<%= raw([mentor.person.title + "<span class='light smaller'> (" + (mentor.mentor_type.try(:title) || 'Unknown mentor type') + ")</span>", 
 			 mentor.person.department_name, 
 			 mentor.person.organization].compact.delete_if{|x| x.blank?}.join('<br>')+'<br>') if mentor.person %>
 			

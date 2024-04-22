@@ -3,14 +3,14 @@ ActiveAdmin.register EmailQueue do
   config.filters = false
   config.sort_order = 'created_at_desc'
   config.per_page = [30, 50, 100, 200]
-  actions :all, :except => [:new]  
-  menu parent: 'Tools', label: -> {"Email Queue (#{EmailQueue.messages(:current_user).size})"}
+  actions :all, :except => [:new]
+  menu parent: 'Tools', label: -> {"Email Queue (#{EmailQueue.messages(current_user).size})"}
 
   permit_params :person_id, :email
 
   controller do
-    def scoped_collection    
-      EmailQueue.messages(:current_user)
+    def scoped_collection      
+      EmailQueue.messages(current_user)
     end
 
     def update

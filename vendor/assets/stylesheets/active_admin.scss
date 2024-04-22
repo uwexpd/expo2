@@ -895,7 +895,8 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 }
 
 .sidebar_section .information,
-#applications_sidebar_section .panel_contents {
+#applications_sidebar_section .panel_contents,
+#more-settings_sidebar_section .panel_contents {
 	padding: 1rem;
 	border-bottom: 1px solid #efefef;
 }
@@ -1344,6 +1345,15 @@ a.placeholder_text_link:hover {
   word-wrap: break-word; /* Older property name for the same behavior */
 }
 
-table.phase_task tr.rowset-header td {
+table tr.rowset-header td {
 	border-bottom: 1px solid #aaa;	
+}
+
+table tr.table-header th {
+	border-top: 1px solid #efefef;
+	border-bottom: 1px solid #aaa;
+}
+
+tr.not_current td, tr.not_current a {
+	color: #a3a3a3;
 }

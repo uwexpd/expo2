@@ -12,18 +12,29 @@ Rails.application.routes.draw do
     # -------------------------------------------------------------------------------------------
     get 'admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
     get 'admin/apply/:offering/list', to: 'admin/apply#list', as: :admin_apply_list
+    get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
+    get 'admin/apply/:offering/scored_selection', to: 'admin/apply#scored_selection', as: :admin_apply_scored_selection
+    get 'admin/apply/:offering/invited_guests', to: 'admin/apply#invited_guests', as: :admin_apply_invited_guests
+    get 'admin/apply/:offering/nominated_mentors', to: 'admin/apply#nominated_mentors', as: :admin_apply_nominated_mentors
+    get 'admin/apply/:offering/theme_responses', to: 'admin/apply#theme_responses', as: :admin_apply_theme_responses
+    get 'admin/apply/:offering/proceedings_requests', to: 'admin/apply#proceedings_requests', as: :admin_apply_proceedings_requests
+    get 'admin/apply/:offering/special_requests', to: 'admin/apply#special_requests', as: :admin_apply_special_requests
+
+
     get 'admin/apply/:offering/phases/:id', to: 'admin/apply#phase', as: :admin_apply_phase
+    post 'admin/apply/:offering/phases/:id', to: 'admin/apply#switch_to', as: :admin_apply_phase_switch
     get 'admin/apply/:offering/phases/:phase/tasks/:id', to: 'admin/apply#task', as: :admin_apply_phase_task
     match 'admin/apply/:offering/phases/:phase/tasks/mass_update', to: 'admin/apply#mass_update', as: :admin_apply_phase_task_mass_update, via: [:get, :post]
+    get 'admin/apply/:offering/phases/:phase/tasks/:id', to: 'admin/apply#mass_assign_reviewers', as: :admin_apply_assign_reviewer
+    post 'admin/apply/:offering/phases/:phase/tasks/:id', to: 'admin/apply#mass_status_change', as: :admin_apply_change_status
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
-    get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter    
-    get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
+    get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter        
     post 'admin/base/vicarious_login', to: 'admin/base#vicarious_login', as: :admin_vicarious_login
     get 'admin/base/remove_vicarious_login', to: 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
     get 'admin/application_for_offerings', to: 'admin/applications#index'
     get 'admin/application_mentors', to: 'admin/mentors#index'
     get 'admin/service_learning_placements', to: 'admin/dashboard#index' # [TODO] update when SLP is ready
-    get 'admin/communicate/email/write', to: 'admin/email#write', as: :admin_email_write
+    match 'admin/communicate/email/write', to: 'admin/email#write', as: :admin_email_write, via: [:get, :post]
     post 'admin/communicate/email/queue', to: 'admin/email#queue', as: :admin_queue_email
     get 'admin/communicate/email/apply_template', to: 'admin/email#apply_template'    
     match 'admin/communicate/email/sample_preview', to: 'admin/email#sample_preview', via: [:get, :post], as: :admin_email_sample_preview
@@ -54,7 +65,8 @@ Rails.application.routes.draw do
         resources :dashboard_items
         resources :restrictions do
           resources :exemptions
-        end        
+        end
+        resources :sessions
       end
       resources :contact_histories
       resources :committees do

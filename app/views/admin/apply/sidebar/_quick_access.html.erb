@@ -1,0 +1,52 @@
+<ul class="link-list">
+
+	<% if @offering.current_offering_admin_phase %>
+	<li><%= link_to "<i class='mi'>room</i> Current Phase: #{@offering.current_offering_admin_phase.name}".html_safe, 
+					admin_apply_phase_path(@offering, @offering.current_offering_admin_phase) %></li>
+	<% end -%>
+
+	<li><%= link_to "<i class='mi'>edit</i> Edit offering details".html_safe, edit_admin_offering_path(@offering) %>
+
+	<li><%= link_to "<i class='mi'>list</i> View All Applications".html_safe, admin_offering_applications_path(@offering), :class => 'icon-left list' %></li>
+	<li><%= link_to "<i class='mi'>stars</i> Awardees".html_safe, admin_apply_awardees_path(@offering) %></li>
+	
+	<% unless @offering.sessions.empty? %>
+		<li><%= link_to "<i class='mi'>co_present</i> Sessions".html_safe, admin_offering_sessions_path(@offering) %></li>
+	<% end -%>
+	
+	<% if @offering.review_committee %>
+		<li><%= link_to "<i class='mi'>group</i> Review Committee".html_safe, admin_committee_path(@offering.review_committee) %></li>
+	<% end -%>
+	
+	<% if @offering.interview_committee %>
+		<li><%= link_to "<i class='mi'>leaderboard</i> Interview Committee", admin_committee_path(@offering.interview_committee), :class => "icon-left people" %></li>
+	<% end -%>
+
+	<% if @offering.uses_scored_review? %>
+		<%# <li> %>
+			<%#= link_to "Assign Reviewers", admin_apply_assign_reviewers_path(@offering, 'assign_reviewers'), :class => "icon-left assign-people" %>
+		<%# </li> %>
+		<li><%= link_to "<i class='mi'>leaderboard</i> Scored Selection".html_safe, admin_apply_scored_selection_path(@offering), :class => "icon-left evaluations" %></li>
+	<% end -%>
+
+	<% if EmailQueue.messages_waiting? %>
+		<li><%= link_to "<i class='mi'>email</i> Email Queue (#{EmailQueue.count} messages waiting)".html_safe, admin_email_queues_path %></li>
+	<% end %>
+	
+	<% unless @offering.guest_postcard_layout.blank? %>
+		<li><%= link_to "Invited Guests", admin_apply_invited_guests_path(@offering) %></li>
+	<% end -%>
+	
+	<% unless @offering.nomination_instructions.blank? %>
+		<li><%= link_to "<i class='mi'>diversity_1</i> Mentor Nominations".html_safe, admin_apply_nominated_mentors_path(@offering) %></li>
+	<% end -%>
+	
+	<% unless @offering.theme_response_title.blank? %>
+		<li><%= link_to "<i class='mi'>celebration</i> #{@offering.theme_response_title}".html_safe, admin_apply_theme_responses_path(@offering) %></li>
+	<% end -%>
+	
+	<% if @offering.unit && @offering.unit.abbreviation == "urp" %>
+		<li><%= link_to "<i class='mi'>speaker_notes</i> Special Requests".html_safe, admin_apply_special_requests_path(@offering) %></li>
+	<% end -%>
+	
+</ul>

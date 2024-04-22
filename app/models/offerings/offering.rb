@@ -148,7 +148,7 @@ class Offering < ApplicationRecord
 
 
   def self.current_user
-    Thread.current['user']
+    Thread.current[:user]
   end
 
   def <=>(o)

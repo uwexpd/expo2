@@ -36,14 +36,19 @@ ActiveAdmin.register Offering do
   
   show do
       render 'show', { offering: offering}
-  end
+  end  
   
   sidebar "Applications", only: :show do
-    i 'list_alt', :class => 'material-icons md-32'
+    i 'list_alt', :class => 'mi'
     link_to "Manage student applications (#{offering.valid_status_applications.size})", admin_apply_manage_path(offering)
     # div class: "information" do
     #   span link_to "<i class='material-icons md-32'>list_alt</i>Manage student applications (#{offering.valid_status_applications.size})".html_safe, admin_apply_manage_path(offering)
     # end
+  end
+
+  sidebar "More Settings", only: :show do
+    i 'co_present', :class => 'mi'
+    link_to "Event Sessions (#{offering.sessions.size})", admin_offering_sessions_path(offering)
   end
 
   sidebar "Offering Settings", only: :edit do
@@ -316,8 +321,8 @@ ActiveAdmin.register Offering do
       end
     end
     f.actions
-  end
-  
+  end  
+
   filter :name, as: :string
   filter :open_date, as: :date_range
   filter :deadline, as: :date_range
