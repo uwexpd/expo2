@@ -1,0 +1,57 @@
+<div class='panel'>	
+  <div class='panel_contents'>
+	<div class='content-block awardees'>
+	   <h1>Awardees for <%= @offering.quarter_offered.title %></h1>
+		<h2>Students (<%= @awardees.size %>)
+			<span class="right small">Download in Excel<%#= link_to "Download in Excel", {:format => 'xls'}, :class => 'icon-left xls button' %></span></h2>		
+
+		<table class="borderless">
+			<tr class="table-header uw_light_bg_gold">
+				<th>Student #</th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Majors</th>
+				<th>Address</th>
+				<th>Award List</th>
+			</tr>
+			<% @awardees.each do |a| %>
+			  <tr>
+				<td><%= a.person.student_no %></td>
+				<td><%= a.person.firstname %></td>
+				<td><%= a.person.lastname %></td>
+				<td><%= a.person.sdb.majors_list rescue a.person.majors_list %></td>
+				<td><%= raw(eval("a.person.sdb.address.full_#{a.local_or_permanent_address}_address")) rescue nil %></td>
+				<td><%= raw(a.award_list("<br>")) %></td>
+			  </tr>
+			<% end %>
+
+		</table>
+
+
+		<h2>Mentors
+			<span class="small right">Download in Excel<%#= link_to "Download in Excel", {:action => 'mentors', :format => 'xls'}, :class => 'icon-left xls button' %></span></h2>
+
+		<table class="borderless">
+			<tr class="table-header uw_light_bg_gold">				
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Address</th>
+				<th>Mentee First Name</th>
+				<th>Mentee Last Name</th>
+			</tr>
+			<% @awardees.each do |a| %>
+				<% a.mentors.each do |m| %>
+					<tr>
+					<td><%= m.firstname %></td>
+					<td><%= m.lastname %></td>
+					<td><%= raw(address_block(m.person)) unless m.person.nil? %></td>
+					<td><%= a.person.firstname %></td>
+					<td><%= a.person.lastname %></td>
+					</tr>
+				<% end %>
+			<% end %>
+
+		</table>
+	</div>
+  </div>	
+</div>

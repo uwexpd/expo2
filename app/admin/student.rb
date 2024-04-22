@@ -170,7 +170,9 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
   end  
 
   filter :email, as: :string
+  # filter :uw_netid_cont, label: 'Student Number' [TODO]: return student result from StudentRecord
   filter :student_number_eq, label: 'Student Number'
+  # [TODO] Use StudentRecord Name search
   filter :firstname, as: :string
   filter :lastname, as: :string
 

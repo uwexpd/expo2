@@ -25,7 +25,9 @@
 				</div>
 			<% end %>
 			<br>
-			Start you first task here!
+			<% task = @phase.tasks.first %>
+			<i class='mi'>forward</i> Start your first task:
+			<%= link_to "#{task.title}".html_safe, admin_apply_phase_task_path(@offering, @phase, task) %>
 		</div>
 	</div>
 </div>

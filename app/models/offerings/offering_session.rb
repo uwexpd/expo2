@@ -3,7 +3,7 @@ class OfferingSession < ApplicationRecord
   stampable
   belongs_to :offering
   belongs_to :moderator, :class_name => "CommitteeMember", :foreign_key => "moderator_id"
-  has_many :presenters, -> { includes :person, order("offering_session_order, people.lastname") }, :class_name => "ApplicationForOffering" do 
+  has_many :presenters, -> { includes(:person).order("offering_session_order, people.lastname") }, :class_name => "ApplicationForOffering" do 
     def with_easel_numbers; -> { where("easel_number IS NOT NULL AND easel_number != ''") }; end
   end
   has_many :group_members, :through => :presenters

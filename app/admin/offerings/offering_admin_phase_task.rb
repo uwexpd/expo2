@@ -4,7 +4,7 @@ ActiveAdmin.register OfferingAdminPhaseTask, as: 'tasks' do
 	config.filters = false
 	config.sort_order = 'sequence_asc'
 
-	permit_params :title, :display_as, :sequence, :notes, :progress_column_title, :context, :show_for_in_progress, :show_for_success, :show_for_failure, :completion_criteria, :progress_display_criteria, :show_for_context_object_tasks, :context_object_completion_criteria, :context_object_progress_display_criteria 
+	permit_params :title, :display_as, :sequence, :notes, :progress_column_title, :context, :show_for_in_progress, :show_for_success, :show_for_failure, :completion_criteria, :progress_display_criteria, :show_for_context_object_tasks, :context_object_completion_criteria, :context_object_progress_display_criteria, :application_status_types, :new_application_status_type, :email_templates, :applicant_list_criteria, :reviewer_list_criteria, :detail_text, :url, :show_history, :complete
 
 	breadcrumb do
   	[

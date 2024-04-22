@@ -36,8 +36,14 @@ $(function() {
 
 });
 
+$(document).on("change", ".toggleable", function(){
+   let obj=$(this).attr('data-select-toggle');
+   if (Object.keys(obj).length > 0){
+      $(obj).show(400);
+   }
+});
 
-$(document).on("click", "input[data-link-toggle]", function(){ 
+$(document).on("click", "input[data-link-toggle]", function(){
    let obj=$(this).attr('data-link-toggle');
    if (Object.keys(obj).length > 0){
       $(obj).toggle(400);
@@ -75,4 +81,16 @@ $(document).on("click", "a[data-insert-text-tinymce]", function(){
    let tinymce_instance = tinymce.get($(this).attr('data-insert-text-tinymce'));
    let insert_text = $(this).attr('data-insert-text');
    tinymce_instance.execCommand('mceInsertContent', true, insert_text)
+});
+
+$(document).on("change", ".select_all", function(){   
+   let css_class_parts = $(this).attr('class').split(' ')
+   // console.log("css_class_parts", css_class_parts);
+   let checkbox_class = css_class_parts[0];
+   let status = css_class_parts[1];
+   // console.log("Debug => ", checkbox_class);
+   // console.log("Debug => ", status);
+   
+   $('.' + checkbox_class + '.' + status).prop('checked', $(this).prop('checked'));
+   
 });

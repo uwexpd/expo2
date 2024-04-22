@@ -1,4 +1,4 @@
-<%= form_tag admin_communicate_write_email_url, :id => 'send_email_form' %>
+<%= form_tag admin_email_write_path, :id => 'send_email_form' %>
 
 	<div class="big-border box">
 		<h4 class="icon-left edit-email">Choose recipients for e-mail:</h4>
@@ -9,15 +9,16 @@
 		 														['mentors', 'mentors'],
 																['group_members', 'group_members'],
 																['reviewers', 'reviewers'],
-																['interviewers', 'interviewers']]) %>
+																['interviewers', 'interviewers']]), data: {select_toggle: "#send_email_10689_functions"}, class: 'toggleable' %>
 			
 	</div>
 
 	<div id="send_email_<%= @task.id %>_functions" style="display:none">
+		<%# style="display:none" %>
 		
 		<% 
 		@apps = []
-		@task.application_status_types.each{|t| @apps << @offering.applications_with_status(t.name)}
+		@task.application_status_types_array.each{|t| @apps << @offering.applications_with_status(t.name)}
 		@apps = @apps.flatten.uniq
 		%>
 
@@ -36,5 +37,3 @@
 	</div>
 
 </form>
-
-<%= observe_form "send_email_form", :function => "$('send_email_#{@task.id}_functions').show()" %>

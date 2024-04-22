@@ -1,0 +1,5 @@
+<center>
+	<%= button_to "Switch to this Phase", admin_apply_phase_switch_path(@offering, @phase), class: 'small' %>
+
+	<small class="grey"><b>Current Phase:</b> <%= @offering.current_offering_admin_phase.name rescue "None" %></small>
+</center>

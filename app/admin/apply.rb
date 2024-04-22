@@ -1,14 +1,14 @@
   ActiveAdmin.register_page "Apply" do
   menu false
   
-  breadcrumb do 
+  breadcrumb do
   	breadcrumbs = [
       link_to('Expo', "/expo"), 
       link_to('Online Applications', '/expo/admin/offerings'),
-      link_to(controller.instance_variable_get(:@offering).title, "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}")
+      link_to(controller.instance_variable_get(:@offering).title, "/expo/admin/apply/#{controller.instance_variable_get(:@offering).id}")
     ]
 
-    if controller.respond_to?(:task)      
+    if controller.instance_variable_get(:@phase)
       task_link = link_to(controller.instance_variable_get(:@phase).name, "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}/phases/#{controller.instance_variable_get(:@phase).id}")
       breadcrumbs << task_link
     end
@@ -18,8 +18,9 @@
 
   controller do    
   	before_action :fetch_offering
-  	before_action :fetch_apps, only: [:list]
-    before_action :fatch_phase, only: [:task, :mass_update]    
+  	before_action :fetch_apps, only: [:awardees]
+    before_action :fatch_phase, only: [:task, :mass_update]
+    before_action :fetch_confirmers, :only => [:invited_guests, :nominated_mentors, :theme_responses, :proceedings_requests, :scored_selection]
 
   	def manage
   		@phase = @offering.current_offering_admin_phase
@@ -28,9 +29,14 @@
   	def list
   	end
 
-    # def awardees
-  		
-    # end
+    def awardees
+      @awardees = @apps.select{|a| a.awarded? }
+      
+      respond_to do |format|
+        format.html # awardees.html.erb
+        # format.xls { render :action => 'awardees', :layout => 'basic' } # awardees.xls.erb
+      end  		
+    end
 
     def phase      
       @phase = @offering.phases.find params[:id]
@@ -57,7 +63,6 @@
 
     def show
       @app = @offering.application_for_offerings.find params[:id]
-
       if params['section']
         respond_to do |format|
           format.html { return redirect_to :action => :show, :anchor => params[:section] }
@@ -80,6 +85,196 @@
       send_file(file_path, x_sendfile: true) unless file_path.nil?
     end
 
+    def switch_to
+      @phase = OfferingAdminPhase.find params[:id]
+      @offering.current_offering_admin_phase = @phase
+      @offering.save
+      redirect_to :action => "phase", :id => @phase
+    end
+
+    def mass_assign_reviewers
+      session[:return_to_after_email_queue] = request.referer
+      if params[:new_status] && params[:select] && params[:reviewer]
+        params[:select].each do |klass, select_hash|
+          select_hash.each do |app_id,v|
+            params[:reviewer].each do |reviewer_id,v|
+              app = ApplicationForOffering.find(app_id)
+              if @offering.review_committee.nil?
+                app.add_reviewer(reviewer_id) # add an offering_reviewer
+              else
+                app.add_reviewer(CommitteeMember.find(reviewer_id)) # add a review committee member
+              end
+            end
+          end
+        end
+      end
+      mass_status_change and return if params[:change_status]
+      redirect_to_action = params[:redirect_to_action] || "index"
+      redirect_to session[:return_to_after_email_queue] || url_for(:action => redirect_to_action)
+    end
+
+    def mass_status_change
+      if params[:new_status] && params[:select]
+        params[:select].each do |klass, select_hash|
+          select_hash.each do |app_id,v|
+            ApplicationForOffering.find(app_id).set_status(params[:new_status], false, :force => true) unless params[:new_status].blank?
+          end
+        end
+        session[:return_to_after_email_queue] = request.referer
+        redirect_to admin_communicate_email_queue_index_url and return if EmailQueue.messages_waiting?
+      end
+      redirect_to_action = params[:redirect_to_action] || "index"
+      redirect_to session[:return_to_after_email_queue] || request.referer || url_for(:action => redirect_to_action)
+    end
+
+    def scored_selection
+      @cutoff = params[:cutoff] || nil
+      @updated_apps = []
+      @max_number_of_scores ||= 4
+
+      @committee_mode = @offering.review_committee_submits_committee_score?
+      @attribute_to_update = @committee_mode ? :application_final_decision_type_id : :application_review_decision_type_id
+
+      if params[:details]
+        @app = @offering.application_for_offerings.find(params[:id])
+      end
+
+      if params[:reset]
+        @apps ||= @offering.application_for_offerings.reject{|a| a.reviewers.empty?}
+        @apps.each{|a| a.update_attribute(@attribute_to_update, nil)}
+        redirect_to :action => "scored_selection" and return
+      end
+
+      if params[:cutoff]
+        if @committee_mode
+          yes_option_id = @offering.application_final_decision_types.yes_option.id
+          no_option_id = @offering.application_final_decision_types.no_option.id
+          @apps ||= @offering.application_for_offerings.find(:all, 
+                      :joins => :application_review_decision_type, 
+                      :conditions => { "application_review_decision_types.yes_option" => true })
+          @apps = @apps.sort_by{|x| (x.weighted_combined_score if x.weighted_combined_score > 0) || -1 }.reverse
+          @score_attribute = "weighted_combined_score"
+        else
+          yes_option_id = @offering.application_review_decision_types.yes_option.id
+          no_option_id = @offering.application_review_decision_types.no_option.id
+          @apps ||= @offering.application_for_offerings.reject{|a| a.reviewers.empty?}.sort_by(&:average_score).reverse
+          @score_attribute = "average_score"
+        end
+        for app in @apps
+          if app.instance_eval(@score_attribute) > params[:cutoff].to_f
+            app.update_attribute(@attribute_to_update, yes_option_id)
+            @updated_apps << app
+          else
+            app.update_attribute(@attribute_to_update, no_option_id)
+            @updated_apps << app
+          end
+        end
+        respond_to do |format|
+          format.html { return redirect_to :action => "scored_selection" }
+          format.js { return }
+        end
+      end    
+        
+      if params[:decision_type_id]
+        @app = @offering.application_for_offerings.find(params[:id])
+        @app.update_attribute(@attribute_to_update, params[:decision_type_id])
+      end
+      
+      if params[:review_committee_notes]
+        @app = @offering.application_for_offerings.find(params[:id])
+        @app.update_attribute(:review_committee_notes, params[:review_committee_notes])
+      end
+      
+      if params[:final_committee_notes]
+        @app = @offering.application_for_offerings.find(params[:id])
+        @app.update_attribute(:final_committee_notes, params[:final_committee_notes])
+      end
+      
+      if params[:requested_quarter] || params[:amount_requested] || params[:amount_awarded]
+        @app = @offering.application_for_offerings.find(params[:id])
+        
+        for id,quarter in params[:requested_quarter]
+          @app.awards.find(id).update_attribute(:requested_quarter_id, quarter)
+        end
+        
+        for id,amount in params[:amount_requested]
+          @app.awards.find(id).update_attribute(:amount_requested, amount)
+        end
+        
+        for id,amount in params[:amount_awarded]
+          @app.awards.find(id).update_attribute(:amount_awarded, amount)
+        end
+      
+        @updated_apps << @app
+      end
+    
+      respond_to do |format|
+        format.html {
+          if @committee_mode
+            @apps ||= @offering.application_for_offerings.joins(:application_review_decision_type).where("application_review_decision_types.yes_option == true")                                              
+            @apps = @apps.sort_by{|x| (x.weighted_combined_score if x.weighted_combined_score > 0) || -1 }.reverse
+            @max_number_of_scores = 4
+            @cutoff = 1000 if @cutoff.nil?
+          else
+            @apps ||= @offering.application_for_offerings.reject{|a| a.reviewers.empty?}.sort_by{|a| a.average_score.to_s=="NaN" ? 0.0 : a.average_score}.reverse
+            @max_number_of_scores ||= @apps.collect{|a| a.reviewers.size}.max
+            @cutoff = 1000 if @cutoff.nil?
+          end
+        }
+        format.js 
+      end
+    end
+
+    def invited_guests      
+      @invited_guests = @confirmers.collect(&:guests).flatten.compact
+      @not_mailed = @invited_guests.select{ |g| !g.invitation_mailed? }
+      @mailed = @invited_guests.select{ |g| g.invitation_mailed? }.sort_by(&:invitation_mailed_at)
+    end
+
+    def nominated_mentors      
+      @nominees = {}
+      @offering.mentor_types.each{|t| @nominees[t.application_mentor_type] = {}}
+      for nominator in @confirmers.reject{|c| c.nominated_mentor.nil? }
+        mentor = nominator.nominated_mentor
+        if mentor.person
+          if @nominees[mentor.mentor_type][mentor.person].nil?
+            @nominees[mentor.mentor_type][mentor.person] = [nominator]
+          else
+            @nominees[mentor.mentor_type][mentor.person] << nominator
+          end
+        end
+      end
+      @nominees.sort{|x,y| x.size <=> y.size }
+      respond_to do |format|
+        format.html # nominated_mentors.html.erb
+        format.xls { render :action => 'nominated_mentors', :layout => 'basic' } # nominated_mentors.xls.erb
+      end
+    end
+  
+    def theme_responses
+      # session[:breadcrumbs].add(@offering.theme_response_title || "Theme Responses")
+      @theme_responders = @confirmers.reject{|c| c.theme_response.blank? }
+      @theme2_responders = @confirmers.reject{|c| c.theme_response2.blank? }
+      respond_to do |format|
+        format.html # theme_response.html.erb
+        format.xls { render :action => 'theme_responses', :layout => 'basic' } # theme_response.xls.erb
+      end
+    end
+    
+    def proceedings_requests      
+      @proceedings_requests = @confirmers.collect(&:requests_printed_program).flatten.compact
+    end
+    
+    def special_requests      
+      @special_requests = @offering.application_for_offerings.find(:all, :conditions => "confirmed = 1 AND special_requests != ''")
+      
+      respond_to do |format|
+        format.html
+        format.xls  { render :action => 'special_requests', :layout => 'basic' }
+      end
+    end
+
+
   	protected
   
     def fetch_offering
@@ -93,24 +288,33 @@
       @apps ||= @offering.application_for_offerings.sort_by(&:fullname)
     end
 
+    # Retrieve all applications and group members for this offering who have confirmed.
+    def fetch_confirmers
+      @confirmers = @offering.application_for_offerings.find(:all, :conditions => { :confirmed => true })
+      @confirmers << @offering.application_group_members.find(:all, :conditions => { :confirmed => true })
+      @confirmers.flatten!
+    end
+
     def fatch_phase
       @phase = @offering.phases.find(params[:phase])
     end
 	  
   end 
   
-  sidebar "Quick Access", only: [:list, :show, :manage, :phase, :task] do
-
+  sidebar "Quick Access" do
+    render "admin/apply/sidebar/quick_access"
   end 
-  sidebar "Filter", only: [:list, :show, :manage] do
-      
+  sidebar "Application Search", only: [:show, :manage, :awardees] do
+    # h2 "<i class=mi>search</i>Application Search".html_safe
+    render "admin/apply/sidebar/search"
   end
   sidebar "Task for this Phase", only: [:phase, :task] do
     render "admin/apply/phases/tasks/sidebar/tasks" 
   end
   sidebar "Switch to this Phase", only: [:phase] do
-      
+    render "admin/apply/phases/sidebar/switch_to_phase"
   end
+
 
 
 end

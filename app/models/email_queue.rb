@@ -39,8 +39,8 @@ class EmailQueue < ApplicationRecord
 
   # Returns the messages in the queue. By default, this is based only on messages queued by the
   # current user. Pass ":all" as the first parameter to get all messages.
-  def self.messages(select = :current_user)
-    conditions = (select == :current_user && User.current_user) ? { :creator_id => User.current_user.id } : { }
+  def self.messages(select = :current_user)    
+    conditions = (select == :current_user && User.current_user) ? { :creator_id => User.current_user.id } : { creator_id: select.id}    
     EmailQueue.where(conditions)
   end
   
