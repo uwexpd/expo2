@@ -34,7 +34,7 @@
 	<% end %>
 	
 	<% unless @offering.guest_postcard_layout.blank? %>
-		<li><%= link_to "Invited Guests", admin_apply_invited_guests_path(@offering) %></li>
+		<li><%= link_to "<i class='mi'>people_outline</i> Invited Guests".html_safe, admin_apply_invited_guests_path(@offering) %></li>
 	<% end -%>
 	
 	<% unless @offering.nomination_instructions.blank? %>
