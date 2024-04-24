@@ -18,7 +18,7 @@ ActiveAdmin.register OfferingSession, as: 'sessions' do
 
   index do
   	selectable_column
-  	column ('ID') {|session| span session.identifier, class: 'tag' }
+  	column ('ID') {|session| span session.identifier, class: 'session_identifier tag' unless session.identifier.empty? }
 	column ('Title') {|session| link_to session.title, admin_offering_session_path(offering, session) }
 	column ('Moderator') {|session| session.moderator ? link_to(session.moderator.person.fullname, admin_committee_member_path(offering.moderator_committee_id, session.moderator)) : '<span class=light>None assigned</span>'.html_safe }
 	column :location
@@ -29,7 +29,11 @@ ActiveAdmin.register OfferingSession, as: 'sessions' do
 
   show do 
   	attributes_table do
-	    row ('Title'){|session| raw session.title }
+  		identifier = 
+	    row ('Title') do |session| 
+	    	span raw(session.title)
+	    	span " <span class='session_identifier tag'>#{session.identifier}</span>".html_safe unless session.identifier.empty?
+	    end
         row ('Moderator'){|session| session.moderator ? session.moderator.person.fullname : '<span class=light>None Assigned</span>'.html_safe  }
         row :location
         row ('Start Time'){|session| session.start_time.to_s(:time12) }
@@ -37,7 +41,29 @@ ActiveAdmin.register OfferingSession, as: 'sessions' do
         row ('Application Type'){|session| session.application_type.title }
         row :session_group
         row ('finalized?'){|session| status_tag session.finalized }
-	end  	
+	end
+	panel "Presenters" do
+	  div :class => 'content-block' do
+		table_for sessions.presenters do
+			if sessions.application_type.title == "Oral Presentation" 
+				column ("Moderator's <br>Order".html_safe){|presenter| presenter.offering_session_order }
+			end
+			column("Student"){|presenter| link_to presenter.fullname, admin_student_path(presenter.person)}
+			column("Project Title"){|presenter| link_to sanitize(presenter.project_title), admin_offering_application_path(offering, presenter)}
+			if sessions.moderator
+				column("Moderator/Review <br>Decision".html_safe){|presenter| presenter.application_moderator_decision_type.try(:title)||app.application_review_decision_type.title rescue "<span class=light>No decision yet.</span>".html_safe }
+			end
+			column("Mentor Department"){|presenter| presenter.academic_department || presenter.mentor_department }
+			if sessions.uses_location_sections?
+				column ('Location Section'){|presenter| presenter.location_section.title if presenter.location_section }
+			end
+			if sessions.easel_numbers_assigned?
+				column ('Easel Number'){|presenter| presenter.easel_number}
+			end
+		end
+	  end
+	end
+
   end
 
   form do |f|
@@ -56,6 +82,10 @@ ActiveAdmin.register OfferingSession, as: 'sessions' do
 	    f.input :uses_location_sections, label: 'This session uses location sections to further divide presenters'
 	  end
 	  f.actions
+   end
+
+   sidebar "Add Person to Session", only: [:show] do 
+   	
    end
 
   filter :title
