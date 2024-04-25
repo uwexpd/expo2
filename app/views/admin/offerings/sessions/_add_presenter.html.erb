@@ -1,0 +1,13 @@
+<%# <span id="add_presenter_message" class="error-message"></span> %>
+
+<div class='panel_contents'>
+	<div class='content-block'>
+		<%= form_for :presenter, url: add_presenter_admin_offering_session_path(offering, session), method: :put do |f| %>
+
+			Application ID: <%= f.text_field :app_id %>
+			
+			<%= f.submit "Add", class: 'button small' %>
+			
+		<% end %>		
+	</div>
+</div>

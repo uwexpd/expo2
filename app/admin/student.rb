@@ -146,7 +146,7 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
                 table_for(collection, sortable: false) do            
                   column('Date'){|contact| contact.updated_at}
                   column('From'){|contact| contact.email_from unless contact.email.nil?}
-                  column('Subject'){|contact| contact.email.subject.force_encoding('UTF-8') unless contact.email.nil?}
+                  column('Subject'){|contact| encode_utf(contact.email.subject) unless contact.email.nil?}
                   column('View'){|contact| link_to "View", admin_contact_history_path(contact), target: "_blank"}
                 end
               end

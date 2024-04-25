@@ -121,7 +121,7 @@
           end
         end
         session[:return_to_after_email_queue] = request.referer
-        redirect_to admin_communicate_email_queue_index_url and return if EmailQueue.messages_waiting?
+        redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
       end
       redirect_to_action = params[:redirect_to_action] || "index"
       redirect_to session[:return_to_after_email_queue] || request.referer || url_for(:action => redirect_to_action)

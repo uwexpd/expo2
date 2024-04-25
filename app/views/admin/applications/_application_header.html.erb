@@ -10,7 +10,7 @@
 					Application ID: <span class="highlight"><%= app.id %></span>
 					</span>
 					<h4 style="padding-bottom:0.5rem;">
-				  <%= app.project_title.blank? ? "<font class=gray>(no title)</font>".html_safe : strip_tags(app.project_title) %></h3>
+				  <%= app.project_title.blank? ? "<font class=gray>(no title)</font>".html_safe : strip_tags(encode_utf(app.project_title)) %></h3>
 				  
 
 					<span class="light right smaller" id="composite_report_maker_button">
