@@ -15,6 +15,41 @@ ActiveAdmin.register OfferingSession, as: 'sessions' do
   	
   end
 
+  member_action :add_presenter, method: :put do
+  	@offering = Offering.find(params[:offering_id])
+  	@session = @offering.sessions.find(params[:id])
+    @app = @offering.application_for_offerings.find(params[:presenter][:app_id]) rescue nil
+    
+    if @app.nil?
+      flash[:alert] = "Could not find an application with that ID."
+    elsif @session.presenters.include?(@app)
+      flash[:alert] = "That presenter is already part of this session."
+    elsif @app.update(offering_session_id: @session.id)
+      flash[:notice] = "Successfully added presenter, #{@app.fullname}, to session."
+    else
+      flash[:alert] = "Error adding presenter to session."
+    end
+        
+    respond_to do |format|
+        format.html { redirect_to admin_offering_session_path(@offering, @session) }
+    end
+  end
+
+  member_action :remove_presenter, method: :delete do
+  	@offering = Offering.find(params[:offering_id])
+  	@session = @offering.sessions.find(params[:id])
+    @app = @offering.application_for_offerings.find(params[:app_id])
+    
+    respond_to do |format|
+      if @app.update(offering_session_id: nil)
+        format.js { render js: "$('.delete').bind('ajax:success', function() {$(this).closest('tr').fadeOut(800);});"}
+      else
+        flash[:error] = "Error removing presenter from session."
+        format.html { redirect_to admin_offering_session_path(@offering, @session) }
+      end
+    end
+  end
+
 
   index do
   	selectable_column
@@ -28,8 +63,7 @@ ActiveAdmin.register OfferingSession, as: 'sessions' do
   end
 
   show do 
-  	attributes_table do
-  		identifier = 
+  	attributes_table do  		
 	    row ('Title') do |session| 
 	    	span raw(session.title)
 	    	span " <span class='session_identifier tag'>#{session.identifier}</span>".html_safe unless session.identifier.empty?
@@ -41,29 +75,29 @@ ActiveAdmin.register OfferingSession, as: 'sessions' do
         row ('Application Type'){|session| session.application_type.title }
         row :session_group
         row ('finalized?'){|session| status_tag session.finalized }
-	end
-	panel "Presenters" do
-	  div :class => 'content-block' do
-		table_for sessions.presenters do
-			if sessions.application_type.title == "Oral Presentation" 
-				column ("Moderator's <br>Order".html_safe){|presenter| presenter.offering_session_order }
-			end
-			column("Student"){|presenter| link_to presenter.fullname, admin_student_path(presenter.person)}
-			column("Project Title"){|presenter| link_to sanitize(presenter.project_title), admin_offering_application_path(offering, presenter)}
-			if sessions.moderator
-				column("Moderator/Review <br>Decision".html_safe){|presenter| presenter.application_moderator_decision_type.try(:title)||app.application_review_decision_type.title rescue "<span class=light>No decision yet.</span>".html_safe }
-			end
-			column("Mentor Department"){|presenter| presenter.academic_department || presenter.mentor_department }
-			if sessions.uses_location_sections?
-				column ('Location Section'){|presenter| presenter.location_section.title if presenter.location_section }
-			end
-			if sessions.easel_numbers_assigned?
-				column ('Easel Number'){|presenter| presenter.easel_number}
-			end
 		end
-	  end
-	end
-
+		panel "Presenters", id: 'presenters' do
+		  div :class => 'content-block' do
+			table_for sessions.presenters do
+				if sessions.application_type.title == "Oral Presentation" 
+					column ("Moderator's <br>Order".html_safe){|presenter| presenter.offering_session_order }
+				end
+				column("Student"){|presenter| link_to presenter.fullname, admin_student_path(presenter.person)}
+				column("Project Title"){|presenter| link_to encode_utf(presenter.project_title), admin_offering_application_path(offering, presenter)}
+				if sessions.moderator
+					column("Moderator/Review <br>Decision".html_safe){|presenter| presenter.application_moderator_decision_type.try(:title)||app.application_review_decision_type.title rescue "<span class=light>No decision yet.</span>".html_safe }
+				end
+				column("Mentor Department"){|presenter| presenter.academic_department || presenter.mentor_department }
+				if sessions.uses_location_sections?
+					column ('Location Section'){|presenter| presenter.location_section.title if presenter.location_section }
+				end
+				if sessions.easel_numbers_assigned?
+					column ('Easel Number'){|presenter| presenter.easel_number}
+				end
+				column('Functions'){|presenter| link_to "<i class='mi md-20'>delete</i>".html_safe, remove_presenter_admin_offering_session_path(offering, presenter.offering_session, app_id: presenter), method: :delete, data: { confirm:'Are you sure you want to remove this presenter?', remote: true}, class: 'delete' } 
+			end
+		  end
+		end
   end
 
   form do |f|
@@ -84,9 +118,9 @@ ActiveAdmin.register OfferingSession, as: 'sessions' do
 	  f.actions
    end
 
-   sidebar "Add Person to Session", only: [:show] do 
-   	
-   end
+  sidebar "Add Person to Session", only: [:show] do 
+   	render 'admin/offerings/sessions/add_presenter', {offering: offering, session: sessions}
+  end
 
   filter :title
   # filter :moderator_id

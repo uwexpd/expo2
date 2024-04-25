@@ -19,8 +19,6 @@ Rails.application.routes.draw do
     get 'admin/apply/:offering/theme_responses', to: 'admin/apply#theme_responses', as: :admin_apply_theme_responses
     get 'admin/apply/:offering/proceedings_requests', to: 'admin/apply#proceedings_requests', as: :admin_apply_proceedings_requests
     get 'admin/apply/:offering/special_requests', to: 'admin/apply#special_requests', as: :admin_apply_special_requests
-
-
     get 'admin/apply/:offering/phases/:id', to: 'admin/apply#phase', as: :admin_apply_phase
     post 'admin/apply/:offering/phases/:id', to: 'admin/apply#switch_to', as: :admin_apply_phase_switch
     get 'admin/apply/:offering/phases/:phase/tasks/:id', to: 'admin/apply#task', as: :admin_apply_phase_task
@@ -28,7 +26,8 @@ Rails.application.routes.draw do
     get 'admin/apply/:offering/phases/:phase/tasks/:id', to: 'admin/apply#mass_assign_reviewers', as: :admin_apply_assign_reviewer
     post 'admin/apply/:offering/phases/:phase/tasks/:id', to: 'admin/apply#mass_status_change', as: :admin_apply_change_status
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
-    get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter        
+    get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter
+    # End of Admin Apply
     post 'admin/base/vicarious_login', to: 'admin/base#vicarious_login', as: :admin_vicarious_login
     get 'admin/base/remove_vicarious_login', to: 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
     get 'admin/application_for_offerings', to: 'admin/applications#index'
