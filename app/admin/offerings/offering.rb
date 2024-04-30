@@ -39,16 +39,31 @@ ActiveAdmin.register Offering do
   end  
   
   sidebar "Applications", only: :show do
-    i 'list_alt', :class => 'mi'
-    link_to "Manage student applications (#{offering.valid_status_applications.size})", admin_apply_manage_path(offering)
-    # div class: "information" do
-    #   span link_to "<i class='material-icons md-32'>list_alt</i>Manage student applications (#{offering.valid_status_applications.size})".html_safe, admin_apply_manage_path(offering)
-    # end
+    ul class: 'link-list' do
+      li do 
+        span link_to "<i class='mi'>list_alt</i> Manage student applications (#{offering.valid_status_applications.size})".html_safe, admin_apply_manage_path(offering)
+      end
+    end    
   end
 
   sidebar "More Settings", only: :show do
-    i 'co_present', :class => 'mi'
-    link_to "Event Sessions (#{offering.sessions.size})", admin_offering_sessions_path(offering)
+    ul class: 'link-list' do
+      li do        
+        span link_to "<i class='mi'>label</i> Application Type (#{offering.application_types.size})".html_safe, admin_offering_application_types_path(offering)
+      end
+      li do
+        span link_to "<i class='mi'>category</i> Application Category (#{offering.application_categories.size})".html_safe, admin_offering_application_categories_path(offering)
+      end
+      li do
+        span link_to "<i class='mi'>co_present</i> Presenter Sessions (#{offering.sessions.size})".html_safe, admin_offering_sessions_path(offering)
+      end
+      li do
+        span link_to "<i class='mi'>person_pin_circle</i> Location Sections (#{offering.location_sections.size})".html_safe, admin_offering_location_sections_path(offering)
+      end
+      li do
+        span link_to "<i class='mi'>auto_awesome</i> Other Award Types (#{offering.other_award_types.size})".html_safe, admin_offering_other_award_types_path(offering)
+      end
+    end
   end
 
   sidebar "Offering Settings", only: :edit do

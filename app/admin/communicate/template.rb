@@ -9,6 +9,7 @@ ActiveAdmin.register TextTemplate, as: 'template'  do
   index do
     column ('Name') {|template| link_to template.title, admin_template_path(template) }
     column ('Subject') {|template| template.subject if template.subject}
+    column ('Created At') {|template| "#{time_ago_in_words template.created_at} ago"}
     actions
   end
 

@@ -63,7 +63,7 @@ ActiveAdmin.register OfferingSession, as: 'sessions' do
   end
 
   show do 
-  	attributes_table do  		
+  	attributes_table do
 	    row ('Title') do |session| 
 	    	span raw(session.title)
 	    	span " <span class='session_identifier tag'>#{session.identifier}</span>".html_safe unless session.identifier.empty?

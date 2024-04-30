@@ -39,14 +39,15 @@ ActiveAdmin.register Event do
       #f.input :capacity, :input_html => { :style => 'width:25%;' }
       f.input :unit, label: 'Sponsor', as: :select, include_blank: false, required: true
       f.input :event_type_id, as: :select, collection: EventType.all.sort
-      f.input :offering_id, as: :select, collection: Offering.order('id DESC').map{|o| [o.title, o.id]}, :input_html => { :class => 'chosen-select' }
+      default_offering_id = params[:offering_id] if params[:offering_id].present?
+      f.input :offering_id, as: :select, collection: Offering.order(id: :desc).map{|o| [o.title, o.id]}, selected: default_offering_id, input_html: { class: 'chosen-select' }
         div 'Optionally link this event to an offering.', class: 'caption'
-      f.input :confirmation_email_template_id, label: 'Confirmation Email', as: :select, collection: EmailTemplate.all.sort, :input_html => { :class => 'chosen-select' }
+      f.input :confirmation_email_template_id, label: 'Confirmation Email', as: :select, collection: EmailTemplate.order(id: :desc), :input_html => { :class => 'chosen-select' }
         div 'If you select an e-mail template here, an email will be sent to users when they RSVP that they
   			are going to attend this event.', class: 'caption'
-      f.input :reminder_email_template_id, label: 'Reminder Email', as: :select, collection: EmailTemplate.all.sort, :input_html => { :class => 'chosen-select' }
+      f.input :reminder_email_template_id, label: 'Reminder Email', as: :select, collection: EmailTemplate.order(id: :desc), :input_html => { :class => 'chosen-select' }
         div 'If you select an e-mail template here, an reminder email will be sent to attending users a day before.', class: 'caption'
-      f.input :staff_signup_email_template_id, label: 'Staff Email', as: :select, collection: EmailTemplate.all.sort, :input_html => { :class => 'chosen-select' }
+      f.input :staff_signup_email_template_id, label: 'Staff Email', as: :select, collection: EmailTemplate.order(id: :desc), :input_html => { :class => 'chosen-select' }
         div 'If you select an e-mail template here, an email will be sent to staff volunteers when they select
   			a position and shift time to volunteer.', class: 'caption'
       div class: 'input' do
