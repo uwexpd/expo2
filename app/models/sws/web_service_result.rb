@@ -210,7 +210,7 @@ class WebServiceResult
   # Encapsulates the raw data from the service into a Nokogiri::XML object. Override in subclasses to do something else. 
   # Update: Changed to parse JSON
   def self.encapsulate_data(raw_data)
-    return nil if raw_data.empty?
+    return nil if raw_data.nil? || raw_data.empty?
     raw_data = clean raw_data
     JSON.parse raw_data
     #Nokogiri::XML(raw_data)

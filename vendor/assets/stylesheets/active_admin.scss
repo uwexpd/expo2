@@ -115,6 +115,12 @@ For example, to change the default status-tag color: */
 	width:50%;
 }
 
+.section_color{
+	padding: 4px;
+	color: white;
+}
+
+
 br.clear {
 	clear: both;
 }
@@ -893,13 +899,6 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 
 .sidebar_section {
 	padding-bottom: 1rem;
-}
-
-.sidebar_section .information,
-#applications_sidebar_section .panel_contents,
-#more-settings_sidebar_section .panel_contents {
-	padding: 1rem;
-	border-bottom: 1px solid #efefef;
 }
 
 .sidebar_section i {
