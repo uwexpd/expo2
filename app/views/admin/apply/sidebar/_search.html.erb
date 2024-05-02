@@ -1,4 +1,5 @@
-<form method="get" id="q_search" class="filter_form" action="/expo/admin/offerings/<%= @offering.id %>/applications" accept-charset="UTF-8">
+<%= link_to "Toggle", "#", data: {link_toggle: '.filter_form'}, class: "button small right flat toggle", style: 'margin-top: -40px' %>
+<form method="get" class="filter_form" action="/expo/admin/offerings/<%= @offering.id %>/applications" accept-charset="UTF-8">
    <div class="string input optional stringish filter_form_field filter_string select_and_search">
      <label for="q_person_email" class="label">Email</label>
      <input type="text" name="q[person_email_contains]" id="q_email" />

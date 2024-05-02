@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     # -------------------------------------------------------------------------------------------
     # Custom Active Admin Routes
     # -------------------------------------------------------------------------------------------
+    # Admin Apply Actions
     get 'admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
     get 'admin/apply/:offering/list', to: 'admin/apply#list', as: :admin_apply_list
     get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
@@ -23,8 +24,12 @@ Rails.application.routes.draw do
     post 'admin/apply/:offering/phases/:id', to: 'admin/apply#switch_to', as: :admin_apply_phase_switch
     get 'admin/apply/:offering/phases/:phase/tasks/:id', to: 'admin/apply#task', as: :admin_apply_phase_task
     match 'admin/apply/:offering/phases/:phase/tasks/mass_update', to: 'admin/apply#mass_update', as: :admin_apply_phase_task_mass_update, via: [:get, :post]
-    get 'admin/apply/:offering/phases/:phase/tasks/:id', to: 'admin/apply#mass_assign_reviewers', as: :admin_apply_assign_reviewer
-    post 'admin/apply/:offering/phases/:phase/tasks/:id', to: 'admin/apply#mass_status_change', as: :admin_apply_change_status
+    post 'admin/apply/:offering/phases/:phase/tasks/:id/assign_reviewer', to: 'admin/apply#mass_assign_reviewers', as: :admin_apply_assign_reviewer
+    post 'admin/apply/:offering/phases/:phase/tasks/:id/change_status', to: 'admin/apply#mass_status_change', as: :admin_apply_change_status
+    post 'admin/apply/:offering/phases/:phase/tasks/:id/send_reviewer_invite', to: 'admin/apply#send_reviewer_invite_emails', as: :admin_apply_send_reviewer_invite
+    post 'admin/apply/:offering/phases/:phase/tasks/:id/assign_review_decision', to: 'admin/apply#assign_review_decision', as: :admin_apply_assign_review_decision
+    get 'admin/apply/:offering/phases/:phase/tasks/:id/mini_details', to: 'admin/apply#mini_details', as: :admin_apply_mini_details
+
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
     get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter
     # End of Admin Apply
@@ -125,7 +130,7 @@ Rails.application.routes.draw do
     match 'apply/:offering/confirmation/requests', to: 'apply/confirmation#requests', via: [:get, :patch]
 
     # Mentor
-    get 'mentor', to: 'mentor#index'
+    get 'mentor', to: 'mentor#index', as: :mentor
     get 'mentor/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_map
     get 'mentor/offering/:offering_id/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_offering_map
     get 'mentor/offering/:offering_id', to: 'mentor#index', as: :mentor_offering
@@ -155,7 +160,7 @@ Rails.application.routes.draw do
     match 'interviewer/:offering/mark_unavailable', to: 'interviewer#mark_unavailable', via: [:get, :patch]
 
     # Reviewer
-    get 'reviewer/:offering', to: 'reviewer#index', as: :offering_reviewer
+    get 'reviewer/:offering', to: 'reviewer#index', as: :reviewer
     get 'reviewer/:offering/show/:id', to: 'reviewer#show'
     get 'reviewer/:offering/view/:id', to: 'reviewer#view'
     get 'reviewer/:offering/transcript/:id', to: 'reviewer#transcript'

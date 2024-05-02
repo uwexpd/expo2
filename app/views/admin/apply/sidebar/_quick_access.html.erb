@@ -1,11 +1,13 @@
-<ul class="link-list">
+<%= link_to "Toggle", "#", data: {link_toggle: '.collapsable'}, class: "button small right flat toggle" %>
+
+<ul class="link-list collapsable">
 
 	<% if @offering.current_offering_admin_phase %>
 	<li><%= link_to "<i class='mi'>room</i> Current Phase: #{@offering.current_offering_admin_phase.name}".html_safe, 
 					admin_apply_phase_path(@offering, @offering.current_offering_admin_phase) %></li>
-	<% end -%>
+	<% end %>
 
-	<li><%= link_to "<i class='mi'>edit</i> Edit offering details".html_safe, edit_admin_offering_path(@offering) %>
+	<li><%= link_to "<i class='mi'>edit</i> Edit offering details".html_safe, edit_admin_offering_path(@offering) %></li>
 
 	<li><%= link_to "<i class='mi'>list</i> View All Applications".html_safe, admin_offering_applications_path(@offering), :class => 'icon-left list' %></li>
 	<li><%= link_to "<i class='mi'>stars</i> Awardees".html_safe, admin_apply_awardees_path(@offering) %></li>

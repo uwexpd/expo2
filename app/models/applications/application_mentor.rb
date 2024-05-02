@@ -105,7 +105,7 @@ class ApplicationMentor < ApplicationRecord
       if deliver_emails_now
         EmailContact.log person_id, ApplyMailer.mentor_thank_you(self, email_template, self.email, nil, link).deliver_now
       else
-        EmailQueue.queue mentor.person_id, ApplyMailer.create_mentor_status_update(self, email_template, self.email, nil, link)
+        EmailQueue.queue mentor.person_id, ApplyMailer.mentor_status_update(self, email_template, self.email, nil, link).message
       end
     end
   end    

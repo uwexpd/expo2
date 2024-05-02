@@ -212,15 +212,15 @@ class Offering < ApplicationRecord
     res = res.delete_if {|r| app.reviewers.collect(&:person).include?(r.person)}
   end
 
-  # Returns the reviewers for this Offering. If +review_committee+ is set, then we return the members of that committee that
-  # are active for the quarter that this offering is offered. If +review_committee+ is nil, we return the associated OfferingReviewers
-  # that are defined for this Offering. Typically, we use the committee, but this method allows us to still use the old
-  # OfferingReviewer objects if we want to.
+  # Returns the reviewers for this Offering. If +review_committee+ is set, then we return the members of that committee that are active for the quarter that this offering is offered. 
+  # If +review_committee+ is nil, we return the associated OfferingReviewers that are defined for this Offering. Typically, we use the committee, but this method allows us to still use the old OfferingReviewer objects if we want to.
   def reviewers
     if review_committee.nil?
       offering_reviewers
     else
-      review_committee.members.active_for(quarter_offered)
+      # review_committee.members.active_for(quarter_offered)    
+      committee_quarter = CommitteeQuarter.find_by(committee_id: review_committee, quarter_id: quarter_offered)
+      CommitteeMember.active_for(committee_quarter.id)
     end
   end
 
@@ -229,7 +229,9 @@ class Offering < ApplicationRecord
     if interview_committee.nil?
       offering_interviewers
     else
-      interview_committee.members.active_for(quarter_offered)
+      #interview_committee.members.active_for(quarter_offered)
+      committee_quarter = CommitteeQuarter.find_by(committee_id: interview_committee, quarter_id: quarter_offered)
+      CommitteeMember.active_for(committee_quarter.id)
     end
   end
   

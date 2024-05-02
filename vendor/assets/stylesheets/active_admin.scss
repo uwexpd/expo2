@@ -120,7 +120,6 @@ For example, to change the default status-tag color: */
 	color: white;
 }
 
-
 br.clear {
 	clear: both;
 }
@@ -686,6 +685,11 @@ ul.sherlock-buttons{
 
 #sidebar table .toggle-bool-switches-container {
 	text-align: left;
+}
+
+#sidebar .toggle {
+	margin-top:-33px;
+	margin-right:1rem;
 }
 
 ul.link-list {

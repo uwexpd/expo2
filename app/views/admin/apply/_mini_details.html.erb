@@ -1,0 +1,17 @@
+<div class="box">
+	<strong>Student:</strong> <%= @app.fullname %>
+	<br>
+	<strong>Project Title:</strong> <%= strip_tags(encode_utf(@app.project_title)) %>
+	<br>
+	<strong>Current Status:</strong> <%= raw(print_status(@app))  %>
+	
+	<% if params[:show] && params[:show].include?("sessions") && @app.offering_session %>
+	<br>
+	<strong class="warning">Assigned to: <%= @app.offering_session.title %></strong>
+	<% end %>
+
+	<% if params[:show] && params[:show].include?("review_decision") && @app.application_review_decision_type %>
+	<br>
+	<strong class="warning">Review Decision: <%= @app.application_review_decision_type.title %></strong>
+	<% end -%>	
+</div>
