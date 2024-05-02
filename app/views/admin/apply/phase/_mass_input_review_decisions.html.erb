@@ -1,41 +1,48 @@
 <br>
+<span id="assign_reviewer_decision_failure_message" class="warning"></span>
 
-<span id="assign_reviewer_decision_failure_message" class="error-message"></span>
-<span id="assign_reviewer_decision_success_message" class="success-message"></span>
+<%= form_with url: admin_apply_assign_review_decision_path(@offering, @phase, @task), id: 'assign_review_decision_form' do |f| %>
+  Application ID: <%= f.text_field :app_id, id: 'assign_review_decision_app_id' %>
 
-<% remote_form_for :assign_review_decision, 
-				:url => admin_apply_action_url(:offering => @offering, 
-												:action => 'assign_review_decision', 
-												:show => 'review_decision'),
-				:html => { :method => :post },
-				:update => { :success => "app_mini_details", :failure => "assign_reviewer_decision_failure_message" },
-				:success => "$('assign_reviewer_decision_failure_message').update(); 
-							$('assign_reviewer_decision_success_message').update('Successfully assigned review decision.'); 
-							$('assign_review_decision_app_id').clear();
-							$('assign_review_decision_app_id').activate()",
-				:failure => "$('assign_reviewer_decision_success_message').update();",
-				:indicator => true do |f| %>
+  Review Decision:
+  <%= f.collection_select :decision_type_id, @offering.application_review_decision_types, :id, :title, prompt: true %>
 
-	Application ID: <%= f.text_field :app_id, :size => 5 %>
+  <%= f.submit "Assign Review Decision", id: 'assign_review_decision_submit', class: 'small' %>
+<% end %>
 
-	Review Decision: <%= f.collection_select :decision_type_id, 
-											 @offering.application_review_decision_types, 
-											 :id, :title, :include_blank => true %>
+<%#= content_tag :div, id: 'app_mini_details_indicator', class: 'indicator' do %>
+  <%#= image_tag('loading.gif', alt: 'Loading...') %>
+<%# end %>
 
-	<%= f.submit "Assign Review Decision" %>
+<div id="app_mini_details" class="light"></div>
 
-	<%= indicator %>
-
-<% end -%>
-
-<%= observe_field "assign_review_decision_app_id", 
-					:url => admin_app_mini_details_url(@offering, nil),
-					:update => { :success => 'app_mini_details', :failure => "assign_reviewer_decision_failure_message" },
-					:with => "'show=review_decision&id=' + value",
-					:before => "$('app_mini_details').update()",
-					:failure => "$('app_mini_details').update(); $('assign_reviewer_decision_success_message').update();",
-					:indicator => "app_mini_details_indicator"  %>
-
-<%= indicator "app_mini_details_indicator" %>
-<span id="app_mini_details" class="light"></span>
-
+<script>
+$(document).on('change', '#assign_review_decision_app_id', function() {
+    var appId = $(this).val();
+    $.ajax({
+      url: '<%= admin_apply_mini_details_path(@offering, @phase, @task) %>',
+      method: 'GET',
+      data: { app_id: appId, show: 'review_decision' },      
+      beforeSend: function() {
+        $('#app_mini_details').empty();
+      },
+      success: function(response) {
+      	//console.log("Debug => ", response)
+      	if (response && response.trim().length) {
+        	// Update the app_mini_details div with the HTML response
+	        $('#app_mini_details').html(response);
+	        // Clear any failure messages
+	        $('#assign_reviewer_decision_failure_message').empty();
+	    } else {
+	        // Handle case where response is empty or contains error message
+	        $('#app_mini_details').empty();
+	        // Display a failure message
+	        $('#assign_reviewer_decision_failure_message').text('Could not find an application with that ID.');
+	    }
+      },
+      error: function(xhr) {
+        $('#app_mini_details').empty();        
+      }
+    });
+  });
+</script>

@@ -32,7 +32,7 @@ $(function() {
    $(".select2.minimum_input").select2({    
       placeholder: 'Start entering characters',
       minimumInputLength: 2    
-    });
+   });
 
 });
 

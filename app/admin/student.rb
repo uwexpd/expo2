@@ -99,8 +99,8 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
             panel "Community Engagement History" do
               hr class: 'header'
               table_for community_engaged_placements do
-                column ('Quarter'){|placement| placement.course.quarter.title}
-                column ('Course'){|placement| placement.course.title}
+                column ('Quarter'){|placement| placement.course.quarter.title if placement.course }
+                column ('Course'){|placement| placement.course.title if placement.course}
                 column ('Position'){|placement| raw(placement.position.title) + " at " + placement.position.organization.name rescue "error"}
                 column ('Unit'){|placement| placement.position.unit.name}
                 # column (''){|placement| placement.evaluation_submitted? ? "Evaluation" : "Submit Evaluation"}

@@ -196,7 +196,7 @@ class ReviewerController < ApplicationController
   end
 
   def initialize_breadcrumbs
-    add_breadcrumb "Reviewer Interface", offering_reviewer_path(@offering)
+    add_breadcrumb "Reviewer Interface", reviewer_path(@offering)
     add_breadcrumb @offering.name
   end  
 

@@ -1,5 +1,4 @@
 class ApplyMailer < ActionMailer::Base
-# include Rails.application.routes.url_helpers
 
   def status_update(application_for_offering, email_template, recipients, sent_at = Time.now, 
                     link = apply_url(
@@ -77,7 +76,8 @@ class ApplyMailer < ActionMailer::Base
   end
 
   def interviewer_message(offering_interviewer, email_template, offering, 
-                          link = interviewer_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering),
+                          link = interviewer_url(:host => Rails.configuration.constants["base_url_host"], 
+                            :offering => offering),
                           invite_link = interviewer_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering) + "/welcome")
     @subject     = email_template.subject
     @offering_interviewer = offering_interviewer
@@ -96,7 +96,7 @@ class ApplyMailer < ActionMailer::Base
     @link       = link
     @recipients = offering_reviewer.person.email
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now)
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now)    
   end
 
 

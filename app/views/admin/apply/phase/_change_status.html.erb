@@ -11,8 +11,7 @@
 	</div>
 <% end %>
 
-<%= form_for :change_status, 
-			url: admin_apply_change_status_path(@offering, @phase, @task), html: {id: "change_status_form_#{@task.id}"} do |f| %>
+<%= form_with url: admin_apply_change_status_path(@offering, @phase, @task), html: {id: "change_status_form_#{@task.id}"} do |f| %>
 
 <% 
 @apps = []

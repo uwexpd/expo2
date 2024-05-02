@@ -93,7 +93,7 @@
     end
 
     def mass_assign_reviewers
-      session[:return_to_after_email_queue] = request.referer
+      session[:return_to_after_email_queue] = request.referer      
       if params[:new_status] && params[:select] && params[:reviewer]
         params[:select].each do |klass, select_hash|
           select_hash.each do |app_id,v|
@@ -101,9 +101,10 @@
               app = ApplicationForOffering.find(app_id)
               if @offering.review_committee.nil?
                 app.add_reviewer(reviewer_id) # add an offering_reviewer
-              else
+              else                
                 app.add_reviewer(CommitteeMember.find(reviewer_id)) # add a review committee member
               end
+              session[:flash_message_assign_reviewer] = "Successfully add reviwers to selected applications. "
             end
           end
         end
@@ -119,12 +120,92 @@
           select_hash.each do |app_id,v|
             ApplicationForOffering.find(app_id).set_status(params[:new_status], false, :force => true) unless params[:new_status].blank?
           end
-        end
+        end        
+        flash[:notice] = (session[:flash_message_assign_reviewer] if session[:flash_message_assign_reviewer]) + "Successfully update the status to #{params[:new_status]} with selected applications"
+        session[:flash_message_assign_reviewer] = '' if session[:flash_message_assign_reviewer]
         session[:return_to_after_email_queue] = request.referer
         redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
       end
       redirect_to_action = params[:redirect_to_action] || "index"
       redirect_to session[:return_to_after_email_queue] || request.referer || url_for(:action => redirect_to_action)
+    end
+
+    def send_interviewer_invite_emails
+      return false if params[:email_template_id].nil?
+      email_template = EmailTemplate.find(params[:email_template_id])
+      params[:select].each do |klass, select_hash|
+        select_hash.each do |object_id,v|
+          @offering.interviewers.find_all{|r| r.id == object_id.to_i}.each do |i|
+            if i.is_a?(OfferingInterviewer)
+              if email_template.name.downcase.include?("interviewer invite")
+                ufield = "invite_email_contact_history_id"
+              elsif email_template.name.downcase.include?("interviewer interview times")
+                ufield = "interview_times_email_contact_history_id"
+              elsif email_template.name.downcase.include?("interviewer no interviews")
+                ufield = "interview_times_email_contact_history_id"
+              end
+              if ufield
+                command_after_delivery = "OfferingInterviewer.find(#{i.id}).update_attribute('#{ufield}', @email_contact.id)"
+              end
+            end
+            EmailQueue.queue i.person.id,
+                              ApplyMailer.interviewer_message(i, email_template.reload, @offering).message,
+                              nil,
+                              command_after_delivery
+          end
+        end
+      end
+      flash[:notice] = "Successfully queued e-mails to interviewers."
+      session[:return_to_after_email_queue] = request.referer
+      redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
+      redirect_to :back
+    end
+
+    # This method can actually be used to send any emails to reviewers, not just invite emails.
+    def send_reviewer_invite_emails
+      return false if params[:email_template_id].nil?
+      params[:select].each do |klass, select_hash|
+        select_hash.each do |object_id,v|
+          @offering.reviewers.find_all{|r| r.id == object_id.to_i}.each do |r|
+            EmailQueue.queue r.person.id,  ApplyMailer.reviewer_message(r, EmailTemplate.find(params[:email_template_id]), @offering).message
+          end
+        end
+      end
+      flash[:notice] = "Successfully queued e-mails to reviewers."
+      session[:return_to_after_email_queue] = request.referer
+      redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
+      redirect_back(fallback_location: admin_apply_manage_path)
+    end
+
+    def assign_review_decision
+      @app = @offering.application_for_offerings.find(params[:app_id]) rescue nil
+      @review_decision = @offering.application_review_decision_types.find(params[:assign_review_decision][:decision_type_id]) rescue nil
+
+      if @app.nil?
+        flash[:alert] = "Could not find an application with that ID."
+      elsif @review_decision.nil?
+        flash[:alert] = "Could not find review decision type with that ID."
+      elsif @app.update(application_review_decision_type_id: @review_decision.id) && @app.set_status("reviewed")
+        flash[:notice] = "Successfully assigned review decision to application."
+      else
+        flash[:alert] = "Error assigning review decision to application."
+      end
+
+      respond_to do |format|        
+          format.html { redirect_back(fallback_location: admin_apply_manage_path) }        
+      end
+    end
+
+    def mini_details
+      @app = @offering.application_for_offerings.find(params[:app_id]) rescue nil
+
+      respond_to do |format|            
+        if @app.nil?
+          format.js
+        else
+          format.html { render partial: "mini_details" }
+        end
+      end
     end
 
     def scored_selection
@@ -301,10 +382,10 @@
 	  
   end 
   
-  sidebar "Quick Access" do
+  sidebar "Quick Access" do    
     render "admin/apply/sidebar/quick_access"
   end 
-  sidebar "Application Search", only: [:show, :manage, :awardees] do
+  sidebar "Search Application", only: [:show, :manage, :awardees] do
     # h2 "<i class=mi>search</i>Application Search".html_safe
     render "admin/apply/sidebar/search"
   end

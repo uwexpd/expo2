@@ -5,11 +5,11 @@ class Committee < ApplicationRecord
   stampable
   has_many :members, :class_name => "CommitteeMember" do
     def of_type(member_type)
-      find(:all, :conditions => {:committee_member_type_id => member_type.id})
+      where(committee_member_type_id: member_type.id)
     end
-    # def active_for(quarter)
-    #   find_all{|m| m.active_for?(quarter) }
-    # end
+    def active_for(quarter)
+      find_all{|m| m.active_for?(quarter) }
+    end
   end
     
   has_many :committee_quarters do
