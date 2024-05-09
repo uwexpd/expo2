@@ -919,7 +919,7 @@ class ApplicationForOffering < ApplicationRecord
 
   # Returns the ApplicationReviewer object that contains the review committee's score.
   def review_committee_score_object
-    reviewers.find(:first, :conditions => { :committee_score => true }) rescue nil
+    reviewers.where(committee_score: true).first rescue nil
   end
   
   # Returns the interview committee score.
@@ -929,7 +929,7 @@ class ApplicationForOffering < ApplicationRecord
 
   # Returns the OfferingInterviewer object that contains the interview committee's score.
   def interview_committee_score_object
-    interviewers.find(:first, :conditions => { :committee_score => true }) rescue nil
+    interviewers.where(committee_score: true).first rescue nil
   end  
   
   # Returns this student's mailing address based on the selection of local or permanent address during the application process.

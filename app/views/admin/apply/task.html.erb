@@ -33,12 +33,12 @@
 		
 		<div id="phase_task_contents_<%= @task.id %>">
 			<% 
-				#begin 
+				begin 
 					concat render(:partial => "admin/apply/phase/#{@task.display_as}", 
 							:locals => { :phase_task => @task, :task => @task })
-				#rescue => e 
-					#concat "<span class='phase error'>#{e.message}</span>"
-				#end
+				rescue => e 
+					concat "<span class='phase error caption'>#{e.message}</span>".html_safe
+				end
 			%>
 		</div>
 	 </div>
