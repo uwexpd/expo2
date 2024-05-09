@@ -18,9 +18,9 @@
 
   controller do    
   	before_action :fetch_offering
-  	before_action :fetch_apps, only: [:awardees]
+  	before_action :fetch_apps, only: [:list, :awardees]
     before_action :fatch_phase, only: [:task, :mass_update]
-    before_action :fetch_confirmers, :only => [:invited_guests, :nominated_mentors, :theme_responses, :proceedings_requests, :scored_selection]
+    before_action :fetch_confirmers, :only => [:invited_guests, :nominated_mentors, :theme_responses, :proceedings_requests]
 
   	def manage
   		@phase = @offering.current_offering_admin_phase
@@ -179,14 +179,14 @@
 
     def assign_review_decision
       @app = @offering.application_for_offerings.find(params[:app_id]) rescue nil
-      @review_decision = @offering.application_review_decision_types.find(params[:assign_review_decision][:decision_type_id]) rescue nil
+      @review_decision = @offering.application_review_decision_types.find(params[:decision_type_id]) rescue nil
 
       if @app.nil?
         flash[:alert] = "Could not find an application with that ID."
       elsif @review_decision.nil?
         flash[:alert] = "Could not find review decision type with that ID."
       elsif @app.update(application_review_decision_type_id: @review_decision.id) && @app.set_status("reviewed")
-        flash[:notice] = "Successfully assigned review decision to application."
+        flash[:notice] = "Successfully assigned review decision to #{@app.firstname_first}'s application."
       else
         flash[:alert] = "Error assigning review decision to application."
       end
@@ -292,7 +292,7 @@
       respond_to do |format|
         format.html {
           if @committee_mode
-            @apps ||= @offering.application_for_offerings.joins(:application_review_decision_type).where("application_review_decision_types.yes_option == true")                                              
+            @apps ||= @offering.application_for_offerings.joins(:application_review_decision_type).where("application_review_decision_types.yes_option =?", true)
             @apps = @apps.sort_by{|x| (x.weighted_combined_score if x.weighted_combined_score > 0) || -1 }.reverse
             @max_number_of_scores = 4
             @cutoff = 1000 if @cutoff.nil?
@@ -382,7 +382,7 @@
 	  
   end 
   
-  sidebar "Quick Access" do    
+  sidebar "Quick Access", except: [:scored_selection] do    
     render "admin/apply/sidebar/quick_access"
   end 
   sidebar "Search Application", only: [:show, :manage, :awardees] do

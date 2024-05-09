@@ -158,6 +158,22 @@ mark {
 	border-bottom: 1px solid #c0b08b;
 }
 
+table#applicant_selections tr.small th {
+	font-size: smaller;
+}
+
+table#applicant_selections tr.awarded td {
+    background-color: #d9ffdc;    
+}
+
+table#applicant_selections tr.not_awarded td {
+    background-color: #ffeaea;
+}
+
+table#applicant_selections tr.awarded td.awards {
+	min-width: 75px;
+}
+
 body.active_admin {
 	padding-bottom: 0px;
 	
@@ -527,10 +543,10 @@ form .inline-hints {
 	line-height: 1.75rem;	
 }
 
-.panel_contents .offering h1, .panel_contents .committee h1, .panel_contents .apply h1 {
-	font-weight: bold;
-	padding: 1.5rem 1rem 1rem;
-}
+// .panel_contents .offering h1, .panel_contents .committee h1, .panel_contents .apply h1 {
+// 	font-weight: bold;
+// 	padding: 1.5rem 1rem 1rem;
+// }
 
 div.apply {
 	background-color: #f3f8fd;
@@ -1365,3 +1381,21 @@ table tr.table-header:hover, table tr.table-header th:hover {
 tr.not_current td, tr.not_current a {
 	color: #a3a3a3;
 }
+
+.scored_selection h1 {
+	padding-left: 0px;
+}
+
+.scored_selection .spread {
+	text-align: center;
+}
+
+.scored_selection #running-tally .amount {
+	border-right: 1px solid #999;
+    margin-right: 0.5rem;
+    padding-right: 5px;
+}
+
+.scored_selection #running-tally .results {
+	font-size: smaller;
+}	

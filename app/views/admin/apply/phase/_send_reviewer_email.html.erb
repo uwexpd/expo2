@@ -1,5 +1,5 @@
 <%= form_for :send_reviewer_invite_emails, url: admin_apply_send_reviewer_invite_path(@offering, @phase, @task), html: { id: "send_reviewer_invite_emails_#{@task.id}" } do |f| %>
-
+<br>
 	<table class='borderless'>
 		<tr class="small table-header uw_light_bg_gold">
 			<th><%= select_all_check_box :send_reviewer_invite_emails %></th>

@@ -400,15 +400,12 @@ class Offering < ApplicationRecord
   
   # Returns all ApplicationForOfferings who have an ApplicationReviewDecisionType of yes.
   def applications_awarded_by_review_committee
-    application_for_offerings.find(:all, 
-      :conditions => { :application_review_decision_type_id => application_review_decision_types.yes_option.id })
+    application_for_offerings.where(application_review_decision_type_id: application_review_decision_types)    
   end
 
   # Returns all ApplicationForOfferings who have an ApplicationFinalDecisionType of yes.
   def applications_awarded_by_final_committee
-    application_for_offerings.find(:all,
-      :joins => :application_final_decision_type,
-      :conditions => { "application_final_decision_types.yes_option" => true })
+    application_for_offerings.joins(:application_final_decision_type).where("application_final_decision_types.yes_option=?", true)     
   end
   
   # Returns all of the Institutions that have been provided OfferingInvitationCodes.
