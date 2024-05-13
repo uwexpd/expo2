@@ -5,14 +5,11 @@
 
 <%#= render :partial => "cutoff_line", :locals => { :app => @app } %>
 
-<% tdonClick = "" %>
-
 <tr <%= "class=awarded" if @app.application_final_decision_type.yes_option? rescue nil %> <%= "class=not_awarded" if !@app.application_final_decision_type.yes_option? rescue nil %> id="<%= tr_id %>">	
 	
 	<!-- Student name -->
-	<td onClick="<%= tdonClick %>" class="name"><%#= tooltip @app.fullname, @app.project_title %>
-		<%= link_to "#{@app.fullname}", admin_apply_scored_selection_path(:details => 'only', :id => @app), remote: true %>							
-		<%#= indicator "applicant_selection_details_indicator_#{@app.id}" %>
+	<td class="name">
+		<%= link_to "#{@app.fullname}", admin_apply_scored_selection_path(:details => 'only', :id => @app), remote: true, data: {link_toggle: "#applicant_selection_details_#{@app.id}"} %>		
 		<% unless @app.special_notes.blank? %>
 			<span class="tooltip"><i class='mi top_align md-20 uw_purple'>note</i>
 				<span class="tooltiptext"><%= @app.special_notes %></span>
@@ -21,23 +18,23 @@
 	</td>
 
 	<!-- Average score -->
-	<td onClick="<%= tdonClick %>" class="average_score"><%= '%.2f' % @app.weighted_combined_score %></td>
+	<td class="average_score"><%= '%.2f' % @app.weighted_combined_score %></td>
 
 	<!-- Scores -->
-	<td onClick="<%= tdonClick %>" class="spread">
+	<td class="spread">
 		<span class="tooltip"><%= @app.review_committee_score %>
 			<span class="tooltiptext"><%= @app.review_committee_score_object.try(:comments) %></span>
 		</span>
 	</td>
 
-	<td onClick="<%= tdonClick %>" class="score" align="left"><small class="gray"><%= @app.review_committee_decision %></small></td>
+	<td class="score" align="left"><small class="gray"><%= @app.review_committee_decision %></small></td>
 	
-	<td onClick="<%= tdonClick %>" class="spread">
+	<td class="spread">
 		<span class="tooltip"><%= @app.interview_committee_score %>
 			<span class="tooltiptext"><%= @app.interview_committee_score_object.try(:comments) %></span>
 		</span>		
 	
-	<td onClick="<%= tdonClick %>" class="score" align="left"><small class="gray"><%= @app.interview_committee_decision %></small></td>
+	<td class="score" align="left"><small class="gray"><%= @app.interview_committee_decision %></small></td>
 	
 	<!-- Award List -->
 	<td class="awards">
@@ -52,64 +49,113 @@
 												:confirm => "Are you sure you want to set the cut-off? This will override any other changes that you've made." %></td>
 	
 	<!-- Decision Radio Buttons -->
-	<td class="decision"><% for decision_type in @offering.application_final_decision_types %>
+	<td class="decision">		
+		<span class='right'><%= image_tag('loading.gif', id: "indicator_#{@app.id}", class: 'loading', style: 'display: none;') %></span>
+		<% for decision_type in @offering.application_final_decision_types %>		    
 			<%= radio_button_tag "application_final_decision_type_id[#{@app.id}]", 
 								 decision_type.id,
 								 @app.application_final_decision_type == decision_type %>
 			<%= decision_type.title[0,1] %>
-			
-			<%#= observe_field "application_final_decision_type_id_#{@app.id}_#{decision_type.id}",
-			 					:url => { :action => :scored_selection, :id => @app },
-								:with => 'decision_type_id',
-								:indicator => true %>
-			
-		<% end -%>
+
+			<script>
+			 $(document).ready(function() {
+			   $("#application_final_decision_type_id_<%= @app.id %>_<%= decision_type.id %>").change(function() {
+			     let string = $(this).attr('name');
+			     let appId = string.match(/\[(\d+)\]/)[1];
+			     let decisionTypeId = $(this).val();
+			     $('#indicator_<%= @app.id %>').show();
+			     $.ajax({
+			       url: 'scored_selection',
+			       method: 'POST',
+			       data: { id: appId, decision_type_id: decisionTypeId },
+			       dataType: 'script',
+			       success: function(response) {
+			         // Handle success response
+			       	 $('#indicator_<%= @app.id %>').hide();
+			       },
+			       error: function(xhr, status, error) {
+			         // Handle error
+			       	 $('#indicator_<%= @app.id %>').hide();
+			       }
+			     });
+			   });
+			 });
+			</script>
+		<% end %>
 		
-		<%= radio_button_tag "application_final_decision_type_id[#{@app.id}]", 
-							 "nil",
-							 @app.application_final_decision_type.nil? %> U
-		
-		<%#= observe_field "application_final_decision_type_id_#{@app.id}_nil",
-		 					:url => { :action => :scored_selection, :id => @app },
-							:with => 'decision_type_id',
-							:indicator => true %>
-		
-		
-		</td>
+		<%= radio_button_tag "application_final_decision_type_id[#{@app.id}]", "nil", @app.application_final_decision_type.nil? %> U
+			<script>
+			 $(document).ready(function() {
+			   $("#application_final_decision_type_id_<%= @app.id %>_nil").change(function() {
+			     let string = $(this).attr('name');
+			     let appId = string.match(/\[(\d+)\]/)[1];
+			     let decisionTypeId = $(this).val();
+			     $('#indicator_<%= @app.id %>').show();   
+			     $.ajax({
+			       url: 'scored_selection',
+			       method: 'POST',
+			       data: { id: appId, decision_type_id: decisionTypeId },
+			       dataType: 'script',
+			       success: function(response) {
+			         // Handle success response
+			         $('#indicator_<%= @app.id %>').hide();		       	 
+			       },
+			       error: function(xhr, status, error) {
+			         // Handle error
+			       	 $('#indicator_<%= @app.id %>').hide();
+			       }
+			     });
+			   });
+			 });
+			</script>
+	</td>
 		
 	<!-- Notes -->
 	<td class="notes">
 		<%= text_field_tag "final_committee_notes[#{@app.id}]",
 		 					@app.final_committee_notes,
 							:size => 15,
-							:id => "final_committee_notes_#{@app.id}",
-							:onKeyPress => "$('notes_autosave_#{@app.id}').hide()" %>
-		
-		<div class="autosave mini">
-			<%#= indicator "notes_autosave_indicator_#{@app.id}" %>
-			<span id="notes_autosave_<%= @app.id %>" style="display:none">Saved.</span>
-		</div>
-		
-		<%#= observe_field "final_committee_notes_#{@app.id}",
-		 					:url => { :action => :scored_selection, :id => @app },
-							:with => "final_committee_notes",
-							:indicator => "notes_autosave_indicator_#{@app.id}" %>
+							:id => "final_committee_notes_#{@app.id}" %>
 				
-		<%#= drop_receiving_element tr_id, 
-									:url => { :action => 'scored_selection', :id => @app.id, :cutoff => @app.average_score + 0.0001 },
-									:hoverclass => 'droppable',
-									:indicator => true %>
+		<span id="notes_autosave_<%= @app.id %>" style="display:none", class='caption'>Saved.</span>
 		
+		<script>
+			 $(document).ready(function() {
+			   $('#final_committee_notes_<%= @app.id %>').on('focus', function() {				    
+				    $('#notes_autosave_<%= @app.id %>').hide();
+			   });
+
+			   $("#final_committee_notes_<%= @app.id %>").change(function() {			     
+			   	 let string = $(this).attr('name');
+			     let appId = string.match(/\[(\d+)\]/)[1];
+			     let note = $(this).val();
+			     $('#indicator_<%= @app.id %>').show();
+			     $.ajax({
+			       url: 'scored_selection',
+			       method: 'POST',
+			       data: { id: appId, final_committee_notes: note },
+			       dataType: 'script',
+			       success: function(response) {
+			         // Handle success response
+			         $('#indicator_<%= @app.id %>').hide();
+			         $('#notes_autosave_<%= @app.id %>').show();
+			       },
+			       error: function(xhr, status, error) {
+			         // Handle error
+			       	 $('#indicator_<%= @app.id %>').hide();
+			       }
+			     });
+			   });
+			 });
+			</script>		
 	</td>
 	
 </tr>
 
-<% unless without_details %>
-	<!-- Toggled "details" pane -->
+<% unless without_details %>	
 	<tr class="details" style="display:none" id="applicant_selection_details_<%= @app.id %>">
 		<td colspan=<%= @max_number_of_scores + 7 %>>
-			<%#= javascript_tag("applicant_selection_details_#{@app.id}_loaded = false") %>
 			Loading...
 		</td>
 	</tr>
-<% end -%>
+<% end %>

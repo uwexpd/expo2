@@ -1370,12 +1370,14 @@ table tr.rowset-header td {
 }
 
 table tr.table-header th {
+	background-color: #e8e3d3 !important;
 	border-top: 1px solid #efefef;
 	border-bottom: 1px solid #aaa;
 }
 
-table tr.table-header:hover, table tr.table-header th:hover {
-	background-color: #e8e3d3 !important;	
+table tbody tr.table-header:hover th {
+	border-top: 1px solid #efefef;
+	border-bottom: 1px solid #aaa;
 }
 
 tr.not_current td, tr.not_current a {
@@ -1398,4 +1400,24 @@ tr.not_current td, tr.not_current a {
 
 .scored_selection #running-tally .results {
 	font-size: smaller;
-}	
+}
+
+tr.details td {
+    // background: url(../images/app/attachedShadow.png) repeat-x;
+    background-color: rgb(225, 225, 235);
+}
+
+.reviewer tr th {
+	background-color: rgb(225, 225, 235);
+    text-shadow: 1px 1px #fff;
+    border-bottom: 1px solid #BDBDBD;
+}
+
+#applicant_selections tr.details:hover th{
+	box-shadow: none;
+	border-bottom: 1px solid #BDBDBD;
+}
+
+.panel_contents table#applicant_selections td img.loading {
+	max-width: 20px;
+}
