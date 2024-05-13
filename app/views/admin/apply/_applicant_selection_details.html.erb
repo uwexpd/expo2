@@ -1,0 +1,134 @@
+
+
+	<td colspan=<%= @max_number_of_scores + 7 %>>
+	
+		<span class="right">
+			<%= link_to "Hide", "#", data: {link_toggle: "#applicant_selection_details_#{@app.id}"}, :class => "hide button small" %>
+		</span>
+	
+		<dl class="inline-definitions">
+		
+			<dt>Project Title</dt>
+			<dd><%= link_to @app.project_title, admin_offering_application_path(@offering, @app.id), target: true %></dd>
+		
+			<dt><%= @app.mentors.size > 1 ? "Mentors" : "Mentor" %></dt>
+			<dd><%= @app.mentors_list("<br>") %></dd>
+		
+			<dt>Exp. Graduation</dt>
+			<dd><%= @app.person.estimated_graduation_quarter.try(:title) %></dd>
+
+			<dt>Other Scholarship</dt>
+			<dd><%= @app.other_scholarship_support %></dd>
+		
+		
+			<% if @committee_mode %>
+
+				<dt>Review Committee</dt>
+				<dd><%= @app.reviewers.without_committee_scores.collect(&:fullname).join(", ") %>
+					<br>
+					<table class="reviewer borderless">
+						<tr class="small">
+							<% for review_criterion in @offering.review_criterions.sort %>
+								<th width=60 class="center" align=center><%= review_criterion.title %></th>
+							<% end -%>
+							<th width=60 class="center">Total</th>
+							<th>Finalized?</th>
+						</tr>
+						<tr>
+							<% if applicant_reviewer = @app.review_committee_score_object %>	
+
+								<% for review_criterion in @offering.review_criterions.sort %>
+									<td class="center">
+										<span class="tooltip"><%= applicant_reviewer.get_score(review_criterion).to_s %>
+											<span class="tooltiptext"><%= raw("Comments:<br>" + simple_format(applicant_reviewer.get_comment(review_criterion))) %></span>
+										</span>
+									</td>
+								<% end -%>
+								<td class="center">
+									<span class="tooltip"><%= applicant_reviewer.total_score.to_s %>
+											<span class="tooltiptext"><%= raw("Comments:<br>" + simple_format(applicant_reviewer.comments)) %></span>
+										</span>
+								</td>
+								<td><%= raw(applicant_reviewer.finalized? ? "<font color=green>Finalized</font>" : "<font color=red>Not finalized</font>") %></td>
+
+							<% end -%>
+						</tr>
+					</table>
+							
+					</dd>
+
+				<dt>Interview Committee</dt>
+				<dd><%= @app.interview.interviewer_list if @app.interview %>
+					<br>
+					<table class="reviewer borderless">
+						<tr class="small">
+							<% for review_criterion in @offering.review_criterions.sort %>
+								<th width=60 class="center" align=center><%= review_criterion.title %></th>
+							<% end -%>
+							<th width=60 class="center">Total</th>
+							<th>Finalized?</th>
+						</tr>
+						<tr>
+							<% if applicant_reviewer = @app.interview_committee_score_object %>	
+
+								<% for review_criterion in @offering.review_criterions.sort %>
+									<td class="center">
+										<span class="tooltip"><%= applicant_reviewer.get_score(review_criterion).to_s %>
+											<span class="tooltiptext"><%= raw("Comments:<br>" + simple_format(applicant_reviewer.get_comment(review_criterion))) %></span>
+										</span>
+									</td>
+								<% end -%>
+								<td class="center">
+									<span class="tooltip"><%= applicant_reviewer.total_score.to_s %>
+											<span class="tooltiptext"><%= raw("Comments:<br>" + simple_format(applicant_reviewer.comments)) %></span>
+									</span>
+								
+								</td>
+								<td><%= raw(applicant_reviewer.finalized? ? "<font color=green>Finalized</font>" : "<font color=red>Not finalized</font>") %></td>
+
+							<% else %>
+								<td colspan=<%= @max_number_of_scores + 7 %>><span class='empty'>No Interview</span></td>
+							<% end %>
+						</tr>
+					</table>
+					</dd>
+
+			<%- else -%>
+
+				<dt>Scores</dt>
+				<dd><div><%= render :partial => "admin/apply/section/review_committee",
+				 					:locals => { :show_final_decision => :false } %>
+					</div></dd>
+
+			<% end -%>			
+		
+			<dt>Quarters</dt>
+			<dd><div>
+				<%= form_tag do -%>
+					<table class='reviewer borderless'>
+						<tr class="small">
+							<th>Quarter</th>
+							<th>Amount Requested</th>
+							<th>Amount Awarded</th>
+						</tr>
+				
+					<% for award in @app.awards.valid %>
+						<tr id="award_<%= award.id %>">
+							<td><%= select_tag "requested_quarter[#{award.id}]",
+									   options_from_collection_for_select(Quarter.current_and_future_quarters(nil, @offering.quarter_offered || Quarter.current_quarter), :id, :title, award.requested_quarter_id.to_i), include_blank: '-- Select Award Quarter--' %></td>						
+							<td><%= text_field_tag "amount_requested[#{award.id}]", award.amount_requested %></td>
+							<td><%= text_field_tag "amount_awarded[#{award.id}]", award.amount_awarded %></td>
+						</tr>
+					<% end -%>
+			
+					</table>
+					<%= hidden_field_tag :id, @app.id %>
+					<%= submit_tag 'Update', class: 'button small' %>
+				<% end %>
+			
+				</div></dd>
+	
+		</dl>
+	
+	</td>
+

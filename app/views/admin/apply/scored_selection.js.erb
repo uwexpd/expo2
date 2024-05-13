@@ -1,0 +1,7 @@
+<% if params[:details] %>
+	$("#applicant_selection_details_<%= @app.id %>").html("<%= j render partial: 'applicant_selection_details' %>");
+<% end %>
+
+<% if params[:decision_type_id] %>    
+	$("#applicant_<%= @app.id %>").replaceWith("<%= j render partial: @committee_mode ? 'applicant_selection_committee' : 'applicant_selection', object: @app %>");
+<% end %>

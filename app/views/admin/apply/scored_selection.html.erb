@@ -2,12 +2,12 @@
   <div class='panel_contents'>
 		<div class='content-block scored_selection'>
 			<h1>Scored Selection 
-				<small class="light">&raquo; <%= @offering.name %> <%= @offering.quarter_offered.title if @offering.quarter_offered %></small>
+				<span class="small light">&raquo; <%= @offering.name %> <%= @offering.quarter_offered.title if @offering.quarter_offered %> &raquo; <%= @apps.size %> applications</span>
 				<small class='right' style="margin-top: -0.3rem;"><%= render "running_tally" %></small>
 			</h1>
 			
+			<% @total_awards_to_here = 0.00 %>
 
-			<% @total_awards_to_here = 0.00 %>			
 			<hr>	
 			<form id="scored_selection_form">
 				

@@ -252,9 +252,9 @@
         end
         respond_to do |format|
           format.html { return redirect_to :action => "scored_selection" }
-          format.js { return }
+          format.js { return }          
         end
-      end    
+      end
         
       if params[:decision_type_id]
         @app = @offering.application_for_offerings.find(params[:id])
@@ -263,29 +263,30 @@
       
       if params[:review_committee_notes]
         @app = @offering.application_for_offerings.find(params[:id])
-        @app.update_attribute(:review_committee_notes, params[:review_committee_notes])
+        @app.update(review_committee_notes: params[:review_committee_notes])
       end
       
       if params[:final_committee_notes]
         @app = @offering.application_for_offerings.find(params[:id])
-        @app.update_attribute(:final_committee_notes, params[:final_committee_notes])
+        @app.update(final_committee_notes: params[:final_committee_notes])
       end
       
       if params[:requested_quarter] || params[:amount_requested] || params[:amount_awarded]
         @app = @offering.application_for_offerings.find(params[:id])
         
         for id,quarter in params[:requested_quarter]
-          @app.awards.find(id).update_attribute(:requested_quarter_id, quarter)
+          @app.awards.find(id).update(requested_quarter_id: quarter)
         end
         
         for id,amount in params[:amount_requested]
-          @app.awards.find(id).update_attribute(:amount_requested, amount)
+          @app.awards.find(id).update(amount_requested: amount)
         end
         
         for id,amount in params[:amount_awarded]
-          @app.awards.find(id).update_attribute(:amount_awarded, amount)
+          @app.awards.find(id).update(amount_awarded: amount)
         end
-      
+        flash[:notice] = "Successfully updated for award quarter, amount requested, and amount awarded for #{@app.firstname_first}"
+
         @updated_apps << @app
       end
     
@@ -302,7 +303,7 @@
             @cutoff = 1000 if @cutoff.nil?
           end
         }
-        format.js 
+        format.js
       end
     end
 
@@ -382,7 +383,7 @@
 	  
   end 
   
-  sidebar "Quick Access", except: [:scored_selection] do    
+  sidebar "Quick Access", except: [:scored_selection] do
     render "admin/apply/sidebar/quick_access"
   end 
   sidebar "Search Application", only: [:show, :manage, :awardees] do

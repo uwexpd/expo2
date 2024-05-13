@@ -21,6 +21,7 @@ class Person < ApplicationRecord
       all.select{|a| !a.offering.open? }
     end
   end
+  belongs_to :estimated_graduation_quarter, :class_name => "Quarter", :foreign_key => "est_grad_qtr"
   has_many :application_mentors     
   has_many :mentee_applications, :through => :application_mentors, :source => :application_for_offering
   has_many :offering_reviewers

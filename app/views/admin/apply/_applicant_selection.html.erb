@@ -7,12 +7,12 @@
 
 <% tdonClick = "" %>
 
-<tr <%= "class='awarded'" if @app.application_review_decision_type.yes_option? rescue nil %> <%= "class='not_awarded'" if !@app.application_review_decision_type.yes_option? rescue nil %> id="<%= tr_id %>">
+<tr <%= "class=awarded" if @app.application_review_decision_type.yes_option? rescue nil %> <%= "class=not_awarded" if !@app.application_review_decision_type.yes_option? rescue nil %> id="<%= tr_id %>">
 		
 	
 	<!-- Student name and project title tooltip -->
 	<td onClick="<%= tdonClick %>" class="name">
-		<%= link_to "#{@app.fullname}", admin_apply_scored_selection_path(:details => 'only', :id => @app), remote: true %>							
+		<%= link_to "#{@app.fullname}", admin_apply_scored_selection_path(:details => 'only', :id => @app), remote: true, data: {link_toggle: "#applicant_selection_details_#{@app.id}"} %>							
 		<%#= indicator "applicant_selection_details_indicator_#{@app.id}" %>
 		<% unless @app.special_notes.blank? %>
 			<span class="tooltip"><i class='mi top_align md-20 uw_purple'>note</i>
@@ -113,8 +113,7 @@
 <% unless without_details %>
 	<!-- Toggled "details" pane -->
 	<tr class="details" style="display:none" id="applicant_selection_details_<%= @app.id %>">
-		<td colspan=<%= @max_number_of_scores + 7 %>>
-			<%#= javascript_tag("applicant_selection_details_#{@app.id}_loaded = false") %>
+		<td colspan=<%= @max_number_of_scores + 7 %>>			
 			Loading...
 		</td>
 	</tr>
