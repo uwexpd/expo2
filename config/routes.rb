@@ -95,7 +95,7 @@ Rails.application.routes.draw do
     get 'login',  to: 'sessions#new'
     match 'logout', to: 'sessions#destroy', via: [:get, :delete]
     match 'sessions/forgot',  to: 'sessions#forgot', via: [:get, :post], as: :sessions_forgot
-    get 'sessions/reset/:user_id/:token', to: 'sessions#reset_password', as: :reset_password
+    match 'sessions/reset/:user_id/:token', to: 'sessions#reset_password', as: :reset_password, via: [:get, :post]
     resources :sessions
     get 'remove_vicarious_login', to: 'application#remove_vicarious_login'
     get 'login_as_student', to: 'application#force_login_as_student', as: :login_as_student

@@ -1,6 +1,17 @@
 // Init tinyMCE
 // tinyMCE.baseURL = '/expo/assets/tinymce/';
 
+function initializeSelect2() {    
+     $(".select2").select2({
+         width: 'resolve'
+     });
+
+     $(".select2.minimum_input").select2({    
+         placeholder: 'Start entering characters',
+         minimumInputLength: 2
+     });
+}
+
 $(function() {
    tinymce.init({
       selector: '.tinymce',
@@ -24,16 +35,10 @@ $(function() {
    // if(!window.location.search.includes('Filter')){ $('div#sidebar').hide(); $('a#toggle_filters').removeClass('epon') }
    if ($('div#sidebar').length == 0){$('a#toggle_filters').hide();}
    $('a#toggle_filters').click(function(){ $('div#sidebar').toggle(); $(this).toggleClass('epon') })
-
-   $(".select2").select2({
-      width: 'resolve'
-    });
-
-   $(".select2.minimum_input").select2({    
-      placeholder: 'Start entering characters',
-      minimumInputLength: 2    
-   });
-
+   
+    // Initial page load
+    initializeSelect2();
+    
 });
 
 $(document).on("change", ".toggleable", function(){

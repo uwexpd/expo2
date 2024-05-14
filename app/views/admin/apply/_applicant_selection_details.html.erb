@@ -96,8 +96,8 @@
 			<%- else -%>
 
 				<dt>Scores</dt>
-				<dd><div><%= render :partial => "admin/apply/section/review_committee",
-				 					:locals => { :show_final_decision => :false } %>
+				<dd><div><%= render :partial => "admin/applications/review_committee",
+				 					:locals => { show_final_decision: :false } %>
 					</div></dd>
 
 			<% end -%>			
