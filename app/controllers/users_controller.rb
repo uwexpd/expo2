@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   def update
     @user = self.current_user
     @user.person.require_validations = true
-    if @user.update_attributes(user_params) && @user.person.save
+    if @user.update(user_params) && @user.person.save
       @user.person.update_attribute(:contact_info_updated_at, Time.now)
       flash[:notice] = "Thanks for updating your profile!"
       redirect_to redirect_to_path || profile_path

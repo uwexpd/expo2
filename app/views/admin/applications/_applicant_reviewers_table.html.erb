@@ -16,7 +16,7 @@
 		<% end %>
 	</tr>
 	
-	<%= render :partial => "applicant_reviewer", :collection => @app.reviewers %>
+	<%= render :partial => "admin/applications/applicant_reviewer", :collection => @app.reviewers %>
 	
 	<% if @offering.uses_scored_review? %>
 	<tr class="total">
@@ -40,7 +40,7 @@
 <br>
 <% unless @offering_reviewers.blank? %>
 	<span id="assign_reviewer" class='left'>
-		<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
+		<%= form_for @app, url: admin_application_path(@app.id), method: 'patch', remote: true do |f| %>
 			<%= f.label :new_reviewer, "Add Another Reviewer:" %>
 			<%= f.collection_select :new_reviewer,
 									@offering_reviewers,
@@ -54,7 +54,7 @@
 <% end %>
 <% unless app_reviewers.blank? %>
 	<span id="drop_reviewer" class='left' style='padding-left: 1rem;'>
-		<%= form_for @app, :url => { :action => 'update', :id => @app.id }, remote: true do |f| %>
+		<%= form_for @app, url: admin_application_path(@app.id), method: 'patch', remote: true do |f| %>
 			<%= f.label :remove_reviewer, "Drop a Reviewer:" %>
 			<%= f.collection_select :remove_reviewer, 
 									@app.reviewers.reject{|r|r.committee_member_id.nil?},

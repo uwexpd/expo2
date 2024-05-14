@@ -1,1 +1,7 @@
 $("#review_committee").html("<%= j render 'review_committee' %>");
+
+// Reinitialize Select2 elements
+setTimeout(function() {
+    console.log('Reinitializing Select2 with delay');
+    initializeSelect2();
+}, 0);

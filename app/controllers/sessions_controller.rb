@@ -67,9 +67,9 @@ class SessionsController < ApplicationController
       flash[:alert] = "That password reset link is invalid. Please try again."
       redirect_to :action => "forgot" and return
     end
-    if request.post? && params[:user]
+    if request.post? && reset_password_params
       @user.allow_invalid_person = true
-      if @user.update_attributes(params[:user])
+      if @user.update(reset_password_params)
         flash[:notice] = "Your password was successfully reset."
         @user.create_token
         self.current_user = User.authenticate(@user.login, @user.password)
@@ -97,6 +97,12 @@ class SessionsController < ApplicationController
     redirect_back_or_default(root_url)
     flash[:notice] = "Logged in successfully"
     LoginHistory.login(self.current_user, (request.env["HTTP_X_FORWARDED_FOR"] || request.env["REMOTE_ADDR"]), session.id)
+  end
+
+  private
+
+  def reset_password_params
+      params.require(:user).permit(:password, :password_confirmation)
   end
   
 end

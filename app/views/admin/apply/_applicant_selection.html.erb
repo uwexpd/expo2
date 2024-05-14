@@ -5,13 +5,11 @@
 
 <%#= render :partial => "cutoff_line", :locals => { :app => @app } %>
 
-<% tdonClick = "" %>
-
 <tr <%= "class=awarded" if @app.application_review_decision_type.yes_option? rescue nil %> <%= "class=not_awarded" if !@app.application_review_decision_type.yes_option? rescue nil %> id="<%= tr_id %>">
 		
 	
 	<!-- Student name and project title tooltip -->
-	<td onClick="<%= tdonClick %>" class="name">
+	<td class="name">
 		<%= link_to "#{@app.fullname}", admin_apply_scored_selection_path(:details => 'only', :id => @app), remote: true, data: {link_toggle: "#applicant_selection_details_#{@app.id}"} %>							
 		<%#= indicator "applicant_selection_details_indicator_#{@app.id}" %>
 		<% unless @app.special_notes.blank? %>
@@ -22,10 +20,10 @@
 	</td>
 
 	<!-- Average score -->
-	<td onClick="<%= tdonClick %>" class="average_score"><%= '%.2f' % @app.average_score %></td>
+	<td class="average_score"><%= '%.2f' % @app.average_score %></td>
 
 	<!-- Spread and standard deviation -->
-	<td onClick="<%= tdonClick %>" class="spread">
+	<td class="spread">
 		<span <%= "class='highlight error-message'" if @app.score_spread > ApplicationReviewer::MAX_SPREAD %>>
 			<%= @app.score_spread %>
 			<small class="light">(&sigma; = <%= '%.2f' % @app.score_standard_deviation %>)</small>
@@ -36,12 +34,12 @@
 	<% for i in 0..@max_number_of_scores-1 %>
 		<% reviewer = @app.reviewers.sort_by{|x| x.committee_member_type ? x.committee_member_type.id : 0 }[i] rescue nil %>
 		<% if reviewer %>
-			<td onClick="<%= tdonClick %>" class="score <%= "unavailable" if !reviewer.finalized? %>">
+			<td class="score <%= "unavailable" if !reviewer.finalized? %>">
 				<%= content_tag(:span, reviewer.total_score, :class => ('highlight' if reviewer.total_score_is_outlier?)) %>
 				<small class="light"><%= reviewer.committee_member_type.name[0,1].upcase rescue "C" %></small>
 				</td>
 		<% else %>
-			<td class="light" onClick="<%= tdonClick %>">-</td>
+			<td class="light">-</td>
 		<% end -%>
 	<% end -%>
 	
@@ -58,29 +56,69 @@
 												:confirm => "Are you sure you want to set the cut-off? This will override any other changes that you've made." %></td>
 	
 	<!-- Decision Radio Buttons -->
-	<td class="decision"><% for decision_type in @offering.application_review_decision_types %>
+	<td class="decision">
+		<span class='right'><%= image_tag('loading.gif', id: "indicator_#{@app.id}", class: 'loading', style: 'display: none;') %></span>
+		<% for decision_type in @offering.application_review_decision_types %>
 			<%= radio_button_tag "application_review_decision_type_id[#{@app.id}]", 
 								 decision_type.id,
 								 @app.application_review_decision_type == decision_type %>
 			<%= decision_type.title[0,1] %>
 			
-			<%#= observe_field "application_review_decision_type_id_#{@app.id}_#{decision_type.id}",
-			 					:url => { :action => :scored_selection, :id => @app },
-								:with => 'decision_type_id',
-								:indicator => true %>
+			<script>
+			 $(document).ready(function() {
+			   $("#application_review_decision_type_id_<%= @app.id %>_<%= decision_type.id %>").change(function() {
+			     let string = $(this).attr('name');
+			     let appId = string.match(/\[(\d+)\]/)[1];
+			     let decisionTypeId = $(this).val();
+			     $('#indicator_<%= @app.id %>').show();
+			     $.ajax({
+			       url: 'scored_selection',
+			       method: 'POST',
+			       data: { id: appId, decision_type_id: decisionTypeId },
+			       dataType: 'script',
+			       success: function(response) {
+			         // Handle success response
+			       	 $('#indicator_<%= @app.id %>').hide();
+			       },
+			       error: function(xhr, status, error) {
+			         // Handle error
+			       	 $('#indicator_<%= @app.id %>').hide();
+			       }
+			     });
+			   });
+			 });
+			</script>
 			
-		<% end -%>
+		<% end %>
 		
 		<%= radio_button_tag "application_review_decision_type_id[#{@app.id}]", 
 							 "nil",
 							 @app.application_review_decision_type.nil? %> U
 		
-		<%#= observe_field "application_review_decision_type_id_#{@app.id}_nil",
-		 					:url => { :action => :scored_selection, :id => @app },
-							:with => 'decision_type_id',
-							:indicator => true %>
-		
-		
+		<script>
+			 $(document).ready(function() {
+			   $("#application_review_decision_type_id_<%= @app.id %>_nil").change(function() {
+			     let string = $(this).attr('name');
+			     let appId = string.match(/\[(\d+)\]/)[1];
+			     let decisionTypeId = $(this).val();
+			     $('#indicator_<%= @app.id %>').show();   
+			     $.ajax({
+			       url: 'scored_selection',
+			       method: 'POST',
+			       data: { id: appId, decision_type_id: decisionTypeId },
+			       dataType: 'script',
+			       success: function(response) {
+			         // Handle success response
+			         $('#indicator_<%= @app.id %>').hide();		       	 
+			       },
+			       error: function(xhr, status, error) {
+			         // Handle error
+			       	 $('#indicator_<%= @app.id %>').hide();
+			       }
+			     });
+			   });
+			 });
+			</script>			
 		</td>
 		
 	<!-- Notes -->
@@ -88,18 +126,39 @@
 		<%= text_field_tag "review_committee_notes[#{@app.id}]",
 		 					@app.review_committee_notes,
 							:size => 15,
-							:id => "review_committee_notes_#{@app.id}",
-							:onKeyPress => "$('notes_autosave_#{@app.id}').hide()" %>
+							:id => "review_committee_notes_#{@app.id}" %>
 		
-		<div class="autosave mini">
-			<%#= indicator "notes_autosave_indicator_#{@app.id}" %>
-			<span id="notes_autosave_<%= @app.id %>" style="display:none">Saved.</span>
-		</div>
+		<span id="notes_autosave_<%= @app.id %>" style="display:none", class='caption'>Saved.</span>
 		
-		<%#= observe_field "review_committee_notes_#{@app.id}",
-		 					:url => { :action => :scored_selection, :id => @app },
-							:with => "review_committee_notes",
-							:indicator => "notes_autosave_indicator_#{@app.id}" %>
+		<script>
+			 $(document).ready(function() {
+			   $('#review_committee_notes_<%= @app.id %>').on('focus', function() {				    
+				    $('#notes_autosave_<%= @app.id %>').hide();
+			   });
+
+			   $("#review_committee_notes_<%= @app.id %>").change(function() {			     
+			   	 let string = $(this).attr('name');
+			     let appId = string.match(/\[(\d+)\]/)[1];
+			     let note = $(this).val();
+			     $('#indicator_<%= @app.id %>').show();
+			     $.ajax({
+			       url: 'scored_selection',
+			       method: 'POST',
+			       data: { id: appId, review_committee_notes: note },
+			       dataType: 'script',
+			       success: function(response) {
+			         // Handle success response
+			         $('#indicator_<%= @app.id %>').hide();
+			         $('#notes_autosave_<%= @app.id %>').show();
+			       },
+			       error: function(xhr, status, error) {
+			         // Handle error
+			       	 $('#indicator_<%= @app.id %>').hide();
+			       }
+			     });
+			   });
+			 });
+		</script>
 				
 		<%#= drop_receiving_element tr_id, 
 									:url => { :action => 'scored_selection', :id => @app.id, :cutoff => @app.average_score + 0.0001 },
