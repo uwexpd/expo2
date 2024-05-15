@@ -26,7 +26,7 @@ ActiveAdmin.register OfferingAdminPhaseTaskExtraField, as: 'extra_fields'  do
 			@extra_field.destroy
 
 		    respond_to do |format|		    	
-		      format.html { redirect_to edit_admin_offering_phase_task_path(offering, @phase, @task, :anchor => "extra-fields-#{@task.extra_fields.size}") }
+		      format.html { redirect_to edit_admin_offering_phase_task_path(@offering, @phase, @task, :anchor => "extra-fields-#{@task.extra_fields.size}") }
 		      format.js { render js: "$('.delete').bind('ajax:success', function() {$(this).closest('tr').fadeOut();});"}
 			end
 		end

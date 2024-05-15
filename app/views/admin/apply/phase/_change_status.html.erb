@@ -25,8 +25,7 @@
 </div>
 
 <div id="change_status_<%= @task.id %>_functions" class="big-border box">
-	<h4 class="icon-left make-change">Set new status:</h4>
-	<%#= observe_form "change_status_form_#{@task.id}", :function => "$('change_status_#{@task.id}_functions').show()" %>
+	<h4><i class='mi uw_purple'>refresh</i> Set new status:</h4>
 	Set new status to:
 	<select name="new_status">
 		<%= options_from_collection_for_select @task.new_application_status_types, :name, :name_pretty %>

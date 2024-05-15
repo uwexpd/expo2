@@ -121,7 +121,8 @@
             ApplicationForOffering.find(app_id).set_status(params[:new_status], false, :force => true) unless params[:new_status].blank?
           end
         end        
-        flash[:notice] = (session[:flash_message_assign_reviewer] if session[:flash_message_assign_reviewer]) + "Successfully update the status to #{params[:new_status]} with selected applications"
+        flash[:notice] = (session[:flash_message_assign_reviewer].blank? ? "" : session[:flash_message_assign_reviewer]) + "Successfully update the status to #{params[:new_status]} with selected applications"
+
         session[:flash_message_assign_reviewer] = '' if session[:flash_message_assign_reviewer]
         session[:return_to_after_email_queue] = request.referer
         redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
@@ -206,6 +207,27 @@
           format.html { render partial: "mini_details" }
         end
       end
+    end
+
+    def notify_dean
+      if params[:dean_approver_uw_netid]
+        dean_approver = PubcookieUser.authenticate(params[:dean_approver_uw_netid])
+        @offering.update(dean_approver_id: dean_approver.id)
+        EmailContact.log dean_approver.person.id, 
+            ApplyMailer.templated_message(dean_approver.person, 
+            EmailTemplate.find_by_name("dean approval request"), 
+            dean_approver.person.email,             
+            "https://#{Rails.configuration.constants["base_url_host"]}/admin/apply/approve").deliver_now
+        flash[:notice] = "Request for dean approvals sent."
+      end
+      if params[:new_status] && params[:select]
+        params[:select].each do |klass, select_hash|
+          select_hash.each do |app_id,v|
+            ApplicationForOffering.find(app_id).set_status(params[:new_status], false, :force => true) unless params[:new_status].blank?
+          end
+        end
+      end
+      redirect_to request.referer
     end
 
     def scored_selection

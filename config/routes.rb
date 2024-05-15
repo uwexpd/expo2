@@ -29,7 +29,8 @@ Rails.application.routes.draw do
     post 'admin/apply/:offering/phases/:phase/tasks/:id/send_reviewer_invite', to: 'admin/apply#send_reviewer_invite_emails', as: :admin_apply_send_reviewer_invite
     post 'admin/apply/:offering/phases/:phase/tasks/:id/assign_review_decision', to: 'admin/apply#assign_review_decision', as: :admin_apply_assign_review_decision
     get 'admin/apply/:offering/phases/:phase/tasks/:id/mini_details', to: 'admin/apply#mini_details', as: :admin_apply_mini_details
-
+    match 'admin/apply/:offering/phases/:phase/tasks/:id/notify_dean', to: 'admin/apply#notify_dean', as: :admin_apply_notify_dean, via: [:get, :post, :put]
+    # Admin Apply Files
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
     get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter
     # End of Admin Apply
