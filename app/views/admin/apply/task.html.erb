@@ -27,7 +27,7 @@
 		<% unless @task.notes.blank? %>
 			<div id="task_notes" class="highlight_box" style="display: none;">
 				<h4><i class='mi uw_purple'>sticky_note_2</i> <b>Process Notes</b></h4>
-				<%= textilize encode_utf(@task.notes) %>
+				<%= textilize encode_utf(@task.notes) rescue textilize(@task.notes) %>
 			</div>
 		<% end %>
 		

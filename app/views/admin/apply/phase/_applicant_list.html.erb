@@ -48,8 +48,7 @@
 				<a title="<%= t.description %>" class="tooltip"><%= t.name.titleize %></a>
 				<span class="light">&raquo;	<%= pluralize apps.size, "application" %></span>
 			</td>
-		</tr>
-		
+		</tr>		
 			<% apps.each do |a| %>
 
 					<tr <%= "class=not_current" if !@task.application_status_types_array.collect(&:name).include?(a.current_status_name) %>>
@@ -58,7 +57,7 @@
 						<td><%= link_to raw(a.project_title || "View Application"), admin_offering_application_path(@offering, a.id), target: '_blank' %></td>
 
 						<% @task.extra_fields.each do |t| %>
-							<td><%= t.display(a) %></td>
+							<td><%= raw t.display(a) %></td>
 						<% end %>
 						
 						<td><%= print_status(a).html_safe %></td>
