@@ -570,7 +570,7 @@ class Offering < ApplicationRecord
           end
           major_extra = nil
           for major in ref_majors
-            major_name = major
+            major_name = major.strip
             if major.is_a?(StudentMajor) || major.is_a?(StudentTranscriptMajor)
               # major_extra_field = @major_extras.select{|m| major.major_abbr.strip == m.major_abbr.strip }
               # major_extra = major_extra_field.select{|m| major.branch == m.major_branch && major.pathway == m.major_pathway }

@@ -5,8 +5,12 @@
   	breadcrumbs = [
       link_to('Expo', "/expo"), 
       link_to('Online Applications', '/expo/admin/offerings'),
-      link_to(controller.instance_variable_get(:@offering).title, "/expo/admin/apply/#{controller.instance_variable_get(:@offering).id}")
+      
     ]
+    if controller.instance_variable_get(:@offering)
+      offering_link = link_to(controller.instance_variable_get(:@offering).title, "/expo/admin/apply/#{controller.instance_variable_get(:@offering).id}")
+      breadcrumbs << offering_link
+    end
 
     if controller.instance_variable_get(:@phase)
       task_link = link_to(controller.instance_variable_get(:@phase).name, "/expo/admin/offerings/#{controller.instance_variable_get(:@offering).id}/phases/#{controller.instance_variable_get(:@phase).id}")
@@ -16,8 +20,8 @@
     breadcrumbs
   end
 
-  controller do    
-  	before_action :fetch_offering
+  controller do
+  	before_action :fetch_offering, except: [:dean_approve, :finaid_approve, :disberse]
   	before_action :fetch_apps, only: [:list, :awardees]
     before_action :fatch_phase, only: [:task, :mass_update]
     before_action :fetch_confirmers, :only => [:invited_guests, :nominated_mentors, :theme_responses, :proceedings_requests]
@@ -217,7 +221,7 @@
             ApplyMailer.templated_message(dean_approver.person, 
             EmailTemplate.find_by_name("dean approval request"), 
             dean_approver.person.email,             
-            "https://#{Rails.configuration.constants["base_url_host"]}/admin/apply/approve").deliver_now
+            "https://#{Rails.configuration.constants["base_url_host"]}/admin/apply/dean_approve").deliver_now
         flash[:notice] = "Request for dean approvals sent."
       end
       if params[:new_status] && params[:select]
@@ -226,6 +230,32 @@
             ApplicationForOffering.find(app_id).set_status(params[:new_status], false, :force => true) unless params[:new_status].blank?
           end
         end
+      end
+      redirect_to request.referer
+    end
+
+    def send_to_financial_aid
+      if params[:financial_aid_approver_uw_netid]
+        financial_aid_approver = PubcookieUser.authenticate(params[:financial_aid_approver_uw_netid])
+        @offering.update_attribute(:financial_aid_approver_id, financial_aid_approver.id)
+      end
+      if params[:disbersement_approver_uw_netid]
+        disbersement_approver = PubcookieUser.authenticate(params[:disbersement_approver_uw_netid])
+        @offering.update_attribute(:disbersement_approver_id, disbersement_approver.id)
+      end
+      if params[:new_status] && params[:select]
+        params[:select].each do |app_id,v|
+          app = ApplicationForOffering.find(app_id)
+          app.set_status params[:new_status] unless params[:new_status].blank?
+          @offering = app.offering
+        end
+        EmailContact.log @offering.financial_aid_approver.person.id, 
+            ApplyMailer.templated_message(@offering.financial_aid_approver.person, 
+            EmailTemplate.find_by_name("financial aid approval request"), 
+            @offering.financial_aid_approver.person.email, 
+            "https://#{Rails.configuration.constants["base_url_host"]}/admin/apply/finaid_approve").deliver_now
+        flash[:notice] = "Request for financial aid approvals sent."
+        @offering.update(financial_aid_approval_request_sent_at: Time.now)
       end
       redirect_to request.referer
     end
@@ -329,6 +359,62 @@
       end
     end
 
+    def dean_approve      
+      @offerings = current_user.offerings_with_approval_access
+      if request.post?
+        params[:select].each do |app_id, attributes|
+          app = ApplicationForOffering.find(app_id)
+          app.dean_approve_awards(@current_user) if params[:commit]
+          @offering = app.offering
+        end
+        flash[:notice] = "Saved approvals successfully. Thank you."
+        redirect_to_action = params[:redirect_to_action] || "dean_approve"
+        redirect_to :action => redirect_to_action
+      end
+    end
+
+    def finaid_approve      
+      @offerings = current_user.offerings_with_financial_aid_approval_access
+      if request.post?
+        params[:award].each do |award_id, attributes|
+          award = ApplicationAward.find(award_id)
+          award.update(award_params(attributes))
+          award.application_for_offering.set_status "awaiting_disbursement" if params[:commit]
+          award.application_for_offering.update(financial_aid_approved_at: Time.now) if params[:commit]
+          @offering = award.application_for_offering.offering
+        end
+        EmailContact.log @offering.disbersement_approver.person.id, 
+                        ApplyMailer.templated_message(@offering.disbersement_approver.person, 
+                        EmailTemplate.find_by_name("disbersement approval request"), 
+                        @offering.disbersement_approver.person.email, 
+                        "http://#{Rails.configuration.constants["base_url_host"]}/admin/apply/disberse").deliver_now if params[:commit]
+        flash[:notice] = "Saved financial aid eligibility approvals. Thank you."
+        redirect_to_action = params[:redirect_to_action] || "finaid_approve"
+        redirect_to :action => redirect_to_action
+      end
+    end
+
+    def disberse      
+      @offerings = current_user.offerings_with_disbersement_approval_access
+      if request.post?
+        params[:award].each do |award_id, attributes|
+          award = ApplicationAward.find(award_id)
+          award.update(award_params(attributes))
+          award.application_for_offering.set_status "finalized" if params[:commit]
+          award.application_for_offering.update(disbursed_at: Time.now) if params[:commit]
+          @offering = award.application_for_offering.offering
+        end
+        flash[:notice] = "Saved disbursement information. Thank you."
+        #redirect_to_action = params[:redirect_to_action] || "disberse"
+        #redirect_to :action => redirect_to_action
+      end
+      
+      respond_to do |format|
+        format.html
+        # format.xls { render :action => 'disberse', :layout => 'basic' } # disberse.xls.erb
+      end
+    end
+
     def invited_guests      
       @invited_guests = @confirmers.collect(&:guests).flatten.compact
       @not_mailed = @invited_guests.select{ |g| !g.invitation_mailed? }
@@ -402,10 +488,16 @@
     def fatch_phase
       @phase = @offering.phases.find(params[:phase])
     end
+
+    private
+
+    def award_params(attributes)
+      attributes.permit(:amount_approved, :disbersement_type_id, :amount_approved_notes, :amount_approved_user_id, :disbersement_quarter_id, :amount_disbersed, :amount_disbersed_notes, :amount_disbersed_user_id)
+    end    
 	  
-  end 
+  end
   
-  sidebar "Quick Access", except: [:scored_selection] do
+  sidebar "Quick Access", except: [:scored_selection, :dean_approve, :finaid_approve, :disberse] do
     render "admin/apply/sidebar/quick_access"
   end 
   sidebar "Search Application", only: [:show, :manage, :awardees] do

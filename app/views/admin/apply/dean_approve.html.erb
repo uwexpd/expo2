@@ -1,0 +1,61 @@
+<div class='panel'>
+ <div class='panel_contents'>
+  <div class='content-block dean_approve'>
+	<h1>Award Approval</h1>
+
+	<% apps_not_empty = false %>
+	<% @offerings.each do |offering| %>
+
+	<%= form_with url: admin_apply_dean_approve_path do |f| %>
+
+	<% apps = offering.application_for_offerings.awaiting_dean_approval %>
+	<% unless apps.empty? %>
+	<% apps_not_empty = true %>
+
+	<table class='highlightless borderless'>
+		
+		<tr class='table-header uw_light_bg_gold'>
+			<th>Student Name</th>
+			<th>Student No.</th>
+			<th>Quarters/Amt. Awarded</th>
+			<th>Approve?</th>
+		</tr>	
+			
+		<tr class="rowset-header">
+			<td colspan=3><%= offering.name %></td>
+			<td colspan=2 style="text-align: right;"><%= pluralize apps.size, "award" %></td>
+		</tr>
+		
+		<% apps.each do |a| %>
+			<tr>
+				<td><%= a.person.fullname %>
+					<br><span class="smaller grey">
+					<%= link_to raw(a.project_title || "View Application"), admin_offering_application_path(offering, a.id), target: '_blank' %></span>
+				</td>
+				
+				<td><%= a.person.student_no %></td>
+							
+				<td><%= raw a.award_list("<br>") %></td>
+				
+				<td><%= check_box_tag "select[#{a.id}]", a.id %></td>
+				
+			</tr>
+		<% end %>
+			
+	</table>
+
+
+	<%= hidden_field_tag "redirect_to_action", "dean_approve" %>
+	<%= hidden_field_tag "new_status", "decision_approved" %>
+	<br>
+	<%= f.submit "Submit Approved Awards" %>
+
+	<% end %>
+	<% end %>
+	<% end %>
+
+	<%= content_tag('p', "No awards are currently awaiting your approval.", class: 'empty') unless apps_not_empty %>
+
+  </div>
+ </div>
+</div>

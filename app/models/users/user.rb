@@ -16,6 +16,9 @@ class User < ApplicationRecord
   belongs_to :default_email_address, :class_name => "UserEmailAddress", :foreign_key => "default_email_address_id"
 
   has_one :token_object, :class_name => "Token", :as => :tokenable
+  has_many :offerings_with_approval_access, :class_name => "Offering", :foreign_key => "dean_approver_id"
+  has_many :offerings_with_financial_aid_approval_access, :class_name => "Offering", :foreign_key => "financial_aid_approver_id"
+  has_many :offerings_with_disbersement_approval_access, :class_name => "Offering", :foreign_key => "disbersement_approver_id"
   
   MAX_TOKEN_AGE = 1.day
   

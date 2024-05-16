@@ -71,42 +71,57 @@ ActiveAdmin.register_page "Email" do
 
   	protected
 
+    # Extracts an array of recipient objects. These objects MUST have a "person" attribute or be a Person, otherwise they won't be added.
+    # Format:  "select"=>{"ApplicationForOffering"=>{"127114"=>"1", "122739"=>"1", "124292"=>"1"}}
   	def get_recipients      
       unless params[:select]
           flash[:alert] = "You must select at least one recipient to send the message to."
           redirect_back(fallback_location: root_path)
       end
       @recipients = []
+      params[:select].each do |obj_type,obj_hash|
+        obj_hash = JSON.parse(obj_hash) if obj_hash.is_a? String
+        obj_hash.each do |obj_id,val|
+          obj = obj_type.constantize.find(obj_id)
 
-        params[:select].each do |obj_type,obj_hash|
-          obj_hash = JSON.parse(obj_hash) if obj_hash.is_a? String
-          obj_hash.each do |obj_id,val|
-
-            obj = obj_type.constantize.find(obj_id)
-
-            unless params[:group_variant].blank?
-              recipients = obj.instance_eval(params[:group_variant])
-            else
-              recipients =  case obj.class.to_s
-                            when "OrganizationQuarter"      then obj.organization.contacts
-                            when "Organization"             then obj.contacts
-                            when "School"                   then obj.contacts
-                            when "ServiceLearningCourse"    then obj.instructors
-                            when "CommitteeMemberMeeting"   then obj.committee_member
-                            when "CommitteeMemberQuarter"   then obj.committee_member
-                            when "EventStaffPositionShift"  then obj.staffs
-                            when "Population"               then obj.objects
-                            when "PopulationGroup"          then obj.objects
-                            else obj
-                            end
-            end        
+          unless params[:group_variant].blank?
+            recipients = obj.instance_eval(params[:group_variant])
+          else
+            recipients =  case obj.class.to_s
+                          when "OrganizationQuarter"      then obj.organization.contacts
+                          when "Organization"             then obj.contacts
+                          when "School"                   then obj.contacts
+                          when "ServiceLearningCourse"    then obj.instructors
+                          when "CommitteeMemberMeeting"   then obj.committee_member
+                          when "CommitteeMemberQuarter"   then obj.committee_member
+                          when "EventStaffPositionShift"  then obj.staffs
+                          when "Population"               then obj.objects
+                          when "PopulationGroup"          then obj.objects
+                          else obj
+                          end
+          end
+          # logger.debug "DEBUG recipients => #{recipients.inspect}"
+          unless params[:recipient_variant].blank?
+             if params[:recipient_variant] == "required_mentors"
+               recipients = [recipients] unless recipients.is_a?(Array)
+               recipients.each{ |r| @recipients << r.mentors.reject(&:approved?).select{|m| m.primary || m.meets_minimum_qualification?} }
+             else
+               if obj_type == "ServiceLearningCourse" && recipients.blank?
+                   # Handle no instructors for service learning course
+                  @recipients << obj.instance_eval((params[:recipient_variant].split(".").second))
+               else
+                 recipients = [recipients] unless recipients.is_a?(Array)
+                 recipients.each{ |r| @recipients << r.instance_eval(params[:recipient_variant]) }
+               end
+             end
+          else
             @recipients << recipients
           end
         end
-        @recipients.flatten!
-        @recipients.compact!
-        @recipients.uniq!
-
+      end
+      @recipients.flatten!
+      @recipients.compact!
+      @recipients.uniq!
   	end
 	  
   end

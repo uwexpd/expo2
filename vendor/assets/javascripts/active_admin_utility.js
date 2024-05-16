@@ -3,7 +3,7 @@
 
 function initializeSelect2() {    
      $(".select2").select2({
-         width: 'resolve'
+         width: '100%'
      });
 
      $(".select2.minimum_input").select2({    
