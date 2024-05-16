@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     # Custom Active Admin Routes
     # -------------------------------------------------------------------------------------------
     # Admin Apply Actions
+    match 'admin/apply/dean_approve', to: 'admin/apply#dean_approve', as: :admin_apply_dean_approve, via: [:get, :post, :put]
+    match 'admin/apply/finaid_approve', to: 'admin/apply#finaid_approve', as: :admin_apply_finaid_approve, via: [:get, :post, :put]
+    match 'admin/apply/disberse', to: 'admin/apply#disberse', as: :admin_apply_disberse, via: [:get, :post, :put]
     get 'admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
     get 'admin/apply/:offering/list', to: 'admin/apply#list', as: :admin_apply_list
     get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
@@ -30,9 +33,10 @@ Rails.application.routes.draw do
     post 'admin/apply/:offering/phases/:phase/tasks/:id/assign_review_decision', to: 'admin/apply#assign_review_decision', as: :admin_apply_assign_review_decision
     get 'admin/apply/:offering/phases/:phase/tasks/:id/mini_details', to: 'admin/apply#mini_details', as: :admin_apply_mini_details
     match 'admin/apply/:offering/phases/:phase/tasks/:id/notify_dean', to: 'admin/apply#notify_dean', as: :admin_apply_notify_dean, via: [:get, :post, :put]
+    match 'admin/apply/:offering/phases/:phase/tasks/:id/send_to_financial_aid', to: 'admin/apply#send_to_financial_aid', as: :admin_apply_send_to_financial_aid, via: [:get, :post, :put]
     # Admin Apply Files
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
-    get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter
+    get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter    
     # End of Admin Apply
     post 'admin/base/vicarious_login', to: 'admin/base#vicarious_login', as: :admin_vicarious_login
     get 'admin/base/remove_vicarious_login', to: 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
