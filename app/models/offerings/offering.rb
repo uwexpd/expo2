@@ -287,7 +287,7 @@ class Offering < ApplicationRecord
 
   # Returns all applications that were invited for interview for this Offering
   def applications_for_interview
-    apps = application_for_offerings.delete_if {|a| !a.invited_for_interview? }
+    application_for_offerings.select(&:invited_for_interview?)
   end
 
   def dean_approver_uw_netid

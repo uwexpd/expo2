@@ -1,0 +1,28 @@
+<div class='panel'>
+ <div class='panel_contents'>
+  <div class='content-block apply'>
+  	<h4><%= @offering.title %></h4>
+		<%= render partial: "phase_timeline" %>
+  </div>
+ </div> 
+</div>
+
+<div class='panel'>
+  <div class='panel_contents'>
+	 <div class='content-block'>
+	 	<br><strong><%= @task.title %>
+			<small class='light'><%= "<i class='mi md-20 uw_green'>check_circle</i> Completed #{relative_timestamp(@task.updated_at)}".html_safe if @task.complete? %></small></strong>
+		<div>
+			<small class="grey">Part of the <%= link_to @phase.name, :action => 'phase', :id => @phase %> phase.</small>
+		</div>
+
+		<h3>Edit Interview Time</h3>
+		<%= render "shared/error_messages", :target => @interview %>
+
+		<%= form_with model: @interview, url: admin_apply_update_interview_path(@offering, @phase, @task, @interview) do |f| %>
+			<%= render "admin/apply/interview_time_fields", f: f %>
+			<%= f.submit "Update Interview Details" %>	
+		<% end %>
+	</div>
+  </div>
+</div>
