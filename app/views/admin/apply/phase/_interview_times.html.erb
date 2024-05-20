@@ -1,2 +1,48 @@
-<%= "#{@offering.interviews.count} interview times set up:" %>
-<%= link_to "View full list", admin_interview_path(@offering, "index") %>
+<h4>
+	<%= @offering.interviews.count %> Interview Times <span><%= link_to "<i class='mi md-16'>add_circle_outline</i> Add New".html_safe, '#', data: {link_toggle: '#new_interview_time_fields'}, class: 'button small flat' %></span>	
+</h4>
+
+<div id='new_interview_time_fields' style='display: none', class='big-border box'>
+	<h4><i class='mi uw_purple'>more_time</i> Add New Interview Time</h4>	
+	<%= form_for :offering_interview, url: admin_apply_add_interview_path do |f| %>
+		<%= render "admin/apply/interview_time_fields", f: f %>
+		<%= f.submit "Create Interview Time", class: 'small' %>	
+	<% end %>
+	<br>
+</div>
+
+<table class='borderless'>
+
+	<tr class='small table-header uw_light_bg_gold'>
+		<th>Interview Start Time</th>
+		<th>Location</th>
+		<th>Student Name</th>
+		<th>Interview Committee<br> Members</th>
+		<th>Decision</th>
+		<th>Function</th>
+	</tr>	
+
+	<% @offering.interviews.each do |interview| %>
+		<% if interview.start_time.to_date != @current_date_in_list %>
+			<tr class="rowset-header">
+				<td colspan=6><%= interview.start_time.strftime("%A, %B %d") %></td>
+			</tr>
+			<% @current_date_in_list = interview.start_time.to_date %>
+		<% end %>
+
+		<tr>
+			<td><strong><%= interview.start_time.strftime("%I:%M %p") %></strong></td>
+			<td width=25%><%= interview.location %>
+				<%= "<br><font class='light'>#{interview.notes}</font>".html_safe unless interview.notes.blank? %></td>
+			<td><%= interview.applicants.collect {|a| a.application_for_offering.person.fullname }.join('<br>') %></td>
+			<td><%= raw(interview.interviewers.where("committee_score is null or committee_score = 0").collect {|ix| ix.offering_interviewer.person.fullname }.join('<br>')) %></td>
+			<td><%= interview.decision %></td>
+			<td><%= link_to "Edit", admin_apply_edit_interview_path(@offering, @phase, @task, interview.id) %>	
+				<br />				
+				<%= link_to "Delete", admin_apply_remove_interview_path(@offering, @phase, @task, interview.id), remote: true, method: :delete, data: {confirm: "Are you sure?"}, class: 'delete' %>
+				</td>
+		</tr>
+	<% end %>
+</table>
+
+

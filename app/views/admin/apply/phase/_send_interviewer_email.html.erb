@@ -1,21 +1,20 @@
 <div class="big-border box">
-	<h4 class="icon-left edit-email">Update e-mails:</h4>
-	<table>
-		<% @task.email_templates.each do |t| %>
-			<tr><td width=40%><%= link_to t.name.titleize, admin_communicate_template_path(t), :popup => true %></td>
+	<h4><i class='mi uw_purple'>mail_outline</i> Update e-mails:</h4>
+	<table class='borderless'>
+		<% @task.email_templates_array.each do |t| %>
+			<tr><td width=40%><%= link_to t.name.titleize, admin_template_path(t), target: '_blank' %></td>
 				<td width=60%>Last updated <%= relative_timestamp(t.updated_at) %></td>
 			</tr>
 		<% end -%>
 	</table>
 </div>
 
-
-<% form_for :send_interviewer_invite_emails, :url => admin_apply_action_url(:offering => @offering, :action => "send_interviewer_invite_emails"), :html => { :id => "send_interviewer_invite_emails_#{@task.id}" } do |f| %>
+<%= form_with url:admin_apply_send_interviewer_invite_emails_path(@offering, @phase, @task), id: "send_interviewer_invite_emails_#{@task.id}" do |f| %>
 
 <div class="big-border box">
-	<h4 class="icon-left select-list">Select applicants:</h4>
-	<table>
-		<tr class="small left">
+	<h4><i class='mi uw_purple'>playlist_add_check</i> Select applicants:</h4>
+	<table class='borderless'>
+		<tr class="small table-header uw_light_bg_gold">
 			<th><%= select_all_check_box :send_interviewer_invite_emails %></th>
 			<th>Interviewer Name</th>
 			<% @task.extra_fields.each do |t| %>
@@ -28,14 +27,14 @@
 			<td><%= select_check_box(interviewer, :send_interviewer_invite_emails) %></td>
 			<td><%= interviewer.fullname %></td>
 			<% @task.extra_fields.each do |t| %>
-				<td><%= t.display(interviewer) %></td>
+				<td><%= raw t.display(interviewer) %></td>
 			<% end -%>
 		</tr>
 		<% end -%>
 
 	</table>
-
-	<%= hidden_field_tag :email_template_id, @task.email_templates.first.id %>
+	<br>
+	<%= hidden_field_tag :email_template_id, @task.email_templates_array.first.id %>
 	<%= f.submit "Queue invite emails to interviewers", :name => "send_interviewer_invite_emails" %>
 
 </div>

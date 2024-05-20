@@ -23,7 +23,8 @@
   controller do
   	before_action :fetch_offering, except: [:dean_approve, :finaid_approve, :disberse]
   	before_action :fetch_apps, only: [:list, :awardees]
-    before_action :fatch_phase, only: [:task, :mass_update]
+    before_action :fatch_phase, only: [:task, :mass_update, :edit_interview, :update_interview]
+    before_action :fatch_task, only: [:task, :edit_interview, :update_interview]
     before_action :fetch_confirmers, :only => [:invited_guests, :nominated_mentors, :theme_responses, :proceedings_requests]
 
   	def manage
@@ -48,7 +49,6 @@
     end
 
     def task      
-      @task = @phase.tasks.find(params[:id])
       @page_title = "#{@task.title}"
       # [TODO] make this work: add_breadcrumb "#{@phase.name}", admin_apply_phase_path(@offering, @phase)
     end
@@ -164,6 +164,69 @@
       session[:return_to_after_email_queue] = request.referer
       redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
       redirect_to :back
+    end
+
+    def add_interview
+      @interview = @offering.interviews.create(interview_time_params)
+      if @interview.save
+          unless params[:offering_interview][:applicant_id].blank?
+            @interview.applicants.create(application_for_offering_id: params[:offering_interview][:applicant_id])
+          end
+          if params[:interviewers]
+            params[:interviewers].each do |i|
+              @interview.interviewers.create(offering_interviewer_id: i)
+            end
+          end
+          flash[:notice] = "Successfully created interview time."
+      else        
+        flash[:alert] = "Something went wrong when creating interview time."
+      end            
+      redirect_to request.referer
+    end
+
+    def edit_interview
+      @interview = @offering.interviews.find_by_id params[:interview]
+    end
+
+    def update_interview      
+      @interview = @offering.interviews.find_by_id params[:interview]
+      if @interview.update(interview_time_params)
+        @interview.applicants.delete_all
+        @interview.interviewers.delete_all
+        unless params[:offering_interview][:applicant_id].blank?
+          @interview.applicants.create(application_for_offering_id: params[:offering_interview][:applicant_id])
+        end
+        if params[:interviewers]        
+          params[:interviewers].each do |i|
+            @interview.interviewers.create(offering_interviewer_id: i)
+          end
+        end
+        flash[:notice] = "Successfully updated interview time information."
+        redirect_to admin_apply_phase_task_path(@offering, @phase, @task)
+      else
+        render :action => "edit_interview"
+      end
+    end
+
+    def remove_interview
+      OfferingInterview.find(params[:interview]).destroy
+      respond_to do |format|        
+        format.js { render js: "$('.delete').bind('ajax:success', function() {$(this).closest('tr').fadeOut();});"}
+      end
+    end
+
+    def new_interview_timeblock
+      if interview_timeblock_params
+        flash[:notice] = "Added new interview timeblock." if @offering.interview_timeblocks.create interview_timeblock_params
+      end
+      redirect_to request.referer
+    end
+    
+    def remove_interview_timeblock
+      if params[:time]
+        flash[:notice] = "Deleted interview timeblock." if @offering.interview_timeblocks.find(params[:time]).destroy
+      end
+      redirect_to request.referer
     end
 
     # This method can actually be used to send any emails to reviewers, not just invite emails.
@@ -489,12 +552,24 @@
       @phase = @offering.phases.find(params[:phase])
     end
 
+    def fatch_task
+      @task = @phase.tasks.find(params[:id])
+    end
+
     private
 
     def award_params(attributes)
       attributes.permit(:amount_approved, :disbersement_type_id, :amount_approved_notes, :amount_approved_user_id, :disbersement_quarter_id, :amount_disbersed, :amount_disbersed_notes, :amount_disbersed_user_id)
-    end    
-	  
+    end
+
+    def interview_time_params
+      params.require(:offering_interview).permit(:location, :start_time, :notes)
+    end
+
+    def interview_timeblock_params
+      params.require(:new_interview_timeblock).permit(:date, :start_time, :end_time)
+    end
+    	  
   end
   
   sidebar "Quick Access", except: [:scored_selection, :dean_approve, :finaid_approve, :disberse] do
@@ -504,7 +579,7 @@
     # h2 "<i class=mi>search</i>Application Search".html_safe
     render "admin/apply/sidebar/search"
   end
-  sidebar "Task for this Phase", only: [:phase, :task] do
+  sidebar "Task for this Phase", only: [:phase, :task, :edit_interview] do
     render "admin/apply/phases/tasks/sidebar/tasks" 
   end
   sidebar "Switch to this Phase", only: [:phase] do

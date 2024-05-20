@@ -19,9 +19,9 @@ ActiveAdmin.register ApplicationGroupMember, as: 'group_member' do
 			@group_member = @app.group_members.find(params[:id])
 			@group_member.destroy
 
-		    respond_to do |format|
-		      format.html { redirect_to(admin_offering_application_group_members_path(@offering, @app)) }
-		      format.js { render js: "$('.delete').bind('ajax:success', function() {$(this).closest('tr').fadeOut();});"}
+		  respond_to do |format|
+		    format.html { redirect_to(admin_offering_application_group_members_path(@offering, @app)) }
+		    format.js { render js: "$('.delete').bind('ajax:success', function() {$(this).closest('tr').fadeOut();});"}
 			end
 		end
 

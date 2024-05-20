@@ -1,19 +1,25 @@
-<table>
+<table class='borderless'>
+	<tr class='small table-header uw_light_bg_gold'>
+		<th>Interview Date</th>
+		<th>Start Time</th>
+		<th>End Time</th>
+		<th>Function</th>			
+	</tr>
 <% @offering.interview_timeblocks.each do |t| %>
 	<tr>
 		<td><%= t.date %></td>
 		<td><%= t.start_time.to_s(:time12) %></td>
 		<td><%= t.end_time.to_s(:time12) %></td>
-		<td><%= link_to "Remove", admin_apply_action_path(@offering, 'remove_interview_timeblock', :id => t), :confirm => "Are you sure?" %></td>
+		<td><%= link_to "Remove", admin_apply_remove_interview_timeblock_path(@offering, @task, @phase, t), method: :post, data: { confirm: "Are you sure?" } %></td>
 	</tr>
-<% end -%>
+<% end %>
 
-<% form_for :new_interview_timeblock, :url => admin_apply_action_path(@offering, 'new_interview_timeblock') do |f| %>
+<%= form_for :new_interview_timeblock, url: admin_apply_new_interview_timeblock_path do |f| %>
 	<tr>
 		<td><%= f.date_select :date %></td>
 		<td><%= f.time_select :start_time, { :minute_step => 15, :twelve_hour => true } %></td>
 		<td><%= f.time_select :end_time, { :minute_step => 15, :twelve_hour => true } %></td>
-		<td><%= f.submit "Add" %></td>
+		<td><%= f.submit "Add", class: 'small' %></td>
 	</tr>
-<% end -%>
+<% end %>
 </table>

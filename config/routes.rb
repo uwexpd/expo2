@@ -30,11 +30,18 @@ Rails.application.routes.draw do
     post 'admin/apply/:offering/phases/:phase/tasks/:id/assign_reviewer', to: 'admin/apply#mass_assign_reviewers', as: :admin_apply_assign_reviewer
     post 'admin/apply/:offering/phases/:phase/tasks/:id/change_status', to: 'admin/apply#mass_status_change', as: :admin_apply_change_status
     post 'admin/apply/:offering/phases/:phase/tasks/:id/send_reviewer_invite', to: 'admin/apply#send_reviewer_invite_emails', as: :admin_apply_send_reviewer_invite
+    post 'admin/apply/:offering/phases/:phase/tasks/:id/send_interviewer_invite_emails', to: 'admin/apply#send_interviewer_invite_emails', as: :admin_apply_send_interviewer_invite_emails
     post 'admin/apply/:offering/phases/:phase/tasks/:id/assign_review_decision', to: 'admin/apply#assign_review_decision', as: :admin_apply_assign_review_decision
+    post 'admin/apply/:offering/phases/:phase/tasks/:id/add_interview', to: 'admin/apply#add_interview', as: :admin_apply_add_interview
+    get 'admin/apply/:offering/phases/:phase/tasks/:id/interview/:interview/edit', to: 'admin/apply#edit_interview', as: :admin_apply_edit_interview
+    patch 'admin/apply/:offering/phases/:phase/tasks/:id/update/:interview', to: 'admin/apply#update_interview', as: :admin_apply_update_interview
+    delete 'admin/apply/:offering/phases/:phase/tasks/:id/remove_interview/:interview', to: 'admin/apply#remove_interview', as: :admin_apply_remove_interview
+    post 'admin/apply/:offering/phases/:phase/tasks/:id/new_interview_timeblock', to: 'admin/apply#new_interview_timeblock', as: :admin_apply_new_interview_timeblock
+    post 'admin/apply/:offering/phases/:phase/tasks/:id/remove_interview_timeblock/:time',to: 'admin/apply#remove_interview_timeblock', as: :admin_apply_remove_interview_timeblock
     get 'admin/apply/:offering/phases/:phase/tasks/:id/mini_details', to: 'admin/apply#mini_details', as: :admin_apply_mini_details
     match 'admin/apply/:offering/phases/:phase/tasks/:id/notify_dean', to: 'admin/apply#notify_dean', as: :admin_apply_notify_dean, via: [:get, :post, :put]
     match 'admin/apply/:offering/phases/:phase/tasks/:id/send_to_financial_aid', to: 'admin/apply#send_to_financial_aid', as: :admin_apply_send_to_financial_aid, via: [:get, :post, :put]
-    # Admin Apply Files
+    # Admin Apply Files   
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
     get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter    
     # End of Admin Apply
