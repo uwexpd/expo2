@@ -708,6 +708,12 @@ ul.sherlock-buttons{
 	margin-right:1rem;
 }
 
+#sidebar .information {
+	padding-left: 1rem;
+	padding-bottom: 6px;
+	border-bottom: 1px solid #efefef;
+}
+
 ul.link-list {
 	list-style: none;
 	padding: 0;
@@ -921,10 +927,10 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 	padding-bottom: 1rem;
 }
 
-.sidebar_section i {
-	color: #4b2e83;	
-	margin-right: 0.4rem;
-}
+// .sidebar_section i {
+// 	color: #4b2e83;	
+// 	// margin-right: 0.4rem;
+// }
 
 .sub-links {	
 	font-size: 80%;
@@ -1419,4 +1425,18 @@ tr.details td {
 
 .panel_contents table#applicant_selections td img.loading {
 	max-width: 20px;
+}
+
+.offering_questions {
+	padding: 0rem 1rem 1rem 1rem;
+
+}
+
+.offering_questions div.input-field {
+	padding: 1rem;
+}
+
+.offering_questions .helper-text {
+	font-size: 80%;
+	color: #999;
 }

@@ -28,7 +28,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
         @app.add_reviewer params['application']['new_reviewer'] unless params['application']['new_reviewer'].blank?
 
-        if !update_application_status && @app.update_attributes(app_params)
+        if !update_application_status && @app.update(app_params)
           flash[:notice] = "Application changes saved."
         end        
       end
@@ -37,9 +37,19 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
           if @app.group_members.find(params['resend_group_member']).send_validation_email
             flash[:notice] = "Successfully re-sent verification e-mail."
           else
-            flash[:error] = "Could not send verification e-mail."
+            flash[:alert] = "Could not send verification e-mail."
           end
           anchor = "group_members"
+      end
+
+      # update the application's attributes
+      if application_params
+         if @app.update(application_params)
+            anchor = "application_review"
+            flash[:notice] = "Successfully updated applicaiton."
+         else
+            flash[:alert] = "Something went wrong. Please try again later."
+         end
       end
 
       respond_to do |format|
@@ -65,7 +75,11 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     
     def app_params
       params.require(:application).permit! if params['application']
-    end    
+    end
+
+    def application_params
+      params.require(:user_application).permit! if params[:user_application]
+    end
 
   end
 
@@ -193,20 +207,40 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     end
   end
 
+  form do |f|
+    semantic_errors *f.object.errors.keys
+    #"#{application.fullname unless object.new_record?} - #{application.id unless object.new_record?}"
+    @app_pages = []
+    @app = f.object
+    @app.pages.each do |page|
+      question_types = page.offering_page.questions.collect(&:display_as).uniq.to_set
+      attribute_types = page.offering_page.questions.collect(&:attribute_to_update).uniq.to_set
+      unless (!question_types.include?("radio_logic_toggle") && ["files","mentors","application_type","application_category"].any? {|type| question_types.include?(type) }) || ["Abstract"].any? {|attribute| attribute_types.include?(attribute) }
+        @app_pages << page
+      end
+    end
+    
+    tabs do
+      @app_pages.each do |app_page|
+        page_title = app_page.offering_page.title
+        tab "#{page_title}" do 
+          f.inputs "#{page_title}" do
+            logger.debug "DEBUG @app => #{@app.inspect}"
+            render 'admin/applications/edit_application_details', { f: f, app_page: app_page, app: @app }
+          end
+        end
+      end
+    end
+    f.actions do      
+      f.action :submit, label: 'Update Application', class: 'button'
+      f.cancel_link
+    end
+    
+  end
+
   # proc {"Applicant Search for #{application.offering.title}"} is not working
   sidebar "Applicant Search", only: :show do
       render "search_applicant", {offering_id: application.offering.id}
-  end
-
-  form do |f|
-    semantic_errors *f.object.errors.keys
-    inputs do
-      #"#{application.fullname unless object.new_record?} - #{application.id unless object.new_record?}"
-      h2 "Under development"
-      # input :offering_id
-      # input :person_id
-    end
-    actions
   end
 
   filter :person_firstname, as: :string
