@@ -1,15 +1,9 @@
 <div class="information">
-  <i class='material-icons md-32'>add_circle</i><%= link_to 'Add New',new_admin_event_time_path(event) %>
-  <i class='material-icons md-32'>view_list</i><%= link_to 'See All',admin_event_times_path(event) %>
+  <%= link_to '<i class="mi md-20 uw_purple">add_circle</i> Add New'.html_safe, new_admin_event_time_path(event) %> | 
+  <%= link_to '<i class="mi md-20 uw_purple">view_list</i> See All'.html_safe, admin_event_times_path(event) %>
 </div>
-<%#= link_to new_admin_event_time_path(event) do %>
-	<!-- <i class='material-icons md-32'>add_circle</i> Add New -->
-<%# end %>
-<%#= link_to admin_event_times_path(event) do %>
-	<!-- <i class='material-icons md-32'>view_list</i> See All -->
-<%# end %>
-
 <ul class="link-list">
+
 	<% event.times.sort.each do |time| %>
 		<li><%= link_to time.time_detail, admin_event_time_path(event, time) %></li>
 	<% end %>

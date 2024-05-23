@@ -1,0 +1,7 @@
+<% 
+	@user_application = app 
+	@page = app_page.offering_page	
+%>
+<div class="offering_questions" >
+	<%= render partial: 'apply/question', collection: @page.questions.reject{|q|q.display_as=='files'}, locals: { :f => f, :page => app_page } %>
+</div>

@@ -1,6 +1,6 @@
-<div class="input-field col s12">
+<div class="input-field col s12 select">
 	<%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %>
-	
+
 	<div class="question_block" id="awards">
 	<% @current_quarter_for_dropdown = @offering.first_eligible_award_quarter || @offering.quarter_offered %>
 	<%= render :partial => 'apply/award', :collection => @user_application.awards %>
