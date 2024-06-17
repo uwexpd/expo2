@@ -1,4 +1,4 @@
-<div class="<%= @user_application.person.is_a?(Student) ? 'non_input_field' : 'input-field col s12' %>">
+<div class="<%= @user_application.person.is_a?(Student) ? 'non_input_field string input' : 'input-field col s12 string input' %>">
 	<label>
 	  <%= question.question %>
       <%= content_tag('em', '*', :class => 'required') if question.required? %>		 

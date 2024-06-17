@@ -2,7 +2,7 @@
 
 <div class="input-field col s12"><%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %></div>
 
-<div class="input-field col s12">
+<div class="input-field col s12 text input">
 		<%= help_link question %>
 
 		<%= text_fields.text_area :body, class: "#{question.use_mce_editor? ? 'tinymce' : 'materialize-textarea validate'} #{'wordcounter' if question.word_limit? } #{'charcounter' if question.character_limit? }",  data: {length: question.character_limit, limit: question.word_limit} %>
