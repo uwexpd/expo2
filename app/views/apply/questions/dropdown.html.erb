@@ -1,18 +1,16 @@
 
-<div class="input-field col s12 select">
+<div class="input-field col s12">
 	<%= (question.question + " #{content_tag('abbr', '*', title: "required") if question.required?}").html_safe %>	
 </div>
 
-<div class="input-field col s<%= question.width || '12' %>">		
+<div class="input-field col s<%= question.width || '12' %> select">		
 		
-		<%= qf.collection_select(question.attribute_to_update, 
-								question.options.sort_by{|o|o.ordering || o.title}, 
-								:id, 
-								:title, 
-								{include_blank: true, :selected => @user_application.get_answer(question.id).to_s},
-								{ required: question.required,
-								class: 'material validate'}
-								) %>
+		<%= qf.collection_select question.attribute_to_update, 
+								 question.options.sort_by{|o|o.ordering || o.title}, 
+								 :value, 
+								 :title,
+								 {selected: @user_application.get_answer(question.id).to_s, include_blank: true},
+								 {required: question.required, class: 'material validate'} %>
 		
 		<%= qf.label(question.attribute_to_update, "Please select") %>
 		

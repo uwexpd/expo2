@@ -198,7 +198,7 @@ module ApplicationHelper
   end
 
   def encode_utf(string)
-    string.encode("Windows-1252").force_encoding('UTF-8').html_safe
+    string.encode("Windows-1252").force_encoding('UTF-8').html_safe rescue string.force_encoding('UTF-8').html_safe
   end
 
 end
