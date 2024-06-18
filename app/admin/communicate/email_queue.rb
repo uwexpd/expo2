@@ -57,6 +57,19 @@ ActiveAdmin.register EmailQueue do
     redirect_to request.referer, notice: "Successfully deleted #{total} email " + "queue".pluralize(total) + "."
   end
 
+  action_item :deliver_now , only: :show, priority: 1 do
+    link_to 'deliver now', release_admin_email_queue_path(email_queue), data: { confirm: 'Are you sure?' }
+  end
+
+  member_action :release do
+    email_queue = EmailQueue.find(params[:id])
+    begin
+        email_queue.release
+    rescue Exception => e
+      email_queue.update_attribute(:error_details, e.message)
+    end
+    redirect_to admin_email_queues_path, notice: "Successfully deliver email to #{email_queue.email_to}"
+  end
 
   index :download_links => false do
   	selectable_column

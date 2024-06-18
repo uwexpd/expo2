@@ -215,7 +215,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     @app.pages.each do |page|
       question_types = page.offering_page.questions.collect(&:display_as).uniq.to_set
       attribute_types = page.offering_page.questions.collect(&:attribute_to_update).uniq.to_set
-      unless (!question_types.include?("radio_logic_toggle") && ["files","mentors","application_type","application_category"].any? {|type| question_types.include?(type) }) || ["Abstract"].any? {|attribute| attribute_types.include?(attribute) }
+      unless (!question_types.include?("radio_logic_toggle") && ["files","mentors"].any? {|type| question_types.include?(type) })
         @app_pages << page
       end
     end
@@ -223,9 +223,8 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     tabs do
       @app_pages.each do |app_page|
         page_title = app_page.offering_page.title
-        tab "#{page_title}" do 
+        tab "#{page_title}" do
           f.inputs "#{page_title}" do
-            logger.debug "DEBUG @app => #{@app.inspect}"
             render 'admin/applications/edit_application_details', { f: f, app_page: app_page, app: @app }
           end
         end
@@ -233,7 +232,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     end
     f.actions do      
       f.action :submit, label: 'Update Application', class: 'button'
-      f.cancel_link
+      f.cancel_link :back #admin_offering_application_path(offering, @app)
     end
     
   end

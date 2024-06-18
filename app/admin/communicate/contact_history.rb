@@ -9,8 +9,14 @@ ActiveAdmin.register ContactHistory do
   scope :all, default: true
   scope ('Sent By Me') { |contact| contact.from_user(current_user.id) }
 
-  action_item :resend, only: :show do
-    link_to 'Resend this message', admin_contact_history_path
+  action_item :requeue, only: :show do
+    link_to 'Resend this message', requeue_admin_contact_history_path(contact_history)
+  end
+
+  member_action :requeue do 
+    contact = ContactHistory.find(params[:id])
+    session[:return_to_after_email_queue] = request.referer
+    redirect_to edit_admin_email_queue_path(contact.requeue) and return
   end
 
   index pagination_total: false do

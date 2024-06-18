@@ -16,32 +16,36 @@
 	
 <div id="change_session" style="display:none">
 	<%= form_for @app, url: { :action => "update", :id => @app.id, section: "session" } do |f| %>
+		<div class='select input'>
 		Assign to: <%= f.collection_select :offering_session_id, 
 											@offering.sessions.for_type(@app.application_type_id), 
-											:id, :title, :include_blank => "None" %>
-											
+											:id, :title, :include_blank => "None" %></div>
+
 		<% if @offering.location_sections %>
-		<br>New Location Section: <%= f.collection_select :location_section_id,
-		 												@offering.location_sections,
-		 												:id, :title, :include_blank => "None" %>
-		<br>New Easel Number: <%= f.text_field :easel_number, :size => 3 %>
-			<%= f.check_box :lock_easel_number %>
-			<%= f.label :lock_easel_number, "Lock this easel number to this presentation" %>
-				
-		<% end -%>
-		
-		<br><%= f.submit "Assign", class: 'small' %>
-	<% end -%>
+
+			<div class='select input'>New Location Section: <%= f.collection_select :location_section_id,
+			 												@offering.location_sections,
+			 												:id, :title, :include_blank => "None" %></div>
+			<div class='input'>New Easel Number: <%= f.text_field :easel_number, :size => 5 %>
+				<%= f.check_box :lock_easel_number %>Lock this easel number to this presentation.
+			</div>
+		<% end %>
+
+		<div class='input'>
+			<%= f.check_box :hide_proceeding_abstract %><strong>Hide this abstract in the online proceedings?</strong>
+		</div>
+		<%= f.submit "Assign", class: 'small' %>
+	<% end %>
 </div>
 
 <% if @app.offering_session %>
 <ul>
 	
 	<li><strong>Moderator:</strong>
-		<%= @app.offering_session.moderator.nil? ? "<font class='light'>None assigned</font>".html_safe : @app.offering_session.moderator.fullname %>
+		<%= @app.offering_session.moderator.nil? ? "<font class='light'>None assigned</font>".html_safe : encode_utf(@app.offering_session.moderator.fullname) %>
 		</li>
 	
-	<%- if @app.offering_session.moderator -%>
+	<% if @app.offering_session.moderator %>
 	<li><strong>Moderator Response:</strong>
 		<% if @app.application_moderator_decision_type.nil? %>
 			<em>No response</em>
