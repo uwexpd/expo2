@@ -367,8 +367,14 @@ body.logged_out h2 {
 	padding-bottom: 1em;
 }
 
-#login form label, .session form th {
+#login form label {
 	font-weight: bold;    
+    padding-right: 1em;
+    text-align: left;
+}
+
+.session form th {
+	font-weight: 400;    
     padding-right: 1em;
     text-align: left;
 }

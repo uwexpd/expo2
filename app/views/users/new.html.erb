@@ -10,15 +10,15 @@
 
 		<table id='signup'>
 			<tr>
-		  		<td><label for="username">Username <abbr title="required">*</abbr></label></td>
+		  		<th><label for="user_login">Username <abbr title="required">*</abbr></label></th>
 		  		<td><%= f.text_field :login %></td>
 			</tr>
 			<tr>
-	  			<td><label for="password">Password <abbr title="required">*</abbr></label></td>
+	  			<th><label for="user_password">Password <abbr title="required">*</abbr></label></th>
 				<td><%= f.password_field :password %></td>
 	  		</tr>
 	  		<tr>
-		  		<td><label for="username">Confirm password <abbr title="required">*</abbr></label></td>
+		  		<th><label for="user_password_confirmation">Confirm password <abbr title="required">*</abbr></label></th>
 		  		<td><%= f.password_field :password_confirmation %></td>
 			</tr>
 
@@ -30,7 +30,7 @@
 
 	  	 </table>
 
-		<%= f.invisible_captcha :phone %>
+		<%= f.invisible_captcha :spam_filter %>
 		<!-- <div class="form-group"> <%#= recaptcha_tags site_key: ENV["RECAPTCHA_V2_CHECKBOX_SITE_KEY"] %> </div> -->
 		<%= f.submit 'Sign up' %>
 		<small style='padding-left:10px'><%= link_to "← Back to Login Screen", login_url %></small>
