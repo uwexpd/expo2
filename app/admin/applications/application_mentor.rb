@@ -9,6 +9,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
   permit_params :primary, :application_for_offering_id, :person_id, :waive_access_review_right, :firstname, :lastname, :email, :email_confirmation, :application_mentor_type_id, :approval_response, :approval_comments, :approval_at, :title, :relationship, :return_to, academic_department: []
 
   controller do
+    before_action :fetch_offering, only: [:new]
     def create
       super do |format|
         redirect_to params[:application_mentor][:return_to] and return if resource.valid? && params[:application_mentor][:return_to].present?
@@ -25,6 +26,13 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
       super do |format|
         redirect_to params[:return_to] and return if resource.valid? && params[:return_to].present?
       end
+    end
+
+    private
+
+    def fetch_offering
+      @offering = Offering.find params[:offering_id]
+      @app = ApplicationForOffering.find params[:application_id]
     end
   end
 
@@ -62,18 +70,22 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
   end
 
   form do |f|    
-    semantic_errors *f.object.errors.keys
+    semantic_errors *f.object.errors.keys    
     f.inputs do
       f.input :primary, as: :boolean
-      f.input :application_for_offering_id, input_html: { style: 'width:25%;' }
+      if f.object.new_record?
+        f.input :application_for_offering_id, input_html: { style: 'width:25%;', value: app.id }
+      else
+        f.input :application_for_offering_id, input_html: { style: 'width:25%;'}
+      end      
       f.input :person_id, input_html: { style: 'width:25%;' }
       f.input :firstname, input_html: { style: 'width:50%;' }
       f.input :lastname, input_html: { style: 'width:50%;' }
       f.input :email, input_html: { style: 'width:50%;' }
       f.input :email_confirmation, input_html: { style: 'width:50%;' }
       f.input :title, input_html: {  style: 'width:50%;' }
-      f.input :relationship, input_html: { style: 'width:50%;' }
-      f.input :application_mentor_type_id, as: :select, collection: (Offering.find(mentor.offering.id).mentor_types.collect{|mt| [mt.title , mt.application_mentor_type_id]})
+      f.input :relationship, input_html: { style: 'width:50%;' }      
+      f.input :application_mentor_type_id, as: :select, collection: (f.object.new_record? ? offering : Offering.find(mentor.offering.id)).mentor_types.collect{|mt| [mt.title , mt.application_mentor_type_id]}
       f.input :waive_access_review_right, as: :boolean
       # Add +include_hidden: false+ to select for empty string removal. Refer to: https://github.com/select2/select2/issues/4484
       f.input :academic_department, as: :select, collection: AcademicDepartment.all.collect(&:name).sort,  include_hidden: false, input_html: { multiple: 'multiple', class: "select2", :style => 'width: 50%'}
