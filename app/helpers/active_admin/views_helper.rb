@@ -41,5 +41,19 @@ module ActiveAdmin::ViewsHelper
     css_class << " #{group} select_all"
     check_box_tag(field_id, "1", false, class: css_class)
   end
+
+  # Creates a link that will submit a form. Specify the ID of the form. Pass a +url+ option parameter to change the action URL of the form first.
+  def link_to_submit(link_text, form_id, options = {})
+  function = ""
+  function << "$('##{form_id}').attr('action', '#{options[:url]}');" if options[:url]
+  function << "$('input[name=\"recipient_variant\"]').val('#{options[:recipient_variant]}');" if options[:recipient_variant]
+  function << "$('input[name=\"group_variant\"]').val('#{options[:group_variant]}');" if options[:group_variant]
+  function << "$('##{form_id}').attr('method', '#{options[:method]}');" if options[:method]
+  function << "$('##{form_id}').submit();"
+  function = "if (confirm('#{options[:confirm]}')) {#{function}}" if options[:confirm]
+  
+  link_to link_text, "#", onclick: function, **options[:link_options]
+end
+
     
 end

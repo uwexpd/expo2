@@ -5,6 +5,12 @@ ActiveAdmin.register Event do
 
   permit_params :title, :description, :unit_id, :capacity, :event_type_id, :offering_id, :confirmation_email_template_id, :reminder_email_template_id, :staff_signup_email_template_id, :public, :allow_multiple_times_per_attendee, :allow_guests, :allow_multiple_positions_per_staff, :show_application_location_in_checkin, :extra_fields_to_display
   
+  member_action :attendees, :method => :get do
+    @event ||= Event.find(params[:id])
+    @attendees = @event.attendees
+    @invitees = @event.invitees
+  end  
+
   index do
     column ('Title') {|event| link_to event.title, admin_event_path(event) }
     column ('Type') {|event| event.event_type if event.event_type}
@@ -66,9 +72,32 @@ ActiveAdmin.register Event do
     f.actions
   end
 
+  sidebar "Event Management", only: [:show, :attendees] do
+    ul class: 'link-list' do
+      li do        
+        span link_to "<i class='mi'>how_to_reg</i> Check-in".html_safe, admin_invitees_event_path(event)
+      end
+      li do        
+        span link_to "<i class='mi'>people_alt</i> Attendees <span class='caption' style='padding-left:0.75rem'>#{event.attendees.size} expected, #{event.attended.size} attended </span>".html_safe, attendees_admin_event_path(event)
+      end
+      li do        
+        span link_to "<i class='mi'>badge</i> Nametags".html_safe, admin_event_path(event)
+      end      
+    end
+  end
+
   sidebar "Times", only: [:show, :edit] do  
     render "times", { event: event }
   end
+
+  sidebar "With Selected", only: [:attendees] do
+    render "with_selected"
+    # button type: 'submit', class: 'small' do
+    #   i 'send', class: 'mi md-16 sub_align' 
+    #   span "Send mass e-mails"
+    # end
+  end
+
   # sidebar "Event Times", only: [:show, :edit] do
   #     table do
   #       tr do

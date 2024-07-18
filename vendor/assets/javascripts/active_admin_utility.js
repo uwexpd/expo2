@@ -89,13 +89,18 @@ $(document).on("click", "a[data-insert-text-tinymce]", function(){
 });
 
 $(document).on("change", ".select_all", function(){   
-   let css_class_parts = $(this).attr('class').split(' ')
-   // console.log("css_class_parts", css_class_parts);
+   let css_class_parts = $(this).attr('class').split(/\s+/);
+   // console.log("css_class_parts=>", css_class_parts);
    let checkbox_class = css_class_parts[0];
    let status = css_class_parts[1];
    // console.log("Debug => ", checkbox_class);
    // console.log("Debug => ", status);
    
-   $('.' + checkbox_class + '.' + status).prop('checked', $(this).prop('checked'));
-   
+   if (status == 'select_all'){
+      $('.' + checkbox_class).prop('checked', this.checked);
+
+   }else{
+      $('.' + checkbox_class + '.' + status).prop('checked', $(this).prop('checked'));
+   }
+
 });

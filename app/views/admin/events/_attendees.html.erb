@@ -1,0 +1,9 @@
+<% @event.times.sort.each do |time| %>
+	<tr class="rowset-header">
+		<td colspan=20><%= link_to time.time_detail + " (#{time.invitees.size} invitees)".html_safe, admin_event_time_path(@event, time) %></td>
+	</tr>
+
+	<%= render :partial => "admin/events/times/invitees", 
+				:locals => { :time => time, :invitees => time.invitees.sort{|x,y| (y.attending? ? 1 : 0) <=> (x.attending? ? 1 : 0) }} %>	
+<% end %>
+

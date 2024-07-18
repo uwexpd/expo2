@@ -1,0 +1,75 @@
+<% time ||= @time %>
+<tr id="invitee_<%= invitee.id %>">
+	<td><%= select_check_box(invitee, time.id) %>
+	<td>
+	  <% if invitee.person.is_a? Student %>
+	    <%= link_to invitee.person.fullname, [:admin, invitee.person] %><%= invitee.person.pipeline_inactive ? "<span id='pipeline_inactive_#{invitee.person.id}' class='tag'>inactive</span>" : "<span id='pipeline_inactive_#{invitee.person.id}'></span>" if @use_pipeline_links %>
+	  <% else %>
+	    <%= link_to invitee.person.fullname, [:admin, invitee.person] rescue invitee.fullname rescue invitee.person.id rescue "#error" %>
+	  <% end %>
+	</td>
+	<td value="<%= invitee.attending? ? 'Attending' : 'Not Attending' %>">		
+			<%#= raw(invitee.attending? ? "<span class='status_tag small ok'>Yes</span>" : "<span class='status_tag small red'>No</span>") %>
+			<div class="toggle-bool-switches-container">
+				<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />				
+					<span id="toggle-time_invitee-<%= invitee.id %>-active" 
+						class="toggle-bool-switch <%= "on" if invitee.attending? %> notify-success" data-model="event_invitee" 
+						data-object_id="<%= invitee.id %>" 
+						data-field="attending" <%= "data-value=true" if invitee.attending? %> 
+						data-url=<%= update_invitee_admin_time_invitee_path(time.id, invitee.id) %> data-success_message="Update <%= "#{invitee.person.firstname_first}" %> successfully!">
+					</span>
+			</div>
+	</td>
+	<td value="<%= invitee.checked_in? ? 'Attended' : 'Did Not Attend' %>">
+		<span class="current_reply">
+			<%#= raw(invitee.checked_in? ? "<span class='status_tag small ok'>Yes</span>" : "<span class='status_tag small red'>No</span>") %>
+			<div class="toggle-bool-switches-container">
+				<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />				
+					<span id="toggle-time_invitee-<%= invitee.id %>-active" 
+						class="toggle-bool-switch <%= "on" if invitee.checked_in? %> notify-success" data-model="event_invitee" 
+						data-object_id="<%= invitee.id %>" 
+						data-field="checkin_time" <%= "data-value=true" if invitee.checked_in? %> data-url=<%= update_invitee_admin_time_invitee_path(time.id, invitee.id) %> data-success_message="Update <%= "#{invitee.person.firstname_first}" %> successfully!">
+					</span>
+			</div>
+		</span>		
+	</td>
+		
+		<% if @use_pipeline_links %>
+	  	  <td>
+	  	    <span id="student_background_check_<%= invitee.person.id %>" class="<%= 'red' if (invitee.person.pipeline_background_check.nil? || invitee.person.pipeline_background_check <= Time.now-2.year) %>">
+		        <%= relative_timestamp(invitee.person.pipeline_background_check, {:date_only => true}) %>
+		      </span>
+		    </td>
+	  	<% end %>
+	
+	<% for val in @event.extra_fields.values %>
+		<td><%= auto_link eval(sanitize(val)) rescue "#error" %></td>
+	<% end -%>
+	<% unless time.sub_times.empty? %>
+		<td id="invitee_sub_time_<%= invitee.id %>">
+			<%- if invitee.sub_time -%>
+				<%= invitee.sub_time.time_detail(:time_only => true) %>
+				<small class="light">
+				<%= "<br>" + invitee.sub_time.title unless invitee.sub_time.title.blank? %>
+				<%= "<br>" + invitee.sub_time.location_text unless invitee.sub_time.location_text.blank? %>
+				<%= "<br>" + invitee.sub_time.facilitator unless invitee.sub_time.facilitator.blank? %>
+				</small>
+			<% end -%>
+		</td>
+	<% end -%>	
+	<td>
+		<%= link_to '<span class="mi">delete</span>'.html_safe, admin_time_invitee_path(time, invitee), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon' %>	
+	</td>
+	
+</tr>
+
+<%#= draggable_element "invitee_#{invitee.id}", :ghosting => true, :scroll => 'window' %>
+<%#= drop_receiving_element "invitee_#{invitee.id}",
+ 							:url => { :controller => 'admin/events/times/sub_times',
+										:action => 'add_to_sub_time',
+										:event_id => @event,
+										:time_id => time,
+										:invitee_id => invitee },
+ 							:hoverclass => 'droppable',
+ 							:indicator => true %>
+

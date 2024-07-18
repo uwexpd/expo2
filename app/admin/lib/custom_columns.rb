@@ -3,7 +3,7 @@ module ActiveAdmin
     class IndexAsTable < ActiveAdmin::Component
       # include CustomHelper
 
-      def editable_text_column resource, model_name, attr, required
+      def editable_text_column resource, model_name, attr, required, url
         val = resource.send(attr)
         val = "&nbsp;" if val.blank?
 
@@ -22,6 +22,7 @@ module ActiveAdmin
                       data-attr="#{attr}"
                       data-resource-id="#{resource.id}"
                       data-required="#{required}"
+                      data-url = "#{url}"
                       class="editable_text_column admin-editable"
                       id="editable_text_column_#{resource.id}_#{attr}"
 

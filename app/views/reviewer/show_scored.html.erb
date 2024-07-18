@@ -8,7 +8,7 @@
 			  <h4><%= @app.person.fullname %>
 					<span class="caption smaller"><%= @app.person.student_no %></span>
 					<span class="light"><%#= render :partial => "composite_report_maker" %></span><br>
-					<strong style="font-size: 50%;"><%= @app.project_title %></strong>
+					<strong style="font-size: 50%;"><%= @app.project_title.html_safe %></strong>
 				</h4>
 			  
 			  <%= content_tag(:h5, @app.offering.title) if @viewing_past_app %>
@@ -41,10 +41,12 @@
 				<h5>Application Details</h5>
 				<%= render "application_review", { pages: @app.pages.reject{|p|p.hide_in_reviewer_view?} } %>
 		  </div>
-		  <div id="essay" class="col s12">
-				<h5>Essay & File</h5>
-				<%= render "admin/applications/essay" %>
-			</div>
+		  <% unless @app.files.empty? %>
+			  <div id="essay" class="col s12">
+					<h5>Essay & File</h5>
+					<%= render "admin/applications/essay" %>
+				</div>
+			<% end %>
 			<div id="mentor_letter" class="col s12">
 				<h5>Mentors</h5>
 				<%= render "admin/applications/mentor_letter" %>
