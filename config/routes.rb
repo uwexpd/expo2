@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     get 'admin/communicate/email/apply_template', to: 'admin/email#apply_template'    
     match 'admin/communicate/email/sample_preview', to: 'admin/email#sample_preview', via: [:get, :post], as: :admin_email_sample_preview
     match 'admin/communicate/email/resample', to: 'admin/email#resample_placeholder_codes', via: [:get, :post], as: :admin_email_resample
+    get 'invitees/event/:event_id', to: 'admin/invitees#index', as: 'admin_invitees_event'
 
     ActiveAdmin.routes(self)    
     namespace :admin do

@@ -10,7 +10,7 @@ ActiveAdmin.register Organization do
   index do
     id_column
     column :name, sortable: :name do |resource| 
-       editable_text_column resource, "organization", :name, true
+       editable_text_column resource, "organization", :name, true, false
      end
     # column ('Name') {|org| link_to org.name, admin_organization_path(org)}
     column ('Approved') {|org| org.approved  }

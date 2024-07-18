@@ -21,7 +21,7 @@
 	<% application_reviewer = @review_committee_member.application_reviewers.find_by_application_for_offering_id(app) %>
 	<tr <%= "class=finalized" if application_reviewer.finalized? %>>
 		<td class='student'><b><%= link_to app.fullname, action: 'show', id: app %></b>
-			<br><font class="light"><%= app.project_title %></font></td>
+			<br><font class="light"><%= app.project_title.html_safe %></font></td>
 			
 		<% if application_reviewer.started_scoring? %>
 

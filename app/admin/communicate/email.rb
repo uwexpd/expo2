@@ -73,10 +73,10 @@ ActiveAdmin.register_page "Email" do
 
     # Extracts an array of recipient objects. These objects MUST have a "person" attribute or be a Person, otherwise they won't be added.
     # Format:  "select"=>{"ApplicationForOffering"=>{"127114"=>"1", "122739"=>"1", "124292"=>"1"}}
-  	def get_recipients      
-      unless params[:select]
+  	def get_recipients
+      unless params[:select].present?
           flash[:alert] = "You must select at least one recipient to send the message to."
-          redirect_back(fallback_location: root_path)
+          redirect_back(fallback_location: root_path) and return
       end
       @recipients = []
       params[:select].each do |obj_type,obj_hash|

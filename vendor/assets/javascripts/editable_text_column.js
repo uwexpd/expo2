@@ -15,6 +15,7 @@ var admin = {
         var attr        = $( e.currentTarget ).attr("data-attr");
         var required    = $( e.currentTarget ).attr("data-required");
         var resource_id = $( e.currentTarget ).attr("data-resource-id");
+        var url         = $( e.currentTarget ).attr("data-url");
         var val         = $( e.currentTarget ).val();
 
         val = $.trim(val)
@@ -35,7 +36,7 @@ var admin = {
         payload[model][attr] = val;
         
         $.ajax({
-           url: "/expo/admin/"+path+"/"+resource_id, 
+           url: url=="false" ? "/expo/admin/"+path+"/"+resource_id : url, 
            type: 'PUT',
            data: payload,
            dataType: 'json',

@@ -15,7 +15,7 @@ ActiveAdmin.register Scholarship do
       link_to scholarship.title, admin_scholarship_path(scholarship)
     end
     column :page_stub, :sortable => :page_stub do |scholarship|
-      editable_text_column scholarship, "scholarship", :page_stub, false      
+      editable_text_column scholarship, "scholarship", :page_stub, false, false
     end
     column 'National', sortable: :is_national do |scholarship| 
         status_tag scholarship.is_national?, class: 'small'

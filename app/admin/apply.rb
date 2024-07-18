@@ -137,6 +137,10 @@
 
     def send_interviewer_invite_emails
       return false if params[:email_template_id].nil?
+      unless params[:select].present?
+          flash[:alert] = "You must select at least one recipient to send the message to."
+          redirect_back(fallback_location: root_path) and return
+      end
       email_template = EmailTemplate.find(params[:email_template_id])
       params[:select].each do |klass, select_hash|
         select_hash.each do |object_id,v|
@@ -232,6 +236,10 @@
     # This method can actually be used to send any emails to reviewers, not just invite emails.
     def send_reviewer_invite_emails
       return false if params[:email_template_id].nil?
+      unless params[:select].present?
+          flash[:alert] = "You must select at least one recipient to send the message to."
+          redirect_back(fallback_location: root_path) and return
+      end
       params[:select].each do |klass, select_hash|
         select_hash.each do |object_id,v|
           @offering.reviewers.find_all{|r| r.id == object_id.to_i}.each do |r|

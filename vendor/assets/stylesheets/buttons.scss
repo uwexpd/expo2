@@ -3,7 +3,7 @@ a:link, a:visited {
     color: #08d;
 }
 
-a.button, .action_item a{
+a.button, .action_item a, button[type='submit']{
 	font-size: 14px;
     font-size: 0.875rem;
     font-weight: 500;
@@ -35,7 +35,7 @@ a.button, .action_item a{
     min-width: 88px;
 }
 
-a.button.small {
+a.button.small, button[type='submit'].small {
 	line-height: 6px;
 	font-size: smaller;
 }
@@ -52,6 +52,9 @@ a.button.has_many_add, a.button.has_many_remove {
 	margin: 0 1rem 1rem 1rem;
 }
 
+.sidebar button[type='submit'] {
+    margin-left: 1rem;
+}
 
 #titlebar_right .action_item a{
 	background-color: #4b2e83;

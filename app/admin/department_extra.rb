@@ -11,12 +11,12 @@ ActiveAdmin.register DepartmentExtra do
      column (:id) {|dept_extra| link_to dept_extra.id, admin_department_extra_path(dept_extra)}
      column ("SDB Department Name"){|dept_extra| dept_extra.department.dept_full_nm.strip.titleize.gsub("Of", "of") if dept_extra.dept_code}
      column :fixed_name, sortable: :name do |dept_extra| 
-       editable_text_column dept_extra, "department_extra", :fixed_name, true
+       editable_text_column dept_extra, "department_extra", :fixed_name, true, false
      end     
      column ("College Name"){|dept_extra| dept_extra.college.full_name if dept_extra.dept_code}
      # column ("College Campus"){|dept_extra| dept_extra.college.campus_name}
      column :chair_name do |dept_extra| 
-       editable_text_column dept_extra, "department_extra", :chair_name, false
+       editable_text_column dept_extra, "department_extra", :chair_name, false, false
      end
      # column :chair_email do |resource| 
      #   editable_text_column resource, "department_extra", :chair_email, false
@@ -53,5 +53,7 @@ ActiveAdmin.register DepartmentExtra do
   end
    
   filter :fixed_name
+  filter :chair_name
+  filter :chair_email
   
 end

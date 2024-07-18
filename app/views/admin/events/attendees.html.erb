@@ -1,0 +1,14 @@
+<div class='panel'>
+  <h3><%= @invitees.size %> Invitees for <%= @event.title %></h3>
+  <div class='panel_contents'>
+	<div class='content-block'>			
+		<table id="attendees_table" class='borderless'>
+			<%= form_tag admin_email_write_path, :id => 'invitees_form' do %>
+				<%= render :partial => 'admin/events/attendees' %>
+				<%= hidden_field_tag :return_to, url_for(:action => 'attendees') %>
+			<% end %>
+		</table>
+	</div>
+  </div>
+</div>
+
