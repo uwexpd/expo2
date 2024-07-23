@@ -1,0 +1,10 @@
+
+<% if @invitee.checkin_time %>
+  //alert("<%= @invitee.invitable.firstname_first %> was successfully checked in.");
+  $(".checkin_button_<%= @invitee.id %>").fadeOut(400);  
+  $("tr#event_invitee_<%= @invitee.id %> td.col-check-in").html("<span class='uw_green'><%= relative_timestamp(@invitee.checkin_time) %></span>")
+    $('.flashes').append("<div class='flash flash_notice'></div>")
+    $('.flash_notice').html("<%= j flash.now[:notice] %>").show();
+<% else %>
+  alert(<%= @error_message %>);
+<% end %>
