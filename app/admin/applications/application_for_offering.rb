@@ -8,6 +8,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   menu parent: 'Databases', priority: 10, label: "<i class='mi padding_right'>feed</i> Applications".html_safe
 
   scope 'All', :valid, default: true
+  scope 'New', :new_status
+  scope 'In Progress', :in_progress
+  scope 'Submitted', :submitted
 
   controller do
     before_action :fetch_application, :except => [ :new, :create ]
@@ -83,7 +86,33 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
   end
 
+  batch_action :email_primary_applicants, confirm: "Are you sure to send mass emails to primary applicants?" do |ids|
+    applicants = []
+    batch_action_collection.find(ids).each do |app|
+      applicants << app if app
+    end
+    redirect_to admin_email_write_path("select[#{applicants.first.class.to_s}]": applicants)
+  end
+
+  batch_action :email_mentors, confirm: "Are you sure to send mass emails to mentors" do |ids|
+    mentors = []
+    batch_action_collection.find(ids).each do |app|
+      app.mentors.each{|mentor| mentors << mentor } if app
+    end
+    redirect_to admin_email_write_path("select[#{mentors.first.class.to_s}]": mentors)
+  end
+
+  batch_action :email_group_members, confirm: "Are you sure to send mass emails to mentors" do |ids|
+    group_members = []
+    batch_action_collection.find(ids).each do |app|
+      app.group_members.each{|member| group_members << member } if app      
+    end
+    redirect_to admin_email_write_path("select[#{group_members.first.class.to_s}]": group_members)
+  end
+
+
   index do
+    selectable_column unless params[:offering_id].blank?
     column 'Student Name' do |app|
       text_node link_to app.person.lastname_first, admin_student_path(app.person)
       br
