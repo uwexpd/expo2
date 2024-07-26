@@ -32,7 +32,9 @@ ActiveAdmin.register ResearchOpportunity do
      column 'Submit Date', sortable: :submitted_at do |opportunity|
        opportunity.submitted_at.strftime("%F") if opportunity.submitted_at
      end
-     column ('Auto-remove Date') {|opportunity| opportunity.end_date.strftime("%F")}
+     column 'Auto-remove Date', sortable: :end_date do |opportunity| 
+       opportunity.end_date.strftime("%F") if opportunity.end_date
+     end
     actions
   end
    

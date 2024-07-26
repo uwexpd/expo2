@@ -11,10 +11,12 @@ class ApplicationGroupMember < ApplicationRecord
   has_many :guests, :class_name => "ApplicationGuest", :foreign_key => "group_member_id"
   belongs_to :nominated_mentor, :class_name => "ApplicationMentor", :foreign_key => "nominated_mentor_id"
 
-  # has_many :event_invitees, :include => {:event_time => :event}, :as => 'invitable' do
-  #   def for_event(event); find(:all).select{|e| e.event == event }; end
-  # end  
-
+  has_many :event_invitees, -> { includes(event_time: :event) }, :as => 'invitable' do
+      def for_event(event)
+        where(event_times: { event_id: event.id })
+      end
+  end
+  
   validates :application_for_offering_id, :lastname, :firstname, :email, presence: true
   
   validates :uw_student, inclusion: { in: [true, false], message: "must be either true or false" }

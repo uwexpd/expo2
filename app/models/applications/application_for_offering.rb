@@ -57,8 +57,9 @@ class ApplicationForOffering < ApplicationRecord
   has_many :offering_interview_applicants
   has_many :offering_interviews, :through => :offering_interview_applicants
   has_many :event_invitees, -> { includes(event_time: :event) }, :as => 'invitable' do
-      # TODO Work on the query
-      #def for_event(event); -> (object) { where("event = ?", event) }; end
+      def for_event(event)
+        where(event_times: { event_id: event.id })
+      end
   end
     
   serialize :task_completion_status_cache
