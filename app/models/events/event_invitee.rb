@@ -62,5 +62,17 @@ class EventInvitee < ApplicationRecord
   def checkin!(time = Time.now)
     update_attribute(:checkin_time, time)
   end
+
+  # Add custom filter for active admin ransack
+  def self.ransackable_scopes(_auth_object = nil)
+    [:student_number_eq]
+  end
+
+  # Make custom filter
+  def self.student_number_eq(student_no)
+    student = Student.find_by_student_no(student_no)
+    logger.debug "Debug student : #{student.id}"
+    self.includes(:person).where(person_id: student.id)
+  end
   
 end

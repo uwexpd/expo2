@@ -2,7 +2,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
   belongs_to :event_time, optional: true
   includes :person
   batch_action :destroy, false
-  # config.sort_order = 'updated_at_desc'
+  config.sort_order = 'people.firstname_asc'
   menu false
 
   breadcrumb do
@@ -22,15 +22,16 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
   controller do
     before_action :fetch_event, only: :index
     def scoped_collection
-      # for check in
-      @event.attendees rescue super
+      # Check in attendees
+      if params[:q].present? && params[:q][:student_number_eq].present?        
+        @event.attendees.student_number_eq(params[:q][:student_number_eq])
+      else
+        @event.attendees rescue super
+      end
     end
 
     def index
-      @page_title = "Check in #{@event.attendees.size} attendees"
-      if params[:order].blank?
-        params[:order] = 'people.firstname_asc' # Default sort order if none is specified
-      end
+      @page_title = "Check in #{@event.attendees.size} attendees"      
       super
     end
       
@@ -108,7 +109,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
       column ('Project') do |invitee| 
         span link_to "View project", admin_offering_application_path(invitee.application_for_offering.offering, invitee.application_for_offering), target: '_blank' rescue nil
         br
-        span "Group Member", class: 'light small' if invitee.invitable.is_a?(ApplicationGroupMember)
+        span "Group Member", class: 'light smaller' if invitee.invitable.is_a?(ApplicationGroupMember)
       end
 
       column ('Session') do |invitee|
@@ -117,7 +118,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
             admin_offering_session_path(session.offering, session),
             target: '_blank' rescue nil
         br
-        span session.time_detail, class:'light small' rescue nil
+        span session.time_detail, class:'light smaller' rescue nil
       end    
       
       column ('Location') do |invitee| 
@@ -128,7 +129,34 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
 
       end
       column ('Easel Number') {|invitee| invitee.invitable.app.easel_number rescue nil}    
-    
+      
+      column 'Group Members' do |invitee|
+        if invitee.invitable.respond_to?(:app)
+          if invitee.invitable.is_a?(ApplicationGroupMember)
+            if primary_invitee = invitee.invitable.app.event_invitees.for_event(event).first
+              if primary_invitee.checked_in?
+                span "Primary presenter (#{primary_invitee.invitable.firstname_first}): #{relative_timestamp(primary_invitee.checkin_time)}", class: 'uw_green smaller'
+              else
+                span "Primary presenter (#{primary_invitee.invitable.firstname_first}): Not checked in.", class: 'red_color smaller'
+              end
+            end
+          else
+            # Display group members check in status for primary presenter
+            invitee.invitable.app.group_members.each do |group_member|
+              group_invitee = group_member.event_invitees.for_event(event).first
+              if group_invitee.blank?
+                para "#{group_member.firstname_first}: No check-in status available.", class: 'red_color smaller'
+              elsif group_invitee.checked_in?
+                para "#{group_invitee.firstname_first}: #{relative_timestamp(group_invitee.checkin_time)}", class: 'uw_green smaller'
+              else
+                para "#{group_member.firstname_first}: Not checked in.", class: 'red_color smaller'
+              end
+            end
+          end        
+        end
+        span "" 
+      end
+
     end
 
     column ('Time'){|invitee| invitee.event_time.time_detail} if event.times.size > 1
@@ -149,6 +177,8 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
 
   filter :person_firstname, as: :string
   filter :person_lastname, as: :string
+  # filter :person_student_no_eq => Not working cuz person student no might be blank
+  filter :student_number_eq, label: 'Student number'
   filter :event_time_id, label: 'Event times', as: :select, collection: proc {@event.times.map{|t| [t.time_detail, t.id]} }, input_html: { class: 'select2', multiple: 'multiple'}
   # filter :invitable_type, as: :select, collection: ['Person', 'ApplicationForOffering', 'ApplicationGroupMember']
 
