@@ -12,21 +12,25 @@
 		<%= render "shared/error_messages", :target => @user_application %>
 		
 		<% if @group_member %>
-			<p class="small warning">Only primary applicants can submit special requests. Please contact your 
-				group's primary applicant to make changes to this page.
+			<p class="small warning">Only primary applicants can submit special requests. Please contact your group's primary applicant to make changes to this page.
 			</p>
 		<% end %>
 
-		<div class='input-field col s12'>
-			<%= f.text_area :special_requests, :disabled => @group_member, class: 'materialize-textarea wordcounter', data: {limit: 300} %>
-			<%= f.label :special_requests, "Please enter your special requests here" %>
-			<p class="word_count light"><%= @confirmer.special_requests.blank? ? 0 : @confirmer.special_requests.split.size %> / 300 words</p>
-		</div>
-				
-		<p class='padding_top'>
-			<%= f.submit "Submit", :disable_with => "Submitting...", class: 'btn' %>
-		</p>
-		
+		<% if @offering.confirmation_deadline && Time.now <= @offering.confirmation_deadline %>
+
+			<div class='input-field col s12'>
+				<%= f.text_area :special_requests, :disabled => @group_member, class: 'materialize-textarea wordcounter', data: {limit: 300} %>
+				<%= f.label :special_requests, "Please enter your special requests here" %>
+				<p class="word_count light"><%= @confirmer.special_requests.blank? ? 0 : @confirmer.special_requests.split.size %> / 300 words</p>
+			</div>
+
+			<p class='padding_top'>
+				<%= f.submit "Submit", :disable_with => "Submitting...", class: 'btn' %>
+			</p>
+
+		<% else %>
+			<br><p class="red_color">You've passed the confirmation deadline at <%= @offering.confirmation_deadline.to_s(:date_time12) %>. Please contact <%= @offering.contact_email %> if you need any special requests.</p>
+		<% end %>		
 	<% end %>
   </div>
 

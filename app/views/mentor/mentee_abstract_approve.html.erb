@@ -16,6 +16,10 @@
 	<h6><strong>Your Academic Department(s):</strong>  <span class="smaller"><%= @mentee_application_record.academic_department.join(", ") %></span></h6>
 <% end %>
 
+<% if @mentee_application_record.confirm_primary? %>
+	<h6><span class="smaller"><i class="mi uw_green">check_circle</i> I confirmed I am the primary mentor associated with this research project and I confirmed this research can be shared publicly.</span></h6>
+<% end %>
+
 <div class="abstract">
 	<h5><b>Abstract:</b></h5>
 	<hr style="border: 1px solid #DDD">
@@ -39,6 +43,11 @@
 
 		<br><span class="caption">This will be printed in our symposium event. If you cannot find your academic department, please contact <%= auto_link @offering.unit.email rescue 'Error!' %></span>
 	</p><br>
+
+	<% if @mentee_application_record.primary && @mentee_application_record.mentor_type.title == 'Faculty' %>
+		<p><label><%= f.check_box :confirm_primary, class: "filled-in" %>
+		<span>I confirm I am the primary mentor associated with this research project and I confirm this research can be shared publicly.</span></label></p><br>
+	<% end %>
 
 	<h6><strong>Do you approve this abstract?</strong>  <%= "<i class='material-icons align uw_green'>check_circle</i> <span class='tag green'>You already approved this abstract.</span><br>".html_safe if @mentee_application_record.approved? %></h6>
 	<p>Once you give your response, an email will be sent to the student notifying them of your response.</p>

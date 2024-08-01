@@ -5,6 +5,10 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
   config.sort_order = 'people.firstname_asc'
   menu false
 
+  scope :all, default: true
+  scope 'Checked in', :checked_in
+  scope 'Not Checked in', :not_checked_in
+
   breadcrumb do
     breadcrumbs = [
       link_to('Expo', "/expo"), 
