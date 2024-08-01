@@ -56,6 +56,7 @@ ActiveAdmin.register Person do
                    span link_to user.login, admin_user_path(user)
                    span '@u.washington.edu', :class => 'light small' if user.is_a? PubcookieUser
                    status_tag 'admin', class: 'admin small' if user.admin?
+                   status_tag 'student', class: 'small' if user.type
                  end
                  column ('Person') {|user| link_to user.person.fullname, admin_person_path(user.person) }
                  column ('Last Login') {|user| "#{time_ago_in_words user.logins.last.created_at} ago" rescue "<font class=grey>never</font>".html_safe }

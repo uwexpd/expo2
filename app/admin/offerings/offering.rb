@@ -61,6 +61,9 @@ ActiveAdmin.register Offering do
         span link_to "<i class='mi'>person_pin_circle</i> Location Sections (#{offering.location_sections.size})".html_safe, admin_offering_location_sections_path(offering)
       end
       li do
+        span link_to "<i class='mi'>person_pin_circle</i> Invitation Codes (#{OfferingInvitationCode.where(offering_id: offering.id, application_for_offering_id: nil).size} of #{offering.invitation_codes.size} left)".html_safe, admin_offering_invitation_codes_path(offering)
+      end
+      li do
         span link_to "<i class='mi'>auto_awesome</i> Other Award Types (#{offering.other_award_types.size})".html_safe, admin_offering_other_award_types_path(offering)
       end
     end

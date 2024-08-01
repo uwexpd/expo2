@@ -18,6 +18,10 @@ class OfferingInvitationCode < ApplicationRecord
   def assign_to(app)
     update_attribute(:application_for_offering_id, app.id) if available?
   end
+
+  def institution_name    
+    Institution.find_by_table_key(institution_id).try(:name)
+  end
   
   # Generates a random code that can be used with the specified Offering, or, if n > 1, generate a whole block.
   def self.generate(offering, n = 1, institution_id = nil, note = nil)
@@ -26,7 +30,7 @@ class OfferingInvitationCode < ApplicationRecord
       n.times { codes << self.generate(offering, 1, institution_id, note) }
       return codes
     end
-    OfferingInvitationCode.create(:offering_id => offering.id, :code => self.random_string, :institution_id => institution_id, :note => note)
+    OfferingInvitationCode.new(offering_id: offering.id, code: self.random_string, institution_id: institution_id, note: note)
   end
     
   def self.random_string(length = 8)

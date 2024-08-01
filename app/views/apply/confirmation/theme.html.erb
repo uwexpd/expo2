@@ -21,14 +21,14 @@
 			<%= f.label :theme_response, "Please enter here" %>
 
 			<% if @offering.theme_response_word_limit.to_i > 0 %>
-			 <p class="word_count light"><%= @confirmer.theme_response.split.size %> / <%= @offering.theme_response_word_limit %> words</p>
+			 <p class="word_count light"><%= @confirmer.theme_response.split.size rescue 0 %> / <%= @offering.theme_response_word_limit %> words</p>
 			<% end %>
-
 		</div>
 
 		<% unless @offering.theme_response2_instructions.blank? %>
 			<br><p>
 				<%= textilize @offering.theme_response2_instructions %>
+				
 				<div class='input-field col s12'>
 					<% if @offering.theme_response2_type == 'textarea' %>
 						<%= f.text_area :theme_response2, class: 'materialize-textarea wordcounter', data: {limit: @offering.theme_response2_word_limit}  %>
@@ -37,7 +37,7 @@
 					<% end %>
 					<%= f.label :theme_response2, "Please enter here" %>
 					<% if @offering.theme_response2_word_limit.to_i > 0 %>
-						<p class="word_count light"><%= @confirmer.theme_response2.split.size %> / <%= @offering.theme_response2_word_limit %> words</p>
+						<p class="word_count light"><%= @confirmer.theme_response2.split.size rescue 0 %> / <%= @offering.theme_response2_word_limit %> words</p>
 					<% end %>
 				</div>
 			</p>

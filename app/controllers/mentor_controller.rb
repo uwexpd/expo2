@@ -89,11 +89,11 @@ class MentorController < ApplicationController
          flash[:error] = @error
          redirect_to :action => 'mentee_abstract_approve', :id => params[:id], :error_message => @error and return true
       else
-        @mentee_application_record.update_attribute(:academic_department, selected_academic_department)
+        @mentee_application_record.update(academic_department: selected_academic_department)
       end
       
-      if @mentee_application_record.update_attributes(mentor_approval_params)
-        @mentee_application_record.update_attribute(:approval_at, Time.now)
+      if @mentee_application_record.update(mentor_approval_params)
+        @mentee_application_record.update(approval_at: Time.now)
         if @mentee_application.submitted?
           @required_mentors = @mentee_application.reload.mentors.select{|m| m.primary || m.meets_minimum_qualification?}
           @mentee_application.set_status "complete" unless @required_mentors.collect(&:approved?).include?(false)
@@ -205,6 +205,6 @@ class MentorController < ApplicationController
   end
 
   def mentor_approval_params
-    params.require(:application_mentor).permit(:academic_department, :approval_response, :approval_comments)
+    params.require(:application_mentor).permit(:academic_department, :approval_response, :approval_comments, :confirm_primary)
   end
 end

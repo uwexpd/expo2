@@ -18,6 +18,9 @@ class EventInvitee < ApplicationRecord
 
   before_save :cache_person_id
 
+  scope :checked_in, -> {where("checkin_time is not null")}
+  scope :not_checked_in, -> {where("checkin_time is null")}
+
   def <=>(o)
     invitable <=> o.invitable rescue 0
   end

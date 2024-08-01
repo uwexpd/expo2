@@ -121,7 +121,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     if params[:offering_id].blank?
       column ('Offering') {|app| link_to app.offering.title, admin_offering_path(app.offering) }
     end
-    column ('Project Tiitle') {|app| link_to app.project_title.blank? ? "View Application" : highlight(strip_tags(app.project_title), params.dig(:q, :project_title_contains)), admin_offering_application_path(app.offering, app) }
+    column ('Project Title') {|app| link_to app.project_title.blank? ? "View Application" : highlight(strip_tags(app.project_title), params.dig(:q, :project_title_contains)), admin_offering_application_path(app.offering, app) }
     column ('Current Status') {|app| raw(print_status(app)) }
     actions
   end
@@ -277,6 +277,6 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   filter :offering, as: :select, collection: Offering.order('id DESC'), input_html: { class: "select2", multiple: 'multiple'}, if: proc { @offering.blank? }
   filter :project_title, as: :string
   filter :project_description, as: :string
-  filter :current_application_status_application_status_type_id, label: 'Current Status', as: :select, collection: proc { @offering.blank? ? ApplicationStatusType.order('name asc').map{|a|[a.name_pretty, a.id]} : @offering.statuses.map{|s|[s.application_status_title, s.application_status_type.id]} }, input_html: { class: "select2", multiple: 'multiple'}
+  filter :current_application_status_application_status_type_id, label: 'Current status', as: :select, collection: proc { @offering.blank? ? ApplicationStatusType.order('name asc').map{|a|[a.name_pretty, a.id]} : @offering.statuses.map{|s|[s.application_status_title, s.application_status_type.id]} }, input_html: { class: "select2", multiple: 'multiple'}
 
 end 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_25_234126) do
+ActiveRecord::Schema.define(version: 2024_07_29_182147) do
 
   create_table "academic_departments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -379,6 +379,7 @@ ActiveRecord::Schema.define(version: 2022_05_25_234126) do
     t.string "relationship"
     t.text "task_completion_status_cache"
     t.string "academic_department"
+    t.boolean "confirm_primary"
     t.index ["application_for_offering_id"], name: "index_mentors_on_app_id"
     t.index ["person_id"], name: "index_mentors_on_person_id"
   end
@@ -719,6 +720,20 @@ ActiveRecord::Schema.define(version: 2022_05_25_234126) do
     t.string "css_class"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "delayed_jobs", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.integer "priority", default: 0
+    t.integer "attempts", default: 0
+    t.text "handler"
+    t.text "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "deleted_application_answers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1108,6 +1123,7 @@ ActiveRecord::Schema.define(version: 2022_05_25_234126) do
     t.boolean "religious"
     t.boolean "group_ok"
     t.string "picture"
+    t.integer "education_sector"
   end
 
   create_table "department_extras", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1371,6 +1387,13 @@ ActiveRecord::Schema.define(version: 2022_05_25_234126) do
     t.string "url"
     t.string "title"
     t.integer "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "first_generation_pell_eligibles", primary_key: "system_key", id: :integer, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.boolean "first_gen"
+    t.boolean "pell_eligible"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -2724,6 +2747,7 @@ ActiveRecord::Schema.define(version: 2022_05_25_234126) do
     t.boolean "religious"
     t.boolean "group_ok"
     t.string "picture"
+    t.boolean "education_sector"
     t.index ["organization_quarter_id"], name: "index_service_learning_positions_on_organization_quarter_id"
   end
 
