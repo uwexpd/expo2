@@ -96,8 +96,11 @@ gem 'rdoc'
 gem "select2-rails"
 gem 'leaflet-rails'
 
-gem 'axlsx'
-gem 'zip'
+# gem 'zip'
+gem 'rubyzip'
+gem 'caxlsx'
+gem 'caxlsx_rails'
+
 
 group :production do  
   gem 'omniauth-shibboleth'

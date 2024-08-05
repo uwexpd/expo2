@@ -114,7 +114,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   index do
     selectable_column unless params[:offering_id].blank?
     column 'Student Name' do |app|
-      text_node link_to app.person.lastname_first, admin_student_path(app.person)
+      text_node link_to app.person.lastname_first, app.person.is_a?(Student) ? admin_student_path(app.person) : admin_person_path(app.person)
       br
       span("#{app.person.email rescue Unknown}", class: 'caption')
     end

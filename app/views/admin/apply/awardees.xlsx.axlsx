@@ -1,0 +1,7 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Awardees") do |sheet|
+  sheet.add_row ["App ID", "Student Number", "First Name", "Last Name", "E-mail", "Major(s)", "Preferred Address", StudentAddress::ADDRESS_FIELDS.join(", ")]
+  @awardees.each do |app|
+    sheet.add_row [app.id, app.person.student_no, app.person.firstname, app.person.lastname, app.person.email, app.person.sdb.majors_list, app.local_or_permanent_address, app.person.sdb.address.for_export(app.local_or_permanent_address, ',')]
+  end
+end

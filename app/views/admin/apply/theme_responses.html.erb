@@ -1,0 +1,48 @@
+<div class='panel'>	
+  <div class='panel_contents'>
+	<div class='content-block special_requests'>
+
+	  <h1><i class='mi uw_purple'>celebration</i> <%= @offering.theme_response_title %>
+	  	<span class="right small"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, {format: 'xlsx'}, :class => 'button small flat' %></span>
+	  </h1>
+
+	  <div class="tabs">
+		  <ul class="nav nav-tabs">
+		    <li class="active"><a href="#tab1" data-toggle="tab">Theme Response (<%= pluralize @theme_responders.size, "response" %>)</a></li>
+		    <li><a href="#tab2" data-toggle="tab">Theme Response 2 (<%= pluralize @theme2_responders.size, "response" %>)</a></li>
+		  </ul>
+	  
+  	  <div class="tab-content">
+  	  	<div id="tab1" class="tab-pane active">	  		
+  	  		<table class="borderless">				
+  				<tr class="rowset-header">
+  					<td colspan=2><%= textilize @offering.theme_response_instructions %></td>
+  				</tr>
+  				<tr class="table-header uw_light_bg_gold">
+  					<th>Student</th>
+  					<th>Responses</th>
+  				</tr>
+  		  		<%= render partial: "theme_responder", collection: @theme2_responders %>
+  	  		</table>
+  	  	</div>
+
+  	  	<div id="tab2" class="tab-pane">	  		
+  	  		<table class="borderless">				
+  				<tr class="rowset-header">
+  					<td colspan=2><%= textilize @offering.theme_response2_instructions %></td>
+  				</tr>
+  				<tr class="table-header uw_light_bg_gold">
+  					<th>Student</th>
+  					<th>Responses</th>
+  				</tr>
+  		  		<%= render partial: "theme_responder", collection: @theme2_responders, locals: { theme_attribute: "theme_response2" } %>
+  	  		</table>
+  	  	</div>
+	    </div>
+	  </div>
+
+	</div>
+  </div>	
+</div>
+
+

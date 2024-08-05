@@ -3,7 +3,7 @@
 
 # https://metadata.uw.edu/catalog/viewitem/Table/uwsdbdatastore.timeschedule
 
-require 'axlsx'
+require 'caxlsx'
 
 desc "Run SDB course queries"
   task :div_courses => :environment do

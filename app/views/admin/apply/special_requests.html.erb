@@ -1,0 +1,24 @@
+<div class='panel'>	
+  <div class='panel_contents'>
+	<div class='content-block special_requests'>
+	  <h1><i class='mi uw_purple'>speaker_notes</i> Special Requests (<%= @special_requests.size %>)
+	  	<span class="right small"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, {format: 'xlsx'}, :class => 'button small flat' %></span>
+	  </h1>
+
+		<table class="borderless">
+			<tr class="table-header uw_light_bg_gold">
+				<th>Student</th>
+				<th>Session</th>
+				<th>Request</th>
+			</tr>
+			<% for user_application in @special_requests %>
+				<tr>
+					<td><%= link_to user_application.fullname, admin_offering_application_path(@offering, user_application) %></td>
+					<td><%= link_to(user_application.offering_session.title, admin_offering_session_path(@offering, user_application.offering_session)) if user_application.offering_session %></td>
+					<td><%=h user_application.special_requests %></td>
+				</tr>
+			<% end %>				
+		</table>
+	</div>
+  </div>	
+</div>
