@@ -39,7 +39,7 @@
       
       respond_to do |format|
         format.html # awardees.html.erb
-        # format.xls { render :action => 'awardees', :layout => 'basic' } # awardees.xls.erb
+        format.xlsx  { render xlsx: 'awardees' }
       end  		
     end
 
@@ -508,7 +508,7 @@
       @nominees.sort{|x,y| x.size <=> y.size }
       respond_to do |format|
         format.html # nominated_mentors.html.erb
-        format.xls { render :action => 'nominated_mentors', :layout => 'basic' } # nominated_mentors.xls.erb
+        format.xlsx { render xlsx: 'nominated_mentors'} 
       end
     end
   
@@ -518,7 +518,7 @@
       @theme2_responders = @confirmers.reject{|c| c.theme_response2.blank? }
       respond_to do |format|
         format.html # theme_response.html.erb
-        format.xls { render :action => 'theme_responses', :layout => 'basic' } # theme_response.xls.erb
+        format.xlsx { render xlsx: 'theme_responses' }
       end
     end
     
@@ -527,11 +527,11 @@
     end
     
     def special_requests      
-      @special_requests = @offering.application_for_offerings.find(:all, :conditions => "confirmed = 1 AND special_requests != ''")
+      @special_requests = @offering.application_for_offerings.where(confirmed: 1).where.not(special_requests: ['',nil])
       
       respond_to do |format|
         format.html
-        format.xls  { render :action => 'special_requests', :layout => 'basic' }
+        format.xlsx  { render xlsx: 'special_requests' }
       end
     end
 
@@ -551,9 +551,9 @@
 
     # Retrieve all applications and group members for this offering who have confirmed.
     def fetch_confirmers
-      @confirmers = @offering.application_for_offerings.find(:all, :conditions => { :confirmed => true })
-      @confirmers << @offering.application_group_members.find(:all, :conditions => { :confirmed => true })
-      @confirmers.flatten!
+      @confirmers = @offering.application_for_offerings.where(confirmed: true).to_a
+      @confirmers += @offering.application_group_members.where(confirmed: true ).to_a
+      @confirmers.flatten! if @confirmers.any? { |element| element.is_a?(Array) }
     end
 
     def fatch_phase

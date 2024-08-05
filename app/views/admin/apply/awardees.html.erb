@@ -1,9 +1,9 @@
 <div class='panel'>	
   <div class='panel_contents'>
 	<div class='content-block awardees'>
-	   <h1>Awardees for <%= @offering.quarter_offered.title %></h1>
+	  <h1><i class='mi'>stars</i> Awardees for <%= @offering.quarter_offered.title %></h1>
 		<h2>Students (<%= @awardees.size %>)
-			<span class="right small">Download in Excel<%#= link_to "Download in Excel", {:format => 'xls'}, :class => 'icon-left xls button' %></span></h2>		
+			<span class="right small"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, {format: 'xlsx'}, :class => 'button small flat' %></span></h2>		
 
 		<table class="borderless">
 			<tr class="table-header uw_light_bg_gold">

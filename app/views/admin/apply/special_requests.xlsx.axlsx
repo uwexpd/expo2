@@ -1,0 +1,7 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Special Requests") do |sheet|
+  sheet.add_row ["Student", "Session", "Request"]
+  @special_requests.each do |app|    
+    sheet.add_row [app.fullname, app.offering_session.try(:title), app.special_requests]
+  end
+end
