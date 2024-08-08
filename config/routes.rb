@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     get 'admin/apply/:offering', to: 'admin/apply#manage', as: :admin_apply_manage
     get 'admin/apply/:offering/list', to: 'admin/apply#list', as: :admin_apply_list
     get 'admin/apply/:offering/awardees', to: 'admin/apply#awardees', as: :admin_apply_awardees
+    get 'admin/apply/:offering/awardees/mentors', to: 'admin/apply#mentors', as: :admin_apply_awardees_mentors
     match 'admin/apply/:offering/scored_selection', to: 'admin/apply#scored_selection', as: :admin_apply_scored_selection, via: [:get, :post, :put]
     get 'admin/apply/:offering/invited_guests', to: 'admin/apply#invited_guests', as: :admin_apply_invited_guests
     get 'admin/apply/:offering/nominated_mentors', to: 'admin/apply#nominated_mentors', as: :admin_apply_nominated_mentors

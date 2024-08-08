@@ -1,0 +1,44 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Nominated Mentors") do |sheet|
+
+  past_symposium = []
+  1.upto(@offering.year_offered - 2009) do |number| 
+      # We have online expo symposium since 2009
+      past_symposium << "#{@offering.year_offered - number rescue "past"} Symposium Mentee Count" 
+  end
+
+  sheet.add_row ["Nominee Mentor ID", "Nominee First Name", "Nominee Last Name", "Nominee Email", "Type", "Department", "Academic Department", "Institution", "MGR Awarded Mentee Count", "#{@offering.year_offered rescue nil} Symposium Mentee Count", "Nomination Count", "Website", "Nominator", "Nominator ID", "Class", "Majors", "Nominator Institution", "Scholarships", "Comments"] + past_symposium
+  
+  @nominees.each do |mentor_type, nominees|
+    nominees.each do |nominee, nominators|
+      nominators.each_with_index do |nominator, i|
+          past_symposium_count = []
+          1.upto(@offering.year_offered - 2009) do |number|
+            past_symposium_count << nominee.application_mentors.reject{|a| a.application_for_offering.offering.sessions.empty? }.select{|a| a.application_for_offering.offering.year_offered == @offering.year_offered - number}.size if nominee.is_a?(Person)
+          end
+
+          raw_data = [nominator.nominated_mentor.id,
+                         nominee.firstname,
+                         nominee.lastname,
+                         nominee.email,
+                         nominator.nominated_mentor.mentor_type.nil? ? '' : nominator.nominated_mentor.mentor_type.title,
+                         nominee.department_name,
+                         nominator.nominated_mentor.academic_department.nil? ? '' : nominator.nominated_mentor.academic_department.join(", "),
+                         nominator.nominated_mentor.person.institution_name || nominator.nominated_mentor.person.organization,
+                         nominee.is_a?(Person) ? nominee.application_mentors.select{|a| a.application_for_offering.offering.award_types.collect(&:scholar_title).include?("Mary Gates Research Scholar") }.size : '',
+                         nominee.is_a?(Person) ? nominee.application_mentors.select{|a| a.application_for_offering.offering == @offering }.size : '',
+                         nominators.size,
+                         '',
+                         nominator.fullname,
+                         nominator.model_name.name + " "  + nominator.id.to_s, 
+                         nominator.person.class_standing_description,
+                         nominator.person.majors_list(true),
+                         nominator.person.institution_name,
+                         nominator.person.awards_list,
+                         nominator.nominated_mentor_explanation] + past_symposium_count          
+
+          sheet.add_row raw_data
+      end
+    end
+  end
+end

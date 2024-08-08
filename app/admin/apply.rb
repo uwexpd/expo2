@@ -22,7 +22,7 @@
 
   controller do
   	before_action :fetch_offering, except: [:dean_approve, :finaid_approve, :disberse]
-  	before_action :fetch_apps, only: [:list, :awardees]
+  	before_action :fetch_apps, only: [:list, :awardees, :mentors]
     before_action :fatch_phase, only: [:task, :mass_update, :edit_interview, :update_interview]
     before_action :fatch_task, only: [:task, :edit_interview, :update_interview]
     before_action :fetch_confirmers, :only => [:invited_guests, :nominated_mentors, :theme_responses, :proceedings_requests]
@@ -41,6 +41,14 @@
         format.html # awardees.html.erb
         format.xlsx  { render xlsx: 'awardees' }
       end  		
+    end
+
+    def mentors
+      @apps.reject! {|a| !a.awarded? }      
+      
+      respond_to do |format|
+        format.xlsx { render xlsx: 'mentors' }
+      end
     end
 
     def phase      

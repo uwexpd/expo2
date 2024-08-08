@@ -1,6 +1,6 @@
 <div class='panel'>	
   <div class='panel_contents'>
-	<div class='content-block special_requests'>
+	<div class='content-block theme_response'>
 
 	  <h1><i class='mi uw_purple'>celebration</i> <%= @offering.theme_response_title %>
 	  	<span class="right small"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, {format: 'xlsx'}, :class => 'button small flat' %></span>
@@ -8,12 +8,12 @@
 
 	  <div class="tabs">
 		  <ul class="nav nav-tabs">
-		    <li class="active"><a href="#tab1" data-toggle="tab">Theme Response (<%= pluralize @theme_responders.size, "response" %>)</a></li>
-		    <li><a href="#tab2" data-toggle="tab">Theme Response 2 (<%= pluralize @theme2_responders.size, "response" %>)</a></li>
+		    <li class="active"><a href="#theme_response_tab" data-toggle="tab">Theme Response (<%= pluralize @theme_responders.size, "response" %>)</a></li>
+		    <li><a href="#theme_response_tab2" data-toggle="tab">Theme Response 2 (<%= pluralize @theme2_responders.size, "response" %>)</a></li>
 		  </ul>
 	  
   	  <div class="tab-content">
-  	  	<div id="tab1" class="tab-pane active">	  		
+  	  	<div id="theme_response_tab" class="tab-pane active">
   	  		<table class="borderless">				
   				<tr class="rowset-header">
   					<td colspan=2><%= textilize @offering.theme_response_instructions %></td>
@@ -26,7 +26,7 @@
   	  		</table>
   	  	</div>
 
-  	  	<div id="tab2" class="tab-pane">	  		
+  	  	<div id="theme_response_tab2" class="tab-pane">	  		
   	  		<table class="borderless">				
   				<tr class="rowset-header">
   					<td colspan=2><%= textilize @offering.theme_response2_instructions %></td>
