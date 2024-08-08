@@ -1,0 +1,7 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Theme Response") do |sheet|
+  sheet.add_row ["First Name", "Last Name", "Major", "Class Standing", "#{textilize @offering.theme_response_instructions}", "#{textilize @offering.theme_response2_instructions}", "Give permission to publish?"]
+  @theme_responders.each do |responder|
+    sheet.add_row [responder.person.firstname, responder.person.lastname, responder.person.majors_list, responder.person.class_standing_description, responder.theme_response, responder.theme_response2, responder.theme_response3? ]
+  end
+end

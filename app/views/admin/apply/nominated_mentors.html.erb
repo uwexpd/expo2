@@ -1,0 +1,68 @@
+<div class='panel'>	
+  <div class='panel_contents'>
+	<div class='content-block nominated_mentors'>
+	  <h1><i class='mi uw_purple'>diversity_1</i> Nominated Mentors</h1>
+
+	  <div class="tabs">
+	  	<ul class="nav nav-tabs">
+		  <% @nominees.each do |mentor_type, nominees| %>
+			    <li class=<%= 'active' if mentor_type.title == "Faculty" %>>
+			    	<a href="#<%= mentor_type.title.downcase.gsub(' ', '_') %>" data-toggle="tab"><%= mentor_type.title %> (<%= pluralize nominees.size, "nominee" %>)</a>
+			    </li>				  
+			<% end %>
+			</ul>
+
+			<div class="tab-content">
+			<% @nominees.each do |mentor_type, nominees| %>		  
+		  	<div id='<%= mentor_type.title.downcase.gsub(' ', '_') %>' class="tab-pane <%= 'active' if mentor_type.title == "Faculty" %>">
+		  		<h2><%= mentor_type.title %> &raquo; <%= pluralize nominees.size, "nominee" %>
+							<span class="right small"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, {format: 'xlsx'}, :class => 'button small flat' %></span>
+					</h2>					
+					<table class="borderless">
+						<tr class="table-header uw_light_bg_gold">
+							<th width="25%">Nominee</th>
+							<th>MG Research Awarded Mentee</th>
+							<th>No. of mentees (this offering) / Total no. of mentees (all symposia)</th>
+						</tr>
+						<% nominees.each do |nominee, nominators| %>
+						<tr class='borderless'>
+							<td><%=h nominee.fullname %>
+								<br><small><%=h "#{nominee.application_mentors.first.mentor_type.title}, " rescue nil %><%=h nominee.department_name %></small>
+							</td>
+							<td><%= nominee.application_mentors.select{|a| a.application_for_offering.offering.award_types.collect(&:scholar_title).include?("Mary Gates Research Scholar") }.size if nominee.is_a?(Person) %></td>
+							<td><%= nominee.application_mentors.select{|a| a.application_for_offering.offering == @offering }.size if nominee.is_a?(Person) %> / <%= nominee.application_mentors.reject{|a| a.application_for_offering.offering.sessions.empty? }.size if nominee.is_a?(Person) %>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=5 class="left-indent">
+								<dl class="inline-definitions">							
+								<!-- Each nominator gets a row here -->
+								<% nominators.each_with_index do |nominator, i| %>
+								<dt>Nominator <%= i+1 %>:</dt>
+								<dd>
+									<span><strong><%= nominator.fullname %></strong>
+										<br><small>
+											Class: <span class="light"><%= nominator.person.class_standing_description rescue nil %></span>
+											| Majors: <span class="light"><%= nominator.person.majors_list(true) rescue nil %></span>
+											<% unless nominator.person.awards.empty? %>
+												| Scholarships: <span class="light"><%= nominator.person.awards_list rescue nil %></span>
+											<% end -%>
+											</small>
+										</span>
+										<%= textilize h nominator.nominated_mentor_explanation %>
+								</dd>
+								<% end %>
+								</dl>							
+							</td>
+						</tr>
+						<% end %>
+					</table>
+		  	</div>
+		  <% end %>	
+			</div>			
+		
+		</div><!-- end of tabs -->
+
+	</div>
+  </div>	
+</div>

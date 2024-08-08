@@ -1,57 +1,72 @@
 <div class='panel'>	
   <div class='panel_contents'>
 	<div class='content-block awardees'>
-	  <h1><i class='mi'>stars</i> Awardees for <%= @offering.quarter_offered.title %></h1>
-		<h2>Students (<%= @awardees.size %>)
-			<span class="right small"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, {format: 'xlsx'}, :class => 'button small flat' %></span></h2>		
+	  <h1><i class='mi uw_purple'>stars</i> Awardees for <%= @offering.quarter_offered.title %></h1>
 
-		<table class="borderless">
-			<tr class="table-header uw_light_bg_gold">
-				<th>Student #</th>
-				<th>First Name</th>
-				<th>Last Name</th>
-				<th>Majors</th>
-				<th>Address</th>
-				<th>Award List</th>
-			</tr>
-			<% @awardees.each do |a| %>
-			  <tr>
-				<td><%= a.person.student_no %></td>
-				<td><%= a.person.firstname %></td>
-				<td><%= a.person.lastname %></td>
-				<td><%= a.person.sdb.majors_list rescue a.person.majors_list %></td>
-				<td><%= raw(eval("a.person.sdb.address.full_#{a.local_or_permanent_address}_address")) rescue nil %></td>
-				<td><%= raw(a.award_list("<br>")) %></td>
-			  </tr>
-			<% end %>
+	  <div class="tabs">
+		  <ul class="nav nav-tabs">
+		    <li class="active">
+		    	<a href="#students_tab" data-toggle="tab">Students (<%= @awardees.size %>)</a>					
+		    </li>
+		    <li><a href="#mentors_tab" data-toggle="tab">Mentors</a></li>
+		  </ul>
 
-		</table>
+		  <div class="tab-content">
+  	  	<div id="students_tab" class="tab-pane active">
+  	  			<h2>Students (<%= @awardees.size %>)
+							<span class="right small"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, {format: 'xlsx'}, :class => 'button small flat' %></span>
+						</h2>
+						<table class="borderless">
+							<tr class="table-header uw_light_bg_gold">
+								<th>Student #</th>
+								<th>First Name</th>
+								<th>Last Name</th>
+								<th>Majors</th>
+								<th>Address</th>
+								<th>Award List</th>
+							</tr>
+							<% @awardees.each do |a| %>
+							  <tr>
+								<td><%= link_to a.person.student_no, admin_offering_application_path(@offering, a), target: '_blank' %></td>
+								<td><%= a.person.firstname %></td>
+								<td><%= a.person.lastname %></td>
+								<td><%= a.person.sdb.majors_list rescue a.person.majors_list %></td>
+								<td><%= raw(eval("a.person.sdb.address.full_#{a.local_or_permanent_address}_address")) rescue nil %></td>
+								<td><%= raw(a.award_list("<br>")) %></td>
+							  </tr>
+							<% end %>
+						</table>
+  	  	</div>
 
+  	  	<div id="mentors_tab" class="tab-pane">
+  	  		<h2>Mentors
+						<span class="right small"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, admin_apply_awardees_mentors_path(format: 'xlsx'), class: 'button small flat' %></span>
+					</h2>
 
-		<h2>Mentors
-			<span class="small right">Download in Excel<%#= link_to "Download in Excel", {:action => 'mentors', :format => 'xls'}, :class => 'icon-left xls button' %></span></h2>
+					<table class="borderless">
+						<tr class="table-header uw_light_bg_gold">				
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Address</th>
+							<th>Mentee First Name</th>
+							<th>Mentee Last Name</th>
+						</tr>
+						<% @awardees.each do |a| %>
+							<% a.mentors.each do |m| %>
+								<tr>
+								<td><%= m.firstname %></td>
+								<td><%= m.lastname %></td>
+								<td><%= raw(address_block(m.person)) unless m.person.nil? %></td>
+								<td><%= a.person.firstname %></td>
+								<td><%= a.person.lastname %></td>
+								</tr>
+							<% end %>
+						<% end %>
+					</table>
+  	  	</div>
 
-		<table class="borderless">
-			<tr class="table-header uw_light_bg_gold">				
-				<th>First Name</th>
-				<th>Last Name</th>
-				<th>Address</th>
-				<th>Mentee First Name</th>
-				<th>Mentee Last Name</th>
-			</tr>
-			<% @awardees.each do |a| %>
-				<% a.mentors.each do |m| %>
-					<tr>
-					<td><%= m.firstname %></td>
-					<td><%= m.lastname %></td>
-					<td><%= raw(address_block(m.person)) unless m.person.nil? %></td>
-					<td><%= a.person.firstname %></td>
-					<td><%= a.person.lastname %></td>
-					</tr>
-				<% end %>
-			<% end %>
-
-		</table>
+  	  </div>		
+		</div>		
 	</div>
   </div>	
 </div>

@@ -142,6 +142,10 @@ mark {
 	border-bottom: 1px solid #efefef;
 }
 
+.panel_contents tr.borderless td {
+	border: none;
+}
+
 .panel_contents table.mentor_letter tr td {
 	border: none;
 }
@@ -154,6 +158,7 @@ mark {
 	box-shadow: none;
 	border-bottom: none;
 }
+
 .panel_contents hr.header, .panel_contents hr.divider{
 	border-bottom: 1px solid #c0b08b;
 }

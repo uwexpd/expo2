@@ -1,0 +1,46 @@
+wb = xlsx_package.workbook
+
+award_quarters = []
+@offering.max_number_of_awards.times do |i|
+    award_quarters << "Award #{i+1} Quarter"
+    award_quarters << "Award #{i+1} Amount Requested"
+    award_quarters << "Award #{i+1} Amount Disbursed"
+    award_quarters << "Award #{i+1} Account"    
+end
+
+wb.add_worksheet(name: "Awardee Mentors") do |sheet|
+  sheet.add_row ["Mentor ID", "Firstname", "Lastname", "Address1", "Address2", "Address3", "City", "State", "Zip", "Box Number", "E-mail", "Department", "Applicant ID", "Applicant Firstname", "Applicant Lastname" ] + award_quarters
+
+  @apps.each do |app|
+
+  	award_quarter_answers = []
+    @offering.max_number_of_awards.times do |i|
+        if award = app.awards.valid[i]
+          award_quarter_answers << award.requested_quarter.title
+          award_quarter_answers << number_to_currency(award.amount_requested) 
+          award_quarter_answers << number_to_currency(award.amount_disbersed)
+          award_quarter_answers << (award.disbersement_type.nil? ? '' : award.disbersement_type.name)
+        else
+          4.times.each{|i| award_quarter_answers << ''}
+        end
+    end 
+
+  	app.mentors.each do |m|
+    	sheet.add_row [m.id,
+    		 		   m.firstname,
+    		 		   m.lastname,
+    		 		   m.person.nil? ? '' : m.person.address1,
+    		 		   m.person.nil? ? '' : m.person.address2,
+    		 		   m.person.nil? ? '' : m.person.address3,
+    		 		   m.person.nil? ? '' : m.person.city,
+    		 		   m.person.nil? ? '' : m.person.state,
+    		 		   m.person.nil? ? '' : m.person.zip,
+    		 		   m.person.nil? ? '' : m.person.box_no,
+    		 		   m.email,
+    		 		   m.department,	 		   
+    		 		   app.person.id,
+    		 		   app.person.firstname,
+    		 		   app.person.lastname] + award_quarter_answers
+	end
+  end
+end

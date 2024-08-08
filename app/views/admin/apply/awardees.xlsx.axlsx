@@ -1,7 +1,58 @@
 wb = xlsx_package.workbook
+
+award_quarters = []
+@offering.max_number_of_awards.times do |i|
+    award_quarters << "Award #{i+1} Quarter"
+    award_quarters << "Award #{i+1} Amount Requested"
+    award_quarters << "Award #{i+1} Amount Disbursed"
+    award_quarters << "Award #{i+1} Account"    
+end
+
+scored_review = []  
+if @offering.uses_scored_review?
+    scored_review << "Average Score"
+    @apps.collect{|a| a.reviewers.without_committee_scores.size }.max.times do |i|
+      scored_review << "Reviewer #{i+1} Name"
+        @offering.review_criterions.each do |review_criterion|
+          scored_review << "Reviewer #{i+1} Score (#{review_criterion.title})"
+        end
+      scored_review << "Reviewer #{i+1} Total Score"
+    end
+end
+
 wb.add_worksheet(name: "Awardees") do |sheet|
-  sheet.add_row ["App ID", "Student Number", "First Name", "Last Name", "E-mail", "Major(s)", "Preferred Address", StudentAddress::ADDRESS_FIELDS.join(", ")]
+  sheet.add_row ["App ID", "Student Number", "First Name", "Last Name", "E-mail", "Major(s)", "Preferred Address"] + StudentAddress::ADDRESS_FIELDS + award_quarters + scored_review
+
   @awardees.each do |app|
-    sheet.add_row [app.id, app.person.student_no, app.person.firstname, app.person.lastname, app.person.email, app.person.sdb.majors_list, app.local_or_permanent_address, app.person.sdb.address.for_export(app.local_or_permanent_address, ',')]
+    award_quarter_answers = []
+    @offering.max_number_of_awards.times do |i|
+        if award = app.awards.valid[i]
+          award_quarter_answers << award.requested_quarter.title
+          award_quarter_answers << number_to_currency(award.amount_requested) 
+          award_quarter_answers << number_to_currency(award.amount_disbersed)
+          award_quarter_answers << (award.disbersement_type.nil? ? '' : award.disbersement_type.name)
+        else
+          4.times.each{|i| award_quarter_answers << ''}
+        end
+    end
+
+    scored_review_answers = []
+    if @offering.uses_scored_review?      
+      scored_review_answers <<  "#{'%2.2f' % app.average_score }"
+      @apps.collect{|a| a.reviewers.without_committee_scores.size }.max.times do |i|
+        if reviewer = app.reviewers.without_committee_scores[i]
+          scored_review_answers << app.reviewers.without_committee_scores[i].fullname
+          @offering.review_criterions.each do |review_criterion|
+             scored_review_answers << reviewer.get_score(review_criterion)
+          end
+          scored_review_answers << reviewer.total_score
+        else
+          scored_review_answers << (2 + @offering.review_criterions.size).times.each{|i| scored_review_answers << ''}
+        end
+      end
+    end
+
+    sheet.add_row [app.id, app.person.student_no, app.person.firstname, app.person.lastname, app.person.email, app.person.sdb.majors_list, app.local_or_permanent_address] + app.person.sdb.address.for_export(app.local_or_permanent_address, ',').split(',', -1) + award_quarter_answers + scored_review_answers
   end
+
 end
