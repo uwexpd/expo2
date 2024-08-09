@@ -4,11 +4,11 @@ class ApplyController < ApplicationController
   before_action :fetch_offering, :except => :list
   before_action :apply_alternate_stylesheet, :except => :list
   before_action :fetch_user_applications, :except => [:cancelled, :list]
-  before_action :choose_application, :except => [:which, :cancelled, :list]
+  before_action :choose_application, :except => [:which, :cancelled, :list, :group_member_validation]
   before_action :redirect_to_group_member_area, :except => [:group_member_validation, :group_member, :which, :cancelled, :list]
   before_action :check_restrictions, :except => [:restricted, :cancelled, :list, :which, :group_member_validation]
   before_action :check_must_be_student_restriction, :except => [:restricted, :cancelled, :list, :which, :enter_code, :group_member_validation, :group_member]
-  before_action :display_submitted_note, :except => [:restricted, :cancelled, :availability, :summary, :list, :which, :revise_abstract, :index, :accept]
+  before_action :display_submitted_note, :except => [:restricted, :cancelled, :availability, :summary, :list, :which, :revise_abstract, :index, :accept, :group_member_validation]
   before_action :check_if_contact_info_blank
   before_action :fetch_breadcrumb  
 
@@ -394,10 +394,6 @@ class ApplyController < ApplicationController
       @alternate_stylesheet = @offering.alternate_stylesheet
     end
   end
-  
-  # def fetch_user_application
-  #   @user_application = ApplicationForOffering.find_or_create_by_person_id_and_offering_id(@current_user.person.id, @offering.id)
-  # end
   
   def fetch_user_applications
     @user_applications = ApplicationForOffering.where(person_id: @current_user.person.id, offering_id: @offering.id)
