@@ -12,7 +12,7 @@ ActiveAdmin.register_page "Base" do
 	      user = User.find(params[:user_id])
 	    else
 	      flash[:alert] = "You need to provide either a user ID or a username and identity type."
-	      return redirect_to root_path
+	      return redirect_to admin_path
 	    end
 	    if user
 	      return check_permission(:vicarious_login) unless @current_user.has_role?(:vicarious_login)
@@ -23,7 +23,7 @@ ActiveAdmin.register_page "Base" do
 	      return redirect_to root_path
 	    else
 	      flash[:alert] = "Could not find the user you requested. Try looking for a different identity type for that user."
-	      return redirect_to root_path
+	      return redirect_to admin_path
 	    end
 	  end
   end

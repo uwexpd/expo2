@@ -202,22 +202,24 @@ class Student < Person
     
   # Returns an array of which ServiceLearningCourses a Student is enrolled in for the specified Quarter. If left blank,
   # this defaults to the current quarter. Pass an array of Quarters to do the lookup for each of those quarters.
-  def enrolled_service_learning_courses(quarter = Quarter.current_quarter, unit = Unit.find_by_abbreviation("carlson"), options = {:enrolled_courses_options => {}})
-    quarter = [quarter] unless quarter.is_a?(Array)
-    @enrolled_service_learning_courses = []    
-    for q in quarter
-      service_learning_courses = unit.nil? ? q.service_learning_courses : q.service_learning_courses.for_unit(unit)      
-      enrolled_courses = enrolled_courses(q, {:include_extra_enrollees => true}.merge(options[:enrolled_courses_options]))
-      eslc ||= extra_service_learning_courses
-      
-      service_learning_courses.each do |slc|        
-        @enrolled_service_learning_courses << slc if !(slc.courses.collect(&:course) & enrolled_courses).empty? || eslc.include?(slc)        
+  def enrolled_service_learning_courses(quarter = Quarter.current_quarter, unit = Unit.find_by_abbreviation("carlson"), options = {})
+    quarter = Array(quarter)  # Ensures quarter is always an array
+    enrolled_courses_options = options.fetch(:enrolled_courses_options, {}).merge(include_extra_enrollees: true)
+    @enrolled_service_learning_courses = []
+
+    quarter.each do |q|
+      service_learning_courses = unit.nil? ? q.service_learning_courses : q.service_learning_courses.for_unit(unit)
+      enrolled_courses = enrolled_courses(q, enrolled_courses_options)
+      extra_courses = extra_service_learning_courses
+
+      @enrolled_service_learning_courses += service_learning_courses.select do |slc|
+        (slc.courses.collect(&:course) & enrolled_courses).present? || extra_courses.include?(slc)
       end
-    end    
+    end
+
     @enrolled_service_learning_courses.uniq
-    # service_learning_courses = quarter.is_a?(Array) ? quarter.collect(&:service_learning_courses).flatten : quarter.service_learning_courses
-    # service_learning_courses.reject {|service_learning_course| !service_learning_course.enrolls?(self, :include_extra_enrollees => true)}
-  end
+end
+
 
   # Tries to find a student based on the parameter passed. If the parameter is numeric, we search by student number. Otherwise, search
   # by UW NetID and then name. Returns an array of the results (or an empty array if nothing is found).

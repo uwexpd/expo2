@@ -1,18 +1,19 @@
 <table>
 <tr class="rowset-header">
-	<td colspan=2>My Community Engagedment (<%= @service_learning_courses.size %>)</td>
+	<td colspan=3>My Current Community Engagedment (<%= @service_learning_courses.size %>)</td>
 </tr>
 
 <% @service_learning_courses.each do |course| %>
 	<tr>
 		<td><%= link_to "#{course.title}", community_engaged_path %></td>
+		<td><%= course.unit.name %></td>
 		<td><%= course.quarter.title %></td>
 	</tr>
 <% end -%>
 		
 <% if @service_learning_courses.empty? %>
 	<tr class="empty">
-		<td colspan=2>You haven't enrolled in any service-learning courses.</td>
+		<td colspan=2>You haven't enrolled in any community engaged courses in <%= Quarter.current_quarter.title %>.</td>
 	</tr>
 <% end -%>
 </table>

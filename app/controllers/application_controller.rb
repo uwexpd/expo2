@@ -30,10 +30,11 @@ class ApplicationController < ActionController::Base
 
   def remove_vicarious_login
       session[:user] = session[:original_user]
-      session[:original_user] = nil
+      # session[:original_user] = nil
       session[:vicarious_token] = nil
       session[:vicarious_user] = nil
-      redirect_back(fallback_location: root_path)
+      flash[:notice] = "You are now logged in back as #{User.find(session[:user]).fullname rescue "error!"}."
+      redirect_to admin_path
   end
 
   def force_login_as_student
