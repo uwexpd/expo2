@@ -89,7 +89,7 @@ class EventTime < ApplicationRecord
   # Finds an EventInvitee object for this obj, if it exists, or nil.
   def find_invitee(obj)
     return nil if obj.nil?
-    klass = obj.class.respond_to?(:parent_class) ? obj.class.parent_class.to_s : obj.class.to_s
+    klass = obj.class.respond_to?(:base_class) ? obj.class.base_class.to_s : obj.class.to_s
     invitees.find_by_invitable_type_and_invitable_id(klass, obj.id)
   end
 

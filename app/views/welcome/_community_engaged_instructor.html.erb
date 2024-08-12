@@ -1,0 +1,18 @@
+<table>
+<tr class="rowset-header">
+	<td colspan=2>My Community Engagement Courses (<%= @person.service_learning_courses.size %>)</td>
+</tr>
+
+<% @person.service_learning_courses.each do |course| %>
+	<tr>
+		<td><%= link_to "#{course.title}", "https://expo.uw.edu/faculty/service_learning" %></td>
+		<td><%= course.quarter.title %></td>
+	</tr>
+<% end %>
+		
+<% if @person.service_learning_courses.empty? %>
+	<tr class="empty">
+		<td colspan=2>You haven't taught any service-learning courses.</td>
+	</tr>
+<% end -%>
+</table>

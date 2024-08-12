@@ -2,11 +2,11 @@
 class Event < ApplicationRecord
   stampable
   has_many :times, -> { where(type: nil) }, :class_name => "EventTime", :dependent => :destroy do 
-    def future; -> { where("start_time > NOW()") }; end
+    def future; where("start_time > NOW()") ; end
   end
   has_many :invitees, :class_name => "EventInvitee", :through => :times
   has_many :attendees, -> { where(attending: true) }, :class_name => "EventInvitee", :through => :times do
-    def tomorrow_reminder; -> { where("TO_DAYS(start_time) = TO_DAYS(adddate(curdate(),1))") }; end
+    def tomorrow_reminder; where("TO_DAYS(start_time) = TO_DAYS(adddate(curdate(),1))"); end
   end  
   has_many :attended, -> { where("checkin_time IS NOT NULL") }, :class_name => "EventInvitee", :through => :times
   has_many :staff_positions, :class_name => "EventStaffPosition", :dependent => :destroy

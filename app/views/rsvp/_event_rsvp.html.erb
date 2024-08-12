@@ -1,0 +1,75 @@
+<% event_times ||= @event.times.future.sort %>
+<% event = @event %>
+
+<table>
+	
+	<tr class="rowset-header">
+		<th>Date/Time</th>
+		<th>Location</th>
+		<th>RSVP</th>
+	</tr>
+
+	<% event_times.each do |time| %>
+	  <% if @event.nil? %>
+	    <% event = time.event %>
+	  <% end %>
+		<% if time.start_time.to_date != current_date %>
+		<tr class="rowset-header">
+			<td colspan=3><big><%= time.time_detail(:date_only => true) %></big></td>
+		</tr>
+		<% current_date = time.start_time.to_date %>
+		<% end -%>
+	
+		<tr id="time_<%= time.id %>" class="<%= time.attending?(@current_user.person) ? "attending" : (time.full? ? "full" : nil) %>">
+
+			<td>
+				<%= raw time.time_detail(:time_only => true) %>
+				<%= "<br><span class='caption'>#{time.notes}</span>".html_safe if time.notes %>
+			</td>
+		
+			<td>
+				<%= time.location_text %>
+			</td>
+		
+		
+			<td>
+				<% if time.attending?(@current_user.person) %>
+
+					<span class='uw_green'>You are attending this event.</span>
+					<br>
+					<small><%= link_to "<i class='mi'>not_interested</i> Cancel my RSVP".html_safe, 
+										rsvp_unattend_path(event, { :time_id => time }.merge(return_to)),
+										:method => :delete, 
+										:confirm => "Are you sure you want to cancel your RSVP?",
+										class: 'btn' %>
+					</small>
+
+				<% else -%>
+				
+					<% if time.full? -%>
+						This time slot is full.
+					<% elsif event.attending?(@current_user.person) && !event.allow_multiple_times_per_attendee -%>
+						You cannot attend more than one time slot for this event. You already attended this event in the past.
+					<% else %>
+						<%= button_to rsvp_attend_path(event, { :time_id => time }.merge(return_to)), class: 'btn waves-effect waves-light' do %>
+							RSVP <i class='mi'>arrow_right_alt</i> 
+						<% end %>
+					<% end %>
+				
+					<% if time.open? && !time.slots_left.nil? %>
+						<small class=light><%= pluralize time.slots_left, "slot" %> left</small>
+					<% end -%>
+				
+				<% end -%>
+			</td>
+
+		</tr>
+	<% end -%>
+
+	<%- if event.times.future.empty? -%>
+	<tr class="empty">
+		<td colspan=5>There are no times available to RSVP for.</td>
+	</tr>
+	<% end -%>
+
+</table>

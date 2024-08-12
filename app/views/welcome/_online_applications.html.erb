@@ -1,0 +1,20 @@
+
+<table>	
+<tr class="rowset-header">
+	<td colspan=2>My Online Applications (<%= @person.application_for_offerings.size %>)</td>
+</tr>
+
+<% @person.application_for_offerings.reverse.each do |app| %>
+	<tr>
+		<td><%= link_to app.offering.title, apply_path(offering: app.offering) %></td>
+		<td><%= app.current_status.nil? ? "Not started" : app.current_status.public_title %></td>
+	</tr>
+<% end -%>
+		
+<% if @person.application_for_offerings.empty? %>
+	<tr class="empty">
+		<td colspan=2>You haven't started any online applications.</td>
+	</tr>
+<% end -%>
+
+</table>

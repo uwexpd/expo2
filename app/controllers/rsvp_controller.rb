@@ -3,7 +3,9 @@ class RsvpController < ApplicationController
   before_action :student_login_required_if_possible
 
   def index
-    @events = Event.public_open.sort
+    add_breadcrumb  "EXPO", root_path
+    add_breadcrumb  "All Public EXPO Events"
+    @events = Event.public_open.sort.reverse
 
     respond_to do |format|
       format.html # index.html.erb
@@ -12,6 +14,8 @@ class RsvpController < ApplicationController
   end
 
   def event
+    add_breadcrumb  "EXPO", root_path
+    add_breadcrumb  "Events", rsvp_path
     @event = Event.find(params[:id])
     apply_alternate_stylesheet(@event)
 
@@ -34,7 +38,11 @@ class RsvpController < ApplicationController
         flash[:error] = "Something went wrong. Please try again."
       end
     end
-    redirect_to params[:return_to] || redirect_back(fallback_location: {action: "index"})
+    if params[:return_to]
+      redirect_to params[:return_to] and return
+    else
+      redirect_back(fallback_location: { action: "index" }) and return
+    end
   end
 
   def unattend
@@ -47,15 +55,18 @@ class RsvpController < ApplicationController
         flash[:error] = "Something went wrong. Please try again."
       end
     end
-    redirect_to params[:return_to] || redirect_back(fallback_location: {action: "index"})
+    if params[:return_to]
+      redirect_to params[:return_to] and return
+    else
+      redirect_back(fallback_location: { action: "index" }) and return
+    end
   end
 
 
   protected
 
   def apply_alternate_stylesheet(event)
-    if event.offering && event.offering.alternate_stylesheet 
-      return false unless File.exists?(File.join(Rails.root, 'public', 'stylesheets', "#{event.offering.alternate_stylesheet}.css"))
+    if event.offering && event.offering.alternate_stylesheet       
       @alternate_stylesheet = event.offering.alternate_stylesheet
     end
   end

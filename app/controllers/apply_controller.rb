@@ -10,15 +10,16 @@ class ApplyController < ApplicationController
   before_action :check_must_be_student_restriction, :except => [:restricted, :cancelled, :list, :which, :enter_code, :group_member_validation, :group_member]
   before_action :display_submitted_note, :except => [:restricted, :cancelled, :availability, :summary, :list, :which, :revise_abstract, :index, :accept, :group_member_validation]
   before_action :check_if_contact_info_blank
-  before_action :fetch_breadcrumb  
+  before_action :fetch_breadcrumb, except: [:list]
 
   def index    
   end
 
   def list
+    add_breadcrumb  "EXPD", "https://expd.uw.edu"
+    add_breadcrumb  "Online Applications"
     @current_offerings = Offering.all.select{|o| o.open?}
-    @current_offerings = @current_offerings.select{|o| o.unit.abbreviation == params[:offering] rescue false } if params[:offering]
-    # render list.html.erb
+    @current_offerings = @current_offerings.select{|o| o.unit.abbreviation == params[:offering] rescue false } if params[:offering]    
   end
 
   def which
