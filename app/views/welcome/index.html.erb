@@ -5,12 +5,12 @@
   <div class="col s12">
 	<p><b>Welcome!</b> EXP-Online is a collection of web applications used by the Center for Experiential Learning and Diversity. You may have been redirected to this page from one of these applications. You might be able to find what you're looking for by clicking a link below. Otherwise, please return to the web address that you were originally given to continue your work.</p><br>
 	<ul class="tabs">
-        <li class="tab col"><a class='active' href="#online_applications">Online Applications (<%= @person.application_for_offerings.size %>)</a></li>
+        <li class="tab col"><a class='active' href="#online_applications">Online Applications (<%= @person_apps.size %>)</a></li>
         <% if organization_contacts %>
         	<li class="tab col"><a href="#community_partner">Community Partner</a></li>
         <% end %>
         <% if @student %>
-			<li class="tab col"><a href="#community_engaged_student">Community Engaged Student (<%= @service_learning_courses.size %>)</a></li>
+			<li class="tab col"><a href="#community_engaged_student">Current Community Engagement (<%= @service_learning_courses.size %>)</a></li>
         <% end %>
         <% unless @student %>
         	<li class="tab col"><a href="#community_engaged_instructor">Community Engaged Instructor (<%= @person.service_learning_courses.size %>)</a></li>
@@ -29,7 +29,7 @@
 	<% end %>
 	<% if @student %>
 		<div id="community_engaged_student" class="col s12">
-			<h5>Community Engaged Student</h5>
+			<h5>Current Community Engagement</h5>
 			<%= render "community_engaged_student" %>
 		</div>
 	<% end %>
