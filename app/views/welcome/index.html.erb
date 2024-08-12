@@ -1,0 +1,49 @@
+<% organization_contacts = !@person.organization_contacts.empty? %>
+
+<div class="card content">
+ <div class="row">
+  <div class="col s12">
+	<p><b>Welcome!</b> EXP-Online is a collection of web applications used by the Center for Experiential Learning and Diversity. You may have been redirected to this page from one of these applications. You might be able to find what you're looking for by clicking a link below. Otherwise, please return to the web address that you were originally given to continue your work.</p><br>
+	<ul class="tabs">
+        <li class="tab col"><a class='active' href="#online_applications">Online Applications (<%= @person.application_for_offerings.size %>)</a></li>
+        <% if organization_contacts %>
+        	<li class="tab col"><a href="#community_partner">Community Partner</a></li>
+        <% end %>
+        <% if @student %>
+			<li class="tab col"><a href="#community_engaged_student">Community Engaged Student (<%= @service_learning_courses.size %>)</a></li>
+        <% end %>
+        <% unless @student %>
+        	<li class="tab col"><a href="#community_engaged_instructor">Community Engaged Instructor (<%= @person.service_learning_courses.size %>)</a></li>
+        <% end %>
+        <li class="tab col"><a href="#events">Events (<%= @person.event_invites.size %>)</a></li>
+    </ul>
+    <div id="online_applications" class="col s12">
+		<h5>Online Applications</h5>
+		<%= render "online_applications" %>
+	</div>
+	<% if organization_contacts %>
+		<div id="community_partner" class="col s12">
+			<h5>Community Partner</h5>
+			<%= render "community_partner" %>
+		</div>
+	<% end %>
+	<% if @student %>
+		<div id="community_engaged_student" class="col s12">
+			<h5>Community Engaged Student</h5>
+			<%= render "community_engaged_student" %>
+		</div>
+	<% end %>
+	<% unless @student %>
+		<div id="community_engaged_instructor" class="col s12">
+			<h5>Community Engaged Instructor</h5>
+			<%= render "community_engaged_instructor" %>
+		</div>
+	<% end %>
+	<div id="events" class="col s12">
+		<h5>Events</h5>
+		<%= render "events" %>
+	</div>
+
+  </div>
+ </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="card content">
+<%= title("Events") %>
+
+<table>
+	
+	<tr>
+		<th>Title</th>
+		<th>RSVP</th>
+	</tr>
+	
+	<% @events.each do |event| %>
+	<tr>
+		<td><%=h event.title %></td>
+		<td><%= link_to "RSVP", :action => 'event', :id => event %></td>
+	</tr>
+	<% end -%>
+	
+</table>
+</div>

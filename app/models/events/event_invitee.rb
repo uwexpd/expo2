@@ -31,7 +31,7 @@ class EventInvitee < ApplicationRecord
     return nil unless event.confirmation_email_template
     if person
       email = event.confirmation_email_template.create_email_to(self)
-      EmailContact.log(person, TemplateMailer.deliver(email))
+      EmailContact.log(person, email.deliver_now)
       return email
     end
     nil

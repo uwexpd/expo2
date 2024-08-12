@@ -6,10 +6,11 @@ Rails.application.routes.draw do
 
   scope 'expo' do
 
-    root 'admin/dashboard#index'
+    root 'welcome#index'    
     # -------------------------------------------------------------------------------------------
     # Custom Active Admin Routes
     # -------------------------------------------------------------------------------------------
+    get 'admin', to: 'admin/dashboard#index', as: :admin
     # Admin Apply Actions
     match 'admin/apply/dean_approve', to: 'admin/apply#dean_approve', as: :admin_apply_dean_approve, via: [:get, :post, :put]
     match 'admin/apply/finaid_approve', to: 'admin/apply#finaid_approve', as: :admin_apply_finaid_approve, via: [:get, :post, :put]
@@ -113,13 +114,15 @@ Rails.application.routes.draw do
     resources :sessions
     get 'remove_vicarious_login', to: 'application#remove_vicarious_login'
     get 'login_as_student', to: 'application#force_login_as_student', as: :login_as_student
-    # RSVP for events
+
+    # RSVP for events    
     get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event
-    get 'rsvp/attend/:id', to: 'rsvp#attend', as: :rsvp_attend
-    get 'rsvp/unattend/:id', to: 'rsvp#unattend', as: :rsvp_unattend
-    get 'rsvp', to: 'rsvp#index'
+    post 'rsvp/attend/:id', to: 'rsvp#attend', as: :rsvp_attend
+    delete 'rsvp/unattend/:id', to: 'rsvp#unattend', as: :rsvp_unattend
+    get 'rsvp', to: 'rsvp#index', as: :rsvp
 
     # Online Applications
+    get 'apply', to: "apply#list", as: :apply_list
     get 'apply/:offering/', to: 'apply#index', constraints: { offering: /\d+/ }, as: :apply
     match 'apply/:offering/which', to: 'apply#which', constraints: { offering: /\d+/ }, via: [:get, :post], as: :apply_which
     match 'apply/:offering/page/:page', to: 'apply#page', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch], as: :apply_page
@@ -211,7 +214,7 @@ Rails.application.routes.draw do
     get 'community_engaged/complete', to: 'service_learning#complete', :quarter_abbrev => 'current'
     match 'community_engaged/change/:id', to: 'service_learning#change', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
     match 'community_engaged/contact/:id', to: 'service_learning#contact', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
-    match 'community_engaged/risk/:id', to: 'service_learning#risk', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
+    match 'community_engaged/risk/:id', to: 'service_learning#risk', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'    
 
     # Sidekiq admin routes
     Sidekiq::Web.use Rack::Auth::Basic do |username, password|
