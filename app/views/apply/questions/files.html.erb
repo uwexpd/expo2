@@ -1,9 +1,8 @@
-<div class="file-field input-field col s12" <%= "id=associate_question_#{question.id}" if OfferingQuestionOption.where(associate_question_id: question.id) %>>
-
-<div><%= question.question %>
+<div class='col s12'><%= question.question %>
    <%= content_tag('em', '*', :class => 'required') if question.required? %>
 </div>
-<br>
+
+<div class="file-field input-field col s12" <%= "id=associate_question_#{question.id}" if OfferingQuestionOption.where(associate_question_id: question.id) %>>
 <% question_file = @user_application.files.find_by_offering_question_id(question.id) %>
 
 <% @user_application.files.each do |app_file| %>
@@ -41,12 +40,15 @@
 
 <% end %>	
 
-<% unless question_file.file.file.nil? %>
-<b>Download original file:</b>
-<%= link_to question_file.public_filename, apply_file_path(@offering, question_file.id, question_file.file_identifier) unless question_file.file.file.nil? %>
-<i class="material-icons middle_align uw_purple">file_download</i>
+</div>
 
-<span class='caption'>(<%= question_file.file.content_type + ", " if question_file.file.content_type %><%= number_to_human_size(question_file.file_size) %>)</span>
+<% unless question_file.file.file.nil? %>
+	<div class='col s12'><b>Download original file:</b>
+	<%= link_to question_file.public_filename, apply_file_path(@offering, question_file.id, question_file.file_identifier) unless question_file.file.file.nil? %>
+	<i class="material-icons middle_align uw_purple">file_download</i>
+
+	<span class='caption'>(<%= question_file.file.content_type + ", " if question_file.file.content_type %><%= number_to_human_size(question_file.file_size) %>)</span>
+  </div>
 <% end %>
 
-</div>
+
