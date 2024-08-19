@@ -5,7 +5,7 @@
 	
 	links ||= true
 	admin_view ||= false
-	@user_application ||= user_application if admin_view
+	@user_application ||= user_application if admin_view || @download
  %>
 <tr class="<%= klass %>">
 	<td class="page_title">
@@ -18,7 +18,7 @@
 			<% if page_review.started %>
 				<ul>
 				<%
-				    if !current_user.admin? && @reviewer == true
+				    if (!current_user.admin? rescue false) && @reviewer == true
 						questions = page_review.offering_page.questions.reject{|q| q.hide_in_reviewer_view? }
 					else
 						questions = page_review.offering_page.questions

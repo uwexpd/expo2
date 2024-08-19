@@ -87,14 +87,12 @@
       @app = ApplicationForOffering.find params[:id]
 
       if params[:file]
-        file = @app.files.find(params[:file]).file
-        file_path = "#{Rails.root}/files/application_file/file/#{@app.id}/#{file.filename}"
+        filepath = @app.files.find(params[:file]).file.filepath
       elsif params[:mentor]
         mentor_id = params[:mentor]
-        letter = @app.mentors.find(mentor_id).letter
-        file_path = "#{Rails.root}/files/application_mentor/letter/#{mentor_id}/#{letter.filename}"
+        filepath = letter = @app.mentors.find(mentor_id).letter.filepath
     end
-      send_file(file_path, x_sendfile: true) unless file_path.nil?
+      send_file(filepath, x_sendfile: true) unless filepath.nil?
     end
 
     def switch_to

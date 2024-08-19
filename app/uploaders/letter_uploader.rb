@@ -59,6 +59,10 @@ class LetterUploader < CarrierWave::Uploader::Base
     "#{model.id.to_s}-Letter.#{file.extension}" unless file.nil?
   end
 
+  def filepath
+    "#{Rails.root}/files/application_mentor/letter/#{model.id.to_s}/#{filename}"
+  end
+
   # def save_original_filename(file)
   #   model.original_filename ||= file.original_filename if file.respond_to?(:original_filename)
   # end

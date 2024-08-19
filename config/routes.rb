@@ -47,6 +47,8 @@ Rails.application.routes.draw do
     get 'admin/apply/:offering/files/application_file/file/:id/:file', to: 'admin/apply#view', as: :admin_apply_file
     get 'admin/apply/:offering/files/application_mentor/letter/:id/:mentor', to: 'admin/apply#view', as: :admin_apply_letter    
     # End of Admin Apply
+
+    post 'admin/offerings/:offering_id/applications/:id', to: 'admin/applications#composite_report', as: :admin_apply_composite_report
     post 'admin/base/vicarious_login', to: 'admin/base#vicarious_login', as: :admin_vicarious_login
     get 'admin/base/remove_vicarious_login', to: 'admin/base#remove_vicarious_login', as: :admin_remove_vicarious_login
     get 'admin/application_for_offerings', to: 'admin/applications#index'

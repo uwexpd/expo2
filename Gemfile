@@ -89,6 +89,7 @@ gem 'mini_magick'
 
 gem 'hexapdf', '0.26.2' # PDF generation, manipulation, merging, etc
 gem 'wicked_pdf' # html to pdf
+gem 'wkhtmltopdf-binary'
 
 gem 'sdoc'
 gem 'rdoc'
