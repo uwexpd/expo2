@@ -61,6 +61,24 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
       end
     end
 
+    def composite_report
+      if params[:include]
+        parts = []
+        params[:include].each do |part,value|
+          parts << part.to_sym
+        end
+        file = @app.composite_report.pdf(parts)
+        unless file.is_a?(String)
+          flash[:alert] = "Sorry, but there was an error creating the file. (#{file.inspect})"
+          redirect_to action: "show", id: params[:id] and return
+        end
+        send_file file, disposition: 'attachment', type: 'application/pdf' unless file.nil?
+      else
+        flash[:alert] = "You have to identify which parts of the application to include."
+        redirect_to action: "show", id: params[:id] and return
+      end
+    end
+
     protected
     
     def fetch_application
@@ -169,7 +187,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 	       end
          tab 'Application Details', id: 'application_review' do
            panel 'Application Details' do
-              render "question_review", { pages: application.pages.reject{|p|p.hide_in_admin_view?}, application: application }  # [TODO] tune this page, cost 3 sec
+              render "question_review"  # [TODO] tune this page, cost 3 sec
            end
          end
          if @offering.uses_group_members?

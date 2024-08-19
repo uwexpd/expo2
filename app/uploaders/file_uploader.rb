@@ -59,6 +59,10 @@ class FileUploader < CarrierWave::Uploader::Base
     "#{model.application_for_offering.id.to_s}-#{model.title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/,'')}.#{file.extension}" unless file.nil?
   end
 
+  def filepath
+    "#{Rails.root}/files/application_file/file/#{model.application_for_offering.id.to_s}/#{filename}"
+  end
+
   def save_original_filename(file)
     model.original_filename ||= file.original_filename if file.respond_to?(:original_filename)
   end

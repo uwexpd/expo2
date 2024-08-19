@@ -1,6 +1,11 @@
 <% print_only ||= false %>
 <% audience ||= :admin %>
-<hr class='header'>
+
+<% if print_only %>	
+	<h3>Student Transcript</h3>
+<% else %>
+	<hr class='header'>
+<% end %>
 <% if @app.person.is_a?(Student) %>
 	<%= render :partial => "admin/students/transcript", object: @app.person, locals: { :print_only => print_only, :audience => audience } %>
 <% else %>

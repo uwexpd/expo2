@@ -1,13 +1,11 @@
 <% id ||= @app %>
 
 <div class="menu">
-<%= link_to_function "<span class=\"icon-left pdf\">Download Review Packet</span>", 
-					"toggle_menu('composite_report_maker')",
-					:class => "handle" %>
+<%= link_to " <i class='mi md-18'>picture_as_pdf</i> Download Review Packet".html_safe, 'javascript:;', data: { link_toggle: "#composite_report_maker"}, class: 'button small flat' %></h2>
 					
 	<div id="composite_report_maker" class="panel" style="display:none; padding:7px">
-		<%= form_tag :action => 'composite_report', :id => id %>
-			Please select which parts of the application you would like included in the PDF file:		
+		<%= form_tag admin_apply_composite_report_path, method: :post do %>
+			Please select which parts of <br>the application you would like <br>included in the PDF file:
 			<br><%= check_box_tag "include[scoring]", true %>
 				<%= label_tag "include[scoring]", "Scoring Sheet" %>
 			<br><%= check_box_tag "include[application_review]", true %>
@@ -23,8 +21,10 @@
 			<br><%= check_box_tag "include[transcript]", true %>
 				<%= label_tag "include[transcript]", "Transcript" %>
 			<br>
-			<%= submit_tag "Download", :disable_with => "Please wait..." %>
-		</form>
+			<%= button_tag type: 'submit', class: 'small flat', :disable_with => "Please wait..." do %>
+				<i class='mi md-18'>download</i> Download
+			<% end %>
+		<% end %>
 	</div>
 
 </div>

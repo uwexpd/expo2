@@ -6,7 +6,7 @@
 		<% end -%>
 		<% if @full_view %>
 			<% unless @download == true %>
-				<li>Letter: <%= mentor.letter.nil? ? content_tag('em', "No letter received") : link_to(mentor.letter.filename, :action => 'view', :id => @user_application, :mentor => mentor, :version => 'pdf') %></li>
+				<li>Letter: <%= mentor.letter.file.nil? ? content_tag('em', "No letter received") : link_to(link_to mentor.public_filename, admin_apply_letter_path(@offering, id: @app.id, mentor: mentor.id)) %></li>
 			<% end %>
 		<% end %>
 	</ul>
