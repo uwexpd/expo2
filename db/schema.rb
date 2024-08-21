@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_29_182147) do
+ActiveRecord::Schema.define(version: 2024_08_20_184502) do
 
   create_table "academic_departments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -2499,6 +2499,9 @@ ActiveRecord::Schema.define(version: 2024_07_29_182147) do
     t.boolean "work_study"
     t.string "location"
     t.text "learning_benefit"
+    t.string "availability"
+    t.boolean "social"
+    t.string "social_if_yes"
   end
 
   create_table "rights", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

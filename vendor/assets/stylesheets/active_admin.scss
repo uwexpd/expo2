@@ -34,7 +34,12 @@ For example, to change the default status-tag color: */
 	&.ok, &.published, &.complete, &.completed, &.green { background: #8daa92; }
 	&.warn, &.warning, &.orange { background: #e29b20; }
 	&.error, &.errored, &.red { background: #d45f53; }
-	&.admin, &.highlight {background: #fce01e; color: #656565}
+	&.admin, &.highlight {background: #fce01e; color: #656565; }
+	&.teal {background: #2ad2c9;}
+	&.lavender {background: #c5b4e3;}
+	&.pink {background: #c5b4e3;}
+	&.accent_green {background: #aadb1e; }
+	&.dark_gold {background: #b7a57a; }
 }
 
 .status_tag.small { padding: 2px 6px; font-size:0.6rem; }

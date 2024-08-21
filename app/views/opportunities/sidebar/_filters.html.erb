@@ -18,7 +18,14 @@
 		<%= f.select :work_study_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.work_study_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 
 	<label>Location</label>
-		<%= f.select :location_in, options_for_select(['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other'], @search.location_in), {include_blank: 'Any'}, {class: 'browser-default'} %>				
+		<%= f.select :location_in, options_for_select(['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other'], @search.location_in), {include_blank: 'Any'}, {class: 'browser-default'} %>
+
+	<label>Availability</label>
+	<%= f.select :availability_in,options_for_select([
+            ['Available Until Filled (Closes once filled)', 'Available Until Filled'],
+            ['Available All Year (Positions continuously available)', 'Available All Year'],
+            ['Available Quarterly (Positions available about every quarter)', 'Available Quarterly'],
+            ['Other (See opportunity description)', 'Other']], @search.availability_in), {include_blank: 'Any'}, {class: 'browser-default'} %>
 
 	<br><br>
 	<%= f.submit 'Filter', :class => 'btn' %>

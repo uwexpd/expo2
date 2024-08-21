@@ -110,7 +110,7 @@ class OpportunitiesController < ApplicationController
   	private
 
   	def opportunity_params
-  		params.require(:research_opportunity).permit(:name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :paid, :work_study, :location, :learning_benefit)
+  		params.require(:research_opportunity).permit(:name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :paid, :work_study, :location, :learning_benefit, :availability, :social, :social_if_yes)
   	end
 
 end

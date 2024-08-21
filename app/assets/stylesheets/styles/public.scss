@@ -801,8 +801,9 @@ select[multiple] {
 //     padding-top: 10px;
 // }
 
-#new_research_opportunity label {
+#new_research_opportunity label, #new_research_opportunity .label, #new_research_opportunity input.select-dropdown.dropdown-trigger{
 	font-size: 1rem;
+	color: rgba(0, 0, 0, 0.7);
 }
 
 li.active .collapsible-header .material-icons.iconcollapse {

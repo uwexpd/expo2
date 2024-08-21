@@ -52,8 +52,8 @@
       <span class="helper-text" data-error="Auto-remove date needs to be input or can't be in the past" data-success=""></span>
     </div>
     <div class="input-field col s12">      
-      <%= f.select :location, options_for_select(['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other'], @research_opportunity.location), {include_blank: "Choose your location"}, required:"", class: 'material validate'  %>
-      <label>Location<abbr title="required">*</abbr></label>       
+      <%= f.select :location, options_for_select(['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other'], @research_opportunity.location), {include_blank: "Choose your location"}, required:"", class: 'material validate opportunity'  %>
+      <label>Location<abbr title="required">*</abbr></label>
     </div>
     <div class="input-field col s12">
       <p><label>Compensation (check all that apply)</label></p>
@@ -66,9 +66,38 @@
           <%= f.check_box :work_study, class: 'filled-in' %>
           <span>Work study?</span>
         </label>
-
       </p>
-    </div>    
+    </div>
+    <div class="input-field col s12">
+      <%= f.select :availability, options_for_select([
+        ['Available Until Filled (Closes once filled)', 'Available Until Filled'],
+        ['Available All Year (Positions continuously available)', 'Available All Year'],
+        ['Available Quarterly (Positions available about every quarter)', 'Available Quarterly'],
+        ['Other (See opportunity description)', 'Other']], @research_opportunity.availability), {include_blank: "Choose opportunity availability"}, required:"", class: 'material validate opportunity' %>
+        <label>How long is the opportunity available?<abbr title="required">*</abbr></label>
+    </div>
+    
+    <div class="input-field col s12">
+      <div class='label'> Do you consent to the Office of Undergraduate Research sharing your research opportunity on social media (on Instagram @uwundergradresearch)?<abbr title="required">*</abbr></div>
+      <p>
+        <label>
+          <%= f.radio_button :social, true, checked: !@research_opportunity.social.nil? && @research_opportunity.social?, class: "with-gap", :onclick => "$('#if_yes').show(600)"  %>
+          <span>Yes</span>
+        </label>
+      </p>
+      
+          <div id="if_yes" <%= "style=display:none" unless @research_opportunity.social? %> class="input-field highlight_box">
+            <%= f.text_field :social_if_yes %>
+            <label for="social_if_yes">If yes, does your research group or researcher have a username we can tag? If none, put N/A.</label>
+          </div>
+      <p>
+        <label>
+          <%= f.radio_button :social, false, checked: !@research_opportunity.social.nil? && !@research_opportunity.social?, class: "with-gap", :onclick => "$('#if_yes').hide(600)" %>
+          <span>No</span>
+        </label>
+      </p>        
+    </div>
+
     <div class="col s12">
 			<label>Research Area 1 <abbr title="required">*</abbr></label>
     	<%= f.collection_select :research_area1, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'chosen-select'} %>        

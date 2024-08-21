@@ -56,6 +56,14 @@
 				<th>Work Study</th>
 				<td><%= raw status_tag(@research_opportunity.work_study?) %></td>
 			</tr>
+			<tr>
+				<th>Availability</th>
+				<td><%= @research_opportunity.availability %></td>
+			</tr>
+			<%# <tr>
+				<th>Social media</th>
+				<td><%= raw status_tag(@research_opportunity.social_if_yes?) %><%#= " <span class='light'>(#{@research_opportunity.social_if_yes})</span>".html_safe unless @research_opportunity.social_if_yes.blank? %></td>
+			</tr>			 %>
 		</tbody>
 	</table>
 
