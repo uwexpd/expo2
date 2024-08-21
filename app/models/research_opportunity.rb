@@ -19,6 +19,18 @@ class ResearchOpportunity < ApplicationRecord
   def area_name(area_id)
     ResearchArea.find(area_id).name rescue nil
   end
+
+  def availability_color
+    case availability
+    when "Available Until Filled"
+      'lavender'
+    when "Available All Year"
+      'teal'
+    when "Available Quarterly"
+      'dark_gold'
+    when "Other"
+    end    
+  end
   
   private 
   

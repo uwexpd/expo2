@@ -3,7 +3,7 @@ ActiveAdmin.register ResearchOpportunity do
   config.sort_order = 'submitted_at_desc'
   menu parent: 'Databases', priority: 30, label: "<i class='mi padding_right'>school</i> Research Opportunities".html_safe
 
-  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit
+  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit, :availability, :social, :social_if_yes
   
   member_action :email_queue, :method => :put do
     @opportunity = ResearchOpportunity.find(params[:id])
@@ -23,7 +23,10 @@ ActiveAdmin.register ResearchOpportunity do
   end  
 
   index do
-     column ('Title') {|opportunity| link_to opportunity.title, admin_research_opportunity_path(opportunity.id)}
+     column ('Title') do |opportunity| 
+       span link_to opportunity.title, admin_research_opportunity_path(opportunity.id)
+       span status_tag opportunity.availability, class: "#{opportunity.availability_color} small"
+     end
      column 'Active', sortable: :active do |opportunity| 
         status_tag opportunity.active?, class: 'small'
      end
@@ -34,7 +37,7 @@ ActiveAdmin.register ResearchOpportunity do
      end
      column 'Auto-remove Date', sortable: :end_date do |opportunity| 
        opportunity.end_date.strftime("%F") if opportunity.end_date
-     end
+     end     
     actions
   end
    
@@ -64,6 +67,9 @@ ActiveAdmin.register ResearchOpportunity do
             row :paid
             row :work_study
             row :location
+            row 'How long is the opportunity available?', &:availability
+            row 'Social media consent', &:social
+            row 'If consent, what research group or researcher to tag', &:social_if_yes
           end
       end
     end              
@@ -94,18 +100,25 @@ ActiveAdmin.register ResearchOpportunity do
       end
       tab 'area & more' do
         f.inputs do
-          f.input :active, as: :boolean
+          f.input :active, as: :boolean          
           f.input :end_date, label: 'Auto-remove date', as: :datepicker, required: true, :input_html => { :style => 'width:50%;' }
           f.input :research_area1, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, required: true, input_html: { class: "select2", :style => 'width:50%;' }
           f.input :research_area2, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2", :style => 'width:50%;' }
           f.input :research_area3, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2", :style => 'width:50%;' }
           f.input :research_area4, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2", :style => 'width:50%;' }
-          f.input :submitted, as: :boolean
-          f.input :submitted_at, as: :datetime_picker, required: true
-          f.input :submitted_person_id, label: "Submitted EXPO Person ID"
           f.input :paid, as: :boolean
           f.input :work_study, as: :boolean
           f.input :location, as: :select, collection: ['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other']
+          f.input :availability, label: 'How long is the opportunity available?', as: :select, collection: options_for_select([
+            ['Available Until Filled (Closes once filled)', 'Available Until Filled'],
+            ['Available All Year (Positions continuously available)', 'Available All Year'],
+            ['Available Quarterly (Positions available about every quarter)', 'Available Quarterly'],
+            ['Other (See opportunity description)', 'Other']], resource.availability), include_blank: 'Choose opportunity availability'
+          f.input :social, label: 'Social media consent'
+          f.input :social_if_yes, label: 'If consent, research group or researcher to tag'
+          f.input :submitted, as: :boolean
+          f.input :submitted_at, as: :datetime_picker, required: true
+          f.input :submitted_person_id, label: "Submitted EXPO Person ID"
         end
       end
     end
@@ -124,5 +137,6 @@ ActiveAdmin.register ResearchOpportunity do
   filter :location, as: :select, collection: ['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other']
   filter :submitted_at, label: 'Submit Date', as: :date_range
   filter :end_date, label: 'End Date (auto-remove)', as: :date_range
+  filter :availability, as: :select, collection: ['Available Until Filled','Available All Year', 'Available Quarterly', 'Other']
 
 end

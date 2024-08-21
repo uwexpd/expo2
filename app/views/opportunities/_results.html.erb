@@ -8,6 +8,7 @@
 				<th><%= sort_link(@search, :title, default_order: :desc) %></th>
 				<th><%= sort_link(@search, :department) %></th>
 				<th width = "15%">Submitted At</th>
+				<th><%= sort_link(@search, :availability) %></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -20,6 +21,7 @@
 				<td><%= link_to opportunity.title, opportunity_path(opportunity) rescue opportunity.title %></td>
 				<td><%= opportunity.department %></td>
 				<td><%= opportunity.submitted_at.to_date if opportunity.submitted_at %></td>
+				<td><%= raw opportunity.availability %></td>
 			</tr>
 
 		<% end %>
