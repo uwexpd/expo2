@@ -25,7 +25,7 @@ ActiveAdmin.register ResearchOpportunity do
   index do
      column ('Title') do |opportunity| 
        span link_to opportunity.title, admin_research_opportunity_path(opportunity.id)
-       span status_tag opportunity.availability, class: "#{opportunity.availability_color} small"
+       span status_tag opportunity.availability, class: "#{opportunity.availability_color} small" unless opportunity.availability.blank? 
      end
      column 'Active', sortable: :active do |opportunity| 
         status_tag opportunity.active?, class: 'small'
