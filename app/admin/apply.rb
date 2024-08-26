@@ -102,6 +102,25 @@
       redirect_to :action => "phase", :id => @phase
     end
 
+    def mass_status_change
+      if params[:new_status] && params[:select]
+        params[:select].each do |klass, select_hash|
+          select_hash.each do |app_id,v|
+            ApplicationForOffering.find(app_id).set_status(params[:new_status], false, :force => true) unless params[:new_status].blank?
+          end
+        end
+
+        flash[:notice] = "Successfully update the status to #{params[:new_status]} with selected applications"
+        # flash[:notice] = (session[:flash_message_assign_reviewer].blank? ? "" : session[:flash_message_assign_reviewer]) + "Successfully update the status to #{params[:new_status]} with selected applications"
+
+        # session[:flash_message_assign_reviewer] = '' if session[:flash_message_assign_reviewer]
+        session[:return_to_after_email_queue] = request.referer
+        redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
+      end
+      redirect_to_action = params[:redirect_to_action] || "index"
+      redirect_to session[:return_to_after_email_queue] || request.referer || url_for(:action => redirect_to_action)
+    end
+
     def mass_assign_reviewers
       session[:return_to_after_email_queue] = request.referer      
       if params[:new_status] && params[:select] && params[:reviewer]
@@ -119,26 +138,17 @@
           end
         end
       end
-      mass_status_change and return if params[:change_status]
-      redirect_to_action = params[:redirect_to_action] || "index"
-      redirect_to session[:return_to_after_email_queue] || url_for(:action => redirect_to_action)
-    end
 
-    def mass_status_change
-      if params[:new_status] && params[:select]
+      if params[:change_status]
         params[:select].each do |klass, select_hash|
           select_hash.each do |app_id,v|
             ApplicationForOffering.find(app_id).set_status(params[:new_status], false, :force => true) unless params[:new_status].blank?
           end
-        end        
+        end
         flash[:notice] = (session[:flash_message_assign_reviewer].blank? ? "" : session[:flash_message_assign_reviewer]) + "Successfully update the status to #{params[:new_status]} with selected applications"
-
-        session[:flash_message_assign_reviewer] = '' if session[:flash_message_assign_reviewer]
-        session[:return_to_after_email_queue] = request.referer
-        redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
       end
       redirect_to_action = params[:redirect_to_action] || "index"
-      redirect_to session[:return_to_after_email_queue] || request.referer || url_for(:action => redirect_to_action)
+      redirect_to session[:return_to_after_email_queue] || url_for(:action => redirect_to_action)
     end
 
     def send_interviewer_invite_emails

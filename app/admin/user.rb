@@ -8,6 +8,9 @@ ActiveAdmin.register User do
 
   before_action -> { check_permission("user_manager") }
 
+  scope :all
+  scope :admin
+
   member_action :session_history, :method => :get do
     @requests = SessionHistory.where("session_id = ? ", params[:id]).order(:created_at)
     @start_time = @requests.first.created_at
@@ -27,6 +30,11 @@ ActiveAdmin.register User do
     end
     column 'Person' do |user|
       link_to user.person.fullname, admin_person_path(user.person), :target => '_blank' rescue nil
+    end
+    if params[:scope] == 'admin'
+      column :roles do |user|
+        user.roles.map { |role| "#{ role.unit.name rescue 'Global'}: #{role.name}" }.join('<br> ').html_safe
+      end
     end
     column 'Last Login' do |user|
       "#{time_ago_in_words user.logins.last.created_at} ago" rescue "never"
@@ -116,5 +124,6 @@ ActiveAdmin.register User do
   
   filter :login, label: 'Username',  as: :string
   filter :email, label: 'Email (only for non-uw users)', as: :string
+  # filter :units, as: :select, collection: Unit.all.pluck(:name, :id) [TODO] Make it display only one username.
   
 end
