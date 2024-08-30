@@ -51,7 +51,7 @@ class ApplicationCompositeReport
 
     # Merge part PDFs
     # puts "Outputting to:"; puts "   #{output}"    
-    command = "hexapdf merge #{parts.map(&:to_s).join(" ")} #{output}"
+    command = "hexapdf merge --force #{parts.map(&:to_s).join(" ")} #{output}"
     puts "Command => #{command}"
 
     # Execute the command

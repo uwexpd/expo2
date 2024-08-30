@@ -2,9 +2,15 @@ ActiveAdmin.register Quarter do
   includes :quarter_code  
   batch_action :destroy, false
   actions :all, :except => [:destroy]
-  menu parent: 'Tools'
+  menu parent: 'Tools'  
 
   permit_params :year, :first_day, :quarter_code  
+
+  controller do
+    def apply_sorting(chain)
+      params[:order] ? chain : chain.reorder(year: :desc, quarter_code_id: :desc)
+    end    
+  end
 
   index do
     column ('Title'){|quarter| link_to quarter.title, admin_quarter_path(quarter.id)}
@@ -12,6 +18,7 @@ ActiveAdmin.register Quarter do
     column ('First Day'), sortable: :first_day do |quarter|
       quarter.first_day.to_s
     end    
+    column :quarter_code_id
     actions
   end
 

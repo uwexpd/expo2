@@ -35,7 +35,7 @@ class ReviewerController < ApplicationController
       file = @app.composite_report(@application_reviewer).pdf(parts)
       unless file.is_a?(String)
         flash[:error] = "Sorry, but there was an error creating the file. (#{file.inspect})"
-        redirect_to :action => "index" and return
+        redirect_to :action => "show", :id => params[:id] and return
       end
       send_file file, :disposition => 'attachment', :type => 'application/pdf' unless file.nil?
     else
@@ -45,14 +45,14 @@ class ReviewerController < ApplicationController
   end
 
   def multi_composite_report
-    if params[:include] && params[:format]
+    if params[:include] && params[:report_format]
       parts = []
       params[:include].each do |part,value|
         parts << part.to_sym
       end
       report = MultiApplicationCompositeReport.new(@offering, @apps.sort_by(&:fullname), parts)
       report.review_committee_member = @review_committee_member
-      file = report.generate!(params[:format].to_sym)
+      file = report.generate!(params[:report_format].to_sym)
       unless file.is_a?(String)
         flash[:error] = "Sorry, but there was an error creating the file. (#{file.inspect})"
         if params[:reviewer]
@@ -61,7 +61,7 @@ class ReviewerController < ApplicationController
           redirect_to :action => "index" and return
         end
       end
-      send_file file, :disposition => 'attachment', :type => "application/#{params[:format].to_sym}" unless file.nil?
+      send_file file, :disposition => 'attachment', :type => "application/#{params[:report_format].to_sym}" unless file.nil?
     else
       flash[:error] = "You have to identify which parts of the application to include."
       if params[:reviewer] 

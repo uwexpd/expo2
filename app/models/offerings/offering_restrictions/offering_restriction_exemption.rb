@@ -4,6 +4,7 @@
 class OfferingRestrictionExemption < ApplicationRecord
   validates_presence_of :offering_restriction_id
   validates_presence_of :person_id
+  validates_presence_of :valid_until
 
   belongs_to :person
   belongs_to :offering_restriction

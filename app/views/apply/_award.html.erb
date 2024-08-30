@@ -26,7 +26,7 @@
 									) %>
 			<%= af.label("", ("Quarter #{@i} :" + " #{content_tag('abbr', '*', title: "required") if @i <= @offering.min_number_of_awards}").html_safe) %>									
 			
-			<% @current_quarter_for_dropdown = @current_quarter_for_dropdown.next %>
+			<%# @current_quarter_for_dropdown = @current_quarter_for_dropdown.next %>
 				
 		<% end %>			
 

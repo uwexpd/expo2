@@ -5,18 +5,16 @@ current_model_with_period = question.model_to_update.blank? ? '' : ".#{question.
 
 <% if question.display_as == "files" %>
 
-       <%= raw "<div class='questionWithError'>" if page.errors.messages["q#{question.id}".to_sym].size > 0%>
+       <%= raw "<div class='questionWithError'>" if page.errors.messages["q#{question.id}".to_sym].size > 0 %>
 	<%= render :file => "apply/questions/files", :locals => { :f => f, :question => question } %>
 
 <% else %>
 
 	<%= fields_for "user_application#{current_model_with_brackets}", eval("@user_application#{current_model_with_period}") do |qf| %>
-
-	<%= raw "<div class='questionWithError'>" if page.errors.messages["q#{question.id}".to_sym].size > 0 %>
-	<%= render :file => "apply/questions/#{question.display_as}", :locals => { :qf => qf, :question => question } %>
-			
-	<% end %>
-
-	<%= raw "</div>" if page.errors["q#{question.id}".to_sym].size > 0 %>
+		<%= raw "<div class='questionWithError'>" if page.errors.messages["q#{question.id}".to_sym].size > 0 %>
+		<%= render :file => "apply/questions/#{question.display_as}", :locals => { :qf => qf, :question => question } %>		
+	<% end %>	
 
 <% end %>
+
+<%= raw "</div>" if page.errors["q#{question.id}".to_sym].size > 0 %>
