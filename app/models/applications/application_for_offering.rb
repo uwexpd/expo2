@@ -332,11 +332,12 @@ class ApplicationForOffering < ApplicationRecord
   end
   
   # Adds an ApplicationReviewer to this application as a reviewer. Parameter can be either an OfferingReviewer ID or a CommitteeMember object.
+  # All reviewers cannot review their mentees applications unless set up to [allow to review mentee] in offering
   def add_reviewer(reviewer)
     if reviewer.is_a?(Integer)
       self.reviewers.create :offering_reviewer_id => reviewer
     elsif reviewer.is_a?(CommitteeMember)
-      return false if (mentors.collect(&:person_id).include?(reviewer.person_id) unless offering.allow_to_review_mentee) && !reviewer.person_id.nil?
+      return false if (mentors.collect(&:person_id).include?(reviewer.person_id) unless offering.allow_to_review_mentee) && !reviewer.person_id.nil? 
       self.reviewers.create :committee_member_id => reviewer.id
     end
     self.save

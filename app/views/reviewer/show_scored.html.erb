@@ -6,9 +6,55 @@
   <div class="row">
   	<div class="col s12">
 			  <h4><%= @app.person.fullname %>
-					<span class="caption smaller"><%= @app.person.student_no %></span>
-					<span class="light"><%#= render :partial => "composite_report_maker" %></span><br>
-					<strong style="font-size: 50%;"><%= @app.project_title.html_safe %></strong>
+					<span class="caption smaller"><%= @app.person.student_no %></span><br>
+					<span class="smaller"><%= @app.project_title.html_safe %></span>
+					<span class="right">
+							<%= link_to " <i class='mi md-18'>picture_as_pdf</i> Download Review Packet".html_safe, '#modal_download', class: 'waves-effect waves-light btn-small modal-trigger' %>
+							<div id="modal_download" class='modal'>
+								<%= form_tag reviwer_composite_report_path, method: :post do %>
+									<div class="modal-content">
+							      <h6>Please select which parts of the application you would like included in the PDF file:</h6>
+							        <p>
+							        	 <label>
+							        	  	<%= check_box_tag "include[scoring]", true %>
+	        								 <span>Scoring Sheet</span>
+	      								 </label>
+							        </p>
+							        <p>
+							        	 <label>
+							        	  	<%= check_box_tag "include[application_review]", true %>
+	        								 <span>Application Details</span>
+	      								 </label>
+							        </p>
+							        <p>
+							        	 <label>
+							        	  	<%= check_box_tag "include[files]", true %>
+	        								 <span>Essay and Files</span>
+	      								 </label>
+							        </p>
+							        <p>
+							        	 <label>
+							        	  	<%= check_box_tag "include[mentor_letters]", true %>
+	        								 <span>Mentor Letters</span>
+	      								 </label>
+							        </p>
+							        <p>
+							        	 <label>
+							        	  	<%= check_box_tag "include[transcript]", true %>
+	        								 <span>Transcript</span>
+	      								 </label>
+							        </p>
+							    </div>
+							    <div class="modal-footer">
+							    	<center>
+							    		<%= button_tag type: 'submit', class: 'btn-small', :disable_with => "Please wait..." do %>
+												<i class='mi md-18'>download</i> Download
+											<% end %>
+											<%# <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>										  %></center>
+							    </div>
+							<% end %>
+							</div>
+					</span>
 				</h4>
 			  
 			  <%= content_tag(:h5, @app.offering.title) if @viewing_past_app %>
@@ -16,7 +62,7 @@
 			  <%= content_tag('div', "<strong>Special Note from Program Staff:</strong> " + @app.special_notes, :class => 'special-note') unless @app.special_notes.blank? %>
 
 		  
-       <ul class="tabs">
+        <ul class="tabs">
          <li class="tab col"><a href="#student_info">Student Info</a></li>
          <li class="tab col"><a class="active" href="#application_review">Application Details</a></li>
          <% if @offering.uses_mentors? %> 
@@ -31,37 +77,37 @@
          <% unless virtual_proceeding %>
          	<li class="tab col"><a href="#past_applications">Past Applications</a></li>
          <% end %>
-       </ul>
+        </ul>
     
-			<div id="student_info" class="col s12">
-				<h5>Student Information</h5>
-				<%= render "student_info" %>
-			</div>
-			<div id="application_review" class="col s12">
-				<h5>Application Details</h5>
-				<%= render "application_review", { pages: @app.pages.reject{|p|p.hide_in_reviewer_view?} } %>
-		  </div>
-		  <% unless @app.files.empty? %>
-			  <div id="essay" class="col s12">
-					<h5>Essay & File</h5>
-					<%= render "admin/applications/essay" %>
+				<div id="student_info" class="col s12">
+					<h5>Student Information</h5>
+					<%= render "student_info" %>
 				</div>
-			<% end %>
-			<div id="mentor_letter" class="col s12">
-				<h5>Mentors</h5>
-				<%= render "admin/applications/mentor_letter" %>
-			</div>
-			<div id="transcript" class="col s12">
-				<h5>Transcript</h5>
-				<%= render "admin/applications/transcript" %>
-			</div>	
-			<div id="past_applications" class="col s12">
-				<h5>Past Applications</h5>
-				<%= render "admin/applications/past_applications", {application: @app} %>
-			</div>
+				<div id="application_review" class="col s12">
+					<h5>Application Details</h5>
+					<%= render "application_review", { pages: @app.pages.reject{|p|p.hide_in_reviewer_view?} } %>
+			  </div>
+			  <% unless @app.files.empty? %>
+				  <div id="essay" class="col s12">
+						<h5>Essay & File</h5>
+						<%= render "admin/applications/essay" %>
+					</div>
+				<% end %>
+				<div id="mentor_letter" class="col s12">
+					<h5>Mentors</h5>
+					<%= render "admin/applications/mentor_letter" %>
+				</div>
+				<div id="transcript" class="col s12">
+					<h5>Transcript</h5>
+					<%= render "admin/applications/transcript" %>
+				</div>	
+				<div id="past_applications" class="col s12">
+					<h5>Past Applications</h5>
+					<%= render "admin/applications/past_applications", {application: @app} %>
+				</div>
 					
 		  </div>
-	  </div>
+	  </div>	
 </div>
 
 <% sidebar :scoring, :class => 'fixed' if @application_reviewer %>

@@ -110,10 +110,7 @@
           end
         end
 
-        flash[:notice] = "Successfully update the status to #{params[:new_status]} with selected applications"
-        # flash[:notice] = (session[:flash_message_assign_reviewer].blank? ? "" : session[:flash_message_assign_reviewer]) + "Successfully update the status to #{params[:new_status]} with selected applications"
-
-        # session[:flash_message_assign_reviewer] = '' if session[:flash_message_assign_reviewer]
+        flash[:notice] = "Successfully update the status to #{params[:new_status]} with selected applications"        
         session[:return_to_after_email_queue] = request.referer
         redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
       end
@@ -122,7 +119,9 @@
     end
 
     def mass_assign_reviewers
-      session[:return_to_after_email_queue] = request.referer      
+      session[:return_to_after_email_queue] = request.referer
+      session[:flash_message_assign_reviewer] = ""
+
       if params[:new_status] && params[:select] && params[:reviewer]
         params[:select].each do |klass, select_hash|
           select_hash.each do |app_id,v|
@@ -130,11 +129,14 @@
               app = ApplicationForOffering.find(app_id)
               if @offering.review_committee.nil?
                 app.add_reviewer(reviewer_id) # add an offering_reviewer
-              else                
-                app.add_reviewer(CommitteeMember.find(reviewer_id)) # add a review committee member
-              end
-              session[:flash_message_assign_reviewer] = "Successfully add reviwers to selected applications. "
-            end
+              else
+                # add a review committee member
+                committee_member = CommitteeMember.find(reviewer_id)
+                unless app.add_reviewer(committee_member)                 
+                  session[:flash_message_assign_reviewer] << "[ALERT] #{committee_member.fullname rescue reviewer_id} is also the app mentor. Could NOT assign them to the application. "
+                end
+              end             
+            end            
           end
         end
       end
@@ -145,7 +147,7 @@
             ApplicationForOffering.find(app_id).set_status(params[:new_status], false, :force => true) unless params[:new_status].blank?
           end
         end
-        flash[:notice] = (session[:flash_message_assign_reviewer].blank? ? "" : session[:flash_message_assign_reviewer]) + "Successfully update the status to #{params[:new_status]} with selected applications"
+        flash[:notice] = (session[:flash_message_assign_reviewer].blank? ? "" : session[:flash_message_assign_reviewer]) + "Successfully add reviwers and update the status to #{params[:new_status]} with selected applications. "        
       end
       redirect_to_action = params[:redirect_to_action] || "index"
       redirect_to session[:return_to_after_email_queue] || url_for(:action => redirect_to_action)

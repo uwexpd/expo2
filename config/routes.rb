@@ -181,9 +181,11 @@ Rails.application.routes.draw do
     # Reviewer
     get 'reviewer/:offering', to: 'reviewer#index', as: :reviewer
     get 'reviewer/:offering/show/:id', to: 'reviewer#show'
+    post 'reviewer/:offering/show/:id/composite_report', to: 'reviewer#composite_report', as: :reviwer_composite_report
     get 'reviewer/:offering/view/:id', to: 'reviewer#view'
     get 'reviewer/:offering/transcript/:id', to: 'reviewer#transcript'
     post 'reviewer/:offering/finalize', to: 'reviewer#finalize'
+    post 'reviewer/:offering/multi_composite_report', to: 'reviewer#multi_composite_report', as: :multi_composite_report
     get 'reviewer/:offering/criteria', to: 'reviewer#criteria', as: :reviewer_criteria
     get 'reviewer/:offering/extra_instructions', to: 'reviewer#extra_instructions'    
     match 'reviewer/:offering/update/:id', to: 'reviewer#update', via: [:post, :put, :patch]

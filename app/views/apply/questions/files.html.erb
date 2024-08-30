@@ -1,7 +1,7 @@
 <div class='col s12' <%= "id=associate_question_#{question.id}" if OfferingQuestionOption.where(associate_question_id: question.id) %>>
 		 <%= question.question %><%= content_tag('em', '*', :class => 'required') if question.required? %>
 
-<div class="file-field input-field col s12">	
+<div class="file-field input-field col s12">
 
 	<% question_file = @user_application.files.find_by_offering_question_id(question.id) %>
 

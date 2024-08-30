@@ -16,6 +16,7 @@ $(document).ready(function(){
 $(document).on('turbolinks:load', function() {
   // Materializecss javascript components initialization
   $('.tabs').tabs();
+  $('.modal').modal();
   $('.datepicker').datepicker();
   $('.timepicker').timepicker();
   $('.collapsible').collapsible();

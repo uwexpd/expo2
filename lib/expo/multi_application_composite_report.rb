@@ -1,3 +1,5 @@
+require 'hexapdf'
+require 'wicked_pdf'
 require 'fileutils'
 
 =begin
@@ -68,18 +70,22 @@ class MultiApplicationCompositeReport
     
     # Generate the zip file and return the filename
     if stale || !File.exists?(filename(output_type))
-      FileUtils.mkdir_p(File.dirname(filename(output_type))) unless File.exists?(File.dirname(filename(output_type)))
+      # FileUtils.mkdir_p(File.dirname(filename(output_type))) unless File.exists?(File.dirname(filename(output_type)))
+      FileUtils.mkdir_p(File.dirname(filename(output_type)))
       puts "Ready to combine #{files.size} files:"; files.each{|f| puts "   #{f}"}
       puts "Outputting to:"; puts "   #{filename(output_type)}"
-      files_list = files.collect{|p| p.gsub(" ", "\ ")}.join(" ")
-      case output_type
+      files_list = files.map(&:to_s).join(" ")
+      # puts "files_list => #{files_list.inspect}"
+      command = case output_type
       when :zip
-        `zip -r -j #{filename(output_type)} #{files_list}`
+        "zip -r -j #{filename(output_type)} #{files_list}"
       when :pdf
-        `pdftk #{files_list} output #{filename(output_type)}`
+        "hexapdf merge #{files_list} #{filename(output_type)}"
       end
-      if $?.success?
-        puts "Success"
+      puts "Command for multi apps report => #{command}"
+      success = system(command)
+      if success
+        puts "Successfully generated report package."
         return filename(output_type)
       else
         return $?
@@ -95,42 +101,61 @@ class MultiApplicationCompositeReport
     ext = output_type.to_s
     reviewer_bit = "_r#{@review_committee_member.id.to_s}" if @review_committee_member
     interviewer_bit = "_i#{@offering_interviewer.id.to_s}" if @offering_interviewer
-    basename = "applications_#{@apps.hash.to_s}#{reviewer_bit.to_s}#{interviewer_bit.to_s}_#{@include_parts.hash.to_s}.#{ext}"
-    File.join(RAILS_ROOT, "files", "multi_application_composite_report", @apps.hash.to_s, basename)
+    basename = "applications_#{@apps.hash.to_s}#{reviewer_bit.to_s}#{interviewer_bit.to_s}_#{@include_parts.hash.to_s}.#{ext}"    
+    File.join(Rails.root, "files", "multi_application_composite_report", @apps.hash.to_s, basename)
   end
 
   def cover_filename
-    basename = "cover_#{@apps.hash.to_s}_#{@include_parts.hash.to_s}.pdf"
-    File.join(RAILS_ROOT, "files", "multi_application_composite_report", @apps.hash.to_s, basename)
+    # Create a unique basename using the hashes of @apps and @include_parts
+    basename = "cover_#{@apps.hash}_#{@include_parts.hash}.pdf"
+      
+    File.join(Rails.root, "files", "multi_application_composite_report", @apps.hash.to_s, basename)
   end
+
   
   def generate_cover!(apps)
-    puts "Generating PDF cover sheet (#{apps.size} applications)"
-    pdf = ::PDF::Writer.new('Letter')
-    pdf.select_font "Helvetica"
-    pdf.fill_color Color::RGB::Red
-    pdf.add_text_wrap 0, pdf.y+10, 590, "<b>CONFIDENTIAL</b>", 11, :right
-    pdf.fill_color Color::RGB::Black
-    pdf.add_text_wrap 0, pdf.y, 590, "Destroy by #{@offering.destroy_by}", 7, :right
-    pdf.text "<b>#{@offering.title}</b>"
-    pdf.text "Application Review Packet\n\n"
-    pdf.text "This packet includes the following application parts:"
-    pdf.text "       <i>#{@include_parts.join(", ")}</i>\n\n"
-    pdf.text "Applications included:\n\n"
-    apps.each_with_index {|app,i| pdf.text "#{(i+1).to_s.rjust(3)}.   #{app.fullname}\n\n\n"}
-    FileUtils.mkdir_p(File.dirname(cover_filename)) unless File.exists?(File.dirname(cover_filename))
-    if File.open(cover_filename, "wb") { |f| f.write pdf.render }
-      puts "         #{cover_filename}"
-      return cover_filename
-    else
-      puts "   ERROR"
-      return nil
+    puts "Generating PDF cover sheet (#{apps.size} applications)"    
+
+    # Initialize HexaPDF Composer for layout management
+    composer = HexaPDF::Composer.new(page_size: :Letter)
+
+    # Start a new page
+    composer.page
+
+    # Add the "CONFIDENTIAL" header with red color and bold font
+    composer.text("#{@offering.title}\n\n\n\n", font: 'Helvetica', font_size: 9, position: :float )
+    composer.text("CONFIDENTIAL", font: ['Helvetica', variant: :bold], font_size: 9, fill_color: 'red', align: :right)
+    composer.text("Destroy by #{@offering.destroy_by}\n\n\n\n", font: 'Helvetica', font_size: 7, align: :right)    
+    
+    composer.text("Application Review Packet\n\n", font: ['Helvetica', variant: :bold], font_size: 13)
+    composer.text("This packet includes the following application parts:\n\n", font_size: 11)
+    composer.text(@include_parts.join(", ") + "\n\n\n", font: ['Helvetica', variant: :italic], font_size: 9)    
+    composer.text("Applications included:\n\n", font_size: 11)
+
+    # List each application
+    apps.each_with_index do |app, i|
+      composer.text("#{(i+1).to_s.rjust(3)}.   #{app.fullname}\n\n\n", font_size: 11)
+    end
+
+    # Save the PDF file
+    begin
+      FileUtils.mkdir_p(File.dirname(cover_filename))
+      composer.write(cover_filename, optimize: true)
+      if File.exist?(cover_filename)
+        puts "         #{cover_filename}"
+        cover_filename
+      else
+        puts "   ERROR: File was not created"
+        nil
+      end
+    rescue => e
+      puts "   ERROR: #{e.message}"
+      nil
     end
   end
   
   def puts(s)
-    Rails.logger.info(s) unless Rails.logger.nil?
-    Kernel.print(s + "\n")
+    Rails.logger.info(s) unless Rails.logger.nil?    
   end
   
 end

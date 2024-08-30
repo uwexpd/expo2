@@ -1,37 +1,69 @@
-<h3><strong>Download a Review Packet</strong></h3>
+<h6><b>Download a Review Packet</b></h6>
 
 <div id="multi_composite_report_instructions">
 	<p>You can create a full review packet if you would prefer to take the files with you while traveling offline, or to print them.</p>
 
-	<p><%= link_to_function "Generate a Review Packet", "Effect.toggle('multi_composite_report_maker', 'blind', {duration: 0.25});
-														 Effect.toggle('multi_composite_report_instructions', 'blind', {duration: 0.25})" %>
+	<p><%= link_to " <i class='mi md-18'>picture_as_pdf</i> Generate a Review Packet".html_safe, '#modal_multi_composite_report_maker', class: 'waves-effect waves-light btn-small modal-trigger' %>
 	</p>
 </div>
 
-<div id="multi_composite_report_maker" style="display:none">
-
-	<%= form_tag :action => 'multi_composite_report' %>
-	
-		<p>Which parts of the application would you like included?
-		<br><%= check_box_tag "include[scoring]", true %>
-			<%= label_tag "include[scoring]", "Scoring Sheet" %>
-		<br><%= check_box_tag "include[application_review]", true %>
-			<%= label_tag "include[application_review]", "Application Details" %>
-		<br><%= check_box_tag "include[files]", true %>
-			<%= label_tag "include[files]", "Essay and Files" %>
-		<br><%= check_box_tag "include[mentor_letters]", true %>
-			<%= label_tag "include[mentor_letters]", "Mentor Letters" %>
-		<br><%= check_box_tag "include[transcript]", true %>
-			<%= label_tag "include[transcript]", "Transcript" %></p>
-
-		<p>Which format would you prefer?</p>
-		<li class="icon-left" id="pdf"><%= radio_button_tag :format, "pdf", true %>
-					<%= label_tag "format_pdf", "In a single PDF file" %></li>
-		<li class="icon-left" id="zip"><%= radio_button_tag :format, "zip" %>
-					<%= label_tag "format_zip", "A .zip file with a separate PDF file for each application" %></li>
-	
-
-		<p><%= submit_tag "Generate my Review Packet", :disable_with => "Please wait..." %></p>
-	</form>
+<div id="modal_multi_composite_report_maker" class='modal'>
+  <%= form_tag multi_composite_report_path, method: :post do %>
+			<div class="modal-content">
+	      <h6>Which parts of the application would you like included?</h6>
+	        <p>
+	        	 <label>
+	        	  	<%= check_box_tag "include[scoring]", true %>
+					 <span>Scoring Sheet</span>
+					 </label>
+	        </p>
+	        <p>
+	        	 <label>
+	        	  	<%= check_box_tag "include[application_review]", true %>
+					 <span>Application Details</span>
+					 </label>
+	        </p>
+	        <p>
+	        	 <label>
+	        	  	<%= check_box_tag "include[files]", true %>
+					 <span>Essay and Files</span>
+					 </label>
+	        </p>
+	        <p>
+	        	 <label>
+	        	  	<%= check_box_tag "include[mentor_letters]", true %>
+					 <span>Mentor Letters</span>
+					 </label>
+	        </p>
+	        <p>
+	        	 <label>
+	        	  	<%= check_box_tag "include[transcript]", true %>
+					 <span>Transcript</span>
+					 </label>
+	        </p>
+	        <h6>Which format would you prefer?</h6>
+	        <p>
+		        <label>
+		        	<%= radio_button_tag :report_format, "pdf", true, class: "with-gap" %>	
+		        	<span><i class="mi md-22" id="pdf">picture_as_pdf</i> In a single PDF file</span>
+		        </label>
+		    </p>
+		    <p>
+		        <label>
+		        	<%= radio_button_tag :report_format, "zip", false, class: "with-gap" %>	
+		        	<span><i class="mi md-22" id="zip">folder_zip</i>  A .zip file with a separate PDF file for each application</span>
+		        </label>
+		    </p>
+	    </div>
+	    <div class="modal-footer">
+	    	
+					
+	    	<center>
+	    		<%= button_tag type: 'submit', class: 'btn-small', :disable_with => "Please wait..." do %>
+						<i class='mi md-18'>download</i> Generate my Review Packet
+					<% end %>
+					<%# <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>%></center>
+	    </div>		
+  <% end %>
 
 </div>

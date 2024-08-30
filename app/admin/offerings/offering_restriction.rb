@@ -39,7 +39,7 @@ ActiveAdmin.register OfferingRestriction, as: 'restrictions' do
 			table_for restrictions.exemptions, id: 'show_table_offering_exemptions' do              
               column ('Person') {|exemption| exemption.person.try(:fullname) }
               column :note
-              column ('Valid Until'){|exemption| exemption.valid_until.to_s(:date_time12) }
+              column ('Valid Until'){|exemption| exemption.valid_until.to_s(:date_time12) if exemption.valid_until }
 			  column ('Functions'){|exemption|						
 						span link_to '<span class="material-icons">edit</span>'.html_safe, edit_admin_offering_restriction_exemption_path(offering, restrictions, exemption), class: 'action_icon'
 						span link_to '<span class="material-icons">delete</span>'.html_safe, admin_offering_restriction_exemption_path(offering, restrictions, exemption), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon'
