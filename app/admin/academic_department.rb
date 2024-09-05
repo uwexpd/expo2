@@ -10,10 +10,10 @@ ActiveAdmin.register AcademicDepartment do
   index do
      id_column
      column :name, sortable: :name do |resource| 
-       editable_text_column resource, "academic_department", :name, true
+       editable_text_column resource, "academic_department", :name, true, false
      end
      column :description do |resource| 
-       editable_text_column resource, "academic_department", :description, false
+       editable_text_column resource, "academic_department", :description, false, false
      end     
      actions
   end   
