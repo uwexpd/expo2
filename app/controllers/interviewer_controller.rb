@@ -6,20 +6,18 @@ class InterviewerController < ApplicationController
   before_action :initialize_breadcrumbs, except: [:mark_available, :mark_unavailable]
 
   def index
-    @interviews = @offering_interviewer.offering_interviews
-    @interviews.sort! { |x,y| x.start_time <=> y.start_time }
+    @interviews = @offering_interviewer.offering_interviews.sort_by(&:start_time)    
     
     render :action => 'index_scored' if @offering.uses_scored_interviews?
   end
 
-  def show
+  def show    
     @offering_interview_interviewer = OfferingInterviewInterviewer.find params[:id]
     @app = ApplicationForOffering.find @offering_interview_interviewer.offering_interview.applicant_id
-
     add_breadcrumb @app.fullname
 
     # Initialize score card if needed
-    @offering_interview_interviewer.create_scores unless @viewing_past_app
+    @offering_interview_interviewer.create_scores
 
     if params['section']
       return render :partial => "review_committee", :locals => { :audience => :reviewer } if params[:section] == 'review_committee'
@@ -117,11 +115,11 @@ class InterviewerController < ApplicationController
       @offering_interview_interviewer = OfferingInterviewInterviewer.find params[:id]
       @app = ApplicationForOffering.find @offering_interview_interviewer.offering_interview.applicant_id
       return redirect_to :action => "index" if @offering_interview_interviewer.finalized?
-      if @offering_interview_interviewer.update_attributes params[:application_reviewer]
-        flash[:notice] = "Review saved successfully."
+      if @offering_interview_interviewer.update(application_reviewer_params) && @offering_interview_interviewer.update(offering_interview_interviewer_params)
+        flash[:notice] = "Interview review saved successfully."
         respond_to do |format|
           format.html { return redirect_to :action => 'index' }
-          format.js   { return render :text => "Review auto-saved at #{Time.now.to_s(:time12)}." }
+          # format.js   { return render :text => "Review auto-saved at #{Time.now.to_s(:time12)}." }
         end
       else
         flash[:error] = "Could not save your responses."
@@ -211,7 +209,7 @@ class InterviewerController < ApplicationController
   end
 
   def multi_composite_report
-    if params[:include] && params[:format]
+    if params[:include] && params[:report_format]
       parts = []
       params[:include].each do |part,value|
         parts << part.to_sym
@@ -219,12 +217,12 @@ class InterviewerController < ApplicationController
       @apps = @offering_interviewer.offering_interview_interviewers.collect(&:applicant).compact
       report = MultiApplicationCompositeReport.new(@offering, @apps.sort_by(&:fullname), parts)
       report.offering_interviewer = @offering_interviewer
-      file = report.generate!(params[:format].to_sym)
+      file = report.generate!(params[:report_format].to_sym)
       unless file.is_a?(String)
         flash[:error] = "Sorry, but there was an error creating the file. (#{file.inspect})"
         redirect_to :action => "index" and return
       end
-      send_file file, :disposition => 'attachment', :type => "application/#{params[:format].to_sym}" unless file.nil?
+      send_file file, :disposition => 'attachment', :type => "application/#{params[:report_format].to_sym}" unless file.nil?
     else
       flash[:error] = "You have to identify which parts of the application to include."
       redirect_to :action => "index"
@@ -233,13 +231,13 @@ class InterviewerController < ApplicationController
   
   
   def criteria
-    render :action => 'criteria', :layout => 'popup'
+    render :action => 'criteria'
   end
 
   def finalize
     if params[:commit]
       for interviewer in @offering_interviewer.offering_interview_interviewers
-        interviewer.update_attribute(:finalized, true) if interviewer.started_scoring? && !interviewer.finalized?
+        interviewer.update(:finalized, true) if interviewer.started_scoring? && !interviewer.finalized?
       end
     end
     flash[:notice] = "Thank you! Your finalized scores were submitted."
@@ -277,9 +275,18 @@ class InterviewerController < ApplicationController
   end
 
   def initialize_breadcrumbs
-    add_breadcrumb "Interviewer Interface", offering_interviewer_path(@offering)
-    add_breadcrumb @offering.name
+    add_breadcrumb "Interviewer Interface", interviewer_path(@offering)
+    add_breadcrumb @offering.title
   end
 
+  private
+
+  def application_reviewer_params
+    params.require(:application_reviewer).permit(:application_interview_decision_type_id, :interview_feedback_person_id, :finalized, :committee_score, :comments, score_attributes: [:id, :score, :comments])
+  end
+
+  def offering_interview_interviewer_params
+    params.require(:offering_interview_interviewer).permit(:application_interview_decision_type_id, :interview_feedback_person_id, :finalized, :committee_score, :comments, score_attributes: [:id, :score, :comments])
+  end
 
 end

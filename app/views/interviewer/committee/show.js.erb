@@ -2,7 +2,7 @@ $('#app_fullname').text("<%= @app.fullname %>");
 $('#app_fullname').css({
 	'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
 });
-$('#scoring_pane').html("<%= j render partial: 'reviewer/sidebar/scoring' %>");
+$('#scoring_pane').html("<%= j render partial: 'interviewer/sidebar/scoring' %>");
 
 $('tr.row_active').removeClass('row_active');
 $('#app_<%= @app.id%>').addClass('row_active');

@@ -8,7 +8,7 @@
 </div>
 
 <div id="modal_multi_composite_report_maker" class='modal'>
-  <%= form_tag multi_composite_report_path, method: :post do %>
+  <%= form_tag action: 'multi_composite_report', method: :post do %>
 			<div class="modal-content">
 	      <h6>Which parts of the application would you like included?</h6>
 	        <p>
@@ -59,7 +59,7 @@
 	    	
 					
 	    	<center>
-	    		<%= button_tag type: 'submit', class: 'btn-small', :disable_with => "Please wait..." do %>
+	    		<%= button_tag type: 'submit', class: 'btn-small', data: { disable_with: "Please wait..." } do %>
 						<i class='mi md-18'>download</i> Generate my Review Packet
 					<% end %>
 					<%# <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>%></center>

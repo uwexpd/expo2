@@ -1,0 +1,76 @@
+<h5><i class='mi md-24 bottom_align'>edit_document</i> Scoring Pane</h5>
+<div class="scoring-content">
+
+	<%= link_to "Interviewer Criteria & Instructions", { action: 'criteria' }, target: '_blank' %>
+	
+	<div class="autosave center" id="scores_autosave"></div>
+	<br>
+	
+	<%= form_for @offering_interview_interviewer, :url => { :action => 'update', :id => @offering_interview_interviewer }, id: 'score_form'  do |f| %>
+
+		<% @application_reviewer = @offering_interview_interviewer %>
+
+		<table class="highlightless borderless paddingless scoring" style="font-size: 105%">
+			<%= render 	:partial => "reviewer/score", 
+						:collection => @offering_interview_interviewer.scores.sort_by{|s|s.offering_review_criterion.sequence},
+						:locals => { :f => f } %>
+	
+			<tr class="rowset-header">
+				<td>Total:</td>
+				<td><b><%= content_tag('span', @application_reviewer.total_score, :id => 'total_score') %></b>
+					<font class="light">/ <%= @offering.max_total_score %></font>
+					</td>
+			</tr>
+
+			<tr>
+				<td colspan=2>
+					Comments:
+					<%= f.text_area :comments, :rows => 4, :disabled => @application_reviewer.finalized? %>
+				</td>
+			</tr>
+
+		</table>
+
+		<% if @application_reviewer.committee_score? %>
+			<h6>Final Decision:</h6>				
+				<% if @application_reviewer.finalized? %>
+					<span class='light'><%= @app.application_interview_decision_type.try(:title) %></span>
+				<% else %>
+					<div class="input-field">
+						<% @offering.application_interview_decision_types.each do |decision_type| %>
+							<p><label>
+									<%= f.radio_button :application_interview_decision_type_id, decision_type.id, class: "with-gap" %> 
+									<span><%= decision_type.title %></span>
+								</label></p>
+						<% end %>
+					</div>
+				<% end %>				
+			
+			<h6>Feedback Person:</h6>				
+			<% if @application_reviewer.finalized? %>
+				<span class='light'><%= @app.interview_feedback_person.fullname rescue "(not set)" %></span>
+			<% else %>
+				<div class="input-field">
+					<%= f.collection_select :interview_feedback_person_id, @app.interview.interviewers.where("committee_score is null or committee_score = 0"), :id, :fullname, {include_blank: true}, {class: 'browser-default'} %>
+				</div>
+			<% end %>
+		<% end -%>
+
+		<center style="padding-top:1rem">
+			<%= f.submit "Save My Review", disable_with: 'Saving your review...', class: 'btn' unless @application_reviewer.finalized? %>
+		</center>
+
+		<%#= observe_form :score_form, 
+			:function => "	total_score=0; 
+							$$('input.score').invoke('getValue').each(function(s){total_score+=Number(s)});
+							$('total_score').update(total_score);" %>
+
+		<%#= observe_form :score_form,
+		 				:url => { :action => 'update', :id => @app },
+						:update => 'scores_autosave',
+						:complete => visual_effect(:highlight, 'scores_autosave'),
+						:frequency => 15  %>
+
+	<% end -%>
+	
+</div>

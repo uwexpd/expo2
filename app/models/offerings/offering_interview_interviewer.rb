@@ -6,6 +6,7 @@ class OfferingInterviewInterviewer < ApplicationRecord
   has_many :scores, :class_name => "OfferingInterviewInterviewerScore"
 
   delegate :applicant, :to => :offering_interview
+  delegate :interview_feedback_person_id, :to => :applicant
   
   def person
     offering_interviewer.person
@@ -17,9 +18,9 @@ class OfferingInterviewInterviewer < ApplicationRecord
 
   
   # Mass-assign new attributes for this ApplicationReviewer's scores.
-  def score=(score_attributes)
-    score_attributes.each do |score_id, score_attributes|
-      scores.find(score_id).update_attributes(score_attributes)
+  def score_attributes=(score_attributes)
+    score_attributes.each do |score_id, attributes|
+      scores.find(score_id.to_i).update(attributes)
     end
   end
 
@@ -70,8 +71,8 @@ class OfferingInterviewInterviewer < ApplicationRecord
   # Creates an ApplicationReviewScore object for each associated OfferingReviewCriterion for this ApplicationForOffering's Offering.
   # Use this method to initialize a reviewer's score card before they begin reviewing with the reviewer interface.
   def create_scores
-    for review_criterion in applicant.offering.review_criterions
-      scores.create(:offering_review_criterion_id => review_criterion.id) unless scores.find_by_offering_review_criterion_id(review_criterion)
+    applicant.offering.review_criterions.each do |review_criterion|
+      scores.create(offering_review_criterion_id: review_criterion.id) unless scores.find_by(offering_review_criterion_id: review_criterion.id)
     end
   end
 
@@ -89,9 +90,7 @@ class OfferingInterviewInterviewer < ApplicationRecord
   def interview_feedback_person_id=(new_person_id)
     return false unless committee_score?
     applicant.update_attribute(:interview_feedback_person_id, new_person_id)
-  end
-  
-  delegate :interview_feedback_person_id, :to => :applicant
+  end  
   
   
 end
