@@ -1,25 +1,25 @@
 <% mark_as_confidential @offering.confidentiality_note %>
 <% @ready_for_finalization = false %>
 
-<% title "Application Review", "Committee Decisions" %>
+<% title "Application Interview", "Committee Decisions" %>
 
 <div class="card content">
-<h4>Review Committee Decisions</h4>
-<p>Here are the students for your committee to review. Please input your group score for each application, then click the "Submit our Reviews" button. Your committee scores will appear below. Underneath each number is the average of your committee's scores for each criterion, for comparison.</p>
+<h4>Interview Committee Decisions</h4>
+<p>Here are the students for your committee to interview. Please input your group score for each application, then click the "Submit our Reviews" button. Your committee scores will appear below. Underneath each number is the average of your committee's scores for each criterion, for comparison.</p>
 
 <% @scores = {:total => 0.0} %>
 <% @apps_with_scores_count = 0 %>
-<table class="scored_selection">
+<table class="scored_selection reviewer">
 	<tr class="small">
 		<th width=30%>Student/Project</th>
 		<% for review_criterion in @offering.review_criterions.sort %>
 			<th width=60 class="center"><%= review_criterion.title %></th>
 			<% @scores[review_criterion.id] = 0.0 %>
-		<% end %>
+		<% end -%>
 		<th class="center">Total</th>
 		<th class="center">Spread/Std. Dev.</th>
 		<th>Decision</th>
-		<th style="width: 10rem">&nbsp;</th>
+		<th style="width: 20em">&nbsp;</th>
 	</tr>
 	
 	<%= render :partial => "app", :collection => @apps %>
@@ -50,7 +50,7 @@
 		<blockquote>If you are satisfied with your scores, press the button below to submit your scores as final. Once you click this button, you will not be able to change your scores or comments.</blockquote>
 		<%= button_to "Submit My Scores", { action: "finalize", commit: true }, class: 'btn' %>
 	</div>
-<% end %>
+<% end -%>
 
 </div>
 <% sidebar :scoring %>

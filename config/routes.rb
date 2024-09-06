@@ -171,12 +171,24 @@ Rails.application.routes.draw do
 
     # Interviewer
     get 'interviewer/:offering', to: 'interviewer#index', as: :interviewer
+    get 'interviewer/:offering/show/:id', to: 'interviewer#show'
+    post 'interviewer/:offering/show/:id/composite_report', to: 'interviewer#composite_report', as: :interviewer_composite_report
+    get 'interviewer/:offering/view/:id', to: 'interviewer#view'
+    get 'interviewer/:offering/transcript/:id', to: 'interviewer#transcript'
+    post 'interviewer/:offering/multi_composite_report', to: 'interviewer#multi_composite_report'
+    get 'interviewer/:offering/criteria', to: 'interviewer#criteria', as: :interviewer_criteria
+    match 'interviewer/:offering/update/:id', to: 'interviewer#update', via: [:post, :put, :patch]    
     match 'interviewer/:offering/weclome/:committee', to: 'interviewer#welcome', as: :offering_interviewer, via: [:get, :post, :put, :patch]
     match 'interviewer/:offering/availability/:committee', to: 'interviewer#interview_availability', as: :interviewer_availability, via: [:get, :post, :put, :patch]
     get 'interviewer/:offering/not_this_quarter/:committee', to: 'interviewer#not_this_quarter'
     get 'interviewer/:offering/inactive/:committee', to: 'interviewer#inactive'
     match 'interviewer/:offering/mark_available', to: 'interviewer#mark_available', via: [:get, :patch]
     match 'interviewer/:offering/mark_unavailable', to: 'interviewer#mark_unavailable', via: [:get, :patch]
+    get 'interviewer/:offering/committee', to: 'interviewer/committee#index', as: :interview_committee
+    get 'interviewer/:offering/committee/show/:id', to: 'interviewer/committee#show', as: :interview_committee_show
+    get 'interviewer/:offering/committee/criteria', to: 'interviewer/committee#criteria'
+    post 'interviewer/:offering/committee/finalize', to: 'interviewer/committee#finalize'
+    match 'interviewer/:offering/committee/update/:id', to: 'interviewer/committee#update', via: [:post, :put, :patch]
 
     # Reviewer
     get 'reviewer/:offering', to: 'reviewer#index', as: :reviewer
@@ -185,7 +197,7 @@ Rails.application.routes.draw do
     get 'reviewer/:offering/view/:id', to: 'reviewer#view'
     get 'reviewer/:offering/transcript/:id', to: 'reviewer#transcript'
     post 'reviewer/:offering/finalize', to: 'reviewer#finalize'
-    post 'reviewer/:offering/multi_composite_report', to: 'reviewer#multi_composite_report', as: :multi_composite_report
+    post 'reviewer/:offering/multi_composite_report', to: 'reviewer#multi_composite_report'
     get 'reviewer/:offering/criteria', to: 'reviewer#criteria', as: :reviewer_criteria
     get 'reviewer/:offering/extra_instructions', to: 'reviewer#extra_instructions'    
     match 'reviewer/:offering/update/:id', to: 'reviewer#update', via: [:post, :put, :patch]
