@@ -1,15 +1,21 @@
 ActiveAdmin.register TextTemplate, as: 'template'  do
   batch_action :destroy, false
-  config.sort_order = 'created_at_desc'
+  config.sort_order = 'name_asc'
   config.per_page = [30, 50, 100, 200]
   menu parent: 'Modules', label: "<i class='mi padding_right'>drafts</i> Email Templates".html_safe, priority: 35
 
   permit_params :body, :name, :subject, :from, :type
 
   index do
-    column ('Name') {|template| link_to template.title, admin_template_path(template) }
-    column ('Subject') {|template| template.subject if template.subject}
-    column ('Updated At') {|template| "#{time_ago_in_words template.updated_at} ago" rescue nil}
+    column 'Name', sortable: :name do |template| 
+      link_to template.title, admin_template_path(template)
+    end
+    column ('Subject'), sortable: :subject do |template| 
+      template.subject if template.subject
+    end
+    column 'Updated At', sortable: :updated_at do |template| 
+      "#{time_ago_in_words template.updated_at} ago" rescue nil
+    end
     actions
   end
 
