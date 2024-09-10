@@ -4,7 +4,7 @@
 <%= link_to " <i class='mi md-18'>picture_as_pdf</i> Download Review Packet".html_safe, 'javascript:;', data: { link_toggle: "#composite_report_maker"}, class: 'button small flat' %></h2>
 					
 	<div id="composite_report_maker" class="panel" style="display:none; padding:7px">
-		<%= form_tag admin_apply_composite_report_path, method: :post do %>
+		<%= form_tag action: 'composite_report', method: :post do %>
 			Please select which parts of <br>the application you would like <br>included in the PDF file:
 			<br><%= check_box_tag "include[scoring]", true %>
 				<%= label_tag "include[scoring]", "Scoring Sheet" %>
