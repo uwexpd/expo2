@@ -9,10 +9,10 @@
 		<% end -%>
 
 		<li class="welcome_page_link collection-header">
-			<i class="material-icons top_align uw_light_gold">assignment_turned_in</i>  <%= link_to "Confirmation", {:controller => '/apply/confirmation', :action => "index"} %></li>
+			<i class="material-icons top_align uw_light_gold">assignment_turned_in</i>  <%= link_to "Register for Symposium", {:controller => '/apply/confirmation', :action => "index"} %></li>
 						
 		<li>
-			<%= link_to "#{ "<i class='material-icons md-20 middle_align'>done</i>" if @confirmer.confirmed? } <span class='title'>Confirm Your Participation</span>".html_safe, 
+			<%= link_to "#{ "<i class='material-icons md-20 middle_align'>done</i>" if @confirmer.confirmed? } <span class='title'>Submit Your Registration</span>".html_safe, 
 						{:controller => '/apply/confirmation', :action => "index"}, class: "collection-item #{ 'active' if page == 'index'}" %>
 		</li>
 
@@ -45,8 +45,14 @@
 		  <%= link_to "#{"<i class='material-icons md-20 middle_align'>done</i>" unless @confirmer.theme_response.blank? } <span class='title'>#{@offering.theme_response_title || "Theme Response"}</span>".html_safe, {:controller => '/apply/confirmation', :action => "theme"}, class: "collection-item #{ 'active' if page == 'theme'}" %></li>
 		<% end %>
 
+		<% if !@is_group_member && (@user_application.application_type.try(:title) == "Poster Presentation" || @user_application.application_type.try(:title) == "Oral Presentation") %>
+			<li>
+			<%= link_to "#{"<i class='material-icons md-20 middle_align'>done</i>" unless @user_application.time_conflicts.blank? } <span class='title'>Indicate Time Conflicts</span>".html_safe, 
+						{:controller => '/apply/confirmation', :action => "time_conflicts"}, class: "collection-item #{ 'active' if page == 'time_conflicts'}" %></li>
+		<% end %>
+
 		<li>
-			<%= link_to "#{"<i class='material-icons md-20 middle_align'>done</i>" unless @user_application.special_requests.blank? } <span class='title'>Special Requests</span>".html_safe, 
+			<%= link_to "#{"<i class='material-icons md-20 middle_align'>done</i>" unless @user_application.special_requests.blank? } <span class='title'>Request Accommodations</span>".html_safe, 
 						{:controller => '/apply/confirmation', :action => "requests"}, class: "collection-item #{ 'active' if page == 'requests'}" %></li>
 	</ul>
 </div>

@@ -3,7 +3,7 @@
 	<td colspan=2>My Events (<%= @person.event_invites.size %>)</td>
 </tr>
 
-<% @person.event_invites.each do |event_invite| %>
+<% @person.event_invites.reverse.each do |event_invite| %>
 	<tr>
 		<td><%= link_to "#{event_invite.event.title} (#{event_invite.event_time.time_detail})", 
 				:controller => "rsvp", 

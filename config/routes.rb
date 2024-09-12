@@ -147,6 +147,7 @@ Rails.application.routes.draw do
     match 'apply/:offering/confirmation/workshops', to: 'apply/confirmation#workshops', via: [:get, :patch]
     match 'apply/:offering/confirmation/nominate', to: 'apply/confirmation#nominate', via: [:get, :patch]
     match 'apply/:offering/confirmation/theme', to: 'apply/confirmation#theme', via: [:get, :patch]
+    match 'apply/:offering/confirmation/time_conflicts', to: 'apply/confirmation#time_conflicts', via: [:get, :patch]
     match 'apply/:offering/confirmation/requests', to: 'apply/confirmation#requests', via: [:get, :patch]
 
     # Mentor
@@ -178,6 +179,7 @@ Rails.application.routes.draw do
     get 'interviewer/:offering/transcript/:id', to: 'interviewer#transcript'
     post 'interviewer/:offering/multi_composite_report', to: 'interviewer#multi_composite_report'
     get 'interviewer/:offering/criteria', to: 'interviewer#criteria', as: :interviewer_criteria
+    get 'interviewer/:offering/inactive/', to: 'interviewer#inactive'
     match 'interviewer/:offering/update/:id', to: 'interviewer#update', via: [:post, :put, :patch]    
     match 'interviewer/:offering/weclome/:committee', to: 'interviewer#welcome', as: :offering_interviewer, via: [:get, :post, :put, :patch]
     match 'interviewer/:offering/availability/:committee', to: 'interviewer#interview_availability', as: :interviewer_availability, via: [:get, :post, :put, :patch]

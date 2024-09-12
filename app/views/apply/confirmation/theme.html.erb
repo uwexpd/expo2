@@ -67,7 +67,11 @@
    </div>
 
    <div class="card-action center">
-		<%= button_to "Next: Special Requests →", {:action => 'requests'}, :method => :get, class: 'btn' %>
+   	<% if @indicate_time_conflicts %>
+   		<%= button_to "Next: Indicate Time Conflicts →", {:action => 'time_conflicts'}, :method => :get, class: 'btn' %>
+   	<% else %>
+   		<%= button_to "Next: Request Accommodations →", {:action => 'requests'}, :method => :get, class: 'btn' %>
+   	<% end  %>		
    </div>
 
 </div>
