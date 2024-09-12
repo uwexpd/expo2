@@ -144,5 +144,4 @@ $(document).on('turbolinks:load', function() {
   });
 
 
-
 }); // end of turbolinks:load

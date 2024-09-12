@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_08_20_184502) do
+ActiveRecord::Schema.define(version: 2024_09_12_175251) do
 
   create_table "academic_departments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(version: 2024_08_20_184502) do
     t.text "task_completion_status_cache"
     t.integer "theme_response3"
     t.boolean "hide_proceeding_abstract"
+    t.string "time_conflicts"
     t.index ["offering_id"], name: "index_applications_on_offering_id"
     t.index ["person_id"], name: "index_application_for_offerings_on_person_id"
   end

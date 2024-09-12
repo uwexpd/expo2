@@ -1,9 +1,9 @@
-<%= title @offering.title, "Special Requests" %>
+<%= title @offering.title, "Request Accommodations" %>
 
 <%= render :partial => "apply/switch" if @application_count > 1 %>
 <div class='card apply_confirmation'>
   <div class="card-content">
-	<h4>Do you have any special requests or accommodations requests?</h4>
+	<h4>Do you have any accommodations requests?</h4>
 
 	<%= textilize ERB.new(@offering.special_requests_text).result(binding) %>
 	
@@ -29,6 +29,8 @@
 			</p>
 
 		<% else %>
+			<br> Your accommodations requests: 
+			<%= @confirmer.special_requests unless @confirmer.special_requests.blank? %>
 			<br><p class="red_color">You've passed the confirmation deadline at <%= @offering.confirmation_deadline.to_s(:date_time12) %>. Please contact <%= @offering.contact_email %> if you need any special requests.</p>
 		<% end %>		
 	<% end %>

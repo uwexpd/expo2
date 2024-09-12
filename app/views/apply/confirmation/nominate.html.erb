@@ -17,12 +17,8 @@
 				<br> <%= @confirmer.nominated_mentor_explanation %></p>
 		<% end %>
 	</div>
-	<div class="card-action center">
-		<% if @offering.theme_response_title.blank? %>
-		  <%= button_to "Next: Special Requests →", {:action => 'requests'}, :method => :get, class: 'btn' %>
-		<% else %>
-		  <%= button_to "Next: Theme Response →", { :action => "theme" }, :method => :get, class: 'btn' %>
-		<% end %>
+	<div class="card-action center">		
+		<%= button_to "Next: #{@offering.theme_response_title} →", { :action => "theme" }, :method => :get, class: 'btn' %>		
 	</div>  
 </div>
 

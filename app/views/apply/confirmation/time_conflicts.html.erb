@@ -1,0 +1,44 @@
+<%= title @offering.title, "Indicate Time Conflicts" %>
+
+<%= render :partial => "apply/switch" if @application_count > 1 %>
+<div class='card apply_confirmation'>
+  <div class="card-content">
+
+  	<%= form_for @user_application, as: :sessions, :url => { :action => 'time_conflicts' } do |f| %>		
+		
+		<%= render "shared/error_messages", :target => @user_application %>
+		<h4>Indicate Time Conflicts:</h4>
+		<p>Please indicate your time conflicts below: </p><br>
+
+		<% if @offering.confirmation_deadline && Time.now <= @offering.confirmation_deadline %>
+
+			<% OfferingSession.where(offering_id: @offering.id, offering_application_type_id: @user_application.application_type.id).collect{|o|o.session_group}.uniq.each do |session_group| %>
+	  			<p>
+	  			  <label>
+			  		<%= f.check_box :time_conflicts, {multiple: true, class: 'filled-in', checked: @default_conflicts.include?("Session #{session_group}")}, "Session #{session_group}", nil %>
+					<span>Session <%= session_group %></span>
+				  </label>
+				</p>
+			<% end %>
+			<label>
+			<br>
+			<p class='padding_top'>
+				<%= f.submit "Submit", :disable_with => "Submitting...", class: 'btn' %>
+			</p>
+		<% else %>
+			<br> Your time conflicts: 
+			<%= @confirmer.time_conflicts unless @confirmer.time_conflicts.blank? %>
+			<br><p class="red_color">You've passed the confirmation deadline at <%= @offering.confirmation_deadline.to_s(:date_time12) %>. Please contact <%= @offering.contact_email %> if you need to indicate any time conflicts.</p>
+		<% end %>
+	<% end %>
+  </div>
+  <div class="card-action center">
+	<%= button_to "Next: Request Accommodations →", {:action => 'requests'}, :method => :get, class: 'btn' %>
+  </div>
+</div>
+
+<% content_for(:sidebar) do %>
+	<div class="sideblock card confirmation_nav">
+		<%= render partial: "apply/sidebar/confirmation_nav", locals: { page: 'time_conflicts' } %>
+	</div>
+<% end %>

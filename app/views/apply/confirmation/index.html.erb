@@ -4,27 +4,28 @@
 
 <div class='card apply_confirmation'>
   <div class="card-content">
-	<h4>Confirm Your Participation</h4>
+	<h4>Submit Your Registration</h4>
 	<%= textilize @offering.confirmation_instructions %>
 	<br>
 	<%= form_for @confirmer, as: :confirmation, url: { action: 'confirm' } do |f| %>
 	
-		<div class="input-field col s12 <%= 'highlight' if !@confirmer.confirmed.nil? && @confirmer.confirmed %>">	
-			<div style="padding-bottom: 3rem;">
+		<div class="input-field col s12">	
+			<div style="margin-bottom:1rem" class=<%= 'highlight_box' if !@confirmer.confirmed.nil? && @confirmer.confirmed %>>
 				<label>
-					<%= f.radio_button :confirmed, true, {class: "with-gap"} %>
+					<%= f.radio_button :confirmed, true, {id: 'show_time_conflicts', class: "with-gap"} %>
 					<span><%= textilize ERB.new(@offering.confirmation_yes_text).result(binding) %></span>
-				</label>
+				</label>						
 			</div>
 			
-		 	<p class="<%= 'highlight' if !@confirmer.confirmed.nil? && @confirmer.confirmed==false %>">		<label>
-					<%= f.radio_button :confirmed, false, {class: "with-gap"} %>				
+		 	<div class="padding_top <%= 'highlight_box' if !@confirmer.confirmed.nil? && @confirmer.confirmed==false %>">		
+		 		<label>
+					<%= f.radio_button :confirmed, false, {id: 'hide_time_conflicts', class: "with-gap"} %>				
 					<span><%= "No, I will not be participating in the #{@offering.title}." %></span>
 					<% unless @is_group_member %>
 						<br><span class="red_color" style="padding-left: 2.4rem;">Note: This will cancel your application.</span>
 					<% end %>
 				</label>
-			</p>
+			</div>
 		</div>
 		<br><br>
 		<div class="progress_nav_buttons">

@@ -10,7 +10,11 @@ class Apply::ConfirmationController < ApplyController
   
   def confirm
     if params[:confirmation]
-      @confirmer.update_attribute(:confirmed, params[:confirmation][:confirmed])
+      @confirmer.update(confirmed: params[:confirmation][:confirmed])
+      if params[:confirmation][:time_conflicts]
+        @user_application.update(time_conflicts: params[:confirmation][:time_conflicts].join(',')) unless @is_group_member
+      end
+
       if @confirmer.confirmed?
         @user_application.set_status "confirmed" unless @is_group_member
         #redirect_to :action => "contact_info" and return
@@ -62,12 +66,22 @@ class Apply::ConfirmationController < ApplyController
     end
   end
   
-  def theme
-    redirect_to :action => "requests" if @offering.theme_response_title.blank?
+  def theme    
     if params[:theme]
       @confirmer.validate_theme_responses = true
       if @confirmer.update(theme_params)
         flash[:notice] = "Thank you for your #{@offering.theme_response_title rescue nil} response!" unless params[:theme][:theme_response].blank?
+        redirect_to action: (@indicate_time_conflicts ? 'time_conflicts' : 'requests')
+      end
+    end
+  end
+
+  def time_conflicts
+    redirect_to :action => "requests" unless @indicate_time_conflicts
+    @default_conflicts = @user_application.time_conflicts.present? ? @user_application.time_conflicts.split(',') : []    
+    if params[:sessions]
+      if params[:sessions][:time_conflicts] && @user_application.update(time_conflicts: params[:sessions][:time_conflicts].join(','))
+        flash[:notice] = "Your time conflict: #{@user_application.time_conflicts rescue nil} has been successfully input!" unless @user_application.time_conflicts.blank?
         redirect_to :action => 'requests'
       end
     end
@@ -75,17 +89,18 @@ class Apply::ConfirmationController < ApplyController
   
   def proceedings
     if params[:proceedings]
-      @confirmer.update_attribute(:requests_printed_program, params[:proceedings][:requests_printed_program])
+      @confirmer.update(requests_printed_program: params[:proceedings][:requests_printed_program])
       redirect_to apply_url(@offering) and return
     end
   end
   
   def requests
     if params[:requests]
-      @user_application.update_attribute(:special_requests, params[:requests][:special_requests])
+      @user_application.update(special_requests: params[:requests][:special_requests])
       redirect_to apply_url(@offering) and return
     end
   end
+  
   
   protected
   
@@ -94,6 +109,7 @@ class Apply::ConfirmationController < ApplyController
   # +@group_member+ object if +@is_group_member+ evaluates to true, or +@user_application+ otherwise.
   def assign_applicant_object
     @confirmer = @is_group_member ? @group_member : @user_application
+    @indicate_time_conflicts = !@is_group_member && (@user_application.application_type.try(:title) == "Poster Presentation" || @user_application.application_type.try(:title) == "Oral Presentation")
   end
   
   # Ensures that this application is eligible to go through the confirmation by checking that the application

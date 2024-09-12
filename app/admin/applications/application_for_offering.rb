@@ -11,6 +11,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   scope 'New', :new_status
   scope 'In Progress', :in_progress
   scope 'Submitted', :submitted
+  scope 'Awarded', :awarded
 
   controller do
     before_action :fetch_application, :except => [ :new, :create ]
