@@ -38,6 +38,9 @@ $(function() {
    
     // Initial page load
     initializeSelect2();
+
+    // Select the reorderable column header (first column) with class 'reorder-handle-col'
+    $('.aa-reorderable th.reorder-handle-col').text('Reorder');
     
 });
 

@@ -3,6 +3,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 	menu false
 	config.filters = false
 	config.sort_order = 'ordering_asc'
+	reorderable
 
 	permit_params :offering_page_id, :question, :short_title, :ordering, :display_as, :dynamic_answer, :model_to_update, :attribute_to_update, :required, :character_limit, :word_limit, :caption, :error_text, :help_text, :help_link_text, :width, :height, :use_mce_editor, :hide_in_reviewer_view
 
@@ -17,9 +18,15 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
   	 ]
   end
 
+  member_action :reorder, method: :post do
+	    offering_question = OfferingQuestion.find(params[:id])
+	    offering_question.insert_at(params[:position].to_i)
+	    head :ok
+  end
+
 	controller do
 		nested_belongs_to :offering, :page
-		before_action :fetch_page
+		before_action :fetch_page, except: [:reorder]
 
 		def destroy
 			@question = @page.questions.find(params[:id])
@@ -33,14 +40,14 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 
 		protected
 
-		def fetch_page
+		def fetch_page		
 			@offering = Offering.find params[:offering_id]
 			@page = @offering.pages.find params[:page_id]
 		end
 	end
 
-	index do
-		column ('#') {|question| question.ordering }
+	index as: :reorderable_table do
+		# column ('#') {|question| question.ordering }
     column ('Questions') {|question| (link_to question.short_question_title,admin_offering_page_question_path(offering, question.offering_page, question)) + (content_tag(:em, " *", :class => 'required') if question.required?)}
 		column ('Type'){|question| question.display_as.titleize}
     column ('Data Storage') {|question|

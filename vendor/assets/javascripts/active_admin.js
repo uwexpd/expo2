@@ -10,3 +10,4 @@
 //= require editable_text_column
 //= require email/write
 //= require insert_at_cursor
+//= require activeadmin_reorderable

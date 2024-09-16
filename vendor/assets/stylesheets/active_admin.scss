@@ -26,6 +26,8 @@ $am-theme-accent: #b7a57a;
 @import 'buttons';
 @import 'index_table';
 
+@import 'activeadmin_reorderable';
+
 /* Active Admin CSS for Customization */
 /* Overriding any non-variable SASS must be done after the fact.
 For example, to change the default status-tag color: */
@@ -1473,4 +1475,9 @@ tr.details td {
 
 #composite_report_maker.panel {
 	color: rgba(0, 0, 0, 0.7);
+}
+
+.aa-reorderable .reorder-handle {
+	padding: 4px 8px 4px;
+	font-size: 0.75em;	
 }

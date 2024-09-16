@@ -8,6 +8,7 @@ class OfferingQuestion < ApplicationRecord
   has_many :options, :class_name => "OfferingQuestionOption", :dependent => :destroy
   has_many :application_answers, :dependent => :destroy
   has_many :validations, :class_name => "OfferingQuestionValidation", :dependent => :destroy
+  acts_as_list column: :ordering
 
   delegate :offering, :to => :offering_page
   
