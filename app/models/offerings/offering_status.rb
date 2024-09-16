@@ -4,6 +4,7 @@ class OfferingStatus < ApplicationRecord
   belongs_to :application_status_type
   has_many :offering_status_emails, :dependent => :nullify
   has_many :emails, :class_name => "OfferingStatusEmail"
+  acts_as_list column: :sequence
 
   validates_presence_of :offering
   validates_presence_of :application_status_type

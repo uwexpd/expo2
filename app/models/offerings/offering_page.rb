@@ -4,6 +4,7 @@ class OfferingPage < ApplicationRecord
   belongs_to :offering
   has_many :offering_questions, -> { order('ordering') }, :dependent => :destroy
   has_many :questions, -> { order('ordering') },  :class_name => "OfferingQuestion"
+  acts_as_list column: :ordering
 
   #acts_as_list :column => 'ordering', :scope => :offering
   
@@ -24,6 +25,6 @@ class OfferingPage < ApplicationRecord
   # If the +hide_in_admin_view+ boolean is set, then it is automatically hidden from reviewer view as well.
   def hide_in_reviewer_view?
     hide_in_admin_view? ? true : read_attribute(:hide_in_reviewer_view)
-  end
+  end  
   
 end

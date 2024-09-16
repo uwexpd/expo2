@@ -3,6 +3,7 @@ ActiveAdmin.register OfferingAdminPhaseTask, as: 'tasks' do
 	menu false
 	config.filters = false
 	config.sort_order = 'sequence_asc'
+	reorderable
 
 	permit_params :title, :display_as, :sequence, :notes, :progress_column_title, :context, :show_for_in_progress, :show_for_success, :show_for_failure, :completion_criteria, :progress_display_criteria, :show_for_context_object_tasks, :context_object_completion_criteria, :context_object_progress_display_criteria, :application_status_types, :new_application_status_type, :email_templates, :applicant_list_criteria, :reviewer_list_criteria, :detail_text, :url, :show_history, :complete
 
@@ -16,9 +17,15 @@ ActiveAdmin.register OfferingAdminPhaseTask, as: 'tasks' do
   	 ]
   end
 
+  member_action :reorder, method: :post do
+	    task = OfferingAdminPhaseTask.find(params[:id])
+	    task.insert_at(params[:position].to_i)
+	    head :ok
+  end
+
 	controller do
     	nested_belongs_to :offering, :phase
-    	before_action :fetch_phase
+    	before_action :fetch_phase, except: [:reorder]
 
 		def destroy
 			@task = @phase.tasks.find(params[:id])
@@ -45,7 +52,7 @@ ActiveAdmin.register OfferingAdminPhaseTask, as: 'tasks' do
 		render "admin/offerings/phases/tasks/tasks", { phase: phase, phase_task: tasks }
   	end
 	
-	index do
+	index as: :reorderable_table do
 	  tasks = phase.tasks
 	  column ('#') {|task| (tasks.index(task))+1 } 
       column ('Name') {|task| link_to task.title, admin_offering_phase_task_path(offering, phase, task) }

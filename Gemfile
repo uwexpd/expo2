@@ -102,6 +102,8 @@ gem 'rubyzip'
 gem 'caxlsx'
 gem 'caxlsx_rails'
 
+gem 'activeadmin_reorderable'
+gem 'acts_as_list'
 
 group :production do  
   gem 'omniauth-shibboleth'

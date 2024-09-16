@@ -3,11 +3,12 @@ ActiveAdmin.register OfferingAdminPhase, as: 'phases' do
 	batch_action :destroy, false
 	config.filters = false
 	config.sort_order = 'sequence_asc'
+	reorderable
 	
 	permit_params :name, :display_as, :sequence, :notes, :show_progress_completion, :in_progress_application_status_types
 	
-	index title: 'Admin Phases & Tasks' do
-	  column ('#') {|phase| phase.sequence } 
+	index as: :reorderable_table, title: 'Admin Phases & Tasks' do		
+	  # column ('#') {|phase| phase.sequence }
       column ('Name') {|phase| link_to phase.name, admin_offering_phase_path(offering, phase) }
       column ('Tasks') {|phase| link_to pluralize(phase.tasks.size, "task"), admin_offering_phase_tasks_path(offering, phase) }      
       actions
@@ -21,7 +22,7 @@ ActiveAdmin.register OfferingAdminPhase, as: 'phases' do
 		render "admin/offerings/phases/phases", { offering: offering, offering_phase: phases }
   	end
 
-  	show do
+  	show title: proc { resource.name } do
   	  attributes_table do
 		row :name
 		row :display_as
@@ -31,7 +32,7 @@ ActiveAdmin.register OfferingAdminPhase, as: 'phases' do
 	  panel '' do
 		div :class => 'content-block' do
 			tasks = phases.tasks.order('sequence')
-			table_for tasks, id: 'show_table_offering_tasks' do
+			reorderable_table_for tasks, id: 'show_table_offering_tasks' do
 			  column ('#') {|task| (tasks.index(task))+1 }
               column ('Tasks') {|task| link_to task.title, admin_offering_phase_task_path(offering, phases, task) } 
               column ('Display As'){|task| task.read_attribute(:display_as).titleize rescue "<span class='light'>(default)</span>".html_safe }
@@ -44,7 +45,7 @@ ActiveAdmin.register OfferingAdminPhase, as: 'phases' do
 			end			
 			div link_to '<span class="material-icons md-20">add</span>Aad New Task'.html_safe, new_admin_offering_phase_task_path(offering, phases), class: 'button add'
 		end
-	  end
+	  end	  
   	end
 
   	form do |f|

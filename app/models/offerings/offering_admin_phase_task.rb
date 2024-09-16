@@ -6,6 +6,7 @@ class OfferingAdminPhaseTask < ApplicationRecord
   #acts_as_list :column => 'sequence'
   default_scope { order('sequence') }
   validates_presence_of :title
+  acts_as_list column: :sequence
   
   attr_accessor :update_task_completion_status_caches_after_save
   
