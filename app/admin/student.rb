@@ -74,7 +74,16 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
                 span "#{student.phone_formatted}"
                 span "(input by student)", class: 'light smaller'
               end
-              row :email
+              row :email              
+            end
+            if current_user.has_role?(:transcript_viewer)
+              attributes_table title: 'Student Demographic' do
+                row ('Resident Description') {|student| student.sdb.resident_description rescue "Error!"}
+                row ('Campus') {|student| student.major_branch_list rescue "Error!" }
+                row ('Ethnicity') {|student| student.sdb.ethnicity.group_name rescue "Error!" }
+                row ('Heritage') {|student| student.sdb.ethnicity.long_description.capitalize rescue "Error!" }
+                row ('Mixed Races') {|student| student.sdb.mixed_races rescue "Error!" }
+              end
             end
          end
          

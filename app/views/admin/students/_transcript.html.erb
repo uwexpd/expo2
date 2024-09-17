@@ -1,9 +1,9 @@
 <% print_only ||= false %>
 <% audience ||= :admin %>
 
-<% if audience == :reviewer || @current_user.has_role?(:transcript_viewer) %>
+<div class="content-block transcript">
 
-	<div class="content-block transcript">		
+	<% if audience == :reviewer || @current_user.has_role?(:transcript_viewer) %>
 
 		<p><div class="small highlight_box"><strong><i class='material-icons uw_purple'>warning_amber</i>This is an unofficial academic transcript</strong> and it may not contain all information normally included in a transcript report. Please note that this transcript is being provided strictly for the sole purpose outlined here and should be kept confidential.</div></p>
 
@@ -26,12 +26,12 @@
 		<%= render :partial => "admin/students/work_in_progress", :object => transcript %>
 		</table>		
 	
-	</div>
-	
-<% else %>
+	<% else %>
 
-	<div class="error-message">
-		You aren't allowed to view student transcripts.
-	</div>
-	
-<% end %>
+		<div class="error-message">
+			You aren't allowed to view student transcripts.
+		</div>
+
+	<% end %>
+
+</div>
