@@ -13,8 +13,8 @@ class StudentRecord < StudentInfo
   has_many :majors, :class_name => "StudentMajor", :foreign_key => "system_key"
   has_many :minors, :class_name => "StudentMinor", :foreign_key => "system_key"
   belongs_to :class_standing_record, :class_name => "ClassStanding", :foreign_key => "class"  
-  belongs_to :ethnic_ethnicity, :class_name => "Ethnicity", :foreign_key => "ethnic_code"
-  belongs_to :hispanic_ethnicity, :class_name => "Ethnicity", :foreign_key => "hispanic_code"
+  # belongs_to :ethnic_ethnicity, :class_name => "Ethnicity", :foreign_key => "ethnic_code"
+  # belongs_to :hispanic_ethnicity, :class_name => "Ethnicity", :foreign_key => "hispanic_code"
   belongs_to :special_program, :class_name => "SpecialProgram", :foreign_key => "spcl_program"
   belongs_to :high_school, :class_name => "HighSchool", :foreign_key => "high_sch_ceeb_cd"
   belongs_to :last_institution, :class_name => "Institution", :foreign_key => "last_sch_code"
@@ -31,6 +31,16 @@ class StudentRecord < StudentInfo
                           class_standing_description majors_list minors_list institution_name last_institution_name transfer_student?
                           student_no student_no_pretty system_key gpa age birth_date gender)
   PLACEHOLDER_ASSOCIATIONS = %w(special_program ethnicity)
+
+  RESIDENT_CODES = {
+  0 => 'Unknown',
+  1 => 'Resident',
+  2 => 'Resident Immigrant',
+  3 => 'Nonresident Citizen',
+  4 => 'Nonresident Immigrant',
+  5 => 'Nonresident Student Visa',
+  6 => 'Noncitizen Other'
+}
 
   # Returns the Student object that is associated with this StudentRecord. If a Student object does not exist for this student yet, it
   # will automatically be created unless +false+ is passed as the only variable.
@@ -224,9 +234,25 @@ class StudentRecord < StudentInfo
     hispanic_ethnicity.try(:description) == "HISPANIC" ? hispanic_ethnicity : (ethnic_ethnicity || Ethnicity.find(DEFAULT_ETHNIC_CODE))
   end
 
+  def ethnic_ethnicity
+    Ethnicity.find_by_table_key(ethnic_code)
+  end
+
+  def hispanic_ethnicity
+    Ethnicity.find_by_table_key(hispanic_code)
+  end
+
+  def mixed_races
+    ethnicities.collect{|e| Ethnicity.find_by_table_key(e.ethnic).long_description.capitalize }.join(', ') if ethnicities.size > 1
+  end
+
   # Returns true if this student's resident code is 1 ("RESIDENT") and 2 ("RESIDENT IMMIGRANT") see more: https://studentdata.washington.edu/sdb-resident-codes/.
   def washington_state_resident?
     resident == 1 || resident == 2
+  end
+
+  def resident_description
+    RESIDENT_CODES[resident] || 'Resicent Not Found'
   end
   
   

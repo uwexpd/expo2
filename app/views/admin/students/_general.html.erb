@@ -10,7 +10,8 @@
 		<dd></dd> -->
 	
 		<dt>Major(s):</dt>
-		<dd><%= general.sdb.majors_list(true, "<br>") %></dd>
+		<% major = general.sdb.majors_list(true, "<br>") %>
+		<dd><%= major.blank? ? "<span class='empty'>empty</span>".html_safe : major %> </dd>
 
 		<dt>Class:</dt>
 		<dd><%= general.sdb.class_standing_description rescue nil %></dd>

@@ -4,6 +4,17 @@ class Ethnicity < StudentInfo
   self.primary_key = :table_key
 
   PLACEHOLDER_CODES = %w(group description long_description under_represented?)
+
+  ETHNICITY_GROUP_CODES = {
+      1 => 'African American',
+      2 => 'American Indian',
+      3 => 'White',
+      4 => 'Hispanic/Latino',
+      5 => 'Asian American',
+      6 => 'Hawaiian/Pacific Islander',
+      7 => 'Not Indicated',
+      99 => 'International'
+    }
   
   def self.find_by_table_key(key)
     padded_key = key.to_s.rjust(20, '0')
@@ -12,6 +23,10 @@ class Ethnicity < StudentInfo
 
   def group
     ethnic_group
+  end
+
+  def group_name    
+    ETHNICITY_GROUP_CODES[group] || 'Unknown'
   end
   
   def description
