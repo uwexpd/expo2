@@ -13,7 +13,7 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 	end
 
 	index as: :reorderable_table do
-		# column ('Order') {|page| page.ordering}		
+		column ('Order') {|page| page.ordering}
 		column ('Title') {|page| link_to page.title, admin_offering_page_path(offering, page)}
 	    column ('Questions') {|page| link_to page.questions.count, admin_offering_page_questions_path(offering, page)}
 	    column ('Question Titles') {|page| page.questions.collect{|q| link_to q.short_question_title, edit_admin_offering_page_question_path(offering, page, q)}}

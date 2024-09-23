@@ -18,7 +18,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
   	 ]
   end
 
-  member_action :reorder, method: :post do
+  member_action :reorder, method: :post do  		
 	    offering_question = OfferingQuestion.find(params[:id])
 	    offering_question.insert_at(params[:position].to_i)
 	    head :ok
@@ -47,7 +47,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 	end
 
 	index as: :reorderable_table do
-		# column ('#') {|question| question.ordering }
+		column ('#') {|question| question.ordering }
     column ('Questions') {|question| (link_to question.short_question_title,admin_offering_page_question_path(offering, question.offering_page, question)) + (content_tag(:em, " *", :class => 'required') if question.required?)}
 		column ('Type'){|question| question.display_as.titleize}
     column ('Data Storage') {|question|

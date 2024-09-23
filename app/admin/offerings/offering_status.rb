@@ -8,7 +8,7 @@ ActiveAdmin.register OfferingStatus, as: 'statuses' do
 	permit_params :application_status_type_id, :public_title, :disallow_user_edits, :disallow_all_edits, :message, :sequence, :allow_application_edits, :allow_abstract_revisions, :allow_abstract_confirmation
 
 	index as: :reorderable_table, title: 'Statuses & Automatic E-mails' do
-      # column :sequence
+      column :sequence
       column ('Private Title') {|status| link_to status.private_title, admin_offering_status_path(offering, status) }
       column :public_title
       column ('E-mails') {|status| status.emails.collect{|email| link_to(email.send_to, admin_offering_status_email_path(offering, status, email), :title => email.email_template.title)}.join(", ").html_safe rescue "<span class='red'>unknown template<span>".html_safe}
