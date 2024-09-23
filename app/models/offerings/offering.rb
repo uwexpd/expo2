@@ -1,7 +1,7 @@
 # An "Offering" in EXPo is anything that a student (or other user, potentially) can apply for.  Common examples would be scholarships, fellowships, programs (like a summer program), internships, courses that require an application process, etc. test
 class Offering < ApplicationRecord
   # include StringHelper #[TODO] It does not work with Tinymce format. 
-  stampable
+  stampable  
     
   scope :sorting, -> {
     left_outer_joins(:quarter_offered).
@@ -358,11 +358,11 @@ class Offering < ApplicationRecord
   end
 
   # Copies this Offering to a new Offering object, and creates associated objects as well.
-  def deep_clone!
+  def deep_dup!
     opts = {}
     opts[:except] = [
-      :current_offering_admin_phase_id, 
-      :complete, 
+      :current_offering_admin_phase_id,
+      :complete,
       :financial_aid_approval_request_sent_at,
       :application_for_offerings_count,
       :enable_award_acceptance,
@@ -370,7 +370,7 @@ class Offering < ApplicationRecord
       :declined_offering_status_id
       ]
     opts[:include] = [
-      {:pages => {:questions => [:options, :validations]}}, 
+      {:pages => {:questions => [:options, :validations]}},
       {:statuses => :emails},
       {:admin_phases => {:tasks => :extra_fields}},
       :restrictions,
@@ -389,8 +389,8 @@ class Offering < ApplicationRecord
       :offering_award_types,
       :other_award_types,
       :location_sections
-      ]
-    self.clone(opts)
+      ]    
+    self.dup(opts)
   end
   
   # Calculates the maximum total score that an applicant can receive from a reviewer.

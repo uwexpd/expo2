@@ -3,10 +3,9 @@ class OfferingAdminPhaseTask < ApplicationRecord
   belongs_to :offering_admin_phase
   has_many :extra_fields, :class_name => "OfferingAdminPhaseTaskExtraField" 
   delegate :offering, :to => :offering_admin_phase
-  #acts_as_list :column => 'sequence'
-  default_scope { order('sequence') }
-  validates_presence_of :title
   acts_as_list column: :sequence
+  default_scope { order('sequence') }
+  validates_presence_of :title  
   
   attr_accessor :update_task_completion_status_caches_after_save
   

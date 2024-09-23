@@ -8,7 +8,7 @@ ActiveAdmin.register OfferingAdminPhase, as: 'phases' do
 	permit_params :name, :display_as, :sequence, :notes, :show_progress_completion, :in_progress_application_status_types
 	
 	index as: :reorderable_table, title: 'Admin Phases & Tasks' do		
-	  # column ('#') {|phase| phase.sequence }
+	  column ('#') {|phase| phase.sequence }
       column ('Name') {|phase| link_to phase.name, admin_offering_phase_path(offering, phase) }
       column ('Tasks') {|phase| link_to pluralize(phase.tasks.size, "task"), admin_offering_phase_tasks_path(offering, phase) }      
       actions

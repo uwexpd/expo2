@@ -13,6 +13,21 @@ ActiveAdmin.register Offering do
     # for has_many
     mentor_types_attributes: [:id, :offering_id, :application_mentor_type_id, :meets_minimum_qualification, :_destroy], mentor_questions_attributes: [:id, :offering_id, :question, :required, :must_be_number, :display_as, :size, :_destroy], review_criterions_attributes: [:id, :offering_id, :title, :max_score, :description, :sequence, :_destroy]
 
+  member_action :copy, method: :post do
+    original_offering = Offering.find(params[:id])    
+
+    if copy_offering = original_offering.deep_dup!
+      copy_offering.update(name: copy_offering.name + " Copy")      
+      redirect_to edit_admin_offering_path(copy_offering), notice: "Successfully copied #{@offering.title}. You can customize the details below."
+    else
+      redirect_to admin_offering_path(original_offering), alert: "An error occurred while cloning the offering."
+    end
+  end  
+
+   action_item :copy, only: :show do
+     link_to 'Copy Offering', copy_admin_offering_path(offering), method: :post, data: { confirm: 'Are you sure you want to copy this offering?' }
+   end
+
   controller do
     before_action :check_user_unit, :except => [ :index, :new, :create ]
 
@@ -30,8 +45,10 @@ ActiveAdmin.register Offering do
     column ('Unit') {|offering| link_to(offering.unit.abbreviation, admin_unit_path(offering.unit)) if offering.unit }
     column ('Quarter') {|offering|  offering.quarter_offered ? offering.quarter_offered.title : offering.year_offered }
     column ('Current Phase') {|offering| link_to(offering.current_offering_admin_phase.name, admin_apply_phase_path(offering, offering.current_offering_admin_phase)) rescue nil }
-    column ('Applications') {|offering| link_to "#{offering.application_for_offerings.valid_status.size.to_s} Apps", admin_apply_manage_path(offering) unless offering.application_for_offerings_count.nil? }
-    actions
+    column ('Applications') {|offering| link_to "#{offering.application_for_offerings.valid_status.size.to_s} Apps", admin_apply_manage_path(offering) unless offering.application_for_offerings_count.nil? }    
+    actions default: true do |offering|
+      link_to 'Copy Offering', copy_admin_offering_path(offering), method: :post, data: { confirm: 'Are you sure you want to copy this offering?' }
+    end
   end
   
   show do

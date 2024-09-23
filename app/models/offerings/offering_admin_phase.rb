@@ -8,7 +8,7 @@ class OfferingAdminPhase < ApplicationRecord
     def show_for_failure; find(:all, :conditions => { :show_for_failure => true }); end
   end
   
-  acts_as_list column: :sequence
+  acts_as_list column: :sequence, scope: :offering
   validates_uniqueness_of :sequence, :scope => :offering_id
 
   # Sorts based on sequence
