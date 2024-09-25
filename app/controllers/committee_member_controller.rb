@@ -27,6 +27,8 @@ class CommitteeMemberController < ApplicationController
         redirect_to :action => "complete", :inactive => "true" and return unless @committee_member.currently_active?
         chose_quarters = @committee_member.committee_member_quarters.upcoming(2).collect(&:active?).include?(true)
         redirect_to :action => "complete", :inactive => "true" and return if !chose_quarters
+        # Create an interviewer record if committee.interview_offering_id
+        Offering.find(@committee_member.committee.interview_offering_id).offering_interviewers.create(person_id: @committee_member.person_id) unless @committee_member.committee.interview_offering_id.blank?
         redirect_to :action => 'specialty'
       else
         flash[:error] = "Could not save your changes."
@@ -38,13 +40,12 @@ class CommitteeMemberController < ApplicationController
     add_breadcrumb "Specialty"
     if params[:committee_member]
       if @committee_member.update(committee_member_params)
-        flash[:notice] = "Specialty saved successfully."        
+        flash[:notice] = "Specialty saved successfully."
         if @committee_member.committee_member_meetings.future.empty?      
             if @committee_member.committee.interview_offering_id.blank?
               redirect_to :action => "complete"
             else
-              Offering.find(@committee_member.committee.interview_offering_id).offering_interviewers.create(person_id: @committee_member.person_id)
-                redirect_to offering_interviewer_path(offering: @committee_member.committee.interview_offering_id , committee: @committee_member.committee, :no_meeting => @committee_member.committee_member_meetings.future.empty?) and return
+              redirect_to offering_interviewer_path(offering: @committee_member.committee.interview_offering_id , committee: @committee_member.committee, :no_meeting => @committee_member.committee_member_meetings.future.empty?) and return
             end
         else
           redirect_to :action => "meetings"
