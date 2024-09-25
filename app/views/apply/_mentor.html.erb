@@ -36,26 +36,26 @@
 				<div id="mentor_email_field_<%= mentor.id %>">
 					<div class="input-field col s6">
 						<%= mf.label(:email, ("E-Mail Address" + " #{content_tag('abbr', '*', title: 'required')}").html_safe) %>
-						<%= mf.text_field :email, class: "validate" %>
+						<%= mf.text_field :email, type: 'email', class: "validate" %>
 					</div>
 						
 					<div class="input-field col s6">
 						<%= mf.label(:email_confirmation, ("Retype E-Mail Address" + " #{content_tag('abbr', '*', title: 'required')}").html_safe) %>
-						<%= mf.text_field :email_confirmation, class: "validate" %>						
+						<%= mf.text_field :email_confirmation, type: 'email', class: "validate" %>						
 					</div>
 				</div>
 				
 				<% if @offering.ask_for_mentor_title? %>
 				<div class="input-field col s12">
 					<%= mf.label(:title, "Title:") %>
-						<%= mf.text_field :title %>
+						<%= mf.text_field :title, class: 'charcounter', data: {length: 250}, maxlength: 250 %>
 				</div>
 				<% end %>
 
 				<% if @offering.ask_for_mentor_relationship? %>
 				<div class="input-field col s12">
 					<%= mf.label(:relationship, "How do you know this person?") %>
-						<%= mf.text_field :relationship %>
+						<%= mf.text_field :relationship, class: 'charcounter', data: {length: 250}, maxlength: 250 %>
 				</div>
 				<% end %>
 
