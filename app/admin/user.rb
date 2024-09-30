@@ -1,5 +1,7 @@
 ActiveAdmin.register User do
-  actions :all, :except => [:new, :destroy]
+  actions :all, :except => [:destroy]
+  # Remove the default 'New User' action item
+  config.clear_action_items!
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
   menu parent: 'Groups', label: "<i class='mi padding_right'>account_circle</i> Users".html_safe
@@ -11,13 +13,34 @@ ActiveAdmin.register User do
   scope :all
   scope :admin
 
-  member_action :session_history, :method => :get do
+  action_item :edit, only: :show do
+    link_to 'Edit User', edit_admin_user_path(user)
+  end
+
+  member_action :session_history, method: :get do
     @requests = SessionHistory.where("session_id = ? ", params[:id]).order(:created_at)
     @start_time = @requests.first.created_at
     @user = LoginHistory.find_by_session_id(params[:id]).user
-  end  
+  end
+
+  controller do
+    def create
+      if params[:user] && params[:user][:login].present?
+        @user = PubcookieUser.authenticate(params[:user][:login])
+
+        if @user
+          redirect_to admin_users_path(q: { login_contains: params[:user][:login] }), notice: "Successfully created/authenticated new UW Standard User login: #{@user.login}."
+        else
+          redirect_to new_admin_user_path, alert: "Authentication failed. Unable to create the user."
+        end
+      else
+        redirect_to new_admin_user_path, alert: "Login can't be blank."
+      end
+    end
     
-  index pagination_total: false do  
+  end
+      
+  index pagination_total: false do
     column 'Username' do |user|
       span link_to(highlight(user.login,params.dig(:q, :login_contains)), admin_user_path(user))
       span "@u" if user.is_a? PubcookieUser
@@ -99,27 +122,39 @@ ActiveAdmin.register User do
   sidebar "Search User", only: :show do
       render "search_user"
   end
+
+  sidebar 'Authenticate a New UW standard User', if: proc { collection.empty? } do
+    # render "create_uw_standard.html"
+    div class: 'content-block' do
+      link_to "Create New User", new_admin_user_path, class: 'button'
+    end
+  end
   
   form do |f|
     f.semantic_errors *f.object.errors.keys
-    f.inputs "Edit #{user.login}" do
-      f.input :email, as: :string
-      f.input :admin, label: 'User can access admin aera', as: :boolean      
-      f.input :picture, as: :file      
-    end   
+    if f.object.new_record?
+      f.input :login, label: 'Authenticate a new UW standard user', input_html: {style: 'width: 50%'}, hint: "Enter a UW NetID to create a new Standard User for that login."
+        f.actions
+    else
+      f.inputs "Edit #{user.login}" do
+        f.input :email, as: :string
+        f.input :admin, label: 'User can access admin aera', as: :boolean
+        f.input :picture, as: :file
+      end
 
-    f.inputs 'User roles' do
-      hr      
-        f.has_many :roles, allow_destroy: true, heading: false do |role|
-          role.input :role_id, as: :select, collection: [["[User]", nil]] + Role.all.map{|r| [r.title, r.id]}, include_blank: "[User]", prompt: "-- Select a Role --"
-          role.input :unit_id, as: :select, collection: [["[Global]", nil]] + Unit.all.map{|u| [u.name, u.id]}, prompt: "-- Select a Unit --"
-        end      
+      f.inputs 'User roles' do
+        hr
+          f.has_many :roles, allow_destroy: true, heading: false do |role|
+            role.input :role_id, as: :select, collection: [["[User]", nil]] + Role.all.map{|r| [r.title, r.id]}, include_blank: "[User]", prompt: "-- Select a Role --"
+            role.input :unit_id, as: :select, collection: [["[Global]", nil]] + Unit.all.map{|u| [u.name, u.id]}, prompt: "-- Select a Unit --"
+          end
+      end
+      actions
+      f.actions do
+         f.action(:submit)
+         f.cancel_link(admin_user_path(user))
+      end
     end
-    
-    f.actions do
-       f.action(:submit)
-       f.cancel_link(admin_user_path(user))
-     end
   end
   
   filter :login, label: 'Username',  as: :string

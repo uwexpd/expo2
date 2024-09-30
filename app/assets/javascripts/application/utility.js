@@ -112,14 +112,6 @@ $(document).on('turbolinks:load', function() {
      }
   });
 
-  function toggle_card(obj, display){
-    if (display) {
-        $(obj).parent().show();
-    }else{
-        $(obj).parent().hide();
-    }
-  }
-
   $(document).ready(function() {
      $('input[data-checkbox]').change(function() {
         if ($(this).prop('checked')) {
@@ -143,5 +135,13 @@ $(document).on('turbolinks:load', function() {
     
   });
 
-
 }); // end of turbolinks:load
+
+// for community_engaged toogle filled positions
+function toggle_card(obj, display){
+    if (display) {
+        $(obj).parent().show();
+    }else{
+        $(obj).parent().hide();
+    }
+}

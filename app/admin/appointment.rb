@@ -21,21 +21,7 @@ ActiveAdmin.register Appointment do
   end
   
   show do
-    #panel '' do
-      render "admin/students/student_header", { student: appointment.student }
-      # div :class => 'content-block' do
-      #   #image_tag photo_admin_student_path(appointment.student.reg_id)
-      #   h1 "#{appointment.student.fullname}" do
-      #     span "#{appointment.student.student_no}", :class => 'light small'          
-      #   end
-      #   div do
-      #     "#{appointment.student.sdb.class_standing_description(:show_upcoming_graduation => true)}, #{appointment.student.sdb.majors_list(true, ', ')}"
-      #   end
-      #   div do
-      #     "#{appointment.student.email}"
-      #   end
-      # end
-    #end
+    render "admin/students/student_header", { student: appointment.student }
     attributes_table do
       row (:start_time) {|appointment| appointment.start_time.to_s(:date_pretty)}            
       row :unit
@@ -44,7 +30,7 @@ ActiveAdmin.register Appointment do
       row (:check_in_time) {|appointment| appointment.check_in_time.to_s(:date_pretty) if appointment.check_in_time}
       row :front_desk_notes
       row :notes
-      row :source
+      row (:source) {|appointment| appointment.source.titleize}
     end
   end
 
