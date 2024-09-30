@@ -30,7 +30,7 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
 
   index pagination_total: false do
     column 'Photo' do |student|
-      image_tag url_for(action: :photo, id: student.id, reg_id: student.reg_id), class: 'student_photo', style: 'width: 40px;height: 50px'      
+      image_tag url_for(action: :photo, id: student.id, reg_id: student.reg_id), class: 'student_photo', style: 'width: 40px;height: 50px'
     end
     column 'Name' do |student|
       highlight_text = []

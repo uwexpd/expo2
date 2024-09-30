@@ -22,11 +22,13 @@ ActiveAdmin.register_page "Dashboard" do
     columns do
       column min_width: '65%' do
         panel 'Current Appointments' do
+          header_action link_to "<i class='mi'>event_available</i> Create".html_safe, new_admin_appointment_path
           @current_person = current_user.person
           @my_appointments = @current_person.appointments.today + @current_person.appointments.yesterday + @current_person.appointments.tomorrow
           table_for @my_appointments do 
-            column('Time') {|appointment| link_to appointment.start_time.to_s(:date_pretty), admin_appointment_path(appointment) }
-            column :student            
+            column('Time') {|appointment| link_to "<i class='mi'>today</i> ".html_safe+appointment.start_time.to_s(:date_at_time12), admin_appointment_path(appointment) }
+            column :student
+            column ('Checked-in') {|appointment| status_tag appointment.checked_in?, class: 'green'}
           end
           if @my_appointments.blank?
             div id: 'create_appointment' do
@@ -43,7 +45,7 @@ ActiveAdmin.register_page "Dashboard" do
 
         if current_user.has_role?(:vicarious_login)
           panel "Vicarious Login" do
-            header_action link_to('Open to Login', '#', data: { link_toggle: "#admin_vicarious_login"})
+            header_action link_to("<i class='mi'>unfold_more</i> Open to Login".html_safe, '#', data: { link_toggle: "#admin_vicarious_login"})
             render partial: 'admin/base/vicarious_login'
           end
         end
