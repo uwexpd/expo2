@@ -29,7 +29,7 @@ user_application = application_mentor.application_for_offering
 	</td>
 	
 	<td>
-		<% link_text = application_mentor.approved? ? "Review abstract" : "Review abstract" %>
-		<%= link_to link_text, :action => "mentee", :id => application_mentor %>
+		<%#link_text = application_mentor.approved? ? "Review abstract" : "Review abstract" %>
+		<%= link_to "Review", :action => "mentee", :id => application_mentor %>
 	</td>
 </tr>

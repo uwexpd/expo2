@@ -8,16 +8,28 @@
 		
 		<%= render "shared/error_messages", :target => @user_application %>
 		<h4>Indicate Time Conflicts:</h4>
-		<p>Please indicate your time conflicts below: </p><br>
+		
+		<b>The 2025 UW Undergraduate Research Symposium will take place on Friday, May 16, 2025 from 11:00 a.m. to 5:00 p.m.</b><br>
+		<p>
+			Session times for your selected presentation type are listed below. You are expected to be present for your entire session. If you have an <strong>immoveable</strong> time conflict, please let us know by selecting the sessions you are not able to attend. We will do our best to assign your session time accordingly. <br><br>
+			
+			<b>If your time conflict is class-related, please contact your professor first to see if accommodations could be made if you were scheduled to present during your class. </b>
+		</p><br>
 
 		<% if @offering.confirmation_deadline && Time.now <= @offering.confirmation_deadline %>
 
-			<% OfferingSession.where(offering_id: @offering.id, offering_application_type_id: @user_application.application_type.id).collect{|o|o.session_group}.uniq.each do |session_group| %>
+			<p>
+				<label>
+					<%= f.check_box :time_conflicts, {multiple: true, class: 'filled-in', checked: @default_conflicts.include?("No time conflicts")}, "No time conflicts", nil %>
+							<span>No time conflicts</span>
+				</label>
+			</p>
+			<% OfferingSession.where(offering_id: @offering.id, offering_application_type_id: @user_application.application_type.id).order(:start_time).group_by{|s| [s.session_group, s.time_detail("-")] }.each do |session_group, offering_sessions| %>
 	  			<p>
 	  			  <label>
-			  		<%= f.check_box :time_conflicts, {multiple: true, class: 'filled-in', checked: @default_conflicts.include?("Session #{session_group}")}, "Session #{session_group}", nil %>
-					<span>Session <%= session_group %></span>
-				  </label>
+				  		<%= f.check_box :time_conflicts, {multiple: true, class: 'filled-in', checked: @default_conflicts.include?("Session #{session_group[0]}(#{session_group[1]})")}, "Session #{session_group[0]}(#{session_group[1]})", nil %>
+							<span>Session <%= session_group[0] %> (<%= session_group[1].strip %>)</span>
+				  	</label>
 				</p>
 			<% end %>
 			<label>

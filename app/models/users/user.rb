@@ -2,6 +2,7 @@ require 'digest/sha1'
 class User < ApplicationRecord
   include ActiveModel::ForbiddenAttributesProtection
   model_stamper
+  mount_uploader :picture, ImageUploader
   
   belongs_to :person
   has_many :roles, :class_name => "UserUnitRole", :foreign_key => "user_id" do

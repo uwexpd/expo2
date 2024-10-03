@@ -16,7 +16,7 @@
 			<td colspan=8>No appointments.</td>
 		</tr>
 	<% else %>
-		<% for appointment in @student.appointments %>
+		<% @student.appointments.each do |appointment| %>
 		
 			<% if appointment.start_time.to_date != current_date %>
 			<tr class="rowset-header">
@@ -28,8 +28,7 @@
 					<% end -%></td>
 				<% current_date = appointment.start_time.to_date %>
 			</tr>
-			<% end -%>
-		
+			<% end -%>		
 		
 			<% partial_name = appointment.is_a?(QuickContact) ? "admin/appointments/quick_contact" : "admin/appointments/appointment" %>
 			<%= render :partial => partial_name, :object => appointment, :locals => { :hide => [:student] } %>
