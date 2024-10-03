@@ -1485,3 +1485,17 @@ tr.details td {
 .am-js .index_table td.col-actions .table_actions a.delete_link {
 	color: #d45f53;
 }
+
+.circle_profile {
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%;
+    object-fit: cover; /* Ensures the image fills the container and is not distorted */
+    overflow: hidden; /* Ensures that content within the image is properly contained */
+}
+
+.user_picture {
+    width: 112px;
+    height: 136px;
+	padding: 0.75rem;
+}

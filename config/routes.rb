@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     # Custom Active Admin Routes
     # -------------------------------------------------------------------------------------------
     get 'admin', to: 'admin/dashboard#index', as: :admin
+    get 'files/user/:id/:mounted_as/:filename', to: 'admin/user#picture'
     # Admin Apply Actions
     match 'admin/apply/dean_approve', to: 'admin/apply#dean_approve', as: :admin_apply_dean_approve, via: [:get, :post, :put]
     match 'admin/apply/finaid_approve', to: 'admin/apply#finaid_approve', as: :admin_apply_finaid_approve, via: [:get, :post, :put]
@@ -108,7 +109,7 @@ Rails.application.routes.draw do
     get 'signup',  to: 'users#new'
     match 'signup', to: 'users#create', via: [:post]
     get 'profile', to: 'users#profile'
-    match 'profile', to: 'users#update', via: [:post, :put, :patch]
+    match 'profile', to: 'users#update', via: [:post, :put, :patch]    
     resources :users, only: [:create, :update]
     get 'login',  to: 'sessions#new'
     match 'logout', to: 'sessions#destroy', via: [:get, :delete]
@@ -116,7 +117,7 @@ Rails.application.routes.draw do
     match 'sessions/reset/:user_id/:token', to: 'sessions#reset_password', as: :reset_password, via: [:get, :post]
     resources :sessions
     get 'remove_vicarious_login', to: 'application#remove_vicarious_login'
-    get 'login_as_student', to: 'application#force_login_as_student', as: :login_as_student
+    get 'login_as_student', to: 'application#force_login_as_student', as: :login_as_student    
 
     # RSVP for events    
     get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event
@@ -233,7 +234,7 @@ Rails.application.routes.draw do
     get 'community_engaged/complete', to: 'service_learning#complete', :quarter_abbrev => 'current'
     match 'community_engaged/change/:id', to: 'service_learning#change', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
     match 'community_engaged/contact/:id', to: 'service_learning#contact', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
-    match 'community_engaged/risk/:id', to: 'service_learning#risk', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'    
+    match 'community_engaged/risk/:id', to: 'service_learning#risk', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
 
     # Sidekiq admin routes
     Sidekiq::Web.use Rack::Auth::Basic do |username, password|

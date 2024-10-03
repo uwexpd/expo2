@@ -23,6 +23,10 @@ ActiveAdmin.register User do
     @user = LoginHistory.find_by_session_id(params[:id]).user
   end
 
+  member_action :picture, :method => :get do    
+    send_file Rails.root.join("files", "pubcookie_user", params[:id], params[:mounted_as], params[:filename])
+  end
+
   controller do
     def create
       if params[:user] && params[:user][:login].present?
@@ -67,11 +71,11 @@ ActiveAdmin.register User do
     
   show do
     div class: 'panel panel_contents' do
-        # if user.picture.attached?
-        #   span class: "left", style: "margin-right: 1rem;" do
-        #     image_tag url_for(user.picture), size: "100x100"
-        #   end
-        # end
+        if user.picture.file.present?
+          span class: "left", style: "margin-right: 1rem;" do            
+            image_tag(picture_admin_user_path(id: user.id, mounted_as: :picture, filename: user.picture.large.file.filename), class: 'user_picture')
+          end
+        end
         h2 "User: #{user.login}" do
           span '(PubCookies User)', :class => 'light small' if user.is_a? PubcookieUser
           status_tag 'admin', class: 'admin small' if user.admin?
@@ -79,10 +83,11 @@ ActiveAdmin.register User do
 
         div class: 'content-block' do
           "Email: " + user.email
-          span :class => 'light small' do
-            "Created #{user.created_at.to_s(:short_at_time12)} #{' by ' + user.creator.firstname_first rescue nil}"  "#{' | Last edited ' + user.updated_at.to_s(:short_at_time12)}" + "#{' by ' + user.updater.firstname_first rescue nil}"
+          div :class => 'light small' do
+            span "Created #{user.created_at.to_s(:short_at_time12)} #{' by ' + user.creator.firstname_first rescue nil}"  "#{' | Last edited ' + user.updated_at.to_s(:short_at_time12)}" + "#{' by ' + user.updater.firstname_first rescue nil}"
+            div link_to '← Back to Users', admin_users_path
           end
-          span link_to '← Back to Users', admin_users_path
+          
         end
     end
 
@@ -139,6 +144,13 @@ ActiveAdmin.register User do
       f.inputs "Edit #{user.login}" do
         f.input :email, as: :string
         f.input :admin, label: 'User can access admin aera', as: :boolean
+        if f.object.picture.file.present?
+          f.inputs "Current profile picture" do            
+            div class: 'label' do 
+              image_tag(picture_admin_user_path(id: f.object.id, mounted_as: :picture, filename: f.object.picture.file.filename), style: 'width: 100px;height: auto; object-fit: cover;')
+            end
+          end
+        end
         f.input :picture, as: :file
       end
 
@@ -148,8 +160,7 @@ ActiveAdmin.register User do
             role.input :role_id, as: :select, collection: [["[User]", nil]] + Role.all.map{|r| [r.title, r.id]}, include_blank: "[User]", prompt: "-- Select a Role --"
             role.input :unit_id, as: :select, collection: [["[Global]", nil]] + Unit.all.map{|u| [u.name, u.id]}, prompt: "-- Select a Unit --"
           end
-      end
-      actions
+      end      
       f.actions do
          f.action(:submit)
          f.cancel_link(admin_user_path(user))

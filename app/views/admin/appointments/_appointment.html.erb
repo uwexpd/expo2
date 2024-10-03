@@ -10,7 +10,7 @@
 	<% unless hide.include?(:student) %>
 		<td><%=h appointment.student.fullname rescue "unknown" %></td>
 	<% end -%>
-	<td><%= appointment.checked_in? ? appointment.check_in_time.to_s(:time12) : "<span class=grey>Not checked in</span>" %></td>
+	<td><%= appointment.checked_in? ? appointment.check_in_time.to_s(:time12) : "<span class=light>Not checked in</span>".html_safe %></td>
 	<td><%= link_to "Show", admin_appointment_path(appointment) %></td>
 	<td><%= link_to "Edit", edit_admin_appointment_path(appointment) %></td>
 	<td><%#= link_to_remote "Destroy", 

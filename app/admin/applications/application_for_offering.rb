@@ -56,6 +56,9 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
          end
       end
 
+      session[:return_to_after_email_queue] = request.referer
+      redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
+
       respond_to do |format|
         format.html { redirect_to :action => 'show', :id => @app, :anchor => anchor }
         format.js
