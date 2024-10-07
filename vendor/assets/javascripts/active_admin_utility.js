@@ -41,6 +41,18 @@ $(function() {
 
     // Select the reorderable column header (first column) with class 'reorder-handle-col'
     $('.aa-reorderable th.reorder-handle-col').text('Reorder');
+
+    // Display user avatar picture
+    var userAvatarLink = $('#user_avatar a');
+  
+    if (userAvatarLink.length) {       
+       var avatarUrl = userAvatarLink.attr('href');       
+       $('#utility_nav').css({
+         'background': 'url(' + avatarUrl + ') no-repeat center center',
+         'background-size': '40px',
+         'border-radius': '50%'
+       });
+     }
     
 });
 

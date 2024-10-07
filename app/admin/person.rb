@@ -4,7 +4,7 @@ ActiveAdmin.register Person do
   config.sort_order = 'created_at_desc'
   menu parent: 'Groups', priority: 5, label: "<i class='mi padding_right'>portrait</i> People".html_safe
   
-  permit_params :firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip, :fullname
+  permit_params :firstname, :lastname, :email, :salutation, :title, :organization, :phone, :box_no, :address1, :address2, :address3, :city, :state, :zip, :fullname, users_attributes: [:id, :picture]
 
   controller do  
     def note_params
@@ -40,6 +40,9 @@ ActiveAdmin.register Person do
          tab 'Person Info' do
             attributes_table title: 'Person Info', id: 'person' do
               row ('Expo Person ID') {|person| person.id }
+              if person.users.first.picture.present?
+                row ('Profile Picture') {|person| image_tag(picture_admin_user_path(id: person.users.first.id, mounted_as: :picture, filename: person.users.first.picture.large.file.filename), style: 'width: 40px; height: 40px; border-radius: 50%; object-fit: cover;')  }
+              end
               row ('Name') {|person| person.fullname }
               row :email
               row :title
@@ -173,6 +176,16 @@ ActiveAdmin.register Person do
        f.input :state
        f.input :zip
      end
+     f.inputs do
+      f.has_many :users, new_record: false do |user|
+        if user.object.picture.file.present?
+          user.input :picture, as: :file, hint: image_tag(picture_admin_user_path(id: user.object.id, mounted_as: :picture, filename: user.object.picture.file.filename), style: 'width: 100px;height: auto; object-fit: cover;')          
+        else
+          user.input :picture, as: :file 
+        end
+        
+      end
+    end
      f.actions do
        f.action(:submit)
        f.cancel_link(admin_person_path(person))

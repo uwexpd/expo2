@@ -72,7 +72,7 @@ ActiveAdmin.register User do
   show do
     div class: 'panel panel_contents' do
         if user.picture.file.present?
-          span class: "left", style: "margin-right: 1rem;" do            
+          span class: "left", style: "margin-right: 1rem;" do
             image_tag(picture_admin_user_path(id: user.id, mounted_as: :picture, filename: user.picture.large.file.filename), class: 'user_picture')
           end
         end
