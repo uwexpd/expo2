@@ -214,19 +214,23 @@ ActiveAdmin.setup do |config|
   #
     config.namespace :admin do |admin|
       admin.build_menu :utility_navigation do |menu|
-        #admin.add_current_user_to_menu  menu
+        #admin.add_current_user_to_menu menu
         # menu.add  :label  => "Vicarious Login",
         #           :url    => proc{ admin_user_path(current_active_admin_user) },          
         #           :if     => proc{ current_active_admin_user.has_role?(:vicarious_login) }
         # menu.add :label => "EXPD Website", :url => "http://expd.uw.edu", :html_options => { target: :blank }
-        menu.add  :label => proc {  (vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS " : "Logged in as ") + display_name(current_active_admin_user) },                  
-                  :url    => proc{  admin_person_path(current_active_admin_user.person) },
-                  :id     => 'current_user',
-                  :if     => proc{ current_active_admin_user? }
-        menu.add  :label  => "Log out of vicarious mode",
-                  :url    => proc{ admin_remove_vicarious_login_path },
-                  :if     => proc{ vicariously_logged_in? }
+
+        menu.add  label: proc {  (vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS " : "") + display_name(current_active_admin_user) },
+                  url: proc{  admin_person_path(current_active_admin_user.person) },
+                  id: 'current_user',
+                  if: proc { current_active_admin_user? }                  
+        menu.add  label: "Log out of vicarious mode",
+                  url:   proc{ admin_remove_vicarious_login_path },
+                  if:    proc{ vicariously_logged_in? }        
         admin.add_logout_button_to_menu menu
+        menu.add  label: "user avatar",
+                  url:   proc{ picture_admin_user_path(id: current_active_admin_user.id, mounted_as: :picture, filename: current_active_admin_user.picture.large.file.filename) },
+                  if:    proc{ current_active_admin_user.picture.file.present? }
 
       end
     end

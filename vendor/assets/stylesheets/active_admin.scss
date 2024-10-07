@@ -995,6 +995,14 @@ ul.link-list li a:hover,  ul.link-list li:hover {
     text-align: right;
 }
 
+#utility_nav #current_user {
+	text-align: right;
+}
+
+#utility_nav #user_avatar {
+	display: none;
+}
+
 #admin_vicarious_login .panel{
 	padding: 8px 16px;
 }
@@ -1486,7 +1494,7 @@ tr.details td {
 	color: #d45f53;
 }
 
-.circle_profile {
+.user_avatar {
     width: 40px; 
     height: 40px; 
     border-radius: 50%;
