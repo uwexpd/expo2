@@ -1,0 +1,19 @@
+<table class='borderless'>
+	
+	<tr class="table-header uw_light_bg_gold">
+		<th class="light">ID</th>
+		<th>Object</th>
+		<th>Title</th>
+	</tr>
+
+	<%  @population.objects.each do |object| %>
+	  <tr>
+		<td><small class="light"><%= object.id %></small></td>
+		<td><%= object.class.to_s %></td>
+		<td><%= object.identifier_string rescue object.title rescue object.project_title rescue nil %>
+			<%= "(#{object.subidentifier_string})" if object.respond_to?(:subidentifier_string) %>
+			</td>
+	  </tr>
+	<% end -%>	
+
+</table>

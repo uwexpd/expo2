@@ -1175,7 +1175,8 @@ li#offering_final_decision_weight_ratio_input label{
 }
 
 #active_admin_content {
-	padding: 16px 24px 24px 24px
+	padding: 16px 24px 24px 24px;
+	overflow: auto;
 }
 
 tr.completed td.page_status span.status_tag {
@@ -1506,4 +1507,30 @@ tr.details td {
     width: 112px;
     height: 136px;
 	padding: 0.75rem;
+}
+
+.population_field_codes ul li, .population_field_codes ul, .population_field_codes {
+	list-style-type: none;
+	padding: 0;	
+	font-size: 95%;
+}
+
+.placeholder_text_link span.custom {
+	margin-right: 5px;
+}
+
+#objects_indicator img.loading, .indicator img.loading {
+	width: 1.5rem;
+	vertical-align: middle;
+}
+
+#population_results {
+	table-layout: fixed; 
+	width: 100%;
+}
+
+#population_results th {
+	width: 120px; 
+	min-width: 120px; 
+	white-space: normal;
 }

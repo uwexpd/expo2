@@ -40,7 +40,7 @@ ActiveAdmin.register Person do
          tab 'Person Info' do
             attributes_table title: 'Person Info', id: 'person' do
               row ('Expo Person ID') {|person| person.id }
-              if person.users.first.picture.present?
+              if person.users.first.try(:picture).present?
                 row ('Profile Picture') {|person| image_tag(picture_admin_user_path(id: person.users.first.id, mounted_as: :picture, filename: person.users.first.picture.large.file.filename), style: 'width: 40px; height: 40px; border-radius: 50%; object-fit: cover;')  }
               end
               row ('Name') {|person| person.fullname }

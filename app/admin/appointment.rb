@@ -30,7 +30,7 @@ ActiveAdmin.register Appointment do
       row (:check_in_time) {|appointment| appointment.check_in_time.to_s(:date_pretty) if appointment.check_in_time}
       row :front_desk_notes
       row :notes
-      row (:source) {|appointment| appointment.source.titleize}
+      row (:source) {|appointment| appointment.source.titleize if appointment.source}
     end
   end
 
