@@ -157,7 +157,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
     tabs do
       tab 'Details' do
         f.inputs do
-          f.input :person_id,  input_html: { style: 'width: 25%'}
+          f.input :person_id, hint: 'Please use EXPO Person ID where you can find it from User or People module.', input_html: { style: 'width: 25%'}
           f.input :committee_member_type_id, as: :select, collection: committee.member_types.pluck(:name, :id), include_blank: false
           f.input :department
           f.input :expertise

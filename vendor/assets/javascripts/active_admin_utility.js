@@ -119,3 +119,29 @@ $(document).on("change", ".select_all", function(){
    }
 
 });
+
+$(document).on('click', '#show-details-button', function(event) {
+    event.preventDefault(); // Prevent the default link action
+    
+    const path = $(this).data('path')
+
+    // Show loading indicator
+    $('#objects_indicator').show();
+    $('#objects_placeholder').hide(); // Hide the results container
+    
+    $.ajax({
+      url: path,
+      type: 'GET',
+      success: function(data) {
+        $('#objects_placeholder').html(data); // Inject the fetched HTML
+        $('#objects_placeholder').show(); // Show the results container
+      },
+      error: function(xhr, status, error) {
+        console.error('Error fetching results:', error);
+      },
+      complete: function() {
+        // Hide loading indicator after the request completes
+        $('#objects_indicator').hide();
+      }
+    });
+});

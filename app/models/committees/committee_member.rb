@@ -171,7 +171,7 @@ class CommitteeMember < ApplicationRecord
 
   def login_url
     token.generate rescue create_token
-    committee_member_map_url(:host => Rails.configuration.constants["base_app_url"], committee_member_id: id, token: token.token)
+    committee_member_map_url(:host => Rails.configuration.constants["base_url_host"], committee_member_id: id, token: token.token)
   end
   
   def current_symposium_session

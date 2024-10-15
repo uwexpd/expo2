@@ -27,7 +27,12 @@
 
 		</table>
 
-		<%= f.submit "Update", :disable_with => "Updating contacting information..." %>
+		<%= f.submit "Update", data: { disable_with: "Updating contacting information..." } %>
+		<% if params[:return_to].present? %>
+		    <%= link_to 'Cancel', params[:return_to], class: 'button cancel' %>
+		<% else %>
+		    <%= link_to 'Cancel', 'javascript:history.back()', class: 'button cancel' %>
+		<% end %>
 
 	<% end %>
 
