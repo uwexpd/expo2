@@ -5,9 +5,9 @@ class PopulationGroup < ApplicationRecord
   
   validates_presence_of :title
 
-  named_scope :everyone, :conditions => "access_level = 'everyone' OR access_level IS NULL"
-  named_scope :creator, lambda { |user| { :conditions => { :creator_id => user.id, :access_level => 'creator' } } }
-  named_scope :unit, lambda { |user| { :conditions => "creator_id IN (#{(user.units.collect(&:users).flatten.collect(&:id)+[0]).flatten.join(',') rescue nil}) AND access_level = 'unit'" } }
+  scope :everyone, :conditions => "access_level = 'everyone' OR access_level IS NULL"
+  scope :creator, lambda { |user| { :conditions => { :creator_id => user.id, :access_level => 'creator' } } }
+  scope :unit, lambda { |user| { :conditions => "creator_id IN (#{(user.units.collect(&:users).flatten.collect(&:id)+[0]).flatten.join(',') rescue nil}) AND access_level = 'unit'" } }
 
   default_scope :order => 'title'
 
