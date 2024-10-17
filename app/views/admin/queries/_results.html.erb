@@ -1,6 +1,6 @@
-<table id= "population_results">
+<table id= 'population_results'>
 	
-	<tr class="table-header uw_light_bg_gold">
+	<tr class='table-header uw_light_bg_gold'>
 		<% 
 		population.output_fields.each do |field|
 			if field.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/)
@@ -9,7 +9,7 @@
 				field_title = field.titleize rescue field
 			end
 		 	%>
-			<th><div class="sort-icon"><%= field_title %></div></th>
+			<th><div class='sort-icon'><%= field_title %></div></th>
 		<% end -%>
 	</tr>
 	

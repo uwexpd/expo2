@@ -5,11 +5,14 @@ class PopulationGroup < ApplicationRecord
   
   validates_presence_of :title
 
-  # scope :everyone, :conditions => "access_level = 'everyone' OR access_level IS NULL"
-  # scope :creator, lambda { |user| { :conditions => { :creator_id => user.id, :access_level => 'creator' } } }
-  # scope :unit, lambda { |user| { :conditions => "creator_id IN (#{(user.units.collect(&:users).flatten.collect(&:id)+[0]).flatten.join(',') rescue nil}) AND access_level = 'unit'" } }
-
-  # default_scope :order => 'title'
+  scope :everyone, -> { where("access_level = 'everyone' OR access_level IS NULL") }
+  scope :creator, ->(user) { where(creator_id: user.id, access_level: 'creator') }
+  scope :unit, ->(user) {
+    unit_user_ids = user.units.flat_map(&:users).pluck(:id) + [0]
+    where(creator_id: unit_user_ids).where(access_level: 'unit')
+  }
+  
+  # default_scope { order('title') }
 
   # Returns an array of Population objects. If any of the group members are a PopulationGroup, then this method
   # will call the #members method on that group and include all of the child populations.

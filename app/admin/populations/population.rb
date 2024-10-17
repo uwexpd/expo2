@@ -25,22 +25,37 @@ ActiveAdmin.register Population, as: 'queries' do
     end
   end
 
-  member_action :objects, method: :get do      
+  member_action :objects, method: :get do
     respond_to do |format|
       format.html
-      format.js { 
+      format.js {
         if @population.output_fields.blank?
           render :partial => "objects"
         else
-          redirect_to results_populations_path(@population)
+          redirect_to results_admin_query_path(@population)
         end
       }
     end
   end
 
   member_action :results, method: :get do        
-    # Render the partial with the required local variables
-    render partial: 'admin/populations/results', locals: { population: @population }
+    # render partial: 'results', locals: { population: @population }    
+    respond_to do |format|
+      format.html do
+        render partial: 'results', locals: { population: @population }
+      end 
+      format.js 
+      # {
+        # html_content = render_partial('results', population: @population )
+        # console.log(html_content)
+        # html_content = render_to_string(partial: 'results', locals: { population: @population })
+        # Respond with JavaScript that updates the DOM
+
+        # render js: "$('#data_table').html('#{j html_content}');"
+      #   render js: "$('#data_table').html('<%= j render 'results', {population: @population} %>');"
+      # }
+    end
+    
   end
 
   index do
@@ -144,7 +159,7 @@ ActiveAdmin.register Population, as: 'queries' do
         div class: 'big-border box gray', style: 'display: grid' do
           h4 do
             span "<i class='mi'>view_list</i> #{ pluralize queries.objects.size, 'record' }".html_safe
-            span "<i class='mi'>fullscreen</i> Open in the new window".html_safe, class: 'right'
+            span link_to "<i class='mi'>fullscreen</i> Open in the new window".html_safe, objects_admin_query_path(queries),class: 'right'
           end
           
           div id: 'objects_placeholder', style: 'overflow:auto; display: none'          
