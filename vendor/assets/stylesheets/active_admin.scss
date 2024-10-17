@@ -1518,9 +1518,21 @@ tr.details td {
 	margin-right: 5px;
 }
 
-#objects_indicator img.loading, .indicator img.loading {
+#objects_indicator img.loading {
 	width: 1.5rem;
 	vertical-align: middle;
+}
+
+#bar_indicator {
+    display: flex;
+  	justify-content: center;  /* Horizontally centers the div */
+  	align-items: center;      /* Vertically centers the div */
+  	padding: 1rem;
+}
+
+#bar_indicator img.loading {
+  	margin-left: -0.5rem;
+  	margin-top: 0.5rem
 }
 
 #population_results {

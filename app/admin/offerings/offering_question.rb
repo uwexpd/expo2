@@ -18,15 +18,11 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
   	 ]
   end
 
-  member_action :reorder, method: :post do  		
-	    offering_question = OfferingQuestion.find(params[:id])
-	    offering_question.insert_at(params[:position].to_i)
-	    head :ok
-  end
-
 	controller do
 		nested_belongs_to :offering, :page
 		before_action :fetch_page, except: [:reorder]
+
+		undef_method :reorder #Undefine the reorderablegem's reorder method to avoid method redefinition warning
 
 		def destroy
 			@question = @page.questions.find(params[:id])
@@ -45,6 +41,12 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 			@page = @offering.pages.find params[:page_id]
 		end
 	end
+
+	member_action :reorder, method: :post do
+	    offering_question = OfferingQuestion.find(params[:id])
+	    offering_question.insert_at(params[:position].to_i)
+	    head :ok
+  end
 
 	index as: :reorderable_table do
 		column ('#') {|question| question.ordering }

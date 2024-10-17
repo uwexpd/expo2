@@ -17,15 +17,11 @@ ActiveAdmin.register OfferingAdminPhaseTask, as: 'tasks' do
   	 ]
   end
 
-  member_action :reorder, method: :post do
-	    task = OfferingAdminPhaseTask.find(params[:id])
-	    task.insert_at(params[:position].to_i)
-	    head :ok
-  end
-
 	controller do
-    	nested_belongs_to :offering, :phase
-    	before_action :fetch_phase, except: [:reorder]
+    nested_belongs_to :offering, :phase
+    before_action :fetch_phase, except: [:reorder]
+
+    undef_method :reorder #Undefine the reorderablegem's reorder method to avoid method redefinition warning
 
 		def destroy
 			@task = @phase.tasks.find(params[:id])
@@ -43,15 +39,21 @@ ActiveAdmin.register OfferingAdminPhaseTask, as: 'tasks' do
 			@offering = Offering.find params[:offering_id]
 			@phase = @offering.phases.find params[:phase_id]			
 		end
-  	end
+  end
 
-  	sidebar "Phase Tasks", only: [:index] do
-		render "admin/offerings/phases/phases", { offering: offering, offering_phase: phase }
-  	end
-  	sidebar "Tasks", only: [:show, :edit] do
-		render "admin/offerings/phases/tasks/tasks", { phase: phase, phase_task: tasks }
-  	end
-	
+	sidebar "Phase Tasks", only: [:index] do
+	render "admin/offerings/phases/phases", { offering: offering, offering_phase: phase }
+	end
+	sidebar "Tasks", only: [:show, :edit] do
+	render "admin/offerings/phases/tasks/tasks", { phase: phase, phase_task: tasks }
+	end
+
+	member_action :reorder, method: :post do
+	    task = OfferingAdminPhaseTask.find(params[:id])
+	    task.insert_at(params[:position].to_i)
+	    head :ok
+  end
+
 	index as: :reorderable_table do
 	  tasks = phase.tasks
 	  column ('#') {|task| (tasks.index(task))+1 } 

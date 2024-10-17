@@ -1,0 +1,38 @@
+<div class='panel'>	
+  <div class='panel_contents'>
+		<div class='content-block objects'>
+		  <h1><i class='mi uw_purple'>list</i> <%= @population.title %>
+		  	<span class="right">
+					<%= link_to "<i class='mi small'>arrow_back</i> Back".html_safe, admin_query_path(@population), :class => "button smaller flat" %>
+					<%#= link_to "Output Fields", output_population_path(@population), :class => "button icon-left list" %>
+					<%#= link_to "Excel Download", admin_query_path(@population, :format => :xls), :class => "button icon-left xls" %>
+				</span>
+		  </h1>
+		  <div id="bar_indicator">
+		  	<h1 class="light">Loading results...<br>
+		  	  <%= image_tag('bar-loader.gif', class: 'loading') %></h1>		  	
+		  </div>
+
+	  	<div id="data_table" style="overflow:auto"></div>
+
+		</div>
+  </div>	
+</div>
+
+<%#= javascript_tag do %>
+<script>
+  $(document).ready(function() {
+    $.ajax({
+      url: '<%= objects_admin_query_path(@population) %>',
+      method: 'GET',      
+      dataType: 'script',
+      success: function(response) {        
+        $('#bar_indicator').hide();
+      },
+      error: function() {
+        console.log('Error loading data.');
+      }
+    });
+  });
+</script>
+<%# end %>
