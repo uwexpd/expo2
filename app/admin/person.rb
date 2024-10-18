@@ -185,10 +185,14 @@ ActiveAdmin.register Person do
         end
         
       end
-    end
+     end
      f.actions do
        f.action(:submit)
-       f.cancel_link(admin_person_path(person))
+       if resource.persisted?
+         f.cancel_link(admin_person_path(resource))
+       else
+         f.cancel_link(admin_people_path)
+       end
      end
    end
    
