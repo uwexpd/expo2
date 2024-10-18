@@ -4,7 +4,7 @@ ActiveAdmin.register Quarter do
   actions :all, :except => [:destroy]
   menu parent: 'Tools'  
 
-  permit_params :year, :first_day, :quarter_code  
+  permit_params :year, :first_day, :quarter_code_id
 
   controller do
     def apply_sorting(chain)
@@ -36,7 +36,7 @@ ActiveAdmin.register Quarter do
     inputs do
       input :year 
       input :first_day
-      input :quarter_code      
+      input :quarter_code
     end
     actions
   end
