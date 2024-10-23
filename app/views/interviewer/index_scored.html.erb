@@ -31,7 +31,7 @@
 
 	<tr <%= "class='finalized'" if offering_interview_interviewer.finalized? %>>
 		<td><b><%= raw(app.fullname) rescue "<span class=\"red\">Unknown: Couldn't find any applicants</span>" %></b>
-			<br><font class="light"><%= app.project_title rescue "Unknown" %></font></td>
+			<br><font class="light"><%= app.project_title.try(:html_safe) rescue "Unknown" %></font></td>
 			
 		<% if offering_interview_interviewer.started_scoring? %>		
 

@@ -76,18 +76,6 @@ class CommitteeMemberController < ApplicationController
     end
   end
 
-  def profile
-    add_breadcrumb "Edit My Profile"
-    if params[:person]
-      @person.attributes = params[:person]
-      @person.require_validations = true
-      if @person.save
-        flash[:notice] = "Successfully saved contact information."
-        redirect_to params[:to] || { :action => 'index' }
-      end
-    end
-  end
-
   # We offer an alternative map method here because Pubcookie authentication seems to have a problem with the query parameter
   # method used in map_to_committee_member below (e.g., +?map=123&t=sdkfjsdf+).
   def map
@@ -125,7 +113,8 @@ class CommitteeMemberController < ApplicationController
       if @committee_member = Token.find_object(committee_member_id, token, false)
           @committee_member.update_attribute(:person_id, @current_user.person_id)
           @committee_member.token.generate
-          redirect_to :action => 'profile', :to => url_for(params[:to] || {:action => 'index'})
+          # redirect_to :action => 'profile', :to => url_for(params[:to] || {:action => 'index'})
+          redirect_to profile_path(:return_to => committee_member_path)
       else
         # flash[:error] = "That login link is no longer valid. Please contact your organization service-learning supervisor."
       end
