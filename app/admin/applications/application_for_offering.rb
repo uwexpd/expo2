@@ -3,9 +3,10 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   includes :person, :offering, :current_application_status
   actions :all, :except => [:new, :destroy]
   batch_action :destroy, false
-  config.sort_order = 'created_at_desc'
   config.per_page = [20, 50, 100]
   menu parent: 'Databases', priority: 10, label: "<i class='mi padding_right'>feed</i> Applications".html_safe
+  # Disable default sorting so that scoped_collection sorting takes effect
+  config.sort_order = ''
 
   scope 'All', :valid, default: true
   scope 'New', :new_status
@@ -15,6 +16,14 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
   controller do
     before_action :fetch_application, :except => [ :new, :create ]
+
+    def scoped_collection
+      if params[:offering_id].present?
+        ApplicationForOffering.where(offering_id: params[:offering_id]).valid.includes(:person).order('people.lastname asc, people.firstname asc')
+      else
+        ApplicationForOffering.order('application_for_offerings.created_at desc')
+      end
+    end
 
     def update
       anchor = params['section'] if params['section']
@@ -131,7 +140,6 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
     end
     redirect_to admin_email_write_path("select[#{group_members.first.class.to_s}]": group_members)
   end
-
 
   index do
     selectable_column unless params[:offering_id].blank?
