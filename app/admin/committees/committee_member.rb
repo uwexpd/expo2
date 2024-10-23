@@ -165,7 +165,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
           f.input :expertise
           f.input :website_url
           f.input :recommender_id, as: :select, collection: CommitteeMember.where(committee_id: committee.id).includes(:person).collect{|m| [m.fullname, m.id]}, include_blank: true, input_html: {class: 'select2'}
-          f.input :inactive, hint: "This member will not be able to join the team in #{Quarter.find_by_date(member.last_user_response_at.to_date).title} but should be contacted in the future."
+          f.input :inactive, hint: "This member will not be able to join the team #{('in ' + Quarter.find_by_date(member.last_user_response_at.to_date).title) if member.last_user_response_at} but should be contacted in the future."
           f.input :permanently_inactive, hint: 'This member has left the UW or is not able to participate in the selection process in the future.'
           f.input :comment, as: :text, input_html: {rows:2}
           f.input :notes, as: :text, input_html: {rows:2}
