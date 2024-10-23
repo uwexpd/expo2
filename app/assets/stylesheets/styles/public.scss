@@ -875,6 +875,10 @@ tr.rowset-header td {
     padding: 7px;
 }
 
+table.transcript tr.rowset-header td {
+	border-bottom: none;
+}
+
 .sideblock.help {
 	font-size: 90%;
 }

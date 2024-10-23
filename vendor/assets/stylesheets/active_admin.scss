@@ -1239,7 +1239,7 @@ tr.rowset-header td.default td {
 
 tr.rowset-header:hover, tr.rowset-header:hover td{
 	background-color: none;
-	box-shadow: none;
+	box-shadow: none;	
 }
 
 ul.icons {
@@ -1406,7 +1406,11 @@ a.placeholder_text_link:hover {
 }
 
 table tr.rowset-header td {
-	border-bottom: 1px solid #aaa;	
+	border-bottom: 1px solid #aaa;
+}
+
+table.transcript tr.rowset-header td {	
+    border-bottom: none;
 }
 
 table tr.table-header th {

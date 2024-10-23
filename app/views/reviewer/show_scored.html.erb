@@ -1,6 +1,5 @@
 <% title "Application Review", "View Student" %>
 <% mark_as_confidential @offering.confidentiality_note %>
-<% virtual_proceeding = @app.offering.virtual_proceeding %>
 
 <div class="card content">
   <div class="row">
@@ -71,10 +70,8 @@
          <% unless @app.files.empty? %>
          	<li class="tab col"><a href="#essay">Essay & File</a></li>
          <% end %>
-         <% unless virtual_proceeding %>
+         <% if @offering.reviewer_past_application_access=="1" %>
          	<li class="tab col"><a href="#transcript">Transcript</a></li>
-         <% end %>                 
-         <% unless virtual_proceeding %>
          	<li class="tab col"><a href="#past_applications">Past Applications</a></li>
          <% end %>
         </ul>
@@ -97,15 +94,16 @@
 					<h5>Mentors</h5>
 					<%= render "admin/applications/mentor_letter" %>
 				</div>
-				<div id="transcript" class="col s12">
-					<h5>Transcript</h5>
-					<%= render "admin/applications/transcript" %>
-				</div>	
-				<div id="past_applications" class="col s12">
-					<h5>Past Applications</h5>
-					<%= render "admin/applications/past_applications", {application: @app} %>
-				</div>
-					
+				<% if @offering.reviewer_past_application_access=="1" %>
+					<div id="transcript" class="col s12">
+						<h5>Transcript</h5>
+						<%= render "admin/applications/transcript" %>
+					</div>
+					<div id="past_applications" class="col s12">
+						<h5>Past Applications</h5>
+						<%= render "admin/applications/past_applications", {application: @app} %>
+					</div>
+				<% end %>
 		  </div>
 	  </div>	
 </div>
