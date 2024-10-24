@@ -84,7 +84,7 @@ class CommitteeMemberController < ApplicationController
     if @committee_member = Token.find_object(committee_partner_id, token, false)
       @committee_member.update_attribute(:person_id, @current_user.person_id)
       @committee_member.token.generate
-      render :action => 'profile'
+      profile_path(:return_to => committee_member_path)
     else
       redirect_to params[:to] || { :action => "index" }
     end
