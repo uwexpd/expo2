@@ -6,7 +6,10 @@
   	<div class="col s12">
 			  <h4><%= @app.person.fullname %>
 					<span class="caption smaller"><%= @app.person.student_no %></span><br>
-					<span class="smaller"><%= @app.project_title.try(:html_safe) %></span>
+					<span class="smaller"><%= @app.project_title.try(:html_safe) %>
+						 <button id="increase-font" class='btn-small smaller'>A+</button>
+  					 <button id="decrease-font" class='btn-small'>A-</button>
+					</span>
 					<span class="right">
 							<%= link_to " <i class='mi md-18'>picture_as_pdf</i> Download Review Packet".html_safe, '#modal_download', class: 'waves-effect waves-light btn-small modal-trigger' %>
 							<div id="modal_download" class='modal'>
@@ -62,18 +65,18 @@
 
 		  
         <ul class="tabs">
-         <li class="tab col"><a href="#student_info">Student Info</a></li>
-         <li class="tab col"><a class="active" href="#application_review">Application Details</a></li>
-         <% if @offering.uses_mentors? %> 
-         	<li class="tab col"><a href="#mentor_letter">Mentors</a></li>
-         <% end %>
-         <% unless @app.files.empty? %>
-         	<li class="tab col"><a href="#essay">Essay & File</a></li>
-         <% end %>
-         <% if @offering.reviewer_past_application_access=="1" %>
-         	<li class="tab col"><a href="#transcript">Transcript</a></li>
-         	<li class="tab col"><a href="#past_applications">Past Applications</a></li>
-         <% end %>
+	         <li class="tab col"><a href="#student_info">Student Info</a></li>
+	         <li class="tab col"><a class="active" href="#application_review">Application Details</a></li>
+	         <% if @offering.uses_mentors? %>
+	         	<li class="tab col"><a href="#mentor_letter">Mentors</a></li>
+	         <% end %>
+	         <% unless @app.files.empty? %>
+	         	<li class="tab col"><a href="#essay">Essay & File</a></li>
+	         <% end %>
+	         <% if @offering.reviewer_past_application_access=="1" %>
+	         	<li class="tab col"><a href="#transcript">Transcript</a></li>
+	         	<li class="tab col"><a href="#past_applications">Past Applications</a></li>
+	         <% end %>
         </ul>
     
 				<div id="student_info" class="col s12">
@@ -90,10 +93,12 @@
 						<%= render "admin/applications/essay" %>
 					</div>
 				<% end %>
-				<div id="mentor_letter" class="col s12">
-					<h5>Mentors</h5>
-					<%= render "admin/applications/mentor_letter" %>
-				</div>
+				<% if @offering.uses_mentors? %>
+					<div id="mentor_letter" class="col s12">
+						<h5>Mentors</h5>
+						<%= render "admin/applications/mentor_letter" %>
+					</div>
+				<% end %>
 				<% if @offering.reviewer_past_application_access=="1" %>
 					<div id="transcript" class="col s12">
 						<h5>Transcript</h5>

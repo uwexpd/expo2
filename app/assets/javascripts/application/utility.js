@@ -135,6 +135,21 @@ $(document).on('turbolinks:load', function() {
     
   });
 
+  // Adjust font size for reviewer interface [TODO] maybe expand to application wide
+  $(document).ready(function() {    
+    
+    $('#increase-font').click(function() {
+      var currentSize = parseInt($('#application_review').css('font-size'));
+      $('#application_review').css('font-size', (currentSize + 2) + 'px');
+    });
+
+    $('#decrease-font').click(function() {
+      var currentSize = parseInt($('#application_review').css('font-size'));
+      $('#application_review').css('font-size', (currentSize - 2) + 'px');
+    });
+  });
+
+
 }); // end of turbolinks:load
 
 // for community_engaged toogle filled positions
