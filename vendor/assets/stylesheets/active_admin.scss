@@ -228,8 +228,40 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 /*		margin-bottom: 25px;	*/
 }
 
+#header {
+	height: 49px;	
+}
+
 #header h1.site_title {
-	padding: 0 0 0 16px;
+	// padding: 0 0 0 16px;
+	background: url(image-path('uw-sprite.svg')) no-repeat 0 0 transparent;
+	width: 130px;
+    height: 90px;
+    transform: scale(0.5);
+    transform-origin: top left;
+    position: fixed;
+	top: 4px;
+	left: 21px;	
+}
+
+#site_title a {
+	font-size: 4.5rem;
+    padding-left: 124px;
+	color: white;
+	position: relative;
+	top: 16px;
+	letter-spacing: -4px;
+	font-family: "Open Sans", sans-serif;
+	font-weight: 600;
+}
+
+#header h1.site_title a:hover{
+	color: #b7a57a;
+	text-decoration: none;
+}
+
+#tabs {
+	padding-left: 10.5rem;
 }
 
 #page_title {
@@ -261,10 +293,26 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 /* login page style */
 .login_header {
 	width: 60%;
-    margin: -52px auto 32px;
-	background: url(image-path('expo-logo-light.png')) no-repeat;
-    height: 67px;
-	min-width: 601px;
+    margin: -52px auto 32px;	
+    height: 30px;
+	min-width: 601px;	
+    font-size: 54px;
+    line-height: 0px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+    letter-spacing: -2px;
+}
+
+.login_header a {
+	color: #4b2e83;	
+	text-shadow: 
+    0 1px 1px rgba(255, 255, 255, 0.8),  /* Soft top light shadow */
+    0 -1px 1px rgba(0, 0, 0, 0.1);       /* Soft bottom shadow for depth */
+}
+
+.login_header a:hover {
+	text-decoration: none;
+	color: #b7a57a;
 }
 
 #login, .session {
@@ -353,9 +401,9 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 	// opacity:0.9;
 }
 
-// body.logged_out {
-// 	background-color: #4b2e83;
-// }
+body.logged_out {	
+	background-color: #eeeeee;
+}
 
 body.logged_out h2 {
 	font-size: 1.5em;
@@ -714,7 +762,7 @@ ul.sherlock-buttons{
 	display: block;
 	line-height: 16px;
 	text-align: center;
-	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* @group Sidebar */
@@ -1015,12 +1063,11 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 	position: fixed;
 	float: right;
 	top: 1rem;
-	right: 1rem;
-	color: whitesmoke;	
+	right: 1rem;	
 }
 
 #account-nav a{
-	color: white;
+	color: #4b2e83;
 }
 
 #account-nav a:hover{
