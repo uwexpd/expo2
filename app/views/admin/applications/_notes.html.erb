@@ -1,7 +1,7 @@
 <hr class="header"><div class='content-block notes'>
 <p class='smaller'>Use this space to track special information about this application. <strong>This note is shared with reviewers and interviewers</strong>.</p>
 
-<%= form_for @app, :url => { :action => 'update', :id => @app.id, section: 'notes' } do |f| %>
+<%= form_for @app, as: :application, :url => { :action => 'update', :id => @app.id, section: 'notes' } do |f| %>
 	<%= f.text_area :special_notes, :rows => 4, :style => 'width:98%' %>
 	<%= f.submit "Save Note", class: 'small' %>
 <% end %>
@@ -20,7 +20,7 @@
 </div>
 <br>
 	<div id="feedback_meeting_form" <%= "style=display:none" if !@app.feedback_meeting_date %>>
-	<%= form_for @app, :url => { :action => 'update', :id => @app.id, section: 'notes' } do |f| %>
+	<%= form_for @app, as: :application, :url => { :action => 'update', :id => @app.id, section: 'notes' } do |f| %>
 		Date: <%= f.date_select :feedback_meeting_date %>
 		<br>
 		Person: <%= @app.feedback_meeting_person.fullname rescue @current_user.fullname %>

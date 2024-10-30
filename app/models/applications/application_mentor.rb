@@ -83,7 +83,7 @@ class ApplicationMentor < ApplicationRecord
 
   # 
   def login_link    
-    mentor_offering_map_url(:host => Rails.configuration.constants["base_app_url"], :offering_id => offering.id, :mentor_id => id, :token => token)
+    mentor_offering_map_url(:host => Rails.configuration.constants["base_url_host"], :offering_id => offering.id, :mentor_id => id, :token => token)
   end
   #   
   def letter_received?

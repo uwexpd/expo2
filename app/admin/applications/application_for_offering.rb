@@ -12,7 +12,10 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   scope 'New', :new_status
   scope 'In Progress', :in_progress
   scope 'Submitted', :submitted
-  scope 'Awarded', :awarded
+  scope :complete do |applications|
+    applications.joins(current_application_status: :application_status_type).where(application_status_types: { name: 'complete' })
+  end
+  scope 'Awarded', :awarded, if: -> { params[:offering_id] && ApplicationForOffering.where(offering_id: params[:offering_id]).awarded.count > 0 }
 
   controller do
     before_action :fetch_application, :except => [ :new, :create ]
