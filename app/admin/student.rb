@@ -40,8 +40,8 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
     end
     column ('Email') {|student| highlight student.email, params.dig(:q, :email_contains) }
     column ('Student No.') {|student| highlight student.student_no, params.dig(:q, :student_number_eq) }
-    column ('Class') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true)}
-    column ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) }
+    column ('Class') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) rescue nil}
+    column ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) rescue nil}
     column ('Created At') {|student| "#{time_ago_in_words student.created_at} ago"}
   end
 
@@ -51,6 +51,7 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
     div :class => 'tabsview' do
       tabs do
          tab 'Student Info' do
+           if @student.sdb
             attributes_table title: 'Student Information' do
               row ('Class Standing') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) }
               row ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) }
@@ -85,6 +86,11 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
                 row ('Mixed Races') {|student| student.sdb.mixed_races rescue "Error!" }
               end
             end
+           else
+             panel "" do
+               div "No Student Database Inforamtion can be found.", class: "empty"
+             end
+           end
          end
          
          tab "Applications (#{student.application_for_offerings.size})", id: 'online_applications' do
@@ -115,7 +121,7 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
                 # column (''){|placement| placement.evaluation_submitted? ? "Evaluation" : "Submit Evaluation"}
               end              
               attributes_table title: 'Acknowledgement of Risk' do
-                row ('Date of Birth'){|student| student.sdb.birth_date.to_s(:long)}
+                row ('Date of Birth'){|student| student.sdb.birth_date.to_s(:long) if student.sdb}
                 row ('Electronic AOR') do |student| 
                   span student.service_learning_risk_date.to_date.to_s(:long) rescue "<span class=light>None on file</span>".html_safe
                   span "(#{student.service_learning_risk_signature})" rescue "error"
@@ -166,11 +172,13 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
               render "admin/students/tabs/appointments"
             end
          end
-         tab "Transcript", id: 'transcript' do
-            panel "Transcript" do
-              render partial: "admin/students/transcript", object: student # [TODO] Tune this page, cost 3 sec
+         if @student.sdb
+           tab "Transcript", id: 'transcript' do
+              panel "Transcript" do
+                render partial: "admin/students/transcript", object: student # [TODO] Tune this page, cost 3 sec
+             end
            end
-         end
+          end
       end
     end    
   end

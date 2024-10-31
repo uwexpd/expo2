@@ -1,4 +1,4 @@
-<div class="login_header"></div>
+<div class="login_header"><a href='/expo/'>expo</a></div>
 
 <%= render 'account_nav' %>
 
@@ -6,7 +6,7 @@
 	<h2><i class="material-icons md-32 uw_purple">lock</i> Forgot Your Username/Password</h2>
 	<p class='highlight_box'><i class="material-icons uw_purple">info_outline</i> If you've forgotten your password, we can send a link to your e-mail address so that you can reset it.</p>	
 	
-	<form class="box">
+	<form class="box uw_light_bg_gold">
 		<strong>Please enter your username:</strong>
 		<div><%= text_field_tag 'username', params[:login], size: 30 %>		
 		<%= submit_tag "Reset my password" %></div>
@@ -16,7 +16,7 @@
 
 	<p class='highlight_box'><i class="material-icons uw_purple">info_outline</i> If you can't remember your username, please enter your email below.</p>
 	
-	<form class="box">
+	<form class="box uw_light_bg_gold">
 		<strong>Please enter your email:</strong>
 		<div><%= text_field_tag 'email', params[:email], size: 30 %>		
 		<%= submit_tag "Find your username" %></div>
