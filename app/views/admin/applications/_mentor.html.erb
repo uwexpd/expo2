@@ -15,13 +15,14 @@
 	</td>
 	
 	<td>
-		<%= raw([mentor.person.title + "<span class='light smaller'> (" + (mentor.mentor_type.try(:title) rescue 'No mentor type') + ")</span>", 
+		<%= raw([mentor.person.title,			 
 			 mentor.person.department_name, 
 			 mentor.person.organization].compact.delete_if{|x| x.blank?}.join('<br>')+'<br>') if mentor.person %>
 			
 		<%= raw([
 				("<span class=light>Title:</span> #{mentor.title}" if @offering.ask_for_mentor_title),
-			 	("<span class=light>Relationship:</span> #{mentor.relationship}" if @offering.ask_for_mentor_relationship)
+			 	("<span class=light>Relationship:</span> #{mentor.relationship}" if @offering.ask_for_mentor_relationship),
+			 	("<span class=light>Mentor Type:</span> #{mentor.mentor_type.try(:title)}" if mentor.mentor_type)
 			].compact.join("<br>")) %>
 	</td>
 
