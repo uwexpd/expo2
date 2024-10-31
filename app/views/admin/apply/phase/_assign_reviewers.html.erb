@@ -4,12 +4,13 @@
 @apps = []
 @task.application_status_types_array.each{|t| @apps << @offering.applications_with_status(t.name)}
 @apps = @apps.flatten.uniq
-@reviewers = @offering.reviewers.sort_by(&:lastname_first).in_groups_of(4)
+@reviewers = @offering.reviewers.sort_by(&:lastname_first).in_groups_of(4) rescue false
 %>
 <br>
 <div id="assign_reviewers_<%= @task.id %>_functions" class='highlight_box'>
 	<p>Select application(s) and check one or multiple reviewers to mass assign by clicking on the submit button below. This will update the selected applications to status: Reviewers Assigned</p>
 	<strong>Assign reviewers:</strong>	
+	<% if @reviewers %>
 		<table class="highlightless borderless">
 			<% @reviewers.each do |group| %>
 			  <tr>
@@ -22,6 +23,7 @@
 			  </tr>
 			<% end %>
 		</table>
+	<% end %>
 </div>
 <br>
 <%= render :partial => "admin/apply/phase/applicant_list", :locals => { :phase_task => @phase_task, :task => @task } %>
