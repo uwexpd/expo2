@@ -15,7 +15,7 @@
 	</td>
 	
 	<td>
-		<%= raw([mentor.person.title + "<span class='light smaller'> (" + (mentor.mentor_type.try(:title) || 'Unknown mentor type') + ")</span>", 
+		<%= raw([mentor.person.title + "<span class='light smaller'> (" + (mentor.mentor_type.try(:title) rescue 'No mentor type') + ")</span>", 
 			 mentor.person.department_name, 
 			 mentor.person.organization].compact.delete_if{|x| x.blank?}.join('<br>')+'<br>') if mentor.person %>
 			
