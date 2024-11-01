@@ -9,7 +9,7 @@ ActiveAdmin.register ResearchArea do
   index do
      id_column
      column :name, sortable: :name do |resource| 
-       editable_text_column resource, "research_area", :name, true
+       editable_text_column resource, "research_area", :name, true, false
      end
      actions
   end   
