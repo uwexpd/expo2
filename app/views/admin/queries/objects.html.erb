@@ -10,7 +10,7 @@
 		  </h1>
 		  <div id="bar_indicator">
 		  	<h1 class="light">Loading results...<br>
-		  	  <%= image_tag('bar-loader.gif', class: 'loading') %></h1>		  	
+		  	  <%= image_tag('bar-loader.gif', class: 'loading') %></h1>
 		  </div>
 
 	  	<div id="data_table" style="overflow:auto"></div>
@@ -24,7 +24,7 @@
   $(document).ready(function() {
     $.ajax({
       url: '<%= objects_admin_query_path(@population) %>',
-      method: 'GET',      
+      method: 'GET',
       dataType: 'script',
       success: function(response) {        
         $('#bar_indicator').hide();

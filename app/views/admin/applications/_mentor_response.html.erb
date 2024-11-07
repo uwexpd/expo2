@@ -27,7 +27,9 @@
 			<br><%= link_to 'Upload a letter', 'javascript:;', data: { link_toggle: "#update_mentor_form_#{mentor.id}"} if admin_view %>
 		<% else %>		
 			<i class="material-icons middle_align uw_purple md-32">picture_as_pdf</i>
-			<%= link_to mentor.public_filename, admin_apply_letter_path(@offering, id: @app.id, mentor: mentor.id) %>
+			<% download_link = admin_view ? admin_apply_letter_path(@offering, id: @app.id, mentor: mentor.id) : reviewer_view_file_path(@offering, id: @app.id, mentor: mentor.id) %>
+
+			<%= link_to mentor.public_filename, download_link %>
 			<span class='light'>
 				(<%= mentor.letter_content_type << ", " if mentor.letter_content_type %>
 				<%= number_to_human_size(mentor.letter_size) %>)				

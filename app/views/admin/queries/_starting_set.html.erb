@@ -1,0 +1,104 @@
+<% 
+	@population ||= population
+	klass = @population.populatable_type.constantize unless @population.populatable_type.blank?
+	logger.debug "DEBUG klass => #{klass}"
+%>
+
+<div class="big-border box" id="starting_set">
+
+	<h4><i class='mi'>view_list</i>Start with this object</h4>
+
+	<dl class="inline-definitions">
+
+		<dt>Type</dt>
+		<dd class='select'><%= select :population,
+						:populatable_type, 
+						Population.preferred_model_names.sort.map{|m| [m.titleize, m]}, 
+						:prompt => true %>
+						
+						<script>
+						  $(document).on('change', '#population_populatable_type', function() {
+						    let populatable_type = $(this).val();
+						    $('#indicator_populatable_type').show();
+
+						    $.ajax({
+						      url: "<%= admin_query_refresh_dropdowns_path(@population) %>",
+						      method: 'POST',						      
+						      data: {  populatable_type: populatable_type },
+						      dataType: 'script',
+						      success: function() {						        
+						        $('#indicator_populatable_type').hide();
+						      }
+						    });
+						  });
+						</script>
+		</dd>
+		
+		<dt>Object</dt>
+		<dd class='select'>
+			<div style="display: inline-flex; width: 100%;">
+				<% if klass == Population %>
+					<select id="population_populatable_id" name="population[populatable_id]" style='width: 100%;' class='select2'>
+						<% if @population.populatable %>
+							<option value="<%= @population.populatable_id %>"><%= @population.populatable.title %></option>
+						<% end %>
+						<% grouped_options = {
+							'My Queries' => @user_populations.collect{|p| 
+								["#{p.title} (#{pluralize(p.read_attribute(:objects_count), "record")})", p.id]},
+							'My Program(s) Queries' => @unit_populations.collect{|p| 
+								["#{p.title} (#{pluralize(p.read_attribute(:objects_count), "record")})", p.id]},
+							'Open to Anyone' => @everyone_populations.collect{|p| 
+								["#{p.title} (#{pluralize(p.read_attribute(:objects_count), "record")})", p.id]}
+							}						
+						 %>
+						<%= grouped_options_for_select grouped_options %>
+					</select>
+
+				
+				<% else %>
+					<% if_select2 = klass.count > 25 ? 'select2' : '' %>
+					<%= collection_select :population,
+										:populatable_id, 
+										(klass.order(id: :desc) rescue []),
+										:id,
+										:title,
+										{prompt: true}, {style: 'width: 100%;', class: if_select2} %>
+				<% end %>
+
+				<span class='left'><%= image_tag('loading.gif', id: "indicator_populatable_type", class: 'indicator loading', style: 'display: none;') %></span>
+			</div>
+		</dd>
+
+		<dt>Starting set</dt>
+		<% associations = klass.reflect_on_all_associations(:has_many).map{|a| a.name.to_s}.sort rescue [] %>
+		<% associations << "objects" if @population.populatable_type == "Population" %>
+		<dd class='select'>
+			<div style="display: inline-flex; width: 100%;">
+				<%= select :population,
+							:starting_set, 
+							([@population.starting_set] << associations).flatten.sort,
+							:prompt => true %>
+				<span class='left'><%= image_tag('loading.gif', id: "indicator_starting_set", class: 'indicator loading', style: 'display: none;') %></span>
+			</div>			
+			
+			<script>
+				  $(document).on('change', '#population_starting_set', function() {
+				    let starting_set = $(this).val();
+				    $('#indicator_starting_set').show();
+
+				    $.ajax({
+				      url: "<%= admin_query_refresh_dropdowns_path(@population) %>",
+				      method: 'POST',						      
+				      data: {  starting_set: starting_set },
+				      dataType: 'script',
+				      success: function() {						        
+				        $('#indicator_starting_set').hide();
+				      }
+				    });
+				  });
+			</script>
+		</dd>
+
+	</dl>
+
+</div>

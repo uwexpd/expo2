@@ -38,6 +38,11 @@ class Committee < ApplicationRecord
   PLACEHOLDER_CODES = %w(name)
 
   after_save :update_member_status_caches!
+
+  # Alias for #name
+  def title
+    name
+  end
   
   # Admin users can customize the prompt that is shown next to the checkbox that a committee member clicks to say whether or not they
   # will participate for a given quarter. If the admins leave this value blank, then we return a default value of "I can participate for".

@@ -8,7 +8,9 @@
 	<% unless app_file.file.file.nil? %>
 	  <div class='filename'>
 			<i class="material-icons middle_align uw_purple md-36">picture_as_pdf</i>
-			<%= link_to app_file.public_filename, admin_apply_file_path(@offering, id: @app.id, file: app_file.id) %>
+			<% download_link = admin_view ? admin_apply_file_path(@offering, id: @app.id, file: app_file.id) : reviewer_view_file_path(@offering, id: @app.id, file: app_file.id) %>
+
+			<%= link_to app_file.public_filename, download_link %>
 			<span class='caption'>(<%= number_to_human_size(app_file.file_size) %>, uploaded <%= relative_timestamp(app_file.updated_at) rescue '(unknown)' %>)
 			</span>
 		</div>

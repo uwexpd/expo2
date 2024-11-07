@@ -101,7 +101,7 @@
 			     let string = $(this).attr('name');
 			     let appId = string.match(/\[(\d+)\]/)[1];
 			     let decisionTypeId = $(this).val();
-			     $('#indicator_<%= @app.id %>').show();   
+			     $('#indicator_<%= @app.id %>').show();
 			     $.ajax({
 			       url: 'scored_selection',
 			       method: 'POST',

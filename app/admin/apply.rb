@@ -90,7 +90,7 @@
         filepath = @app.files.find(params[:file]).file.filepath
       elsif params[:mentor]
         mentor_id = params[:mentor]
-        filepath = letter = @app.mentors.find(mentor_id).letter.filepath
+        filepath = @app.mentors.find(mentor_id).letter.filepath
     end
       send_file(filepath, x_sendfile: true) unless filepath.nil?
     end
