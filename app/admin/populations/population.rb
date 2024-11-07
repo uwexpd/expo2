@@ -1,9 +1,10 @@
 ActiveAdmin.register Population, as: 'queries' do
   batch_action :destroy, false
-  actions :all, except: [:new, :edit]
   menu parent: 'Modules', label: "<i class='mi padding_right'>find_in_page</i> Queries".html_safe, priority: 45
-  config.sort_order = ['title']
+  config.sort_order = 'updated_at_desc'
   config.per_page = [50, 100, 200, 400]
+
+  permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set
 
   scope 'My Queries', default: true do |queries|
     queries.creator(current_user)
@@ -15,7 +16,22 @@ ActiveAdmin.register Population, as: 'queries' do
   scope :all
 
   controller do
-    before_action :fetch_populations, only: [ :objects, :results]
+    before_action :fetch_populations, only: [ :objects, :results, :refresh_dropdowns]
+
+    def edit
+      populate_vars_by_access_level
+    end
+
+    def refresh_dropdowns      
+      @population.update(populatable_type: params[:populatable_type]) if params[:populatable_type]
+      @population.update(starting_set: params[:starting_set]) if params[:starting_set]
+      
+      populate_vars_by_access_level
+      
+      respond_to do |format|
+        format.js
+      end
+    end
 
     protected
 
@@ -23,7 +39,20 @@ ActiveAdmin.register Population, as: 'queries' do
       @population = Population.find(params[:id])
       @objects = @population.objects
     end
+
+    def populate_vars_by_access_level
+      @user_populations = Population.creator(@current_user).user_created # + PopulationGroup.creator(@current_user)
+      @unit_populations = Population.unit(@current_user).user_created # + PopulationGroup.unit(@current_user)
+      @everyone_populations = Population.everyone.user_created # + PopulationGroup.everyone
+    end
+
+    # private
+    
+    # def population_params
+    #   params.require(:population).permit(:title, :description, :access_level, :populatable_type, :populatable_id, :starting_set)
+    # end
   end
+
 
   member_action :objects, method: :get do
     respond_to do |format|
@@ -38,22 +67,12 @@ ActiveAdmin.register Population, as: 'queries' do
     end
   end
 
-  member_action :results, method: :get do        
-    # render partial: 'results', locals: { population: @population }    
+  member_action :results, method: :get do
     respond_to do |format|
       format.html do
         render partial: 'results', locals: { population: @population }
       end 
-      format.js 
-      # {
-        # html_content = render_partial('results', population: @population )
-        # console.log(html_content)
-        # html_content = render_to_string(partial: 'results', locals: { population: @population })
-        # Respond with JavaScript that updates the DOM
-
-        # render js: "$('#data_table').html('#{j html_content}');"
-      #   render js: "$('#data_table').html('<%= j render 'results', {population: @population} %>');"
-      # }
+      format.js
     end
     
   end
@@ -63,7 +82,7 @@ ActiveAdmin.register Population, as: 'queries' do
     column ('Results') {|population| population.read_attribute(:objects_count) }
     column ('Generated') do |population|  
        if population.objects_generated_at
-          span "#{time_ago_in_words population.objects_generated_at} ago", class: "smaller #{ 'red_color' if Time.now - population.objects_generated_at > 1.month}" 
+          span "#{time_ago_in_words population.objects_generated_at} ago", class: "smaller #{ 'red_color' if Time.now - population.objects_generated_at > 1.month}"
        else
           span "Never",class: 'red_color'
        end
@@ -93,7 +112,7 @@ ActiveAdmin.register Population, as: 'queries' do
           span q.populatable_type
           id_str = q.populatable.identifier_string rescue q.populatable.title rescue q.populatable.name rescue nil
           span q.populatable_type == "Population" ? link_to(id_str, population_path(q.populatable)) : id_str
-          span "(#{q.starting_set})"
+          span "(#{q.starting_set})" if q.starting_set
         end
 
         unless queries.conditions.empty?
@@ -118,7 +137,7 @@ ActiveAdmin.register Population, as: 'queries' do
       end
         
       unless queries.is_a?(ManualPopulation)
-        row ('Generated') {|q| span "#{time_ago_in_words(q.objects_generated_at)} ago", class: "#{'red_color' if Time.now - q.objects_generated_at > 1.month}" }      
+        row ('Generated') {|q| span "#{time_ago_in_words(q.objects_generated_at)} ago", class: "#{'red_color' if Time.now - q.objects_generated_at > 1.month}" if q.objects_generated_at }
       end
 
       row ('Result') {|q| pluralize q.objects.size, "record" }
@@ -179,10 +198,30 @@ ActiveAdmin.register Population, as: 'queries' do
 
   end
 
+  form do |f|
+    f.semantic_errors *f.object.errors.keys
+    f.inputs do
+      f.input :title
+      f.input :description, input_html: { :class => "tinymce", :rows => 5 }
+      f.input :access_level, label: 'Share with', as: :select, collection: [["Just Me", "creator"], ["My program(s) staff", "unit"], ["Everyone", "everyone"]], include_blank: false
+
+      unless f.object.new_record? || f.object.is_a?(ManualPopulation)
+        div class: 'panel_contents' do
+          div :class => 'content-block' do
+            render "starting_set", { :population => f.object }
+          end
+        end
+      end
+    end
+    f.actions do
+      f.action :submit, label: f.object.new_record? ? "Create Query" : "Update Query"
+      f.cancel_link
+    end
+  end
+
   sidebar 'Actions', only: :show do
 
   end
-
 
   filter :title
 

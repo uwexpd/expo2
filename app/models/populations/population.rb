@@ -50,7 +50,7 @@ class Population < ApplicationRecord
 
   # Returns all deleted populations.
   def self.deleted
-    self.with_exclusive_scope { find(:all, :conditions => { :deleted => true }, :order => "deleted_at DESC") }
+    self.with_exclusive_scope { where(deleted: true).order("deleted_at DESC") }
   end
 
   def self.find_with_deleted(id)
@@ -118,9 +118,7 @@ class Population < ApplicationRecord
 
   # Instead of returning *all* of the model names in existence (see #model_names), Just return a select list:
   def self.preferred_model_names
-    models = %w(AwardType Committee CommitteeMember Equipment Event 
-                Offering Organization Population PopulationGroup 
-                Quarter Unit Role)
+    models = %w(AwardType Committee Event Offering Organization Population PopulationGroup Quarter Unit Role)
   end
 
   # Saves or creates conditions.

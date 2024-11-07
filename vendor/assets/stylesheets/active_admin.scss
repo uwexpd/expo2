@@ -1571,7 +1571,12 @@ tr.details td {
 	margin-right: 5px;
 }
 
-#objects_indicator img.loading {
+
+.select img.indicator.loading {
+	width: 2.3rem;
+}
+
+#objects_indicator img.loading{
 	width: 1.5rem;
 	vertical-align: middle;
 }

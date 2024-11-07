@@ -62,6 +62,7 @@ Rails.application.routes.draw do
     match 'admin/communicate/email/sample_preview', to: 'admin/email#sample_preview', via: [:get, :post], as: :admin_email_sample_preview
     match 'admin/communicate/email/resample', to: 'admin/email#resample_placeholder_codes', via: [:get, :post], as: :admin_email_resample
     get 'invitees/event/:event_id', to: 'admin/invitees#index', as: 'admin_invitees_event'
+    post 'admin/queries/:id/refresh_dropdowns', to: 'admin/queries#refresh_dropdowns', as: 'admin_query_refresh_dropdowns'
 
     ActiveAdmin.routes(self)    
     namespace :admin do
@@ -197,6 +198,7 @@ Rails.application.routes.draw do
     # Reviewer
     get 'reviewer/:offering', to: 'reviewer#index', as: :reviewer
     get 'reviewer/:offering/show/:id', to: 'reviewer#show'
+    get 'reviewer/:offering/show/:id/view', to: 'reviewer#view', as: :reviewer_view_file
     post 'reviewer/:offering/show/:id/composite_report', to: 'reviewer#composite_report', as: :reviwer_composite_report
     get 'reviewer/:offering/view/:id', to: 'reviewer#view'
     get 'reviewer/:offering/transcript/:id', to: 'reviewer#transcript'

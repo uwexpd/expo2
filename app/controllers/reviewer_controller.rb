@@ -72,29 +72,18 @@ class ReviewerController < ApplicationController
     end
   end
 
-
   def view
-    # if params[:file]
-    #   file_path = File.join(RAILS_ROOT, 'files', @app.files.find(params[:file]).file.original.public_path)
-    #   type = @app.files.find(params[:file]).file.content_type
-    # elsif params[:mentor]
-    #   file_path = File.join(RAILS_ROOT, 'files', @app.mentors.find(params[:mentor]).letter.original.public_path)
-    #   type = @app.mentors.find(params[:mentor]).letter.content_type
-    # end
-    version = params[:version].nil? ? :original : params[:version].to_sym
     if params[:file]
-      file = @app.files.find(params[:file]).file.versions[version]
-      file_path = File.join(RAILS_ROOT, 'files', file.public_path)
-      type = file.content_type
+      file = @app.files.find(params[:file])
+      filepath = file.file.filepath
       filename = file.public_filename
     elsif params[:mentor]
-      file = @app.mentors.find(params[:mentor]).letter.versions[version]
-      file_path = File.join(RAILS_ROOT, 'files', file.public_path)
-      type = file.content_type
-      filename = file.public_filename
+      letter = @app.mentors.find(params[:mentor])
+      filepath = letter.letter.filepath
+      filename = letter.public_filename
     end    
     disposition = params[:disposition] == 'inline' ? 'inline' : 'attachment'
-    send_file file_path, :disposition => disposition, :type => (type || "text"), :filename => filename unless file_path.nil?
+    send_file(filepath, filename: filename ,disposition: disposition, x_sendfile: true) unless filepath.nil?
   end
   
   def criteria
