@@ -7,13 +7,15 @@
 <h5>Welcome, <%= @review_committee_member.person.firstname %>.</h5>
 <p>Here are the students for you to review. Please read and score each application, then click the "Submit my Reviews" button.</p>
 
+
 <table class='reviewer'>
 	<tr class='small'>
-		<th width=30%>Student/Project</th>
+		<th width=30%>Student/Project <%= link_to "<i class='mi'>toggle_on</i> Toggle Decision".html_safe, "javascript:;", data: {link_toggle: '.showable'}, class: "small" %></th>
 		<% for review_criterion in @offering.review_criterions.sort %>
 			<th width=60 class="center"><%= review_criterion.title %></th>
 		<% end -%>
 		<th width=60 class="center">Total</th>
+		<th class='showable' style='display: none'>Decision</th>
 		<th style="width: 10rem">&nbsp;</th>
 	</tr>
 	
@@ -31,6 +33,9 @@
 				</td>
 			<% end -%>
 			<td class="center"><%= application_reviewer.total_score %></td>
+			<td align=left class='showable' style='display: none'>
+				<%= app.application_review_decision_type.title rescue "No decision yet" %>
+			</td>
 			<td align=right>
 				<% link_title = raw(application_reviewer.finalized? ? "See my Review &#x2192;" : "Change my Review &#x2192;") %>
 				<%= link_to link_title, :action => 'show', :id => app %>
@@ -51,7 +56,7 @@
 	<% end -%>	
 
 	<tr class="rowset-header">
-		<td colspan=<%= @offering.review_criterions.size + 3 %>></td>
+		<td colspan=<%= @offering.review_criterions.size + 4 %>></td>
 	</tr>
 	
 	<tr class="highlightless">

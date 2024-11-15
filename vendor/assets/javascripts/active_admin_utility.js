@@ -77,6 +77,16 @@ $(document).on("click", "a[data-link-toggle]", function(){
    }
 });
 
+$(document).on("click", "a[data-link-toggles]", function(){ 
+   let obj = $(this).attr('data-link-toggles');
+    if (obj) {
+        let selectors = obj.split(" ");
+        selectors.forEach(selector => {
+            $(selector).toggle(400);
+        });
+    }
+});
+
 $(document).on("click", "a[data-link-show]", function(){
    let obj=$(this).attr('data-link-show');
    if (Object.keys(obj).length > 0){

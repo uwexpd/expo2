@@ -49,3 +49,6 @@ storage/
 
 # Ingore outputs folder
 /outputs
+
+# temp
+/app/models/givepulse/

@@ -99,7 +99,7 @@
 		<% if @offering.reviewer_past_application_access=="1" %>
 			<div id="transcript" class="col s12">
 				<h5>Transcript</h5>
-				<%= render "admin/applications/transcript" %>
+				<%= render "admin/applications/transcript", {audience: :reviewer} %>
 			</div>
 			<div id="past_applications" class="col s12">
 				<h5>Past Applications</h5>

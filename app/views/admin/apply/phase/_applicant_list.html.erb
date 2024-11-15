@@ -27,14 +27,15 @@
 		<%= paginate apps %>
 
 		<div class='pagination_information'>
-		  Displaying <%= apps.offset_value + 1 %> - <%= apps.offset_value + apps.limit_value %> applicants of <%= total_count %> in total (<%= t.name.titleize %>)
-		</div>
+		  Displaying <%= apps.offset_value + 1 %> - <%= apps.offset_value + apps.limit_value %> applicants of <%= total_count %> in total (<%= t.name.titleize %>)		  
+		</div>		
+		<%= link_to "<i class='mi'>toggle_on</i> Toggle Student Name/Number".html_safe, "#", data: {link_toggles: '.hidable .showable'}, class: "small right flat", style: 'margin-top: 0.75rem' %>
 	</div>
 
 	<table class="borderless sortable phase_task" id="sortable-table-0">
 
 		<tr class="table-header">
-			<th><%= select_all_check_box @task.id %> Student</th>
+			<th width='225px'><%= select_all_check_box @task.id %> Student</th>
 			<th>Project</th>
 			<% @task.extra_fields.each do |t| %>
 				<th class='th_break'><%= t.title %></th>
@@ -53,7 +54,9 @@
 
 					<tr <%= "class=not_current" if !@task.application_status_types_array.collect(&:name).include?(a.current_status_name) %>>
 						<td><%= select_check_box(a, a.current_status_name) %>
-							<%= a.person.fullname %></td>
+							<span class='hidable'><%= a.person.fullname %></span>
+							<span class='showable' style='display:none'><%= a.person.student_no%> (App ID:<%= a.id %>)</span>
+						</td>
 						<td><%= link_to raw(a.project_title || "View Application"), admin_offering_application_path(@offering, a.id), target: '_blank' %></td>
 
 						<% @task.extra_fields.each do |t| %>

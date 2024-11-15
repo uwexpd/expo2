@@ -93,19 +93,19 @@ $(document).on('turbolinks:load', function() {
         $(this).next().next().html('');        
       }
     });
-      
+
   }
   
   $(".select2").select2({
       width: 'resolve'
     });
 
-  $(".select2.minimum_input").select2({    
+  $(".select2.minimum_input").select2({
       placeholder: 'Start entering characters',
       minimumInputLength: 2    
     });
 
-  $(document).on("click", "a[data-link-toggle]", function(){ 
+  $(document).on("click", "a[data-link-toggle]", function(){
     var obj=$(this).attr('data-link-toggle');
     if (Object.keys(obj).length > 0){
         $(obj).toggle(400);

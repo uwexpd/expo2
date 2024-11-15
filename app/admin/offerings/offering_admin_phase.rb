@@ -43,7 +43,7 @@ ActiveAdmin.register OfferingAdminPhase, as: 'phases' do
 				span link_to '<span class="material-icons">delete</span>'.html_safe, admin_offering_phase_task_path(offering, phases, task), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon'
 	            }
 			end			
-			div link_to '<span class="material-icons md-20">add</span>Aad New Task'.html_safe, new_admin_offering_phase_task_path(offering, phases), class: 'button add'
+			div link_to '<span class="material-icons md-20">add</span>Add New Task'.html_safe, new_admin_offering_phase_task_path(offering, phases), class: 'button add'
 		end
 	  end	  
   	end
