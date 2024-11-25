@@ -1,7 +1,7 @@
 <tr>
 	<td width="12%"><%= transcript_course.dept_abbrev %></td>
 	<td width='9%'><%= transcript_course.course_number %></td>
-	<td><%= transcript_course.course.course_title rescue "<em class='light'>Unknown course title</em>" %></td>
+	<td><%= transcript_course.course.course_title rescue "<em class='light'>Unknown course title</em>".html_safe %></td>
 	<td width="8%"><%= transcript_course.course_credits %></td>
 	<td width="8%"><%= transcript_course.grade_formatted %></td>
 </tr>

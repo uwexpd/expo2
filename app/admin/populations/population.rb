@@ -211,6 +211,11 @@ ActiveAdmin.register Population, as: 'queries' do
             render "starting_set", { :population => f.object }
           end
         end
+        div class: 'panel_contents' do
+          div :class => 'content-block' do
+            render "conditions", { :population => f.object }
+          end
+        end
       end
     end
     f.actions do
@@ -219,7 +224,7 @@ ActiveAdmin.register Population, as: 'queries' do
     end
   end
 
-  sidebar 'Actions', only: :show do
+  sidebar 'Actions', only: [:show, :edit] do
 
   end
 

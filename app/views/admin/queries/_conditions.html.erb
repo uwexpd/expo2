@@ -1,0 +1,23 @@
+<div class="big-border box" id="conditions_container">
+
+	<h4 class='select'><i class='mi'>view_list</i>
+		That match
+		<%= select :population, :condition_operator, [:any, :all] %>
+		of the following conditions:
+	</h4>
+
+	<table id="conditions">
+		<%#= render :partial => "admin/queries/conditions/condition", 
+					:collection => @population.conditions,
+					:locals => { :f => f } %>
+
+	</table>
+
+	<%#= link_to_remote "Add another condition",
+	 					{:url => population_conditions_path(@population, "condition[skip_validations]" => true),
+	 					:method => :post,
+						:indicator => "new_condition"},
+						:class => "add button" %>
+	<%#= indicator "new_condition" %>
+
+</div>

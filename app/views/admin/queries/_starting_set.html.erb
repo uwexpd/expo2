@@ -1,7 +1,6 @@
 <% 
 	@population ||= population
 	klass = @population.populatable_type.constantize unless @population.populatable_type.blank?
-	logger.debug "DEBUG klass => #{klass}"
 %>
 
 <div class="big-border box" id="starting_set">
@@ -56,7 +55,7 @@
 
 				
 				<% else %>
-					<% if_select2 = klass.count > 25 ? 'select2' : '' %>
+					<% if_select2 = klass.count > 25 ? 'select2' : '' if klass %>
 					<%= collection_select :population,
 										:populatable_id, 
 										(klass.order(id: :desc) rescue []),
@@ -75,14 +74,14 @@
 		<dd class='select'>
 			<div style="display: inline-flex; width: 100%;">
 				<%= select :population,
-							:starting_set, 
-							([@population.starting_set] << associations).flatten.sort,
+							:starting_set,
+							associations.flatten.sort,
 							:prompt => true %>
 				<span class='left'><%= image_tag('loading.gif', id: "indicator_starting_set", class: 'indicator loading', style: 'display: none;') %></span>
 			</div>			
 			
 			<script>
-				  $(document).on('change', '#population_starting_set', function() {
+				  $(document).on('change', '#population_populatable_type', function() {
 				    let starting_set = $(this).val();
 				    $('#indicator_starting_set').show();
 
@@ -100,5 +99,4 @@
 		</dd>
 
 	</dl>
-
 </div>
