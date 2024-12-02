@@ -71,8 +71,7 @@ class ApplicationForOffering < ApplicationRecord
   
   attr_accessor :new_status_note
   attr_accessor :skip_validations
-  attr_accessor :require_moderator_comments
-  attr_accessor :application_reviewer
+  attr_accessor :require_moderator_comments  
   
   after_create :build_pages, :build_awards, :build_files, :build_mentors
   after_update :save_person, :save_other_awards, :save_awards, :save_files, :save_mentors, :save_group_members
