@@ -29,7 +29,7 @@
 					<span class="light">Not yet reviewed.</font>
 				<% end -%>
 			</span>
-			(<%#= link_to_function "change", "Effect.toggle('change_review_decision', 'blind', {duration: 0.25})" %>)
+			(<%= link_to "change", "#", data: {link_toggle: '#change_review_decision'} %>)
 			</p>
 		
 		<div id="change_review_decision" style="display:none">

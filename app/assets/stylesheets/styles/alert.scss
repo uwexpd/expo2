@@ -1,4 +1,6 @@
-.alert {    
+.alert {
+    position: relative;
+
     @extend .card-panel, .lighten-4, .text-darken-4;
 
     padding: 18px;
@@ -21,9 +23,10 @@
     }
 
     .close {
-        position: absolute;
-        top: 8rem;
-        right: 0.5rem;
-        color: inherit;        
+        position: absolute; 
+        top: 50%; 
+        right: 0.5rem; 
+        transform: translateY(-50%); // Adjust for vertical alignment.
+        color: inherit;
     }
 }

@@ -46,7 +46,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
         if !update_application_status && @app.update(app_params)
           flash[:notice] = "Application changes saved."
-        end        
+        end
       end
       
       if params['resend_group_member']

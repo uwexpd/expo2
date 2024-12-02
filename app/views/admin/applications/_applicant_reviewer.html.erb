@@ -3,15 +3,14 @@
 <tr <%= "class=unavailable" if @offering.uses_scored_review? && !applicant_reviewer.finalized? %>>
 	<td>
 		<% if perspective == 'reviewer' %>
-			<%= link_to applicant_reviewer.application_for_offering.fullname,
-			 			{:controller => 'admin/apply', :action => 'show', :offering => @offering, 
-							:id => applicant_reviewer.application_for_offering},
-						:popup => true %>
+			<%= link_to applicant_reviewer.application_for_offering.fullname, admin_offering_application_path(@offering.id, applicant_reviewer.application_for_offering.id), target: '_blank' %>
 
 		<% elsif !applicant_reviewer.committee_member.nil? %>
 			
-			<%= applicant_reviewer.committee_score? ? "Committee" : applicant_reviewer.fullname %>
-
+			<%= link_to_unless applicant_reviewer.committee_score?,
+			 			(applicant_reviewer.committee_score? ? "Committee" : applicant_reviewer.fullname),
+			 			admin_committee_member_path(applicant_reviewer.committee_member.committee,
+															applicant_reviewer.committee_member), target: '_blank' %>
 		<% else %>
 
 			<%= applicant_reviewer.committee_score? ? "Committee" : applicant_reviewer.fullname %>
@@ -51,10 +50,16 @@
 				</small>
 			</td>
 			<td>
-				<%#= link_to_remote "<span>#{applicant_reviewer.finalized? ? "Yes" : "No"}</span>",
-									:url => {:action => "toggle_reviewer_finalized", :id => applicant_reviewer.id },
-									:html => {:class => "#{applicant_reviewer.finalized? ? "on" : "off"} switch",
-											  :id => "toggle_reviewer_finalized_button_#{applicant_reviewer.id}"} %>
+				<div class="toggle-bool-switches-container align_left">
+					<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+					<span id="toggle-application_reviewer-<%= applicant_reviewer.id %>-finalized" 
+						class="toggle-bool-switch <%= "on" if applicant_reviewer.finalized? %>" 
+						data-model="application_reviewer"
+						data-object_id="<%= applicant_reviewer.id %>" 
+						data-field="finalized" <%= "data-value=true" if applicant_reviewer.finalized? %>
+						data-url="<%= admin_application_reviewer_path(applicant_reviewer.id) %>">
+					</span>
+				</div>
 			</td>
 
 		<% else %>

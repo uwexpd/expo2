@@ -1603,3 +1603,7 @@ tr.details td {
 	min-width: 120px; 
 	white-space: normal;
 }
+
+#review_committee table tr.unavailable {
+	background: url(image-path('app/unavailable-xtile.gif')) fixed;
+}

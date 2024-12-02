@@ -64,6 +64,8 @@ class CommitteeMember < ApplicationRecord
     end
   end
 
+  validates :expertise, :department, :website_url, length: { maximum: 250, message: "must be less than or equal to 250 characters" }
+
   after_save :create_committee_member_quarters_if_needed
   after_save :create_committee_member_meetings_if_needed
   
@@ -134,7 +136,7 @@ class CommitteeMember < ApplicationRecord
   end
   
   def update_status_cache!
-    self.update_attribute(:status_cache, self.status.to_s)
+    self.update_column(:status_cache, self.status.to_s)
   end
   
   # Checks if the number of applications assigned to this reviewer is less than the amount specified in the

@@ -5,7 +5,7 @@ class OfferingInterviewInterviewer < ApplicationRecord
 
   has_many :scores, :class_name => "OfferingInterviewInterviewerScore"
 
-  delegate :applicant, :to => :offering_interview
+  delegate :applicant, :to => :offering_interview, allow_nil: true
   delegate :interview_feedback_person_id, :to => :applicant
   
   def person
