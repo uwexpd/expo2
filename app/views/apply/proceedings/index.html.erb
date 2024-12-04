@@ -1,0 +1,14 @@
+<% title @page_title_prefix %>
+
+
+
+<div class='card apply_proceedings'>
+  <div class="card-content">
+	<!--<h4 class='uw_purple'><b><%= @offering.name %></b></h4>-->
+
+	<%= textilize @offering.proceedings_welcome_text %>
+  </div>
+</div>
+
+
+<% sidebar :lookup_form %>

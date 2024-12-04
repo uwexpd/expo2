@@ -131,8 +131,9 @@ group :development do
   gem 'uw_sws'
   gem 'rack-mini-profiler', require: false
   gem 'spring-commands-rspec'  
-  #gem 'gas_load_tester'
+  # gem 'gas_load_tester'
   gem 'ed25519', '>= 1.2', '< 2.0'
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'  
-  gem 'meta_request'  
+  # gem 'meta_request'
+  # gem 'httparty'
 end

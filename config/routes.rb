@@ -151,6 +151,8 @@ Rails.application.routes.draw do
     match 'apply/:offering/confirmation/theme', to: 'apply/confirmation#theme', via: [:get, :patch]
     match 'apply/:offering/confirmation/time_conflicts', to: 'apply/confirmation#time_conflicts', via: [:get, :patch]
     match 'apply/:offering/confirmation/requests', to: 'apply/confirmation#requests', via: [:get, :patch]
+    #Online Proceedings
+    get 'apply/:offering/proceedings', to: 'apply/proceedings#index', as: :apply_proceedings
 
     # Mentor
     get 'mentor', to: 'mentor#index', as: :mentor

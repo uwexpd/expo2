@@ -136,7 +136,9 @@ class CommitteeMember < ApplicationRecord
   end
   
   def update_status_cache!
-    self.update_column(:status_cache, self.status.to_s)
+    # Skips validations but trigger callbacks
+    self.assign_attributes(status_cache: self.status.to_s)
+    self.save(validate: false)
   end
   
   # Checks if the number of applications assigned to this reviewer is less than the amount specified in the
