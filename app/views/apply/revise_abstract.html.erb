@@ -1,7 +1,10 @@
+<% title "Revise Abstract | #{@offering.title}" %>
+
 <div class='card apply_revise_abstract'>
   <div class="card-content">
-	<h4><strong>Submit Revised Abstract</strong></h4>
+  <h4><%= @offering.name %></h4><br>
 
+	<h5><strong>Submit Revised Abstract: </strong><span class='gray smaller'><%= @user_application.fullname %><span></h5><br>
 		<p><%= @offering.revise_abstract_instructions.html_safe %></p>
 
 		<% unless @user_application.review_comments.blank? %>
@@ -13,21 +16,27 @@
 
 		<%= form_for @user_application, url: apply_revise_abstract_path(@offering) do |f| %>
 
-			<h5>Project Title</h5>
+			<h6>Project Title</h6>
 
 			<%= text_area_tag :project_title, @user_application.project_title, :id => "project_title_editor", class: 'tinymce' %>
 			
 			<%= content_tag('span', "", class: 'tinymce_error explanation_box error left') %><br><br>
 		
-			<h5>Abstract</h5>
+			<h6>Abstract</h6>
 			
 			<%= text_area_tag :revised_abstract, @user_application.text("Abstract").body, :id => "revise_abstract_editor", class: 'tinymce', data: {length: 300}%>
 
 			<%= content_tag('span', "", class: 'tinymce_error explanation_box error left') %>
 
 			<%= content_tag('p', "300 word limit", :class => 'question_caption') %>
-
-			<br><br>
+			<br>
+			<p class='input-field'>
+				<label>
+			    <%= check_box_tag "confirm_with_mentor", "1", false, required: true, class: 'filled-in' %>
+			    <span>I confirm that my mentor approves of these revisions to my abstract/artist statement.</span>
+			  </label>
+		  </p>
+		  <br><br><br>
 			<p><%= submit_tag "Submit Revised Abstract", class: 'btn' %></p>
 
 		<% end %>

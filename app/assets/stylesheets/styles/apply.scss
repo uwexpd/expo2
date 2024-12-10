@@ -296,7 +296,7 @@ table.application_review li {
 }
 
 .person.unverified .note {
-    color: #fc8017;
+  color: #fc8017;
 }
 
 #new_group_member_uw .input-field.inline {
@@ -323,16 +323,51 @@ label span {
   padding-right: 1em;
 }
 
- #contact_info  input[type=text]:not(.browser-default) {
+#contact_info  input[type=text]:not(.browser-default) {
 	font-size: inherit;
- }
+}
 
- .message ul li {
- 	 	margin-left: 2rem;
- 	  list-style-type: disc;
- }
+.message ul li {
+	margin-left: 2rem;
+	list-style-type: disc;
+}
 
- .leaflet-control-geocoder-form input {
-    min-width: 275px !important;
-    font-size: 12px !important;
-  }
+.leaflet-control-geocoder-form input {
+  min-width: 275px !important;
+  font-size: 12px !important;
+}
+
+.proceedings ul.collection.oral {
+	margin-top: 0px;
+	border: none;
+}
+
+// .proceedings ul.collection.oral .location {	
+// 	float: right;	
+// }
+
+.proceedings ul.schedule .time {
+	float: right;
+	color: #424242;
+}
+
+.proceedings ul.schedule .location {
+  font-size: 80%;
+  color: #999;
+}
+
+.proceedings .session_identifier {
+    padding: 0;
+    color: #07b;
+    width: 3em;    
+    text-indent: 0;
+    position: relative;
+    text-align: center;
+    float: left;
+    background: #e5f4ff;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 90%;
+    margin-right: .5rem;
+}

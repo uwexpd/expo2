@@ -151,8 +151,9 @@ Rails.application.routes.draw do
     match 'apply/:offering/confirmation/theme', to: 'apply/confirmation#theme', via: [:get, :patch]
     match 'apply/:offering/confirmation/time_conflicts', to: 'apply/confirmation#time_conflicts', via: [:get, :patch]
     match 'apply/:offering/confirmation/requests', to: 'apply/confirmation#requests', via: [:get, :patch]
-    #Online Proceedings
+    #Online Proceedings/Schedules
     get 'apply/:offering/proceedings', to: 'apply/proceedings#index', as: :apply_proceedings
+    get 'apply/:offering/proceedings/offering_session/:id', to: 'apply/proceedings#offering_session', as: :apply_proceedings_offering_session
 
     # Mentor
     get 'mentor', to: 'mentor#index', as: :mentor
@@ -181,6 +182,7 @@ Rails.application.routes.draw do
     post 'interviewer/:offering/show/:id/composite_report', to: 'interviewer#composite_report', as: :interviewer_composite_report
     get 'interviewer/:offering/view/:id', to: 'interviewer#view'
     get 'interviewer/:offering/transcript/:id', to: 'interviewer#transcript'
+    post 'interviewer/:offering/finalize', to: 'interviewer#finalize'
     post 'interviewer/:offering/multi_composite_report', to: 'interviewer#multi_composite_report'
     get 'interviewer/:offering/criteria', to: 'interviewer#criteria', as: :interviewer_criteria
     get 'interviewer/:offering/inactive/', to: 'interviewer#inactive'

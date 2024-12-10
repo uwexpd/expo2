@@ -1,14 +1,41 @@
 <% title @page_title_prefix %>
 
-
-
-<div class='card apply_proceedings'>
+<div class='card apply proceedings'>
   <div class="card-content">
-	<!--<h4 class='uw_purple'><b><%= @offering.name %></b></h4>-->
-
 	<%= textilize @offering.proceedings_welcome_text %>
+	
+	<h5 class='uw_purple'>Schedule</h5>
+
+	<ul class='schedule collection'>
+		<% @sessions.each do |session_group, application_types_hash| %>
+		    <% application_types_hash.sort_by { |k, v| v.first.start_time }.each do |application_type, sessions| %>
+		        <% if sessions.size == 1 %>
+		            <%= render partial: "session", object: sessions.first, locals: { show_time: true } %>
+		        <% else %>
+		            <% application_type = "Poster & Lighting Talks" if @offering.id == 577 && application_type == 'Poster Presentation' %>
+		            <li class="collection-item">
+		                <%= link_to(
+		                    "<i class='mi md-20'>add_circle_outline</i> #{application_type} #{session_group} #{content_tag(:span, sessions.first.time_detail("–"), class: 'time')}".html_safe,
+		                    "javascript:;",	                    
+		                    data: { link_toggle: "#session_list_#{sessions.object_id}" }
+		                ) %>
+		                <br>
+		                <%= sessions.sum(&:presenters_count) rescue '#error' %> presentations in <%= pluralize(sessions.size, "session") %>
+		            </li>
+		        <% end %>
+
+		        <% if sessions.size > 1 %>		            
+		            <div id="session_list_<%= sessions.object_id %>" style="display:none">
+		                <ul class='collection oral'>
+		                    <%= render partial: "session", collection: sessions.sort_by(&:identifier) %>
+		                </ul>
+		            </div>
+		        <% end %>
+		    <% end %>
+		<% end %>
+	</ul>
+
   </div>
 </div>
-
 
 <% sidebar :lookup_form %>

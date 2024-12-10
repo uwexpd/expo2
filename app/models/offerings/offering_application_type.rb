@@ -15,4 +15,9 @@ class OfferingApplicationType < ApplicationRecord
   def <=>(o)
     title <=> o.title rescue 0
   end
+
+  def description=(value)
+    application_type.update(description: value) if application_type
+  end
+
 end

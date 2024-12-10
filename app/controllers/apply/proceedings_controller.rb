@@ -2,23 +2,25 @@ class Apply::ProceedingsController < ApplyController
   before_action :check_if_uses_proceedings
   
   skip_before_action :student_login_required_if_possible
-  skip_before_action :fetch_user_applications, :choose_application, :redirect_to_group_member_area, :check_restrictions, :check_must_be_student_restriction, :display_submitted_note
+  skip_before_action :fetch_user_applications, :choose_application, :redirect_to_group_member_area, :check_restrictions, :check_must_be_student_restriction, :display_submitted_note, :fetch_breadcrumb
   
   # before_action :fetch_majors, :fetch_departments, :fetch_awards, :fetch_campus
   # before_action :fetch_favorite_abstracts
 
   before_action :add_header_details
+  before_action :add_symposium_breadcrumb
 
   # cache_sweeper :application_for_offering_sweeper, :only => [ :result, :offering_session ]
   
   def index
-    # @sessions = {}
-    # for s in @offering.sessions.find(:all, :include => { :application_type => :application_type })
-    #   @sessions[s.session_group] ||= {}
-    #   @sessions[s.session_group][s.application_type.title] ||= []
-    #   @sessions[s.session_group][s.application_type.title] << s
-    # end
-    # @sessions = Hash[@sessions.sort.reverse]
+    add_breadcrumb "#{@offering.name} Schedules", @header_link
+    @sessions = {}
+    @offering.sessions.includes(application_type: :application_type).each do |s|
+      @sessions[s.session_group] ||= {}
+      @sessions[s.session_group][s.application_type.title] ||= []
+      @sessions[s.session_group][s.application_type.title] << s
+    end
+    @sessions = @sessions.sort.to_h
       
     respond_to do |format|
       format.html
@@ -71,8 +73,8 @@ class Apply::ProceedingsController < ApplyController
     
     respond_to do |format|
       format.html
-      format.iphone
-      format.pdf { render :layout => 'proceedings', :merge_with => merge_file } if @current_user != :false && @current_user.admin?
+      # format.iphone
+      # format.pdf { render :layout => 'proceedings', :merge_with => merge_file } if @current_user != :false && @current_user.admin?
     end
   end
   
@@ -205,9 +207,14 @@ class Apply::ProceedingsController < ApplyController
   end
 
   def add_header_details
-    @header_link = apply_proceedings_url(@offering, 'index')
-    @page_title_prefix = "#{@offering.title} Online Proceedings"
+    @header_link = apply_proceedings_path(@offering)
+    @page_title_prefix = "#{@offering.title} Schedules"
     @hide_confidentiality_note = true
+  end
+
+  def add_symposium_breadcrumb
+    unit = Unit.find_by_abbreviation('urp')
+    add_breadcrumb "#{unit.name} Home", unit.home_url
   end
   
 end

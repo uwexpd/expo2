@@ -152,7 +152,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 		         div 'Text Area Inputs', class: 'label'		         
 		         f.input :width, label: 'Columns', input_html: { style: "width:10%;" }
 		         f.input :height, label: 'Rows', input_html: { style: "width:10%;" }, hint: 'Leave these fields blank to use the default text box size.'
-		         f.input :use_mce_editor, as: :boolean, hint: 'Provide a text editor that includes formatting support for rich text editing (bold, italic, etc.). If this is unchecked, applicants will simply see a standard text box that only accepts plain text.'
+		         f.input :use_mce_editor, label: 'Use rich text editor', as: :boolean, hint: 'Provide a text editor that includes formatting support for rich text editing (bold, italic, etc.). If this is unchecked, applicants will simply see a standard text box that only accepts plain text.'
 		      end
 		    end
 		    tab 'Response Options' do
