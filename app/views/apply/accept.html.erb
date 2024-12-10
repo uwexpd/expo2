@@ -1,42 +1,45 @@
 <% title(@offering.name, @offering.quarter_offered.title) %>
 
-<h2>Accept Your Award</h2>
-<%= @offering.acceptance_instructions.gsub("%award_quarter_list%", @user_application.award_list(" and ", false)) %>
+<div class="card">
 
-<br><br>
-<% form_for "application_for_offering", @user_application do |f| %>
+	  <div class="card content">
 
-	<div class="left-indent">
-		
-	<p>
-	<%= f.radio_button :declined, false %>
-	<%= f.label :declined_false, @offering.acceptance_yes_text %>
-	</p>
+		<h5>Accept Your Award</h5>
+		<%= raw @offering.acceptance_instructions.gsub("%award_quarter_list%", @user_application.award_list(" and ", false)) %>
+		<br>
 
-	<p>
-	<%= f.radio_button :declined, true %>
-	<%= f.label :declined_true, @offering.acceptance_no_text %>
-	</p>
+		<%= form_for @user_application, as: "application_for_offering", url: { action: :accept } do |f| %>
+			<div class="left-indent">
+				<p>
+					<label>
+						<%= f.radio_button :declined, false, {class: "with-gap"} %>
+						<span><%= @offering.acceptance_yes_text %></span>
+					</label>
+				</p>
 
-	<br>
+				<p>
+					<label>
+						<%= f.radio_button :declined, true, {class: "with-gap"} %>
+						<span><%= @offering.acceptance_no_text %></span>
+					</label>			
+				</p>
+				
+				<% (1..3).each do |i| %>
+					<% q = @offering.read_attribute("acceptance_question#{i}") %>
+					<% unless q.blank? %>
+					  <div class="input-field col s12 string input">
+						<%= f.text_field "acceptance_response#{i}" %>
+						<%= f.label "acceptance_response#{i}", q %>
+					  </div>					  
+					<% end %>
+				<% end %>
+	  		</div>
 
-	<% for i in 1..3 %>
-		<% q = @offering.read_attribute("acceptance_question#{i}") %>
-		<% unless q.blank? %>
-			<p>
-				<%= f.label "acceptance_response#{i}", q %>
-			</p>
-			<p>
-				<%= f.text_field "acceptance_response#{i}", :size => 50 %>
-			</p>
-			<br>
-		<% end -%>
-	<% end -%>
+	  		<p><%= f.submit "Submit Your Decision", class:'btn margin_top' %></p>
 
-	<p>
-	<%= f.submit "Submit" %>
-	</p>
-	
-<% end %>
+	  	<% end %>
+		  
+	</div>  	
+</div>
+<% sidebar :apply_nav %>
 
-<%= render :partial => "sidebar" %>

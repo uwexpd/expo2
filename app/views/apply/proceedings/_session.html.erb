@@ -1,9 +1,13 @@
-<% show_time ||= false %>
+<% show_time ||= false 
+   avatar ||= false
+%>
 
-<li id="session_<%= session.id %>" class="collection-item">  
+<li id="session_<%= session.id %>" class="collection-item <%= 'avatar' if avatar %>">  
 
   <%= content_tag(:span, session.identifier, class: 'session_identifier') unless session.identifier.blank? %>
-
+  <% if avatar %>
+  	<i class="mi circle purple darken-4">dvr</i>
+  <% end %>
   <% link_title = session.title.dup %>
   <% link_title << content_tag(:span, session.time_detail("–"), class: 'time') if show_time %>
   <%= link_to link_title.html_safe, apply_proceedings_offering_session_path(@offering.id, session.id) %>
@@ -13,7 +17,7 @@
   <% end %>
   <br>
   <% if show_time %>
-	  <%= "#{session.presenters_count + session.group_members.count} student presenters" rescue '#error' %>
+	  <span class='smaller'><%= "#{session.presenters_count + session.group_members.count} student presenters" rescue '#error' %></span>
   <% end %>
 </li>
 

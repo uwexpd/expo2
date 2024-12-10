@@ -10,17 +10,18 @@
 		<% @sessions.each do |session_group, application_types_hash| %>
 		    <% application_types_hash.sort_by { |k, v| v.first.start_time }.each do |application_type, sessions| %>
 		        <% if sessions.size == 1 %>
-		            <%= render partial: "session", object: sessions.first, locals: { show_time: true } %>
+		            <%= render partial: "session", object: sessions.first, locals: { show_time: true, avatar: true } %>
 		        <% else %>
 		            <% application_type = "Poster & Lighting Talks" if @offering.id == 577 && application_type == 'Poster Presentation' %>
-		            <li class="collection-item">
+		            <li class="collection-item avatar">
+		            	  <i class="mi circle deep-purple lighten-3">co_present</i>
 		                <%= link_to(
 		                    "<i class='mi md-20'>add_circle_outline</i> #{application_type} #{session_group} #{content_tag(:span, sessions.first.time_detail("–"), class: 'time')}".html_safe,
 		                    "javascript:;",	                    
 		                    data: { link_toggle: "#session_list_#{sessions.object_id}" }
 		                ) %>
 		                <br>
-		                <%= sessions.sum(&:presenters_count) rescue '#error' %> presentations in <%= pluralize(sessions.size, "session") %>
+		                <span class='smaller'><%= sessions.sum(&:presenters_count) rescue '#error' %> presentations in <%= pluralize(sessions.size, "session") %></span>
 		            </li>
 		        <% end %>
 
