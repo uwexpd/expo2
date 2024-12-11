@@ -1,0 +1,132 @@
+<% reference_quarter ||= @reference_quarter || Quarter.find_by_date(abstract.offering.deadline) %>
+
+<div class="card sticky-action grey lighten-5 abstract" id="abstract_<%= abstract.id.to_s %>">
+
+	<%#= render :partial => 'apply/proceedings/add_favorite', :object => abstract %>    
+	 <div class="card-content">
+		<% project_title = abstract.stripped_project_title.strip.html_safe %>
+		<span class="project_title card-title activator light-blue-text darken-2">
+			<%=  project_title %><i class='mi right'>more_vert</i>
+		</span>
+		<!--
+			# For Virtual Symposium
+			# Only URP admin staff can view all the time
+			# Public can only view at symposium date
+		-->
+		<% if @offering.virtual_proceeding && !abstract.theme_response2.nil? && ((@current_user != :false && @current_user.admin && @current_user.in_unit?(3)) || Time.now >= @offering.proceeding_public_display_at) %>
+            <strong style='margin-left: 2rem'><a href="<%= abstract.theme_response2 %>" target="_blank"><span class='mi'>show</span> View presenter work</a></strong>
+		<% end %>
+
+		<div class="two_column">
+		
+			<dl class="half">				
+				<% cache(:controller => 'proceedings', :action => 'result', :id => abstract.id, :action_suffix => 'abstract_presenters') do  %>
+		
+				<dt><%= pluralize_without_count (1 + abstract.group_members.count), "Presenter" %></dt>
+				<dd>
+
+					<ul>
+						<!-- Primary presenter -->
+						<li><% 	presenter = [(content_tag(:span, abstract.person.firstname_first, :class => "student_name") rescue "Unknown")]
+								presenter << "#{abstract.person.class_standing_description(:recent_graduate_placeholder => "Recent Graduate", :reference_quarter => reference_quarter) rescue nil}"
+							    presenter << "#{content_tag(:span, abstract.person.majors_list(true, ", ", reference_quarter), :class => "student_major") rescue nil}"
+							    presenter << "#{abstract.person.institution_name rescue nil}" unless abstract.person.is_a?(Student)
+						%><%= presenter.join(", ").html_safe %>
+	
+						<!-- Primary presenter scholarships -->
+					    <%- unless abstract.other_awards.empty? -%>
+							<%= content_tag(:span, abstract.other_awards.sort.collect(&:scholar_title).join(", "), :class => "student_award") %>
+					    <% end -%>
+						</li>
+			
+						<!-- Group members -->
+						<% abstract.group_members.each do |group_member| %>
+						<li>
+							<%= group_member.info_detail_line(true).html_safe %>
+							<%= content_tag(:span, group_member.person.awards_list, :class => "student_award") unless group_member.person.awards_list.blank? rescue nil %>
+						</li>
+						<% end -%>
+			
+					</ul>
+				</dd>
+		
+				<dt><%= pluralize_without_count abstract.mentors.count, "Mentor" %></dt>
+				<dd>
+					<ul>
+
+						<!-- Mentors -->
+						<%  abstract.mentors.sort_by{|m| m.primary? ? 0 : 1}.each do |mentor| %>
+							<li><%= mentor.info_detail_line(true, true).html_safe %></li>
+						<% end -%>
+
+					</ul>
+				</dd>
+				<% end -%>
+				
+			</dl>
+		
+			<% unless abstract.offering_session.nil? # || params[:action] == 'offering_session' %>
+				<dl class="half">
+					<dt>Session</dt>
+					<dd>
+						<ul>
+							<%= link_to abstract.offering_session.title(:include_identifier => true), 
+									apply_proceedings_url(@offering, 'offering_session', :id => abstract.offering_session.id) unless !abstract.offering_session || params[:action] == 'offering_session'%>
+						<% unless abstract.application_type.title == 'Poster Presentation' %>
+							<%= "<li>#{abstract.offering_session.location rescue nil}</li>".html_safe if (!@offering.virtual_proceeding && !abstract.offering_session.location.blank?) || (@current_user != :false && @current_user.admin && @current_user.in_unit?(3)) || Time.now >= @offering.proceeding_public_display_at if @offering.proceeding_public_display_at rescue nil %>
+						<% end %>
+						<%= "<li>#{content_tag(:span, abstract.location_section.title, :style => "color:##{abstract.location_section.color}") rescue nil}</li>".html_safe if abstract.location_section rescue nil %>
+						<%= "<li>Easel ##{abstract.easel_number rescue nil}</li>".html_safe if abstract.easel_number rescue nil %>
+						<%= "<li>#{abstract.offering_session.time_detail}</li>".html_safe if abstract.offering_session %>
+						</ul>
+					</dd>			
+				</dl>
+			<% end %>
+
+		</div>
+		<br style="clear:both">
+    </div> <!-- End card-content -->
+
+    <div class='card-action'>
+    	<!-- Similar Abstracts -->
+		<ul class="similar_abstracts">	
+			<% for major in abstract.person.majors %>
+				<% if @majors.include?(major) && @majors[major].size > 1 %>
+					<li><%= link_to "Other #{major} major students (#{@majors[major].size})", 
+									apply_proceedings_url(@offering, 'result', 
+									:student_major => (major.is_a?(String) ? major : major.full_name)) %></li>
+				<% end %>
+			<% end -%>
+
+			<% if @departments.include?(abstract.mentor_department) && @departments[abstract.mentor_department].size > 1 %>
+			<li><%= link_to "Other #{abstract.mentor_department} mentored projects (#{@departments[abstract.mentor_department].size})", 
+							apply_proceedings_url(@offering, 'result', :mentor_department => abstract.mentor_department) %></li>
+			<% end -%>
+
+			<% abstract.mentors.each do |mentor| %>
+				<% unless mentor.other_mentees.empty? -%>
+				<li><%= link_to "Other students mentored by #{mentor.firstname_first} (#{mentor.other_mentees.size})", 
+						apply_proceedings_url(@offering, 'result', :mentor_name => mentor.lastname_first) %></li>
+				<% end -%>
+			<% end -%>
+		</ul>
+    </div>
+    
+    <div class="card-reveal">
+    	 <span class="project_title card-title light-blue-text darken-2"><%=  project_title %><i class="mi right">close</i></span>
+		<% cache(:controller => 'proceedings', :action => 'result', :id => abstract.id, :action_suffix => 'abstract_text') do %>
+			
+			<div class="abstract_text" id="abstract_text_<%= abstract.id %>">
+				
+			<% if abstract.hide_proceeding_abstract == true %>			
+				<p>This abstract is no longer available. Please contact <%= @offering.contact_email rescue 'undergradresearch@uw.edu' %> if you have any questions.</p></div>		
+			<% else %>		
+				<!-- Abstract -->		
+				<%= raw abstract.text(:abstract).body %></div>				
+			<% end %>
+			
+		<% end %>
+	 </div>
+
+</div>
+<br>

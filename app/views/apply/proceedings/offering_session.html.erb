@@ -1,19 +1,24 @@
 <% title @page_title_prefix, (@offering_session.identifier.blank? ? @offering_session.title : "Session #{@offering_session.identifier}") %>
 
-<!-- <div class="right">
-  <%#= link_to "Add all of these abstracts to my favorites", 
-              apply_proceedings_favorites_path(@offering, 'create', @presenters.collect(&:id).to_json), 
-              method: :post, 
-              remote: true, 
-              data: { disable_with: 'Adding...' }, 
-              class: 'add_favorite', 
-              id: "add_all_favorite_link" %>
-</div> -->
+<div class='card apply proceedings offering_session'>
+  <div class="card-content">
 
-<%#= render partial: 'session_heading', object: @offering_session %>
-<%#= render partial: "abstract", collection: @presenters %>
+      <!-- <div class="right">
+        <%#= link_to "Add all of these abstracts to my favorites", 
+                    apply_proceedings_favorites_path(@offering, 'create', @presenters.collect(&:id).to_json), 
+                    method: :post, 
+                    remote: true, 
+                    data: { disable_with: 'Adding...' }, 
+                    class: 'add_favorite', 
+                    id: "add_all_favorite_link" %>
+      </div> -->
 
-<%# sidebar :lookup_form %>
+    <%= render partial: 'session_heading', object: @offering_session %><br>
+    <%= render partial: 'abstract', collection: @presenters %>
+
+  </div>
+</div>
+
 <% sidebar :lookup_form do %>
   <%= render partial: "apply/proceedings/lookup_form", locals: { hide: true} %>
 <% end %>

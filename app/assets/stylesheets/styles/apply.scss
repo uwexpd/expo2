@@ -375,3 +375,27 @@ label span {
 .apply.proceedings .collection .collection-item.avatar {
 		padding-top: 20px;
 }
+
+
+.apply.proceedings .card.abstract .card-action {
+	padding: 4px 24px;
+}
+// .apply.proceedings .two_column .half {
+// 	margin: 1rem 0 -1rem 0;
+// }
+
+.apply.proceedings .card .card-content .project_title.card-title, .apply.proceedings .card .card-reveal .project_title.card-title{
+	font-size: 18px;
+}
+
+.two_column .half {
+	float: left;	
+}
+
+.apply.proceedings ul.similar_abstracts {
+	display: inline-block; /* Fallback for non-flex browsers */
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font-size: 0.85rem;
+}

@@ -4,7 +4,7 @@ class Apply::ProceedingsController < ApplyController
   skip_before_action :student_login_required_if_possible
   skip_before_action :fetch_user_applications, :choose_application, :redirect_to_group_member_area, :check_restrictions, :check_must_be_student_restriction, :display_submitted_note, :fetch_breadcrumb
   
-  # before_action :fetch_majors, :fetch_departments, :fetch_awards, :fetch_campus
+  before_action :fetch_majors, :fetch_departments, :fetch_awards, :fetch_campus
   # before_action :fetch_favorite_abstracts
 
   before_action :add_header_details
@@ -12,8 +12,7 @@ class Apply::ProceedingsController < ApplyController
 
   # cache_sweeper :application_for_offering_sweeper, :only => [ :result, :offering_session ]
   
-  def index
-    add_breadcrumb "#{@offering.name} Schedules", @header_link
+  def index    
     @sessions = {}
     @offering.sessions.includes(application_type: :application_type).each do |s|
       @sessions[s.session_group] ||= {}
@@ -66,6 +65,7 @@ class Apply::ProceedingsController < ApplyController
   end
   
   def offering_session
+    add_breadcrumb "#{@offering.name} Schedules", @header_link
     @offering_session = @offering.sessions.find(params[:id])
     @presenters = @offering_session.presenters
     
