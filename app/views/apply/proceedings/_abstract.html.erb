@@ -71,7 +71,7 @@
 					<dd>
 						<ul>
 							<%= link_to abstract.offering_session.title(:include_identifier => true), 
-									apply_proceedings_url(@offering, 'offering_session', :id => abstract.offering_session.id) unless !abstract.offering_session || params[:action] == 'offering_session'%>
+									apply_proceedings_path(@offering, 'offering_session', :id => abstract.offering_session.id) unless !abstract.offering_session || params[:action] == 'offering_session'%>
 						<% unless abstract.application_type.title == 'Poster Presentation' %>
 							<%= "<li>#{abstract.offering_session.location rescue nil}</li>".html_safe if (!@offering.virtual_proceeding && !abstract.offering_session.location.blank?) || (@current_user != :false && @current_user.admin && @current_user.in_unit?(3)) || Time.now >= @offering.proceeding_public_display_at if @offering.proceeding_public_display_at rescue nil %>
 						<% end %>
@@ -93,20 +93,20 @@
 			<% for major in abstract.person.majors %>
 				<% if @majors.include?(major) && @majors[major].size > 1 %>
 					<li><%= link_to "Other #{major} major students (#{@majors[major].size})", 
-									apply_proceedings_url(@offering, 'result', 
+									apply_proceedings_path(@offering, 'result', 
 									:student_major => (major.is_a?(String) ? major : major.full_name)) %></li>
 				<% end %>
 			<% end -%>
 
 			<% if @departments.include?(abstract.mentor_department) && @departments[abstract.mentor_department].size > 1 %>
 			<li><%= link_to "Other #{abstract.mentor_department} mentored projects (#{@departments[abstract.mentor_department].size})", 
-							apply_proceedings_url(@offering, 'result', :mentor_department => abstract.mentor_department) %></li>
+							apply_proceedings_path(@offering, 'result', :mentor_department => abstract.mentor_department) %></li>
 			<% end -%>
 
 			<% abstract.mentors.each do |mentor| %>
-				<% unless mentor.other_mentees.empty? -%>
+				<% unless mentor.other_mentees.empty? %>
 				<li><%= link_to "Other students mentored by #{mentor.firstname_first} (#{mentor.other_mentees.size})", 
-						apply_proceedings_url(@offering, 'result', :mentor_name => mentor.lastname_first) %></li>
+						apply_proceedings_path(@offering, 'result', :mentor_name => mentor.lastname_first) %></li>
 				<% end -%>
 			<% end -%>
 		</ul>

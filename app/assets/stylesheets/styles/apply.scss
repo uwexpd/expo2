@@ -337,6 +337,20 @@ label span {
   font-size: 12px !important;
 }
 
+// Online proceedings/schedule 
+.apply.proceedings h1, .apply.proceedings h2, .apply.proceedings h3, .apply.proceedings h4, .apply.proceedings h5{
+	font-weight: bold;
+	color: #4b2e83;	
+}
+
+.apply.proceedings h1 {
+	font-size: 2.28rem;
+}
+
+.apply.proceedings h2 {
+	font-size: 1.64rem;
+}
+
 .proceedings ul.collection.oral {
 	margin-top: 0px;
 	border: none;
@@ -388,8 +402,10 @@ label span {
 	font-size: 18px;
 }
 
-.two_column .half {
-	float: left;	
+
+.apply.proceedings .accessibility{
+	color: #9498A1;	
+	padding-top: 1rem;
 }
 
 .apply.proceedings ul.similar_abstracts {
@@ -398,4 +414,8 @@ label span {
   display: -ms-inline-flexbox;
   display: inline-flex;
   font-size: 0.85rem;
+}
+
+.two_column .half {
+	float: left;	
 }
