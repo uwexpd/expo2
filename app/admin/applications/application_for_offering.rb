@@ -3,7 +3,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   includes :person, :offering, :current_application_status
   actions :all, :except => [:new, :destroy]
   batch_action :destroy, false
-  config.per_page = [20, 50, 100]
+  config.per_page = [20, 50, 100, 150, 200, 300]
   menu parent: 'Databases', priority: 10, label: "<i class='mi padding_right'>feed</i> Applications".html_safe
   # Disable default sorting so that scoped_collection sorting takes effect
   config.sort_order = ''

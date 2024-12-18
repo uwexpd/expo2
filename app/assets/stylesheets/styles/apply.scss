@@ -363,6 +363,7 @@ label span {
 .proceedings ul.schedule .time {
 	float: right;
 	color: #424242;
+	font-weight: 500;
 }
 
 .proceedings ul.schedule .location {
@@ -408,6 +409,14 @@ label span {
 	padding-top: 1rem;
 }
 
+.apply.proceedings .session_heading .time {
+	color: #4c4c4c;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+  font-weight: 500;
+}
+
 .apply.proceedings ul.similar_abstracts {
 	display: inline-block; /* Fallback for non-flex browsers */
   display: -webkit-inline-flex;
@@ -418,4 +427,9 @@ label span {
 
 .two_column .half {
 	float: left;	
+}
+
+#proceedings_lookup_form label, #proceedings_find_mentors label {
+	font-size: 1rem;
+	color: inherit;
 }

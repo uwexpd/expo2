@@ -1,0 +1,37 @@
+<% title @page_title_prefix, "Search Results" %>
+
+<div class='card apply proceedings search'>
+  <div class="card-content">
+
+  	<h4>Found <%= pluralize @result.size, "project" %></h4>
+
+	<div id="abstract_search_results">
+		<% @current_session_group = nil; @current_session_type = nil %>
+
+		<% @result.each do |result| %>
+			<% if @current_session_group != result.offering_session.try(:session_group) || @current_session_type != result.application_type %>
+				<div class="session_heading">
+					<%= raw "<h2>#{result.application_type.try(:title)} #{result.offering_session.try(:session_group)}</h2>" %>
+					<%= raw "<h6 class='time'>#{result.offering_session.try(:time_detail)}</h6>" if result.offering_session %>
+				</div>
+
+				<% @current_session_group = result.offering_session.try(:session_group); @current_session_type = result.application_type %>
+			<% end %>
+
+			<%= render :partial => 'apply/proceedings/abstract', :object => result, :locals => { :query_strings => @query_strings } %>
+		<% end %>
+	</div>
+
+  	<% if @result.empty? %>
+		<div class="empty">
+			Sorry, but we couldn't find any presenters that matched your query.
+		</div>
+	<% end %>
+
+  </div>
+</div>
+
+<% sidebar :lookup_form do %>
+  <%= render partial: "apply/proceedings/lookup_form", locals: { hide: true} %>
+<% end %>
+<% sidebar :find_mentors %>

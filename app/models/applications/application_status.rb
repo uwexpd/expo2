@@ -2,7 +2,7 @@ class ApplicationStatus < ApplicationRecord
   stampable
   belongs_to :application_for_offering
   belongs_to :application_status_type
-  belongs_to :status_type, :class_name => "ApplicationStatusType"
+  belongs_to :status_type, :class_name => "ApplicationStatusType", foreign_key: :application_status_type_id
   has_many :contact_histories
   has_many :notes, :as => :notable
 

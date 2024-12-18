@@ -1,0 +1,22 @@
+
+<h5><i class="mi vertical_top">filter_list</i> <strong>Find Mentors</strong></h5>
+
+<%= form_tag url_for(:action => 'result'), id: 'proceedings_find_mentors', method: :get do %>
+
+<span class="error-message" id="find_menter_error"></span>
+
+	<p>Search by mentor name or select a department to see all students with mentors in that department.</p>
+	
+	<%= label_tag :mentor_name, "Mentor Name:" %>
+	<%= text_field_tag :mentor_name, params[:mentor_name], :placeholder => 'firstname lastname' %>
+	<br><br>
+	<%= label_tag :mentor_department, "Mentor Department:" %>
+	<%= select_tag :mentor_department,
+							options_for_select( @departments.map{|k,v| ["#{k} (#{v.size})", k]}.sort,
+							 					params[:mentor_department]), {multiple: true, class: 'chosen-select', data:  {placeholder: "Departments (#{@departments.size rescue 'Unknown'})"}} %>
+	
+
+	<br><br>												
+	<%= submit_tag 'Search', :class => 'btn' %>
+	<%= link_to "CLEAR FILTERS", apply_proceedings_path, :class => 'clear_filter' %>
+<% end -%>

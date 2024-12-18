@@ -71,7 +71,7 @@
 					<dd>
 						<ul>
 							<%= link_to abstract.offering_session.title(:include_identifier => true), 
-									apply_proceedings_path(@offering, 'offering_session', :id => abstract.offering_session.id) unless !abstract.offering_session || params[:action] == 'offering_session'%>
+									apply_proceedings_offering_session_path(@offering, id: abstract.offering_session.id) unless !abstract.offering_session || params[:action] == 'offering_session' %>
 						<% unless abstract.application_type.title == 'Poster Presentation' %>
 							<%= "<li>#{abstract.offering_session.location rescue nil}</li>".html_safe if (!@offering.virtual_proceeding && !abstract.offering_session.location.blank?) || (@current_user != :false && @current_user.admin && @current_user.in_unit?(3)) || Time.now >= @offering.proceeding_public_display_at if @offering.proceeding_public_display_at rescue nil %>
 						<% end %>
