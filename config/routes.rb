@@ -155,7 +155,7 @@ Rails.application.routes.draw do
     #Online Proceedings/Schedules
     get 'apply/:offering/proceedings', to: 'apply/proceedings#index', as: :apply_proceedings
     get 'apply/:offering/proceedings/offering_session/:id', to: 'apply/proceedings#offering_session', as: :apply_proceedings_offering_session
-    get 'apply/:offering/proceedings/result', to: 'apply/proceedings#result'
+    get 'apply/:offering/proceedings/result', to: 'apply/proceedings#result', as: :apply_proceedings_result
 
     # Mentor
     get 'mentor', to: 'mentor#index', as: :mentor

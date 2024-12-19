@@ -6,7 +6,7 @@
 	 <div class="card-content">
 		<% project_title = abstract.stripped_project_title.strip.html_safe %>
 		<span class="project_title card-title activator light-blue-text darken-2">
-			<%=  project_title %><i class='mi right'>more_vert</i>
+			<%=  project_title %> <!--<i class='mi right'>more_vert</i> -->
 		</span>
 		<!--
 			# For Virtual Symposium
@@ -93,20 +93,19 @@
 			<% for major in abstract.person.majors %>
 				<% if @majors.include?(major) && @majors[major].size > 1 %>
 					<li><%= link_to "Other #{major} major students (#{@majors[major].size})", 
-									apply_proceedings_path(@offering, 'result', 
-									:student_major => (major.is_a?(String) ? major : major.full_name)) %></li>
+									apply_proceedings_result_path(@offering, student_major: (major.is_a?(String) ? major : major.full_name)) %></li>
 				<% end %>
 			<% end -%>
 
 			<% if @departments.include?(abstract.mentor_department) && @departments[abstract.mentor_department].size > 1 %>
 			<li><%= link_to "Other #{abstract.mentor_department} mentored projects (#{@departments[abstract.mentor_department].size})", 
-							apply_proceedings_path(@offering, 'result', :mentor_department => abstract.mentor_department) %></li>
+							apply_proceedings_result_path(@offering, mentor_department: abstract.mentor_department) %></li>
 			<% end -%>
 
 			<% abstract.mentors.each do |mentor| %>
 				<% unless mentor.other_mentees.empty? %>
 				<li><%= link_to "Other students mentored by #{mentor.firstname_first} (#{mentor.other_mentees.size})", 
-						apply_proceedings_path(@offering, 'result', :mentor_name => mentor.lastname_first) %></li>
+						apply_proceedings_result_path(@offering, mentor_name: mentor.firstname_first) %></li>
 				<% end -%>
 			<% end -%>
 		</ul>
