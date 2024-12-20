@@ -1,7 +1,7 @@
 <div class="box">
 	<strong>Student:</strong> <%= @app.fullname %>
 	<br>
-	<strong>Project Title:</strong> <%= strip_tags(encode_utf(@app.project_title)) %>
+	<strong>Project Title:</strong> <%= strip_tags(encode_utf(@app.project_title)) if @app.project_title %>
 	<br>
 	<strong>Current Status:</strong> <%= raw(print_status(@app))  %>
 	

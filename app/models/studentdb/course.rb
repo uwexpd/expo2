@@ -76,18 +76,14 @@ class Course < StudentInfo
   # registration_courses table and find any records that match this course and have a request_status of either A(dd), C(hange) or
   # R(e-register).
   def registrants
-    @registrants ||= StudentRegistrationCourse.find(:all, 
-                                        :conditions => ["regis_yr = ? AND regis_qtr = ? AND sln = ? AND 
-                                                        (request_status = 'A' OR request_status = 'C' OR request_status = 'R')",
-                                                        ts_year, ts_quarter, sln],
-                                        :include => { :student_record => { 
-                                                        :student_person => {
-                                                          :service_learning_placements => :evaluation 
-                                                          }
-                                                        }
-                                                      },
-                                        :joins => :student_record,
-                                        :order => "student_name" )
+    @registrants ||= StudentRegistrationCourse
+                  .includes(:student_record)
+                  .joins(:student_record)
+                  .where(
+                    "regis_yr = ? AND regis_qtr = ? AND sln = ? AND (request_status IN (?))",
+                    ts_year, ts_quarter, sln, ['A', 'C', 'R']
+                  )
+                  .order(:student_name)
   end
   
   def registrants_count
