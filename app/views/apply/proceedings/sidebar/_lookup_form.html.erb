@@ -7,25 +7,31 @@
 
 	<p>Use the search filters below to find presentations you’re interested in!</p>
 	
-	<%= label_tag :student_name, "Student Name:" %>
+	<%= label_tag :student_name, "Student Name" %>
 	<%= text_field_tag :student_name, params[:student_name], :placeholder => 'Firstname Lastname' %>
 	<br><br>
-	<%= label_tag :student_major, "Student Major:" %>
+	<%= label_tag :student_major, "Student Major" %>
 	<%= select_tag :student_major, 
 							options_for_select(@majors.map{|k,v| ["#{k} (#{v.size})", k] }.sort,
 												params[:student_major]), {multiple: true, class: 'chosen-select', data:  {placeholder: "Majors (#{@majors.size rescue 'Unknown'})"}} %>
-	<br>	
-	<%= label_tag :student_award, "Student Award & Program:" %>
+	<br>
+	<%= label_tag :application_category, "Application Category" %>
+	<%= select_tag :application_category, 
+							options_for_select(@application_category.map{|k,v| ["#{k} (#{v.size})", k] }.sort,
+												params[:application_category]), {multiple: true, class: 'chosen-select', data:  {placeholder: "Application Category (#{@application_category.size rescue 'Unknown'})"}} %>
+	<br>
+	<%= label_tag :student_award, "Student Award & Program" %>
 	<%= select_tag :student_award, 
 							options_for_select(@awards.map{|k,v| ["#{k} (#{v.size})", k] }.sort,
 												params[:student_award]), {multiple: true, class: 'chosen-select', data:  {placeholder: "Awards (#{@awards.size rescue 'Unknown'})"}} %>
+	
 	<br>
-	<%= label_tag :student_campus, "Student Campus:" %>
+	<%= label_tag :student_campus, "Student Campus" %>
 	<%= select_tag :student_campus,
 							options_for_select(@campus.map{|k,v| ["#{k} (#{v.size})", k] }.sort,
 												params[:student_campus]), {multiple: true, class: 'chosen-select', data:  { placeholder: "Campus (#{@campus.size rescue 'Unknown'})"}} %>
 	<br>
-	<%= label_tag :session_location, "Building Location:" %>
+	<%= label_tag :session_location, "Building Location" %>
     <%= select_tag :session_location, 
 							options_for_select(@locations.map{|k,v| ["#{k} (#{v.size})", k] }.sort,
 												params[:session_location]), {multiple: true, class: 'chosen-select', data:  {placeholder: "Locations (#{@locations.size rescue 'Unknown'})"}} %>

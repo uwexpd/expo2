@@ -6,8 +6,9 @@ ActiveAdmin.register ContactHistory do
   config.action_items.delete_if {|item| (item.name == :edit || item.name == :destroy) && item.display_on?(:show) }  
   menu parent: 'Tools'
 
-  scope :all, default: true
-  scope ('Sent By Me') { |contact| contact.from_user(current_user.id) }
+  scope('Sent By Me', default: true) { |contact| contact.from_user(current_user.id) }
+  scope :all
+  
 
   action_item :requeue, only: :show do
     link_to 'Resend this message', requeue_admin_contact_history_path(contact_history)

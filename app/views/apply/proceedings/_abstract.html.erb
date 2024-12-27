@@ -103,10 +103,10 @@
 			<% end -%>
 
 			<% abstract.mentors.each do |mentor| %>
-				<% unless mentor.other_mentees.empty? %>
+				<% unless mentor.other_mentees.blank? %>
 				<li><%= link_to "Other students mentored by #{mentor.firstname_first} (#{mentor.other_mentees.size})", 
 						apply_proceedings_result_path(@offering, mentor_name: mentor.firstname_first) %></li>
-				<% end -%>
+				<% end %>
 			<% end -%>
 		</ul>
     </div>

@@ -309,7 +309,7 @@ class ApplicationMentor < ApplicationRecord
 
   # Returns an array of other applications for this offering where this mentor is also listed as a mentor.
   def other_mentees
-      ApplicationMentor.joins(:application_for_offering).where( person_id: person_id, "application_for_offerings.offering_id" => application_for_offering.offering_id).reject{|x| x == self}
+      ApplicationMentor.joins(:application_for_offering).where( person_id: person_id, "application_for_offerings.offering_id" => application_for_offering.offering_id).reject{|x| x == self} if self.person_id
   end
 
   # Goes through this Offering's phase tasks (with "mentors" context) and checks the completion criteria for each. Then

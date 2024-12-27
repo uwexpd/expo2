@@ -675,5 +675,19 @@ class Offering < ApplicationRecord
     end
   end
 
+  def application_category_mapping(status = :confirmed)
+    OFFERINGS_CACHE.fetch("application_category_mapping_#{id}_#{status.to_s.underscore}", :expires_in => 24.hours) do
+      @apps = application_for_offerings.with_status(status)
+      categories = {}    
+      
+      @apps.each do |iapp|
+        category = iapp.application_category.title if iapp.application_category && iapp.application_category.title
+        unless category.blank?          
+          categories[category] = (categories[category].nil? ? [iapp.id] : categories[category] << iapp.id)
+        end        
+      end
+      categories
+    end
+  end
   
 end

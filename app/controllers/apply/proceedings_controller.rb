@@ -4,7 +4,7 @@ class Apply::ProceedingsController < ApplyController
   skip_before_action :student_login_required_if_possible
   skip_before_action :fetch_user_applications, :choose_application, :redirect_to_group_member_area, :check_restrictions, :check_must_be_student_restriction, :display_submitted_note, :fetch_breadcrumb
   
-  before_action :fetch_applicants, :fetch_majors, :fetch_departments, :fetch_awards, :fetch_campus, :fetch_locations
+  before_action :fetch_applicants, :fetch_majors, :fetch_departments, :fetch_awards, :fetch_campus, :fetch_locations, :fetch_application_category
   # before_action :fetch_favorite_abstracts
 
   before_action :add_header_details
@@ -48,11 +48,13 @@ class Apply::ProceedingsController < ApplyController
     @result = @apps.map(&:id) #[]
     @result &= find_by_student_name(params[:student_name]) unless params[:student_name].blank?
     @result &= find_by_major(params[:student_major]) unless params[:student_major].blank?
+    @result &= find_by_application_category(params[:application_category]) unless params[:application_category].blank?
     @result &= find_by_award(params[:student_award]) unless params[:student_award].blank?
     @result &= find_by_campus(params[:student_campus]) unless params[:student_campus].blank?
+    @result &= find_by_locations(params[:session_location]) unless params[:session_location].blank?
     @result &= find_by_mentor_name(params[:mentor_name]) unless params[:mentor_name].blank?
     @result &= find_by_department(params[:mentor_department]) unless params[:mentor_department].blank?
-    
+
     @result = @result.uniq unless @result.empty?
     @result = @offering.application_for_offerings.where(id: @result)
     @result = @result.sort_by{|x| "#{x.offering_session.try(:session_group).to_s}#{x.offering_session.try(:identifier).to_s}"}    
@@ -123,14 +125,14 @@ class Apply::ProceedingsController < ApplyController
                    .joins(:person, current_application_status: :status_type)
                    .includes(:person)
                    .where("application_status_types.name = 'confirmed' AND (#{name_conditions_query})")
-                   .order('people.lastname, people.firstname')
+                   .order('people.firstname, people.lastname')
 
     # Fetch group members
     group_members = @offering.application_for_offerings
                       .joins(current_application_status: :status_type, group_members: :person)
                       .includes(group_members: :person)
                       .where("application_status_types.name = 'confirmed' AND (#{group_name_conditions_query})")
-                      .order('people.lastname, people.firstname')
+                      .order('people.firstname, people.lastname')
 
     # Combine and deduplicate results
     result = (presenters + group_members).uniq.map(&:id)
@@ -144,13 +146,11 @@ class Apply::ProceedingsController < ApplyController
     query.split.each do |name_part|
       name_part = name_part.downcase.gsub(/\\/, '\&\&').gsub(/'/, "''").delete(",").delete(".").delete("%")
       name_conditions << "LOWER(people.firstname) LIKE '%#{name_part}%'" 
-      name_conditions << "LOWER(people.lastname) LIKE '%#{name_part}%'"    
-    end        
-    mentors = @offering.application_for_offerings
-                   .joins(mentors: :person, current_application_status: :status_type)
-                   .where("application_status_types.name = ?", 'confirmed')
-                   .where(name_conditions.join(' OR '))
-                   .order('people.lastname, people.firstname')
+      name_conditions << "LOWER(people.lastname) LIKE '%#{name_part}%'"
+    end
+    mentors = @offering.application_for_offerings.joins(mentors: :person, current_application_status: :status_type).where("application_status_types.name = ?", 'confirmed').where(name_conditions.join(' OR ')).order('people.firstname, people.lastname')
+
+    mentors = mentors.uniq.map(&:id)    
   end
 
   def find_by_department(query)
@@ -170,7 +170,17 @@ class Apply::ProceedingsController < ApplyController
 
   def find_by_campus(query)
     @query_strings[:student_campus] = query
-    result_ids = @campus.values_at(*query).flatten.compact    
+    result_ids = @campus.values_at(*query).flatten.compact
+  end
+
+  def find_by_locations(query)
+    @query_strings[:session_location] = query
+    result_ids = @locations.values_at(*query).flatten.compact
+  end
+
+  def find_by_application_category(query)
+    @query_strings[:application_category] = query
+    result_ids = @application_category.values_at(*query).flatten.compact    
   end
   
   # Fetches all primary presenters and group members in the confirmed status
@@ -198,6 +208,10 @@ class Apply::ProceedingsController < ApplyController
 
   def fetch_locations
     @locations = @offering.session_location_mapping(:confirmed)
+  end
+
+  def fetch_application_category
+    @application_category = @offering.application_category_mapping(:confirmed)
   end
   
   def fetch_favorite_abstracts

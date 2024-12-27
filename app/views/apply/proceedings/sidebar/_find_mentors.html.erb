@@ -7,10 +7,10 @@
 
 	<p>Search by mentor name or select a department to see all students with mentors in that department.</p>
 	
-	<%= label_tag :mentor_name, "Mentor Name:" %>
+	<%= label_tag :mentor_name, "Mentor Name" %>
 	<%= text_field_tag :mentor_name, params[:mentor_name], :placeholder => 'Firstname Lastname' %>
 	<br><br>
-	<%= label_tag :mentor_department, "Mentor Department:" %>
+	<%= label_tag :mentor_department, "Mentor Department" %>
 	<%= select_tag :mentor_department,
 							options_for_select( @departments.map{|k,v| ["#{k} (#{v.size})", k]}.sort,
 							 					params[:mentor_department]), {multiple: true, class: 'chosen-select', data:  {placeholder: "Departments (#{@departments.size rescue 'Unknown'})"}} %>
