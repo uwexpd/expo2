@@ -16,7 +16,7 @@
 			            <li class="collection-item avatar">
 			            	  <i class="mi circle deep-purple lighten-3">co_present</i>
 			                <%= link_to(
-			                    "<i class='mi md-20'>add_circle_outline</i> #{application_type} Session #{session_group} #{content_tag(:span, sessions.first.time_detail("–"), class: 'time')}".html_safe,
+			                    "#{application_type} Session #{session_group} #{content_tag(:span, sessions.first.time_detail("–"), class: 'time')} <i class='mi'>add_circle</i>".html_safe,
 			                    "javascript:;",	                    
 			                    data: { link_toggle: "#session_list_#{sessions.object_id}" }
 			                ) %>

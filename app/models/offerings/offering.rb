@@ -491,7 +491,7 @@ class Offering < ApplicationRecord
     end
   end
 
-  def awardees;      application_for_offerings.awarded; end
+  def awardees;      (application_for_offerings.with_status(:awarded) + application_for_offerings.awarded).uniq; end
   def presenters;    (sessions.collect(&:presenters) + sessions.collect(&:group_members)).flatten; end
   def complete;      applications_with_status(:complete); end
 
