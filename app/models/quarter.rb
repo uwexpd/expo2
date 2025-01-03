@@ -179,8 +179,12 @@ class Quarter < ApplicationRecord
   # Returns the quarter where the specified date falls by calling the same method on StudentCalendarQuarter. Returns the
   # Quarter object instead of a StudentCalendarQuarter object.
   def self.find_by_date(qdate)
-    scq = StudentCalendarQuarter.find_by_date(qdate) 
+    scq = StudentCalendarQuarter.find_by_date(qdate)
     scq.quarter rescue nil
+  end
+
+  def self.find_quarter_by_date(obj)
+    where("? >= first_day", obj.to_date).order(first_day: :desc).first
   end
 
   protected

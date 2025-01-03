@@ -3,7 +3,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
   includes :person
   batch_action :destroy, false
   # actions :all, :except => [:destroy]
-  config.per_page = [25, 50, 100, 150, 200]
+  config.per_page = [25, 50, 100, 150, 200, 300, 500]
   config.sort_order = ""
 
   scope 'Active & Responded', :active_and_responded, default: true
@@ -122,7 +122,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
       unless member.currently_active?
         row('Inactive') do |member|
           # status_tag member.permanently_inactive? ? "** PERMANENTLY INACTIVE **" : "For current year", class: 'red'
-          status_tag "Inactive #{ ('in '+ Quarter.find_by_date(member.last_user_response_at.to_date).title) if member.last_user_response_at}", class: 'red' if member.inactive?
+          status_tag "Inactive #{ ('in '+ Quarter.find_quarter_by_date(member.last_user_response_at).title) if member.last_user_response_at rescue ''}", class: 'red' if member.inactive?
         end
         row('Permanently Inactive') {|member| status_tag member.permanently_inactive?, class: "#{'red' if member.permanently_inactive}"}
       end
@@ -165,7 +165,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
           f.input :expertise
           f.input :website_url
           f.input :recommender_id, as: :select, collection: CommitteeMember.where(committee_id: committee.id).includes(:person).collect{|m| [m.fullname, m.id]}, include_blank: true, input_html: {class: 'select2'}
-          f.input :inactive, hint: "This member will not be able to join the team #{('in ' + Quarter.find_by_date(member.last_user_response_at.to_date).try(:title) rescue '') if member.last_user_response_at} but should be contacted in the future."
+          f.input :inactive, hint: "This member will not be able to join the team #{('in ' + Quarter.find_quarter_by_date(member.last_user_response_at.to_date).try(:title) rescue '') if member.last_user_response_at} but should be contacted in the future."
           f.input :permanently_inactive, hint: 'This member has left the UW or is not able to participate in the selection process in the future.'
           f.input :comment, as: :text, input_html: {rows:2}
           f.input :notes, as: :text, input_html: {rows:2}

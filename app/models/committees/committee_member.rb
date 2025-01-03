@@ -58,9 +58,11 @@ class CommitteeMember < ApplicationRecord
   
   attr_accessor :skip_person_validations
   def person_is_valid
-    if person
-      person.require_validations = true
-      person.errors.each_full{ |e| errors.add_to_base(e) } unless person.valid?
+    return unless person
+
+    person.require_validations = true
+    unless person.valid?
+      person.errors.full_messages.each { |message| errors.add(:base, message) }
     end
   end
 

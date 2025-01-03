@@ -13,7 +13,10 @@ class StudentCalendarQuarter < StudentInfo
   
   # Returns the quarter where the specified date falls. Returns nil if classes aren't in session at that time.
   def self.find_by_date(qdate)
-    self.where(":qdate >= first_day AND :qdate < last_day_classes", qdate: qdate.to_s(:db)).limit(1).first
+    # where(":qdate >= first_day AND :qdate < last_day_classes", qdate: qdate.to_s(:db)).limit(1).first
+    where("? >= first_day AND ? < last_day_classes", qdate.to_date, qdate.to_date)
+      .order(first_day: :desc)
+      .first
   end
   
 end
