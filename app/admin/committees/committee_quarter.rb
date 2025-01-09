@@ -22,6 +22,7 @@ ActiveAdmin.register CommitteeQuarter do
 		  table_for active_quarter_members do
 	        column ('Committee Member') {|member| link_to member.committee_member.fullname, admin_committee_member_path(committee, member.committee_member) rescue "(error)" }
 	        column ('Type') {|member| member.committee_member.committee_member_type.name rescue "<span class=light>None</span>".html_safe }
+	        column ('Department') {|member| member.committee_member.department rescue 'Error'}
 	        column ('Expertise') {|member| member.committee_member.expertise.truncate(50) rescue nil}
 	        column ('Comment') do |member|
               span(member.comment, class: 'light smaller')

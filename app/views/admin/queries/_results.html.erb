@@ -24,6 +24,7 @@
 				else
 					code = field
 				end
+				code = CGI.unescapeHTML(code) rescue code # Use CGI to Convert =&gt; back into =>.
 			 %>
 				<td><%= object.instance_eval(code) rescue nil %></td>
 			<% end %>

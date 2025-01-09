@@ -30,7 +30,7 @@
 		<br><br>
 		<div class="progress_nav_buttons">
 			<% if @confirmer.confirmed.nil? || (Time.now <= @offering.confirmation_deadline if @offering.confirmation_deadline) %>
-				<%= f.submit "Submit your confirmation →", :disable_with => "Submitting confirmation...", class: 'btn' %>
+				<%= f.submit "Submit →", :disable_with => "Submitting...", class: 'btn' %>
 			<% else %>
 				<p><span class='status_tag green'>You've confirmed your participation or passed the confirmation deadline. Please contact <%= @offering.contact_email %> if you need to change your participation.</span></p>
 			<% end %>

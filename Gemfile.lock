@@ -9,18 +9,19 @@ GIT
       rubyzip (>= 1.2)
 
 GIT
-  remote: https://github.com/harrybournis/will_paginate-materialize.git
-  revision: 86e86a9ea3b21636e685b0fafb5b4b1681ff9dbd
-  specs:
-    will_paginate-materialize (0.1.2)
-      will_paginate (~> 3.1.3)
-
-GIT
   remote: https://github.com/lowjoel/activerecord-userstamp.git
   revision: 752f1e30ed8a2f0b09408bcdfa2c2dad1e5523c4
   specs:
     activerecord-userstamp (3.0.5)
       rails (>= 4.1)
+
+GIT
+  remote: https://github.com/mldoscar/will_paginate-materialize
+  revision: e7ca5f8987c4aa19a3061c305c77565d00b284fb
+  branch: master
+  specs:
+    will_paginate-materialize (1.0.0)
+      will_paginate (~> 3.1)
 
 GEM
   remote: https://rubygems.org/
@@ -175,6 +176,7 @@ GEM
     concurrent-ruby (1.2.2)
     connection_pool (2.3.0)
     crass (1.0.6)
+    csv (3.3.0)
     date (3.3.3)
     debug_inspector (1.1.0)
     diff-lcs (1.5.0)
@@ -207,6 +209,10 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
+    httparty (0.22.0)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     image_processing (1.12.2)
@@ -263,6 +269,7 @@ GEM
     mini_mime (1.1.2)
     mini_portile2 (2.8.1)
     minitest (5.17.0)
+    multi_xml (0.6.0)
     multiverse (0.2.2)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
@@ -491,6 +498,7 @@ DEPENDENCIES
   ed25519 (>= 1.2, < 2.0)
   email_validator
   hexapdf (= 0.26.2)
+  httparty
   invisible_captcha (~> 1.1)
   jquery-rails
   json

@@ -45,7 +45,8 @@ gem 'mimemagic', '~> 0.4.3'
 gem 'activerecord-userstamp', github: 'lowjoel/activerecord-userstamp'
 gem 'tinymce-rails', '5.10.7' # [TODO] not working with verson 6+
 gem 'will_paginate', '~> 3.1.6'
-gem 'will_paginate-materialize', github: 'harrybournis/will_paginate-materialize'
+# gem 'will_paginate-materialize', github: 'harrybournis/will_paginate-materialize'
+gem 'will_paginate-materialize', git: 'https://github.com/mldoscar/will_paginate-materialize', branch: 'master'
 
 # For smoothing the upgrade since auto_link and textilize are deprecated
 gem 'rails_autolink'
@@ -135,5 +136,5 @@ group :development do
   gem 'ed25519', '>= 1.2', '< 2.0'
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'  
   # gem 'meta_request'
-  # gem 'httparty'
+  gem 'httparty'
 end
