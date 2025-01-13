@@ -448,7 +448,7 @@ class ApplyController < ApplicationController
       render :action => "restricted" and return unless @restriction.allows?(@user_application)
     end
     if !@user_application.person.is_a?(Student) && @offering.require_invitation_codes_from_non_students?
-      redirect_to :action => "enter_code" and return if @user_application.offering_invitation_code.nil?
+      redirect_to apply_enter_code_path(@offering) and return if @user_application.offering_invitation_code.nil?
     end
   end
 

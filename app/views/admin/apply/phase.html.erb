@@ -26,9 +26,13 @@
 				</div>
 			<% end %>
 			<br>
-			<% task = @phase.tasks.first %>
-			<i class='mi'>forward</i> Start your first task:
-			<%= link_to "#{task.title}".html_safe, admin_apply_phase_task_path(@offering, @phase, task) %>
+			<h4><i class='mi'>forward</i> Start your tasks: </h4>
+			<ul class="link-list">
+				<% @phase.tasks.each do |task| %>
+				<% label = task.complete? ? "<i class='mi'>check_circle</i>" : "<i class='mi'>turned_in_not</i>" %>
+					<li><%= link_to "#{label} #{task.title}".html_safe, admin_apply_phase_task_path(@offering, @phase, task) %></li>
+				<% end %>
+			</ul>
 		</div>
 	</div>
 </div>
