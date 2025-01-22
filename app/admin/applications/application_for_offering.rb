@@ -15,6 +15,8 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   scope :complete do |applications|
     applications.joins(current_application_status: :application_status_type).where(application_status_types: { name: 'complete' })
   end
+  scope 'Approved', :approved, if: -> { params[:offering_id] && ApplicationForOffering.where(offering_id: params[:offering_id]).approved.count > 0 }
+  scope 'Reviewers Assigned', :reviewers_assigned, if: -> { params[:offering_id] && ApplicationForOffering.where(offering_id: params[:offering_id]).reviewers_assigned.count > 0 }
   scope 'Awarded', :awarded, if: -> { params[:offering_id] && ApplicationForOffering.where(offering_id: params[:offering_id]).awarded.count > 0 }
 
   controller do
@@ -306,7 +308,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
   filter :person_firstname, as: :string
   filter :person_lastname, as: :string
-  filter :id, label: 'Application ID'  
+  filter :id, label: 'Application ID'
   filter :offering, as: :select, collection: Offering.order('id DESC'), input_html: { class: "select2", multiple: 'multiple'}, if: proc { @offering.blank? }
   filter :project_title, as: :string
   filter :project_description, as: :string

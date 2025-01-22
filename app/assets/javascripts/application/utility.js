@@ -63,7 +63,7 @@ $(document).on('turbolinks:load', function() {
       plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table autoresize',
       toolbar: 'undo redo | cut copy paste searchreplace | italic subscript superscript charmap | preview hr spellchecker removeformat',
       menubar: false,
-      paste_merge_formats: true,
+      paste_as_text: true,
       browser_spellcheck: true,
       // https://stackoverflow.com/questions/60834085/how-to-make-textarea-filed-mandatory-when-ive-applied-tinymce/66032994#66032994
       setup: function (editor) {

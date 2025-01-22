@@ -28,7 +28,7 @@ class EventStaff < ApplicationRecord
     return nil unless event.staff_signup_email_template
     if person
       email = event.staff_signup_email_template.create_email_to(self)
-      EmailContact.log(person, TemplateMailer.deliver(email))
+      EmailContact.log(person, email.deliver_now)
       return email
     end
     nil

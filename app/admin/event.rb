@@ -25,6 +25,9 @@ ActiveAdmin.register Event do
   show do
     attributes_table do
        row ('Public Url') {|event| link_to rsvp_event_url(event), rsvp_event_url(event) }
+       unless resource.staff_positions.empty?
+         row ('Staff Url') {|event| link_to volunteer_event_url(event), volunteer_event_url(event) }
+       end
        row (:description) {|event| raw(event.description)}
        #row :capacity
        row :unit
@@ -86,9 +89,13 @@ ActiveAdmin.register Event do
     end
   end
 
-  sidebar "Times", only: [:show, :edit] do  
+  sidebar "Times", only: [:show, :edit] do
     render "times", { event: event }
   end
+
+  # sidebar "Staff Positions", only: [:show, :edit] do  
+    # render "times", { event: event }
+  # end
 
   sidebar "With Selected", only: [:attendees] do
     render "with_selected"

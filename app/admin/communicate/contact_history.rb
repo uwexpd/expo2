@@ -3,6 +3,7 @@ ActiveAdmin.register ContactHistory do
   config.sort_order = 'created_at_desc'
   config.per_page = [30, 50]
   batch_action :destroy, false
+  actions :all, except: [:new]
   config.action_items.delete_if {|item| (item.name == :edit || item.name == :destroy) && item.display_on?(:show) }  
   menu parent: 'Tools'
 
@@ -23,7 +24,7 @@ ActiveAdmin.register ContactHistory do
   index pagination_total: false do
     column('Date'){|contact| link_to contact.updated_at.to_s(:long_time12), admin_contact_history_path(contact) }
     column('To'){|contact| contact.email_to unless contact.email.nil?}
-    column('Subject'){|contact| contact.email.subject unless contact.email.nil?}
+    column('Subject'){|contact| contact.email.subject unless contact.email.nil? rescue 'Unknown'}
     column('View'){|contact| link_to "View", admin_contact_history_path(contact)}
   end
   

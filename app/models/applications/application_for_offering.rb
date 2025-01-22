@@ -133,6 +133,16 @@ class ApplicationForOffering < ApplicationRecord
     .where(application_status_types: { name: 'submitted' })
   }
 
+  scope :approved, -> {
+    joins(current_application_status: :application_status_type)
+    .where(application_status_types: { name: 'approved' })
+  }
+
+  scope :reviewers_assigned, -> {
+    joins(current_application_status: :application_status_type)
+    .where(application_status_types: { name: 'reviewers_assigned' })
+  }
+
   scope :awarded, -> {
     joins(current_application_status: :application_status_type)
     .where(application_status_types: { name: 'awarded' })

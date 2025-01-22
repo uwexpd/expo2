@@ -1,0 +1,24 @@
+<div class="highlight_box">
+
+	<h5>You're currently signed up for:</h5>
+
+	<table class="borderless highlightless">
+	
+		<% @current_user.person.event_staff_positions(@event).sort.each do |position| %>
+		<tr>
+			<td rowspan=<%= @current_user.person.event_staff_shifts.for(position).size %> width="30%">
+				<big><%=h position.title %></big>
+				<%#= "<br>#{textilize(position.description)}".html_safe unless position.description.blank? %>
+				</td>
+			
+			<%= render :partial => "shift", 
+						:collection => @current_user.person.event_staff_shifts.for(position).sort, 
+						:locals => { :position => position } %>
+		
+		</tr>
+		<% end -%>
+
+	</table>
+
+</div>
+<br>

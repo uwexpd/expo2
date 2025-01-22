@@ -20,6 +20,11 @@ class Course < StudentInfo
     Quarter.find_easily(ts_quarter, ts_year)
   end
 
+  # This is for Givepulse crn as a uniqe key combined with quater abbrev as "EDUC401A"
+  def abbrev
+    "#{dept_abbrev}#{course_no}#{section_id}".gsub(" ", "")
+  end
+
   # Fetches the Department that this Course belongs to. We can't make this a normal association because the student DB doesn't store the
   # Department primary key ("dept_code") in the Time Schedule. (Why not? Nobody knows!)
   def department
@@ -88,7 +93,7 @@ class Course < StudentInfo
   
   def registrants_count
     @registrants_count ||= StudentRegistrationCourse.where("regis_yr = ? AND regis_qtr = ? AND sln = ? AND (request_status = 'A' OR request_status = 'C' OR request_status = 'R')",
-                                                    ts_year, ts_quarter, sln)
+                                                    ts_year, ts_quarter, sln).count
   end
   
   # Returns the full group of Students who are enrolled or registered for this class, both officially in the SDB and unofficially

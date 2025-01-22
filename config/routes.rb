@@ -120,11 +120,17 @@ Rails.application.routes.draw do
     get 'remove_vicarious_login', to: 'application#remove_vicarious_login'
     get 'login_as_student', to: 'application#force_login_as_student', as: :login_as_student    
 
-    # RSVP for events    
+    # RSVP for events
     get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event
     post 'rsvp/attend/:id', to: 'rsvp#attend', as: :rsvp_attend
     delete 'rsvp/unattend/:id', to: 'rsvp#unattend', as: :rsvp_unattend
     get 'rsvp', to: 'rsvp#index', as: :rsvp
+
+    # Volunteer for events
+    get 'volunteer/event/:id', to: 'volunteer#event', as: :volunteer_event
+    match 'volunteer/signup/:id', to: 'volunteer#signup', as: :volunteer_signup, via: [:get, :post, :put]
+    delete 'volunteer/unsignup/:id', to: 'volunteer#unsignup', as: :volunteer_unsignup
+    get 'volunteer', to: 'volunteer#index', as: :volunteer
 
     # Online Applications
     get 'apply', to: "apply#list", as: :apply_list

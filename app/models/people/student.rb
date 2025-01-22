@@ -313,7 +313,7 @@ end
   # Make custom filter @alias for find_or_create_by_student_no
   def self.student_number_eq(student_no)
     student = find_or_create_by_student_no(student_no)
-    Student.where(id: student.id)
+    student ? where(id: student.id) : Student.none
   end
 
   protected

@@ -1,4 +1,4 @@
-ActiveAdmin.register Student do 
+ActiveAdmin.register Student do
 actions :index, :show
 batch_action :destroy, false
 menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_search</i> Students".html_safe
@@ -23,26 +23,36 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
         Student.student_number_eq(params[:q][:student_number_eq])        
       else
         # If no student number filter is provided, return all students
-        Student.all
+        # Student.all
+        super
       end
     end
   end
 
   index pagination_total: false do
-    column 'Photo' do |student|
+    # if resource_collection.empty?
+    #   logger.debug "Debug: resource_collection is empty"
+    # end
+    # if collection.blank?
+    #   panel "No Results" do
+    #     h3 "No students found matching the provided criteria", style: "text-align: center;"
+    #   end
+    # else
+      column 'Photo' do |student|
       image_tag url_for(action: :photo, id: student.id, reg_id: student.reg_id), class: 'student_photo', style: 'width: 40px;height: 50px'
-    end
-    column 'Name' do |student|
-      highlight_text = []
-      highlight_text << params.dig(:q, :firstname_contains) if params.dig(:q, :firstname_contains)
-      highlight_text << params.dig(:q, :lastname_contains) if params.dig(:q, :lastname_contains)
-      link_to highlight(student.fullname, highlight_text), admin_student_path(student)
-    end
-    column ('Email') {|student| highlight student.email, params.dig(:q, :email_contains) }
-    column ('Student No.') {|student| highlight student.student_no, params.dig(:q, :student_number_eq) }
-    column ('Class') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) rescue nil}
-    column ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) rescue nil}
-    column ('Created At') {|student| "#{time_ago_in_words student.created_at} ago"}
+      end
+      column 'Name' do |student|
+        highlight_text = []
+        highlight_text << params.dig(:q, :firstname_contains) if params.dig(:q, :firstname_contains)
+        highlight_text << params.dig(:q, :lastname_contains) if params.dig(:q, :lastname_contains)
+        link_to highlight(student.fullname, highlight_text), admin_student_path(student)
+      end
+      column ('Email') {|student| highlight student.email, params.dig(:q, :email_contains) }
+      column ('Student No.') {|student| highlight student.student_no, params.dig(:q, :student_number_eq) }
+      column ('Class') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) rescue nil}
+      column ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) rescue nil}
+      column ('Created At') {|student| "#{time_ago_in_words student.created_at} ago"}
+    # end
   end
 
   show do

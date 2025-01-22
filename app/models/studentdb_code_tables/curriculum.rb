@@ -7,10 +7,14 @@ class Curriculum < StudentInfo
   belongs_to :department, :class_name => "Department", :foreign_key => "curric_dept"
     
   # Returns curriculum codes that are currently valid (i.e., curric_last_yr > quarter.year). Accepts a Quarter object as a parameter.
-  scope :valid_for, lambda  { |quarter| {:conditions => ['(curric_last_yr >= ? OR (curric_last_yr = ? AND curric_last_qtr >= ?)) AND 
-                                                              (curric_first_yr <= ? OR (curric_first_yr = ? AND curric_first_qtr <= ?))', 
-                                                              quarter.year, quarter.year, quarter.quarter_code_id, 
-                                                              quarter.year, quarter.year, quarter.quarter_code_id] } }
+  scope :valid_for, lambda { |quarter|
+    where(
+      '(curric_last_yr >= :year OR (curric_last_yr = :year AND curric_last_qtr >= :quarter_code_id)) AND
+       (curric_first_yr <= :year OR (curric_first_yr = :year AND curric_first_qtr <= :quarter_code_id))',
+      year: quarter.year,
+      quarter_code_id: quarter.quarter_code_id
+    )
+  }
 
   default_scope { order('curric_abbr ASC') }
 

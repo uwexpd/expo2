@@ -855,9 +855,11 @@ div.uploaded_letter {
 	background: #f7f7f7;
 }
 
-table.reviewer tr.finalized, table.interviewer tr.finalized, tr.unavailable {
+table.reviewer tr.finalized, table.interviewer tr.finalized, tr.unavailable, table td.signed_up {
 	background: url(image-path('app/unavailable-xtile.gif')) fixed;
 }
+
+
 
 tr.rowset-header td {
 	font-weight: bold;

@@ -43,7 +43,11 @@ class Person < ApplicationRecord
   has_many :contact_histories, -> {order('updated_at DESC')}
   has_many :event_staffs
   has_many :event_staff_shifts, :through => :event_staffs, :source => :shift do
-    def for; where(event_staff_position_id: position.id); end
+    def for(position); where(event_staff_position_id: position.id); end
+  end
+
+  def event_staff_positions(event)
+    event_staffs.select { |s| s.event == event }.map(&:position).flatten.uniq
   end
   
   has_many :appointments, :foreign_key => 'staff_person_id' do    
