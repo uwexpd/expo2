@@ -24,7 +24,7 @@
 			<%= form_with model: @app, url: { action: 'update', section: 'essay' }, id: @app.id do |f| %>
 
 				<%= f.fields_for :files, app_file do |file_fields| %>
-					<%= file_fields.file_field :file, name: "application_for_offering[file_attributes][#{app_file.id}][file]"  %>
+					<%= file_fields.file_field :file, name: "application[file_attributes][#{app_file.id}][file]"  %>
 				<% end %>
 				<%= f.submit "Upload new file", class: 'small' %>
 			<% end %>
