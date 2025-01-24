@@ -1,0 +1,9 @@
+<div class="information">
+  <%= link_to '<i class="mi md-20 uw_purple">add_circle</i> Add New'.html_safe, new_admin_event_staff_position_shift_path(event, position) %> | 
+  <%= link_to '<i class="mi md-20 uw_purple">view_list</i> See All'.html_safe, admin_event_staff_position_shifts_path(event, position) %>
+</div>
+<ul class="link-list">
+	<% position.shifts.sort.each do |shift| %>
+		<li><%= link_to shift.time_detail, admin_event_staff_position_shift_path(event, position, shift) %></li>
+	<% end %>
+</ul>

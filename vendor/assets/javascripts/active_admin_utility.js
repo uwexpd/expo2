@@ -130,6 +130,10 @@ $(document).on("change", ".select_all", function(){
 
 });
 
+$(document).on('change', '#select-all', function() {
+      $('.batch-checkbox').prop('checked', $(this).prop('checked'));
+});
+
 $(document).on('click', '#show-details-button', function(event) {
     event.preventDefault(); // Prevent the default link action
     

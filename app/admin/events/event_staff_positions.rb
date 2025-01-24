@@ -1,4 +1,4 @@
-ActiveAdmin.register EventStaffPosition, as: 'staff_positions' do
+ActiveAdmin.register EventStaffPosition, as: 'staff_position' do
   belongs_to :event
   batch_action :destroy, false
   config.filters = false
@@ -22,13 +22,17 @@ ActiveAdmin.register EventStaffPosition, as: 'staff_positions' do
        row :restrictions
        row :require_all_shifts
     end
-    # panel 'Invitees' do
-    #    table_for times.invitees.joins(:person).order((params[:order] ? params[:order] : 'lastname asc').gsub('_asc', ' asc').gsub('_desc', ' desc')), sortable: true do
-    #      column('Name', sortable: 'lastname') {|invitee| invitee.person.is_a?(Student) ? (link_to invitee.person.fullname, admin_student_path(invitee.person.id)) : (link_to invitee.person.fullname, admin_person_path(invitee.person.id) rescue invitee.fullname rescue "#error") }
-    #      column('Expected?', sortable: 'attending') {|invitee| invitee.attending? ? (status_tag 'Yes', class: 'green small') : (status_tag 'No', class: 'red small') }
-    #      column('Attended?', sortable: 'checkin_time') {|invitee| invitee.checked_in? ? (status_tag 'Yes', class: 'ok small') : (status_tag 'No', class: 'red small') }         
-    #    end
-    # end
+    panel 'Shifts' do
+       table_for staff_position.shifts do
+         column ('Times') {|shift| link_to shift.time_detail, admin_event_staff_position_shift_path(staff_position.event, staff_position, shift) }
+         column ('Volunteers') {|shift| shift.staffs.size }
+         column ('Functions'){|shift|
+            span link_to '<span class="mi">visibility</span>'.html_safe, admin_event_staff_position_shift_path(event, staff_position, shift), class: 'action_icon'
+            span link_to '<span class="mi">edit</span>'.html_safe, edit_admin_event_staff_position_shift_path(event, staff_position, shift), class: 'action_icon'
+            span link_to '<span class="mi">delete</span>'.html_safe, admin_event_staff_position_shift_path(event, staff_position, shift), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon'
+               }
+       end
+    end    
   end
 
   form do |f|
@@ -38,10 +42,14 @@ ActiveAdmin.register EventStaffPosition, as: 'staff_positions' do
       f.input :description, hint: "This brief description is shown on the page where volunteers choose which position to sign up for.", input_html: { class: "tinymce",  rows: 4}
       f.input :instructions, hint: "These instructions are shown to the volunteer after they sign up.", input_html: { class: "tinymce",  rows: 4}
       f.input :training_session_event, input_html: {class: 'select2'}
-      f.input :restrictions, input_html: {rows: 4,cols: 50}
+      f.input :restrictions, input_html: {rows: 4}
       f.input :require_all_shifts, label: 'Require volunteers to signup for all shifts at once'    
     end
     f.actions
+  end
+
+  sidebar "Staff Positions", only: [:show] do
+    render "admin/events/staff_positions", event: staff_position.event
   end
 
 

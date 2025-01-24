@@ -62,7 +62,7 @@ a.button.has_many_add, a.button.has_many_remove {
 	box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.15);
 }
 
-a.button:hover, #titlebar_right .action_item a:hover {
+button:hover, a.button:hover, #titlebar_right .action_item a:hover {
 	text-decoration: none;
 	color: white;
 	opacity: 0.8;

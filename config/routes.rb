@@ -97,7 +97,12 @@ Rails.application.routes.draw do
         resources :members
         resources :quarters
         resources :meetings
-      end      
+      end
+      resources :events do
+        resources :staff_positions do
+          resources :shifts
+        end
+      end
       resources :notes
       resources :service_learning_positions
       resources :quarter
