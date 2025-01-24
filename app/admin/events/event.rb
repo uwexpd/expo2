@@ -93,9 +93,9 @@ ActiveAdmin.register Event do
     render "times", { event: event }
   end
 
-  # sidebar "Staff Positions", only: [:show, :edit] do  
-    # render "times", { event: event }
-  # end
+  sidebar "Staff Positions", only: [:show] do
+    render "staff_positions", { event: event }
+  end
 
   sidebar "With Selected", only: [:attendees] do
     render "with_selected"

@@ -83,7 +83,7 @@ class MentorController < ApplicationController
     
     check_if_past_deadline unless @mentee_application_record.responded?
     if params["application_mentor"]
-      selected_academic_department = params["application_mentor"]["academic_department"].delete_if(&:blank?)
+      selected_academic_department = params["application_mentor"]["academic_department"].blank? ? nil : params["application_mentor"]["academic_department"].delete_if(&:blank?)
       if selected_academic_department.blank?
          @error = "Please at least select one for your academic department(s)."
          flash[:error] = @error

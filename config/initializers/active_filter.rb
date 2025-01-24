@@ -8,10 +8,10 @@ module ActiveAdmin
         filter_params[key] = value.strip if value.class == String
       end
 
-      if chain.blank?
+      # if chain.blank?
         #logger.debug "Debug: chain is empty #{chain.inspect}"
-        return chain # Return empty chain to avoid errors and let ActiveAdmin handle the blank slate
-      end
+        # return chain # Return empty chain to avoid errors and let ActiveAdmin handle the blank slate
+      # end
 
       @search = chain.ransack(filter_params || {})
       # logger.debug "Debug search: #{@search.inspect}"

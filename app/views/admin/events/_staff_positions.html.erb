@@ -1,0 +1,10 @@
+<div class="information">
+  <%= link_to '<i class="mi md-20 uw_purple">add_circle</i> Add New'.html_safe, new_admin_event_staff_position_path(event) %> | 
+  <%= link_to '<i class="mi md-20 uw_purple">view_list</i> See All'.html_safe, admin_event_staff_positions_path(event) %>
+</div>
+<ul class="link-list">
+
+	<% event.staff_positions.sort.each do |staff_position| %>
+		<li><%= link_to staff_position.title, admin_event_staff_position_path(event, staff_position) %></li>
+	<% end %>
+</ul>
