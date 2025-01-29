@@ -2,7 +2,19 @@ ActiveAdmin.register_page "Base" do
   menu false
 
   controller do
-	  skip_before_action :login_required, :only => :remove_vicarious_login, raise: false
+	  skip_before_action :login_required, only: :remove_vicarious_login, raise: false
+	  before_action :check_ferpa_reminder_date, :except => [ 'ferpa_reminder', 'ferpa_statement', 'remove_vicarious_login', 'vicarious_login' ]
+
+	  def ferpa_reminder
+	    if request.post? && params[:commit]
+	      @current_user.update(ferpa_reminder_date: Time.now)
+	      return redirect_to admin_path
+	    end
+	  end
+
+	  def ferpa_statement
+	    # session[:breadcrumbs].add "Statement of Responsibilities Regarding FERPA Requirements"
+	  end
 
 	  def vicarious_login
 	    if !params['vicarious_login'].blank?
@@ -26,6 +38,11 @@ ActiveAdmin.register_page "Base" do
 	      return redirect_to admin_path
 	    end
 	  end
+
+  end
+
+  sidebar "Helpful Links", only: [:ferpa_reminder, :ferpa_statement] do
+    render "admin/base/sidebar/ferpa_links"
   end
 
 end

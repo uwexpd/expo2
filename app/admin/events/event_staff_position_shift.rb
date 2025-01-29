@@ -1,5 +1,4 @@
 ActiveAdmin.register EventStaffPositionShift, as: 'shift' do
-  # belongs_to :event_staff_position  
   batch_action :destroy, false
   menu false
   config.filters = false

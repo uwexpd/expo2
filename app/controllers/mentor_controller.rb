@@ -147,6 +147,14 @@ class MentorController < ApplicationController
       send_file letter_path, x_sendfile: true
     end    
   end
+
+  def view_file
+    file = ApplicationFile.find(params[:file_id]).file
+    file_path = "#{Rails.root}/files/application_file/file/#{params[:id]}/#{file.filename}"
+    unless file_path.nil?
+      send_file file_path, x_sendfile: true
+    end
+  end
   
   protected
   

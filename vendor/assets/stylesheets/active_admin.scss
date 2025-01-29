@@ -1607,3 +1607,7 @@ tr.details td {
 #review_committee table tr.unavailable {
 	background: url(image-path('app/unavailable-xtile.gif')) fixed;
 }
+
+ol.extra_space li {
+	padding-bottom: 1rem;
+}

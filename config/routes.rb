@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     # Custom Active Admin Routes
     # -------------------------------------------------------------------------------------------
     get 'admin', to: 'admin/dashboard#index', as: :admin
+    match 'admin/ferpa_reminder', to: 'admin/base#ferpa_reminder', via: [:get, :post, :put], as: :admin_ferpa_reminder
+    get 'admin/ferpa_statement', to: 'admin/base#ferpa_statement'
     get 'files/user/:id/:mounted_as/:filename', to: 'admin/user#picture'
     # Admin Apply Actions
     match 'admin/apply/dean_approve', to: 'admin/apply#dean_approve', as: :admin_apply_dean_approve, via: [:get, :post, :put]
@@ -178,6 +180,7 @@ Rails.application.routes.draw do
     match 'mentor/offering/:offering_id/mentee_abstract_approve/:id', to: 'mentor#mentee_abstract_approve', via: [:get, :post, :put, :patch]
     match 'mentor/mentee_abstract_approve/:id', to: 'mentor#mentee_abstract_approve', via: [:get, :post, :put, :patch], as: :mentee_abstract_approve
     get 'mentor/:id/letter/:filename', to: 'mentor#letter', as: :mentor_letter
+    get 'mentor/application_file/:id/:file_id', to: 'mentor#view_file', as: :mentor_view_file
 
     # Committee Members
     get 'committee_member', to: 'committee_member#index', as: :committee_member

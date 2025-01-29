@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   before_action :add_to_session_history
   before_action :verify_uwsdb_connection
   before_action :check_if_contact_info_blank
+  before_action :check_ferpa_reminder_date, :except => [ 'remove_vicarious_login', 'vicarious_login' ]
 
   def authenticate_admin_user!
     unless current_admin_user
@@ -91,8 +92,10 @@ class ApplicationController < ActionController::Base
   protected
 
   def check_ferpa_reminder_date
-    if session[:vicarious_user].blank? && (@current_user.ferpa_reminder_date.nil? || @current_user.ferpa_reminder_date < 3.months.ago)
-      redirect_to admin_ferpa_reminder_url(:return_to => request.request_uri) and return
+    if @current_user && @current_user.admin?      
+      if session[:vicarious_user].blank? && (@current_user.ferpa_reminder_date.nil? || @current_user.ferpa_reminder_date < 3.months.ago)      
+        redirect_to admin_ferpa_reminder_path(return_to: request.fullpath) and return
+      end
     end
   end
 
