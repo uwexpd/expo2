@@ -1,7 +1,7 @@
 class Person < ApplicationRecord  
   model_stamper
   belongs_to :department
-  belongs_to :institution
+  # belongs_to :institution
   belongs_to :class_standing, :class_name => "ClassStanding", :foreign_key => "class_standing_id"
   before_create :generate_token
   
@@ -338,6 +338,10 @@ class Person < ApplicationRecord
     0.0/0.0
   end
  
+  def institution
+    Institution.find_by_table_key(institution_id)
+  end
+  
   def institution_name
     read_attribute(:institution_name).blank? ? (institution.name unless institution.nil?) : read_attribute(:institution_name)
   end

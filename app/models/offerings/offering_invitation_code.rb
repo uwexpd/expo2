@@ -3,7 +3,7 @@ class OfferingInvitationCode < ApplicationRecord
   stampable
   belongs_to :offering
   belongs_to :application_for_offering
-  belongs_to :institution
+  # belongs_to :institution
   
   validates_presence_of :offering_id
   validates_presence_of :code
@@ -19,8 +19,12 @@ class OfferingInvitationCode < ApplicationRecord
     update_attribute(:application_for_offering_id, app.id) if available?
   end
 
-  def institution_name    
+  def institution_name
     Institution.find_by_table_key(institution_id).try(:name)
+  end
+
+  def institution
+    Institution.find_by_table_key(institution_id)
   end
   
   # Generates a random code that can be used with the specified Offering, or, if n > 1, generate a whole block.
