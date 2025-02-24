@@ -15,10 +15,10 @@ function initializeSelect2() {
 $(function() {
    tinymce.init({
       selector: '.tinymce',
-      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table autoresize',
+      plugins: 'paste advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen searchreplace wordcount insertdatetime media table autoresize',
       toolbar: 'insertfile undo redo | cut copy paste searchreplace | styleselect forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link unlink anchor image media | table insertdatetime subscript superscript charmap preview code | hr spellchecker removeformat',
       menubar: false,
-      paste_merge_formats: true,
+      paste_as_text: true,
       browser_spellcheck: true
    });
 
