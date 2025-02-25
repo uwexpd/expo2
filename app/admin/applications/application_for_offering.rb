@@ -66,9 +66,18 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
             anchor = "application_review"
             flash[:notice] = "Successfully updated applicaiton."
          else
-            flash[:alert] = "Something went wrong. Please try again later."
+            flash[:alert] = "Something went wrong: " + @app.errors.full_messages.to_sentence
          end
       end
+
+      if application_for_offering_params
+         if @app.update(application_for_offering_params)
+            flash[:notice] = "The applicaiton was successfully updated."
+         else
+            flash[:alert] = "Something went wrong: " + @app.errors.full_messages.to_sentence
+         end
+      end
+
 
       session[:return_to_after_email_queue] = request.referer
       redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
@@ -118,6 +127,10 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
     def application_params
       params.require(:user_application).permit! if params[:user_application]
+    end
+
+    def application_for_offering_params
+      params.require(:application_for_offering).permit! if params[:application_for_offering]
     end
 
   end
@@ -291,6 +304,13 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
           f.inputs "#{page_title}" do
             render 'admin/applications/edit_application_details', { f: f, app_page: app_page, app: @app }
           end
+        end
+      end
+      tab "Abstract Review" do
+        f.inputs "Abstract Review" do
+          # render 'admin/applications/edit_abstract', { f: f, app: @app }
+          f.input :review_comments, label: "Abstract Review Comments: <small class='light'>(Will be shared with the applicant)</small>".html_safe, :input_html => { :class => 'autogrow', :rows => 5, :cols => 40  }
+          f.input :hide_proceeding_abstract, label: 'Hide this abstract in the online proceedings/schedule.'
         end
       end
     end

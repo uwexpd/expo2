@@ -80,6 +80,7 @@ class ApplicationForOffering < ApplicationRecord
   
   validates_associated :other_awards
   validates_presence_of :offering_id, :person_id
+  validates :project_title, length: { maximum: 255 }
 
   validates_uniqueness_of :easel_number, :scope => [ :offering_id, :offering_session_id, :location_section_id ], :allow_nil => true
   

@@ -71,7 +71,7 @@ class ApplyController < ApplicationController
     @user_application.set_status('in_progress')
 
     # update the application's attributes
-    @user_application.update_attributes(apply_params) if apply_params
+    @user_application.update(apply_params) if apply_params
 
     # add a mentor if needed
     if params[:add_mentor_button] && @user_application.more_mentors_ok?
@@ -139,7 +139,7 @@ class ApplyController < ApplicationController
     end
 
     # show the page again
-    render :action => 'page'
+    redirect_to action: 'page'
   end
 
   def help

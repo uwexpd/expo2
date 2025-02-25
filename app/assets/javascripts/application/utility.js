@@ -81,18 +81,45 @@ $(document).on('turbolinks:load', function() {
 
   $(document).on('click', 'input[type=submit]', checkSubmit);
   function checkSubmit() {
-    $('textarea.tinymce').each( function(index, element){      
-      if ($(this).length && $(this).val().trim().length <= 0) {        
-        $(this).next().next().show();
-        $(this).next().next().html('Please fill out content in the input box above');
-        return false;
+    let isValid = true; // Track if form is valid
+
+    $('textarea.tinymce').each(function () {
+      let $textarea = $(this);
+      let content = tinymce.get($textarea.attr("id")).getContent({ format: 'text' }).trim();
+      let maxLength = $textarea.data("length"); // Read max length from `data-length`
+      let errorElement = $textarea.next().next(); // Error message div
+
+      // If TinyMCE is empty, show error
+      if (content.length <= 0) {
+        errorElement.show().html('Please fill out content in the input box above.');
+        isValid = false;
       }
-      else
-      {        
-        $(this).next().next().hide();
-        $(this).next().next().html('');        
+      // If maxLength exists and content exceeds limit, show error
+      else if (maxLength && content.length > maxLength) {
+        errorElement.show().html(`Your input exceeds the allowed ${maxLength} characters. Please shorten your text.`);
+        isValid = false;
+      }
+      // If valid, hide error message
+      else {
+        errorElement.hide().html('');
       }
     });
+
+    if (!isValid) {
+      event.preventDefault(); // Prevent form submission if validation fails
+    }
+    // $('textarea.tinymce').each( function(index, element){
+    //   if ($(this).length && $(this).val().trim().length <= 0) {
+    //     $(this).next().next().show();
+    //     $(this).next().next().html('Please fill out content in the input box above');
+    //     return false;
+    //   }
+    //   else
+    //   {
+    //     $(this).next().next().hide();
+    //     $(this).next().next().html('');
+    //   }
+    // });
 
   }
   
