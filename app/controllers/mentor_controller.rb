@@ -64,9 +64,10 @@ class MentorController < ApplicationController
   end
   
   # Approve Mentee abstract logic: 
-  # Primary mentors (no matter what type of mentors) *AND*
+  # [REMOVED] Primary mentors (no matter what type of mentors) *AND*
   # other mentors who are meets_minimum_qualification need to approve the abstract, then the application status will be marked as completed.
   # Not_required_mentor should be able to enter academic dept even the application status is completed.
+  # 2025-2-26: Only all primary mentor approvals update status to completed
   def mentee_abstract_approve
     @person = @current_user.person
     @mentee_application_record = @person.application_mentors.find params[:id]
@@ -95,8 +96,9 @@ class MentorController < ApplicationController
       if @mentee_application_record.update(mentor_approval_params)
         @mentee_application_record.update(approval_at: Time.now)
         if @mentee_application.submitted?
-          @required_mentors = @mentee_application.reload.mentors.select{|m| m.primary || m.meets_minimum_qualification?}
-          @mentee_application.set_status "complete" unless @required_mentors.collect(&:approved?).include?(false)
+          # @required_mentors = @mentee_application.reload.mentors.select{|m| m.primary || m.meets_minimum_qualification?}
+          # @mentee_application.set_status "complete" unless @required_mentors.collect(&:approved?).include?(false)
+          @mentee_application.set_status "complete" unless @mentee_application.reload.mentors.select{|m| m.primary}.collect(&:approved?).include?(false)
           @mentee_application.set_status "revision_needed" if @mentee_application_record.approval_response == 'revise'
           @mentee_application.set_status "mentor_denied" if @mentee_application_record.approval_response == 'no_with_explanation'
           @mentee_application.mentors.delete(@mentee_application_record) if @mentee_application_record.approval_response == 'listed_in_error'
