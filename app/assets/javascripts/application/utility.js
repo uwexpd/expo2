@@ -93,12 +93,12 @@ $(document).on('turbolinks:load', function() {
       if (content.length <= 0) {
         errorElement.show().html('Please fill out content in the input box above.');
         isValid = false;
-      }
+      } 
       // If maxLength exists and content exceeds limit, show error
-      else if (maxLength && content.length > maxLength) {
-        errorElement.show().html(`Your input exceeds the allowed ${maxLength} characters. Please shorten your text.`);
-        isValid = false;
-      }
+      // else if (maxLength && content.length > maxLength) {
+      //   errorElement.show().html(`Your input exceeds the allowed ${maxLength} characters. Please shorten your text.`);
+      //   isValid = false;
+      // }
       // If valid, hide error message
       else {
         errorElement.hide().html('');
