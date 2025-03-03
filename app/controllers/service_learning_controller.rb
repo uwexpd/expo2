@@ -67,7 +67,7 @@ class ServiceLearningController < ApplicationController
     @new_position = ServiceLearningPosition.find params[:id]
     if @new_position.filled_for?(@service_learning_course)
       flash[:error] = "We're sorry, but the new position you selected is no longer available. Please choose another."
-      redirect_to :action => "index"
+      redirect_to :action => "index" and return
     end
     
     if request.patch?
@@ -75,7 +75,7 @@ class ServiceLearningController < ApplicationController
       # TODO: change place_into to the place_into(position, course, unit) format when the student side it set up to use units
       @student.place_into(@new_position, @service_learning_course)
       flash[:success] = "You are now registered into your new community-engaged-learning position."
-      redirect_to :action => "complete"
+      redirect_to :action => "complete" and return
     end
 
     add_breadcrumb "Community-Engaged Learning Registration", community_engaged_path

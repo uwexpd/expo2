@@ -12,7 +12,7 @@
   <% link_title << content_tag(:span, session.time_detail("–"), class: 'time') if show_time %>
   <%= link_to link_title.html_safe, apply_proceedings_offering_session_path(@offering.id, session.id) %>
 
-  <% if !@offering.virtual_proceeding || (@current_user != :false && @current_user.admin && @current_user.in_unit?(3)) || Time.current >= @offering.proceeding_public_display_at %>
+  <% if !@offering.virtual_proceeding || (@current_user != :false && @current_user && @current_user.admin && @current_user.in_unit?(3)) || Time.current >= @offering.proceeding_public_display_at %>
     <%= content_tag(:span, "(#{session.location})", class: 'location') %>
   <% end %>
   <br>

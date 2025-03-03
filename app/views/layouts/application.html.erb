@@ -32,7 +32,7 @@
 	
 	<div id="content" class="row">
 		<% unless @alternate_stylesheet.blank? %>
-				<div id="apply_header" class="<%= @alternate_stylesheet %>"> <span class="header_title <%= @alternate_stylesheet %>"></span></div>
+				<div id="apply_header" class="<%= @alternate_stylesheet %>"> <span class="<%= controller.controller_path.gsub("/", " ") %> header_title <%= @alternate_stylesheet %>"></span></div>
 		<% end %>
 		<% if yield(:sidebar).blank? %>
 			<div id="main" class="col s12">

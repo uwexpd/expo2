@@ -23,9 +23,9 @@
 	background-size: 1200px 150px;
 }
 
-.proceedings .header_title.symposium2025 {
+#apply_header .apply.proceedings.header_title.symposium2025 {
 	background: url(image-path('symposium/2025/event-title.png'));	
-	background-size: cover;
+	background-size: 1200px 150px;
 }
 
 // 2024 sympoisum
@@ -38,8 +38,8 @@
 	background: url(image-path('symposium/2024/header-layered.png')) repeat;
 }
 
-.proceedings .header_title.symposium2024 {
-	background: url(image-path('symposium/2024/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2024 {
+	background: url(image-path('symposium/2024/proceedings-iphone.png'));
 }
 
 // 2023 sympoisum
@@ -52,7 +52,7 @@
 	background: url(image-path('symposium/2023/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2023{
+#apply_header .apply.proceedings.header_title.symposium2023 {
 	background: url(image-path('symposium/2023/proceedings-title.png'));
 }
 
@@ -66,7 +66,7 @@
 	background: url(image-path('symposium/2022/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2022 {
+#apply_header .apply.proceedings.header_title.symposium2022 {
 	background: url(image-path('symposium/2022/proceedings-title.png'));
 }
 
@@ -80,8 +80,8 @@
 	background: url(image-path('symposium/2021/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2021 {
-	background: #4b2e83 url(image-path('symposium/2021/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2021 {
+	background: url(image-path('symposium/2021/proceedings-title.png'));
 }
 
 
@@ -95,8 +95,8 @@
 	background: url(image-path('symposium/2020/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2020 {
-	background: #7fb439 url(image-path('symposium/2020/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2020 {
+	background: url(image-path('symposium/2020/proceedings-title.png'));
 }
 
 
@@ -110,8 +110,8 @@
 	background: url(image-path('symposium/2019/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2019 {
-	background: #D09B2C url(image-path('symposium/2019/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2019 {
+	background: url(image-path('symposium/2019/proceedings-title.png'));
 }
 
 // 2018 sympoisum
@@ -124,8 +124,8 @@
 	background: url(image-path('symposium/2018/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2018 {
-	background: #694092 url(image-path('symposium/2018/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2018 {
+	background: url(image-path('symposium/2018/proceedings-title.png'));
 }
 
 // 2017 sympoisum
@@ -138,8 +138,8 @@
 	background: url(image-path('symposium/2017/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2017 {
-	background: #694092 url(image-path('symposium/2017/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2017 {
+	background: url(image-path('symposium/2017/proceedings-title.png'));
 }
 
 // 2016 sympoisum
@@ -152,8 +152,8 @@
 	background: url(image-path('symposium/2016/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2016 {
-	background: #694092 url(image-path('symposium/2016/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2016 {
+	background: url(image-path('symposium/2016/proceedings-title.png'));
 }
 
 // 2015 sympoisum
@@ -166,8 +166,8 @@
 	background: url(image-path('symposium/2015/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2015 {
-	background: #694092 url(image-path('symposium/2015/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2015 {
+	background: url(image-path('symposium/2015/proceedings-title.png'));
 }
 
 // 2014 sympoisum
@@ -176,8 +176,8 @@
 	position: relative;
 }
 
-.proceedings .header_title.symposium2014 {
-	background: #694092 url(image-path('symposium/2014/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2014 {
+	background: url(image-path('symposium/2014/proceedings-title.png'));
 }
 
 // 2013 sympoisum
@@ -214,13 +214,13 @@
 	background: url(image-path('symposium/2011/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2011 {
-	background: #2e3192 url(image-path('symposium/2011/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2011 {
+	background: url(image-path('symposium/2011/proceedings-title.png')) no-repeat;
 }
 
 // 2010 sympoisum
 #apply_header.symposium2010 {
-	background: #ddb11d url(image-path('symposium/2010/header.png'));
+	background: #ddb11d url(image-path('symposium/2010/header.jpg'));
 	position: relative;
 }
 
@@ -228,8 +228,8 @@
 	background: url(image-path('symposium/2010/header-title.png')) no-repeat;
 }
 
-.proceedings .header_title.symposium2010 {
-	background: #ddb11d url(image-path('symposium/2010/proceedings-title.png'));
+#apply_header .apply.proceedings.header_title.symposium2010 {
+	background: url(image-path('symposium/2010/proceedings-title.png')) no-repeat;
 }
 
 // 2009 sympoisum

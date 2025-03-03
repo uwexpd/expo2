@@ -600,8 +600,8 @@ class Offering < ApplicationRecord
       @apps = application_for_offerings.with_status(status)
       departments = {}
       for iapp in @apps
-        dept = academic_department==true ? iapp.primary_mentor.academic_department : iapp.mentor_department        
-        dept.each{|d| departments[d] = (departments[d].nil? ? [iapp.id] : departments[d] << iapp.id) } unless dept.blank?        
+        dept = academic_department==true ? iapp.primary_mentor.academic_department : iapp.mentor_department
+        Array(dept).each{|d| departments[d] = (departments[d].nil? ? [iapp.id] : departments[d] << iapp.id) } unless dept.blank?
       end
       departments
     end
