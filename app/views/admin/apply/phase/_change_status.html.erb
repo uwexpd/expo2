@@ -31,7 +31,7 @@
 		<%= options_from_collection_for_select @task.new_application_status_types, :name, :name_pretty %>
 	</select>
 	<%= hidden_field_tag :redirect_to_action, 'phase' %>
-	<%= f.submit "Change Statuses and E-mail Notifications" %>
+	<%= f.submit "Change Statuses and E-mail Notifications", data: { disable_with: 'Processing...' } %>
 </div>
 
 <% end %>

@@ -6,7 +6,7 @@ ActiveAdmin.register Unit do
 
   before_action -> { check_permission("unit_manager") }
   
-  permit_params :name, :abbreviation, :logo_uri, :description, :home_url, :engage_url, :show_on_expo_welcome, :phone, :email
+  permit_params :name, :abbreviation, :logo_uri, :description, :home_url, :engage_url, :show_on_expo_welcome, :phone, :email, :short_title
   
   # Completely replace the record retrieving code (e.g., you have a custom to_param implementation in your models), override the resource method on the controller:
   controller do
@@ -19,6 +19,7 @@ ActiveAdmin.register Unit do
     column 'Unit', sortable: :name do |unit|
       link_to unit.name, admin_unit_path(unit)
     end    
+    column :short_title
     column :description
     column :email
     column :phone
@@ -28,6 +29,7 @@ ActiveAdmin.register Unit do
   show do
     attributes_table do
         row :name
+        row :short_title
         row :abbreviation
         row :description
         row :phone
@@ -58,6 +60,7 @@ ActiveAdmin.register Unit do
       if f.object.new_record?
         input :abbreviation
       end
+      input :short_title, hint: "Display the short description in the system."
       input :description, :input_html => { :rows => 5, :style => "width:100%;" }
       input :phone
       input :email

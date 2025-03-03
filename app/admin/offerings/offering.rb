@@ -42,7 +42,7 @@ ActiveAdmin.register Offering do
 
   index do
     column ('Name') {|offering| link_to(offering.name, admin_offering_path(offering)) }
-    column ('Unit') {|offering| link_to(offering.unit.abbreviation, admin_unit_path(offering.unit)) if offering.unit }
+    column ('Unit') {|offering| link_to(offering.unit.short_title, admin_unit_path(offering.unit)) if offering.unit }
     column ('Quarter') {|offering|  offering.quarter_offered ? offering.quarter_offered.title : offering.year_offered }
     column ('Current Phase') {|offering| link_to(offering.current_offering_admin_phase.name, admin_apply_phase_path(offering, offering.current_offering_admin_phase)) rescue nil }
     column ('Applications') {|offering| link_to "#{offering.application_for_offerings.valid_status.size.to_s} Apps", admin_apply_manage_path(offering) unless offering.application_for_offerings_count.nil? }    

@@ -1611,3 +1611,11 @@ tr.details td {
 ol.extra_space li {
 	padding-bottom: 1rem;
 }
+
+input[type="submit"]:disabled,
+button:disabled {
+  background-color: #ccc; /* Light grey background */
+  color: #666;            /* Dark grey text */
+  cursor: not-allowed;    /* Change cursor to indicate disabled state */
+  opacity: 0.6;           /* Reduce opacity */
+}

@@ -30,6 +30,6 @@
 <br>
 	<%= hidden_field_tag :redirect_to_action, 'phase' %>
 	<%= hidden_field_tag "new_status", "reviewers_assigned" %>
-	<%= f.submit "Confirm Reviewers and Update Status for Selected", :name => "change_status" %>
+	<%= f.submit "Confirm Reviewers and Update Status for Selected", :name => "change_status", , data: { disable_with: 'Processing...' } %>
 
 <% end %>

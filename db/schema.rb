@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_09_12_175251) do
+ActiveRecord::Schema.define(version: 2025_03_03_204814) do
 
   create_table "academic_departments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -872,6 +872,7 @@ ActiveRecord::Schema.define(version: 2024_09_12_175251) do
     t.text "task_completion_status_cache"
     t.integer "theme_response3"
     t.boolean "hide_proceeding_abstract"
+    t.string "time_conflicts"
   end
 
   create_table "deleted_application_mentors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -905,6 +906,7 @@ ActiveRecord::Schema.define(version: 2024_09_12_175251) do
     t.string "relationship"
     t.text "task_completion_status_cache"
     t.string "academic_department"
+    t.boolean "confirm_primary"
   end
 
   create_table "deleted_application_statuses", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -2908,6 +2910,7 @@ ActiveRecord::Schema.define(version: 2024_09_12_175251) do
     t.boolean "show_on_equipment_reservation"
     t.string "phone"
     t.string "email"
+    t.string "short_title"
   end
 
   create_table "user_email_addresses", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

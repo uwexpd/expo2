@@ -1,7 +1,8 @@
 class ApplyController < ApplicationController
   skip_before_action :login_required
-  before_action :student_login_required_if_possible
+  before_action :student_login_required_if_possible, except: :application
   before_action :fetch_offering, :except => :list
+  before_action :login_required, only: :application
   before_action :apply_alternate_stylesheet, :except => :list
   before_action :fetch_user_applications, :except => [:cancelled, :list]
   before_action :choose_application, :except => [:which, :cancelled, :list, :group_member_validation]

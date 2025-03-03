@@ -141,6 +141,7 @@ Rails.application.routes.draw do
 
     # Online Applications
     get 'apply', to: "apply#list", as: :apply_list
+    get 'apply/application/:offering', to: "apply#index", constraints: { offering: /\d+/ }, as: :apply_application
     get 'apply/:offering/', to: 'apply#index', constraints: { offering: /\d+/ }, as: :apply
     match 'apply/:offering/which', to: 'apply#which', constraints: { offering: /\d+/ }, via: [:get, :post], as: :apply_which
     match 'apply/:offering/page/:page', to: 'apply#page', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch], as: :apply_page

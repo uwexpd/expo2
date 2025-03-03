@@ -14,7 +14,7 @@ ActiveAdmin.register Event do
   index do
     column ('Title') {|event| link_to event.title, admin_event_path(event) }
     column ('Type') {|event| event.event_type if event.event_type}
-    column ('Sponsor') {|event| event.unit.abbreviation if event.unit}
+    column ('Sponsor') {|event| event.unit.short_title if event.unit}
     column ('Times') {|event| link_to event.times.size, admin_event_times_path(event)}
     column ('Invited') {|event| event.invitees.size }
     column ('Expected') {|event| event.attendees.size }
