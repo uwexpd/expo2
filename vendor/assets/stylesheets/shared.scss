@@ -236,3 +236,11 @@ table.paddingless td {
     background-color: #b7a57a;
     color: white;
 }
+
+.sort-handle {
+  cursor: grab; /* Default grab cursor */
+}
+
+.sort-handle:active {
+  cursor: grabbing; /* When dragging */
+}

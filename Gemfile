@@ -11,6 +11,7 @@ gem 'uglifier', '>= 4.2'
 # gem 'therubyracer', platforms: :ruby
 
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'turbolinks'
 
 # Use ActiveModel has_secure_password

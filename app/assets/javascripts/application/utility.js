@@ -177,6 +177,39 @@ $(document).on('turbolinks:load', function() {
   });
 
 
+  // Jquery UI sortable function in moderator interface [TODO] maybe expand to application wide
+  $(document).ready(function() {
+      var offeringId = $("#session_apps").data("offering-id"); 
+
+      $(".sortable").sortable({
+        handle: ".sort-handle", // Enables dragging only from the handle
+        axis: "y", // Restricts movement to vertical axis
+        update: function(event, ui) {
+          var sortedIDs = $(".sortable").sortable("toArray", { attribute: "id" });
+          var sortedData = sortedIDs.map(id => id.replace("app_", "")); // Extract numeric IDs
+
+          $.ajax({
+            type: "PATCH",
+            url: "/expo/moderator/" + offeringId + "/sort_session_apps",  // Include offering ID in URL
+            data: { session_apps: sortedData },
+            headers: {
+              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+              $("#sorting-status").text("Order saved!").addClass("uw_green");;
+              // console.log("Sorting updated successfully.");
+            },
+            error: function(xhr, status, error) {
+              $("#sorting-status").text("Error saving order.").addClass("red_color");;
+              console.error("Error updating sort order: " + error);
+            }
+          });
+        }
+      });
+    });
+
+
+
 }); // end of turbolinks:load
 
 // for community_engaged toogle filled positions
