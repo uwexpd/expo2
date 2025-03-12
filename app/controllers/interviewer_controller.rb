@@ -237,7 +237,7 @@ class InterviewerController < ApplicationController
   def finalize
     if params[:commit]
       for interviewer in @offering_interviewer.offering_interview_interviewers
-        interviewer.update(:finalized, true) if interviewer.started_scoring? && !interviewer.finalized?
+        interviewer.update(finalized: true) if interviewer.started_scoring? && !interviewer.finalized?
       end
     end
     flash[:notice] = "Thank you! Your finalized scores were submitted."

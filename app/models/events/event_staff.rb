@@ -12,7 +12,7 @@ class EventStaff < ApplicationRecord
   def no_overlapping_times
     return true unless shift.overlaps_other_shifts?
     for other in shift.overlapping_shifts
-      errors.add_to_base "This shift overlaps with #{other.position.title} shift #{other.time_detail}" if other.signed_up?(person)
+      errors.add(:base, "This shift overlaps with #{other.position.title} shift #{other.time_detail}") if other.signed_up?(person)
     end
   end
 

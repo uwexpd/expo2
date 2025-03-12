@@ -1,7 +1,7 @@
 <div class='panel'>	
   <div class='panel_contents'>
 	<div class='content-block awardees'>
-	  <h1><i class='mi uw_purple'>stars</i> Awardees for <%= @offering.quarter_offered.title %></h1>
+	  <h1><i class='mi uw_purple'>stars</i> Awardees for <%= @offering.quarter_offered.title rescue @offering.title %></h1>
 
 	  <div class="tabs">
 		  <ul class="nav nav-tabs">

@@ -56,7 +56,7 @@ class OpportunitiesController < ApplicationController
            if @research_opportunity.update(:active => true, :submitted_at => Time.now, :submitted_person_id => current_user.person.id)
           flash[:notice] = "Successfully resubmitted this research opportunity and notify URP staff."
           urp_template = EmailTemplate.find_by_name("research opportunity resubmitted notification")
-          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
+          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "undergradresearch@uw.edu").deliver_now
            else
               flash[:error] = "Something went wrong. Unable to submit research opportunity. Please try again."
            end
@@ -80,7 +80,7 @@ class OpportunitiesController < ApplicationController
         @research_opportunity.require_validations = false
         if @research_opportunity.update(:submitted => nil, :active => nil)
           urp_template = EmailTemplate.find_by_name("research opportunity deactivate notification")
-          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
+          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "undergradresearch@uw.edu").deliver_now
           flash[:notice] = "Successfully deactivated the opportunity and notified URP staff" and return
         else          
           flash[:error] = "Something went wrong. Unable to deactivate research opportunity. Please try again or contact #{unit.name} at #{unit.email}" and return
@@ -90,7 +90,7 @@ class OpportunitiesController < ApplicationController
       if @research_opportunity.update(:submitted => true, :active => nil, :submitted_at => Time.now, :submitted_person_id => current_user.person.id)
           flash[:notice] = "Successfully submitted a research opportunity. You will receive URP staff approval shortly."
           urp_template = EmailTemplate.find_by_name("research opportunity approval request")
-          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "urp@uw.edu").deliver_now
+          urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "undergradresearch@uw.edu").deliver_now
       else
         flash[:error] = "Something went wrong. Unable to submit research opportunity. Please try again or contact #{unit.name} at #{unit.email}."
       end
@@ -103,7 +103,7 @@ class OpportunitiesController < ApplicationController
   		# logger.debug "Debug current_user => #{current_user}"
 	    unless current_user.class.name == "PubcookieUser"
 	      raise ExpoException.new("You need to have UW netid to access this page.",
-	          "Please make sure you click on <strong>Sign in with UW NETID</strong> in the login page and access with your UW NetID. If you have any questions about this error message, please contact urp@uw.edu.")
+	          "Please make sure you click on <strong>Sign in with UW NETID</strong> in the login page and access with your UW NetID. If you have any questions about this error message, please contact undergradresearch@uw.edu.")
 	    end
   	end
 

@@ -1,8 +1,8 @@
 <% title(@committee.name, "Committee Login") %>
+<div class="card content">
+<h5><%= @committee.meetings_alt_title.blank? ? "Meetings &amp; Trainings" : @committee.meetings_alt_title %></h5>
 
-<h1><%= @committee.meetings_alt_title.blank? ? "Meetings &amp; Trainings" : @committee.meetings_alt_title %></h1>
-
-<% form_for @committee_member, :url => { :action => 'meetings' } do |f| %>
+<%= form_for @committee_member, :url => { :action => 'meetings' } do |f| %>
 
 <%= render "shared/error_messages", :target => @committee_member %>
 
@@ -14,22 +14,24 @@
 		<%= @committee.meetings_text.blank? ? default_text : textilize(@committee.meetings_text) %>
 
 		<ul class="bulletless">
-		<% for committee_member_meeting in @committee_member.committee_member_meetings.future %>
-			<% fields_for "committee_member[committee_member_meeting_attributes][#{committee_member_meeting.id}]", committee_member_meeting do |cmm_form| %>
+		<% @committee_member.committee_member_meetings.future.each do |committee_member_meeting| %>
+			<%= fields_for "committee_member[committee_member_meeting_attributes][#{committee_member_meeting.id}]", committee_member_meeting do |cmm_form| %>
 
 				<li style="margin-top: 2em">
-					<%= cmm_form.check_box :attending %>
-					<big><%= committee_member_meeting.meeting.title %></big>
+					<label>
+						<%= cmm_form.check_box :attending, class: 'filled-in' %>
+						<span><big><%= committee_member_meeting.meeting.title %></big></span>
+					</label>
 					<div style="margin-left: 2em">
 						<strong>Date/Time: </strong><%= committee_member_meeting.meeting.start_date.to_s(:date_time12) %>
-						<%= "<br><strong>Location:</strong> #{committee_member_meeting.meeting.location}" if committee_member_meeting.meeting.location %>
-						<%= "<div style=''><br>#{committee_member_meeting.meeting.description}</div>" if committee_member_meeting.meeting.description %>
-						<br><small>Comments? <%= cmm_form.text_field :comment, :size => 50 %></small>
+						<%= "<br><strong>Location:</strong> #{committee_member_meeting.meeting.location}".html_safe if committee_member_meeting.meeting.location %>
+						<%= "<div style=''><br>#{committee_member_meeting.meeting.description}</div>".html_safe if committee_member_meeting.meeting.description %>
+						<small>Comments? <%= cmm_form.text_field :comment %></small>
 					</div>
 				</li>
 
-			<% end -%>
-		<% end -%>
+			<% end %>
+		<% end %>
 		</ul>
 
 	</dd>
@@ -37,9 +39,9 @@
 </dl>
 
 <center>
-	<%= f.submit "Next →", :disable_with => 'Submitting...' %>
+	<%= f.submit "Next →", :disable_with => 'Submitting...', class: 'btn' %>
 </center>
 
 <% end -%>
-
-<% sidebar :which, :progress %>
+</div>
+<% sidebar :which, :sidebar_nav %>

@@ -141,7 +141,6 @@ Rails.application.routes.draw do
 
     # Online Applications
     get 'apply', to: "apply#list", as: :apply_list
-    get 'apply/application/:offering', to: "apply#index", constraints: { offering: /\d+/ }, as: :apply_application
     get 'apply/:offering/', to: 'apply#index', constraints: { offering: /\d+/ }, as: :apply
     match 'apply/:offering/which', to: 'apply#which', constraints: { offering: /\d+/ }, via: [:get, :post], as: :apply_which
     match 'apply/:offering/page/:page', to: 'apply#page', constraints: { offering: /\d+/ }, via: [:get, :post, :put, :patch], as: :apply_page
@@ -171,7 +170,7 @@ Rails.application.routes.draw do
     get 'apply/:offering/proceedings/offering_session/:id', to: 'apply/proceedings#offering_session', as: :apply_proceedings_offering_session
     get 'apply/:offering/proceedings/result', to: 'apply/proceedings#result', as: :apply_proceedings_result
 
-    # Mentor
+    # Mentor & Moderator
     get 'mentor', to: 'mentor#index', as: :mentor
     get 'mentor/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_map
     get 'mentor/offering/:offering_id/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_offering_map
@@ -182,6 +181,12 @@ Rails.application.routes.draw do
     match 'mentor/mentee_abstract_approve/:id', to: 'mentor#mentee_abstract_approve', via: [:get, :post, :put, :patch], as: :mentee_abstract_approve
     get 'mentor/:id/letter/:filename', to: 'mentor#letter', as: :mentor_letter
     get 'mentor/application_file/:id/:file_id', to: 'mentor#view_file', as: :mentor_view_file
+    match 'moderator/:offering', to: 'moderator#index', via: [:get, :patch], as: :moderator
+    get 'moderator/:offering/show/:id', to: 'moderator#show'
+    patch 'moderator/:offering/update', to: 'moderator#update'
+    patch 'moderator/:offering/sort_session_apps', to: 'moderator#sort_session_apps'
+    get 'moderator/:offering/finalize', to: 'moderator#finalize'
+
 
     # Committee Members
     get 'committee_member', to: 'committee_member#index', as: :committee_member

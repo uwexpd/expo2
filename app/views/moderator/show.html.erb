@@ -1,0 +1,71 @@
+<% title "Moderator Review", @offering.name %>
+
+<div class="card content moderator">
+
+<% unless @change_moderator_process %>
+  <% content_for(:right_sidebar) do %>
+    <h3>Review Decision</h3>
+
+    <% unless @offering.moderator_criteria.blank? %>
+      <p>
+        <%= link_to "Moderator Criteria &amp; Instructions", 
+          { action: 'criteria' }, 
+          target: "_blank", 
+          onclick: "window.open(this.href, 'moderator_criteria', 'height=800,width=600,toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=1,resizable=1'); return false;" %>
+      </p>
+    <% end %>
+
+    <p>Please mark whether or not you accept this abstract into your session.</p>
+
+    <%= form_with model: @app, url: { action: 'update', id: @app }, local: true do |f| %>
+      <% @offering.application_moderator_decision_types.each do |decision_type| %>
+        <label for="application_for_offering_application_moderator_decision_type_id_<%= decision_type.id %>">
+          <%= f.radio_button :application_moderator_decision_type_id, decision_type.id %>
+          <%= decision_type.title %>
+        </label>
+        <br>
+      <% end %>
+
+      <p><strong>Comments:</strong></p>
+      <% if @app.errors[:moderator_comments].present? %>
+        <div class="smaller formError">Please enter some comments explaining your decision.</div>
+      <% end %>
+
+      <%= f.text_area :moderator_comments, cols: 10, style: "width: 95%", rows: 5 %>
+
+      <p><%= f.submit %></p>
+    <% end %>
+  <% end %>
+<% end %>
+
+<h4><b>Application Information</b></h4>
+
+<h6><strong>Project Title: </strong><%= strip_tags @app.project_title %></h6>
+					
+<h6><strong>Student:</strong> <%= @app.person.firstname_first %>, 
+	                          <%= @app.person.class_standing_description %>,
+	                          <%= @app.person.majors_list(true, ", ", Quarter.find_by_date(@offering.deadline)) rescue nil %>
+</h6>
+
+
+
+<h6><strong>Mentor(s):</strong>
+	<%  @app.mentors.sort_by{|m| m.primary? ? 0 : 1}.each do |mentor| %>
+		<span><%= mentor.info_detail_line(true, true).html_safe %></span>
+	<% end %>
+</h6>
+
+
+<% unless @app.group_members.empty? %>
+	<h6><strong>Co-Presenters:</strong> <span class='smaller'><%= @app.group_members.collect(&:fullname).join(", ") %></span></h6>
+<% end %>
+
+<div class="abstract">
+	<h5><b>Abstract or Artist Statement:</b></h5>
+	<hr style="border: 1px solid #DDD">
+	<%= @app.text("Abstract").body.html_safe %>
+</div>
+
+<p><%= link_to "&#x2190; Return to Session Listing".html_safe, action: 'index' %></p>
+
+</div>

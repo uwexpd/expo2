@@ -9,9 +9,9 @@
 
 	<%= textilize @committee.complete_text %>
 	
-	<dl class="inline-definitions">
+	<dl class="inline-definitions" style="padding: 1rem 0">
 
-	<dt>active quarters</dt>
+	<dt>Active quarters</dt>
 	<dd><ul style="margin:0" class="bulletless">
 		<% @committee_member.committee_member_quarters.upcoming(2).reject{|q| !q.active? }.each do |cmq| %>
 			<li><%= cmq.quarter.title %>
@@ -21,16 +21,16 @@
 		</ul>
 		</dd>
 	
-	<dt>department</dt>
+	<dt>Department</dt>
 	<dd><%= @committee_member.department %></dd>
 	
-	<dt>specialty</dt>
+	<dt>Specialty</dt>
 	<dd><%= @committee_member.expertise %></dd>
 	
-	<dt>website</dt>
+	<dt>Website</dt>
 	<dd><%= @committee_member.website_url %></dd>
 	
-	<dt>meetings</dt>
+	<dt>Meetings</dt>
 	<dd><ul style="margin:0" class="bulletless">
 		<% meetings = @committee_member.committee_member_meetings.future.reject{|m| !m.attending? } %>
 		<% if meetings.empty? %>
