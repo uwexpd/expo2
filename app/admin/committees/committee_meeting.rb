@@ -53,6 +53,7 @@ ActiveAdmin.register CommitteeMeeting, as: 'meeting' do
       f.input :start_date, as: :date_time_picker, required: true
       f.input :end_date, as: :date_time_picker
     end
+    div "<i class='mi uw_purple'>info</i>This process may take some time, as it also creates meetings for each committee member.".html_safe, class: 'highlight_box padding_left'
     f.actions
   end
 

@@ -58,7 +58,7 @@
 						<th>Apply a template</th>
 						<td>
 							<%= f.collection_select(:template_id, 
-										EmailTemplate.all, 
+										EmailTemplate.order(:name), 
 										:id, :title,
 										{include_blank: 'Please select a template', selected: (params[:email_template_id].to_i)},
 										{class: 'select2', style: 'width: 100%'}) %>

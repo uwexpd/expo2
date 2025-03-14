@@ -193,11 +193,13 @@ class CommitteeMember < ApplicationRecord
     end
   end
 
-  def create_committee_member_meetings_if_needed
-    if committee
-      committee.meetings.each do |committee_meeting|
-        committee_member_meetings.find_or_create_by(committee_meeting_id: committee_meeting.id)
-      end
+  def create_committee_member_meetings_if_needed(future = nil)
+    return unless committee
+
+    meetings = future ? committee.meetings.reject(&:past?) : committee.meetings
+
+    meetings.each do |committee_meeting|
+      committee_member_meetings.find_or_create_by(committee_meeting_id: committee_meeting.id)
     end
   end
 

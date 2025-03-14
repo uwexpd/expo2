@@ -23,8 +23,8 @@
 						<span><big><%= committee_member_meeting.meeting.title %></big></span>
 					</label>
 					<div style="margin-left: 2em">
-						<strong>Date/Time: </strong><%= committee_member_meeting.meeting.start_date.to_s(:date_time12) %>
-						<%= "<br><strong>Location:</strong> #{committee_member_meeting.meeting.location}".html_safe if committee_member_meeting.meeting.location %>
+						<strong>Date/Time: </strong><%= committee_member_meeting.meeting.start_date.to_s(:date_time12) %> - <%= committee_member_meeting.meeting.end_date.to_s(:time12) %>
+						<%= "<br><strong>Location:</strong> #{committee_member_meeting.meeting.location}".html_safe unless committee_member_meeting.meeting.location.blank? %>
 						<%= "<div style=''><br>#{committee_member_meeting.meeting.description}</div>".html_safe if committee_member_meeting.meeting.description %>
 						<small>Comments? <%= cmm_form.text_field :comment %></small>
 					</div>

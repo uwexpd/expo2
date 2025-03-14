@@ -5,7 +5,7 @@
 
 <h5>Welcome, <%= @person.firstname %>.</h5>	
 <%= textilize auto_link @offering.moderator_instructions %>
-
+<hr>
 <%= form_with model: @offering_session, url: { action: 'index' }, local: true do |f| %>
 
 	<%#= error_message_on :offering_session, :title, 
@@ -13,13 +13,14 @@
 						:append_text => " before you can submit your reviews." %>	
 	
 	<% unless @offering_session.location.blank? %>
-	<p><strong>Session Location:</strong> <%= @offering_session.location %></p>
+	<h6><strong>Session Location:</strong> <%= @offering_session.location %></h6>
 	<% end -%>
 
 	<% unless @offering_session.start_time.blank? %>
-	<p><strong>Session Time:</strong> 
-		<%= @offering_session.start_time.to_s(:time12) %> to
-		<%= @offering_session.end_time.to_s(:time12) %></p>
+		<h6><strong>Session Time:</strong>
+			<%= @offering_session.start_time.to_s(:time12) %> to
+			<%= @offering_session.end_time.to_s(:time12) %>
+		</h6>
 	<% end -%>
 	
 	<p class="highlight_box">Please provide <strong>a title for your session: </strong><span class="required">* required</span>
@@ -36,7 +37,7 @@
 					<span id="sorting-status" class='uw_green'></span></th>
 				<th>Presentation Title</th>
 				<th><%#= @change_moderator_process ? "Review Decision" : "Response" %></th>
-				<th><%= @change_moderator_process ? "Abstract" : "Review" %></th>
+				<th><%= @change_moderator_process ? "Abstract/Artist Statement" : "Review" %></th>
 			</tr>
 		</thead>
 	
