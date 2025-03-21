@@ -82,15 +82,15 @@ class CommitteeMember < ApplicationRecord
 
   scope :ordered, -> { includes(:person).order("people.lastname, people.firstname") }
 
-  scope :active, -> { where(inactive: false, permanently_inactive: false).ordered }
+  scope :active, -> { where(inactive: [false, nil], permanently_inactive: [false, nil]).ordered }
 
-  scope :active_and_responded, -> { where(id: (where(inactive: false, permanently_inactive: false).select{|m|m.responded_recently?}).map(&:id)).ordered }
+  scope :active_and_responded, -> { where(id: (where(inactive: [false, nil], permanently_inactive: [false, nil]).select{|m|m.responded_recently?}).map(&:id)).ordered }
 
-  scope :inactive, -> { where(inactive: true, permanently_inactive: false).ordered }
+  scope :inactive, -> { where(inactive: true, permanently_inactive: [false, nil]).ordered }
 
   scope :permanently_inactive, -> { where(permanently_inactive: true).ordered }
 
-  scope :not_responded, -> { where(id: (where(inactive: false, permanently_inactive: false).reject{|m|m.responded_recently?}).map(&:id)).ordered }
+  scope :not_responded, -> { where(id: (where(inactive: [false, nil], permanently_inactive: [false, nil]).reject{|m|m.responded_recently?}).map(&:id)).ordered }
 
   scope :active_for, ->(committee_quarter_id) { active.joins(:committee_member_quarters).where("committee_member_quarters.committee_quarter_id=? AND committee_member_quarters.active=?", committee_quarter_id, true ) }
 

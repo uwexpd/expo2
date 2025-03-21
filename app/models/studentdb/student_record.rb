@@ -47,7 +47,7 @@ class StudentRecord < StudentInfo
   def student(create_person = true)
     return student_person if student_person
     if create_person
-       s = Student.find_or_create_by_system_key(system_key)
+       s = Student.find_or_create_by(system_key: system_key)
      else
        nil
      end
