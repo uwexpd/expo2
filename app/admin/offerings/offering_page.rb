@@ -6,7 +6,7 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 	config.filters = false
 	reorderable
 
-	permit_params :title, :description, :introduction, :hide_in_admin_view, :hide_in_reviewer_view, :ordering
+	permit_params :title, :description, :introduction, :hide_in_admin_view, :hide_in_reviewer_view, :ordering, :invisible
 
 	member_action :form_builder, :method => :get do
 		# TODO: We could implment a form_builder
@@ -27,6 +27,7 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
         row ('Introduction'){|page| raw page.introduction }
         row :hide_in_admin_view
         row :hide_in_reviewer_view
+        row :invisible
 	  end
 	  panel '' do
 		div :class => 'content-block' do
@@ -77,6 +78,7 @@ ActiveAdmin.register OfferingPage, as: 'pages' do
 	    f.input :introduction, as: :text, input_html: { :class => "tinymce", rows: 8, style: 'width: 100%'  }
 	    f.input :hide_in_admin_view, label: 'Hide this page when viewing an application in admin view. (This also hides this page from reviewers)'
 	    f.input :hide_in_reviewer_view, label: 'Hide this page when a reviewer is viewing an application'
+	    f.input :invisible, label: 'Hide this page by default unless toggled by question option with next_page'
 	  end
 	  f.actions
 	end

@@ -1,0 +1,6 @@
+<ul class="link-list">
+	<% offering_question.options.order('ordering ASC').each do |option| %>
+		<li><%= link_to "<small class='light'>#{option.ordering}</small> #{option.title}".html_safe, edit_admin_offering_page_question_option_path(@offering, @page, offering_question, option) %></li>
+	<% end %>
+	
+</ul>

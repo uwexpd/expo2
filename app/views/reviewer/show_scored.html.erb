@@ -85,7 +85,7 @@
 				</div>
 				<div id="application_review" class="col s12">
 					<h5>Application Details</h5>
-					<%= render "application_review", { pages: @app.pages.reject{|p|p.hide_in_reviewer_view?} } %>
+					<%= render "application_review", { pages: @app.visible_pages.reject{|p|p.hide_in_reviewer_view?} } %>
 			  </div>
 			  <% unless @app.files.empty? %>
 				  <div id="essay" class="col s12">

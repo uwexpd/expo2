@@ -21,5 +21,21 @@ class ApplicationPage < ApplicationRecord
     end
     self.errors.empty?
   end
+
+  def next
+    self.application_for_offering.visible_pages
+        .select { |page| page.ordering > self.ordering } # Get pages with higher ordering
+        .sort_by(&:ordering)                             # Sort them by ordering
+        .first                                           # Get the closest next page
+  end
+
+  def prev
+    self.application_for_offering.visible_pages
+        .select { |page| page.ordering < self.ordering } # Get pages with lower ordering
+        .sort_by(&:ordering)                             # Sort them by ordering
+        .last                                            # Get the highest (closest) previous page
+  end
+
+
     
 end

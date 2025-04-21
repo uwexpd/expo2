@@ -14,7 +14,7 @@
 		<% end %>
 		<br>
 		<table class="highlight application_review">
-			<%= render :partial => "page_review", :collection => @user_application.pages %>
+			<%= render :partial => "page_review", :collection => @user_application.visible_pages %>
 		</table>
 	</div>
 

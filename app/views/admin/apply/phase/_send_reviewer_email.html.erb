@@ -26,7 +26,7 @@
 
 	</table>
 	<br>
-	<%= hidden_field_tag :email_template_id, @task.email_templates_array.first.id %>
+	<%= hidden_field_tag :email_template_id, @task.email_templates_array.first.id rescue nil %>
 	<%= f.submit "Queue emails to reviewers", :name => "send_reviewer_invite_emails" %>
 
 <% end %>

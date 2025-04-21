@@ -1,36 +1,28 @@
 <div class='col s12' <%= "id=associate_question_#{question.id}" if OfferingQuestionOption.where(associate_question_id: question.id) %>>
-		 <%= question.question %><%= content_tag('em', '*', :class => 'required') if question.required? %>
+		 <%= raw question.question %> <%= content_tag('abbr', '*', title: 'required') if question.required? %>
 
 <div class="file-field input-field col s12">
 
-	<% question_file = @user_application.files.find_by_offering_question_id(question.id) %>
+	<% question_file = @user_application.files.find_by(offering_question_id: question.id) %>
 
 	<% @user_application.files.each do |app_file| %>
 
 	  <% if app_file.id == question_file.id %>
 	 
-	   <%= f.fields_for :files, app_file do |af| %>
-				
-			<% if app_file.file.file.nil? %>
-			  <div class="btn">
-			  	 <i class="material-icons left">file_upload</i>
-				 <span>Choose File to Upload</span>
-				 <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
-			  </div>		  
+	    <%= f.fields_for :files, app_file do |af| %>
 
-			<% else %>
-					
-				<div class="btn">
-			  	  <i class="material-icons left">file_upload</i>
-				  <span>Replace this File</span>
-				  <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
-			  </div>
-			<% end %>
+	   		<% file_label = app_file.file.file.nil? ? "Choose File to Upload" : "Replace this File" %>
+
+	   		<div class="btn">
+			  <i class="material-icons left">file_upload</i>
+			  <span><%= file_label %></span>
+			  <%= af.file_field :file, name: "user_application[file_attributes][#{app_file.id}][file]" %>
+			</div>
 
 			<div class="file-path-wrapper">
 				 <% placeholder = question_file.file_identifier.nil? ? "No_file_chosen" : question_file.file_identifier %>
 	        	 <input class="file-path validate" type="text" placeholder= <%= placeholder %> >
-	    </div>
+	    	</div>
 
 			<%= hidden_field_tag "user_application[file_attributes][#{question_file.id}][title]", question.short_title.empty? ? question.question : question.short_title %>
 			

@@ -67,7 +67,7 @@ class ApplicationForOffering < ApplicationRecord
   before_save :update_task_completion_status_cache!
   
   # attr_protected :offering_id, :person_id
-  accepts_nested_attributes_for :mentors, :awards, :files, :texts, :other_awards, :group_members,  allow_destroy: true
+  accepts_nested_attributes_for :mentors, :awards, :files, :texts, :other_awards, :group_members, :pages, allow_destroy: true
   
   attr_accessor :new_status_note
   attr_accessor :skip_validations
@@ -592,14 +592,19 @@ class ApplicationForOffering < ApplicationRecord
         files.build(attributes)
       else
         file = files.detect { |f| f.id == file_id.to_i }
-        file.file = attributes[:file]
+        file.file = attributes[:file] if attributes[:file].present? # Only update if file is provided
       end
     end
   end
     
   def build_pages
     offering.pages.each do |page|
-      pages.build :application_for_offering_id => id, :offering_page_id => page.id
+      # pages.build :application_for_offering_id => id, :offering_page_id => page.id
+      pages.build(
+        application_for_offering_id: id,
+        offering_page_id: page.id,
+        invisible: page.invisible?
+      )
     end
   end
 
@@ -652,6 +657,10 @@ class ApplicationForOffering < ApplicationRecord
   # def add_validation_error(attribute, error_text)
   #   self.errors.add_to_base "bad"
   # end
+
+  def visible_pages
+    pages.reject{|p| p.invisible? }
+  end
 
   def build_awards
     offering.number_of_awards.to_i.times { self.awards.build :amount_requested => offering.default_award_amount }
@@ -1318,14 +1327,14 @@ class ApplicationForOffering < ApplicationRecord
 
   # Defines setter methods for all questions in this Offering that are defined as dynamic answers.
   # For checkbox, set answer with +offering_quesiton_option_id+ 
-  def define_dynamic_answer_setters!
+  def define_dynamic_answer_setters!    
     if offering
       offering.questions.where(dynamic_answer: true).each do |oq|
         if oq.display_as.include?("checkbox_options")
            oq.options.each do |option|
              self.class.send :define_method, "dynamic_answer_#{oq.id.to_s}_#{option.id.to_s}=", Proc.new {|argv| set_answer(oq.id, argv, option.id)}
            end        
-        else
+        else          
           self.class.send :define_method, "dynamic_answer_#{oq.id.to_s}=", Proc.new {|argv| set_answer(oq.id, argv)}
         end        
       end

@@ -206,9 +206,20 @@ $(document).on('turbolinks:load', function() {
           });
         }
       });
-    });
+  });
 
+  // In apply radio_logic_toggle page
+  $(document).on("change", ".toggle-invisible", function () {
+    let nextPageId = $(this).data("next-page-id");
 
+    // Reset all hidden fields
+    $('input[type=hidden][id^="hidden_invisible_"]').val('true');
+    
+    // Set the corresponding hidden field to false for the selected option
+    if ($(this).is(':checked')) {
+      $('#hidden_invisible_' + nextPageId).val('false');
+    }
+  });
 
 }); // end of turbolinks:load
 

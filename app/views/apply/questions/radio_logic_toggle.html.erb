@@ -24,8 +24,20 @@
 			%>																			
 		   <p>
 		    <label>
-		      <%= qf.radio_button(question.attribute_to_update, option.value, {class: "with-gap",onclick: "$('#associate_question_#{option.associate_question_id}').show();#{click_toggle_script}"}) %>			  
+		      <%= qf.radio_button(question.attribute_to_update, option.value, {class: "with-gap toggle-invisible", data: { next_page_id: option.next_page_id }, onclick: "$('#associate_question_#{option.associate_question_id}').show();#{click_toggle_script}$('#hidden_invisible_#{option.next_page_id}').val('false');"}) 
+		  	  %>	  
 			  <span><%= option.title %></span>
+			  
+			  <% if option.next_page_id.present? %>
+			    <% app_page_id = @user_application.pages.find_by(offering_page_id: option.next_page_id).id %>
+				<%= qf.hidden_field :id, 
+			        name: "user_application[pages_attributes][#{app_page_id}][id]", 
+			        value: app_page_id %>
+
+			  	<%= qf.hidden_field :invisible, name: "user_application[pages_attributes][#{app_page_id}][invisible]",
+			  	    id: "hidden_invisible_#{option.next_page_id}",
+			  	    value: (@user_application.get_answer(question.id) == option.value ? "false" : "true")  %>
+			  <% end %>
 		    </label>
 		   </p>
 			
@@ -34,5 +46,5 @@
 		<%= display_computed_caption(question.caption) if question.caption? %>
 </div>
 <%= javascript_tag do %>
-	$(document).ready(function() { <%= script_str.html_safe %> })
+	$(document).ready(function() { <%= script_str.html_safe %> })	
 <% end %>

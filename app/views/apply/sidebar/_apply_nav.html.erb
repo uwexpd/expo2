@@ -1,7 +1,7 @@
 <div class="page_list on_page">
 	<ul class="collection with-header">
 		<li id="welcome_page_link" class="collection-header"><i class="material-icons top_align uw_light_gold">list_alt</i> <%= link_to @offering.welcome_page_title, {:action => :index} %></li>
-		<%= render :partial => "page_list", :collection => @user_application.pages %>
+		<%= render :partial => "page_list", :collection => @user_application.visible_pages %>
 		<li id="review_page_link" class="collection-header"><i class="material-icons top_align uw_light_gold">arrow_circle_right</i> <%= link_to "Review & Submit", {:action => :review} %></li>
 	</ul>
 </div>

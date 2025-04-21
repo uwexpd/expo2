@@ -3,7 +3,7 @@ ActiveAdmin.register OfferingQuestionOption, as: 'options' do
 	menu false	
 	config.filters = false
 
-	permit_params :title, :value, :associate_question_id, :ordering
+	permit_params :title, :value, :associate_question_id, :ordering, :next_page_id
 
 	breadcrumb do
   	[
@@ -46,12 +46,26 @@ ActiveAdmin.register OfferingQuestionOption, as: 'options' do
 		actions
 	end
 
+	show do 
+	  attributes_table do
+	  	row :offering_question	  	
+	  	row :title
+	  	row :value
+	  	row :associate_question
+	  	row :next_page
+	  	row :ordering
+	  end	
+	end
+
 	form do |f|
+	  offering = controller.instance_variable_get(:@offering)
+	  page = controller.instance_variable_get(:@page)
 	  f.semantic_errors *f.object.errors.keys
 	  f.inputs do
 	    f.input :title, hint: 'The text displayed to the user.'
 	    f.input :value, hint: 'The value stored in the database. Leave this blank to just use the title as the value.'
-	    f.input :associate_question_id, label:'Toogle Question ID', hint: 'Radio button that toggles with another question. Please input the question ID you would like to toogle.'
+	    f.input :associate_question, label:'Toogle Question', as: :select, collection: page.questions.pluck(:question, :id), include_blank: true, hint: 'Radio button that toggles with another question. Please input the question you would like to toogle.', input_html: { style: "width: 100%;" }
+	    f.input :next_page, label: 'Toggle Next Page', as: :select, collection: offering.pages.pluck(:title, :id), include_blank: true
 	    f.input :ordering
 	  end
 	  f.actions

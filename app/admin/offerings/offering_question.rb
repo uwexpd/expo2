@@ -65,7 +65,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 
 	show do
 	  attributes_table do
-        row :question        
+        row :question
         row :offering_page_id
         row :required
         row :display_as
@@ -88,6 +88,10 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 
 	sidebar "Questions", only: [:show, :edit] do
 		render "admin/offerings/pages/questions/questions", { offering_question: questions}
+	end
+
+	sidebar "Options", only: [:show, :edit], if: proc { questions.options.present? } do
+		render "admin/offerings/pages/questions/options", { offering_question: questions }
 	end
 
 
@@ -163,7 +167,8 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 				    div :class => 'content-block' do
 		       	  table_for questions.options do
 		       	 	   column :title	       	 	   
-		       	 	   column :value	       	 	   
+		       	 	   column :value
+		       	 	   column :next_page
 		       	 	   column ('Functions'){|option|					
 										span link_to '<span class="material-icons">edit</span>'.html_safe, edit_admin_offering_page_question_option_path(offering, page, questions, option), class: 'action_icon'
 										span link_to '<span class="material-icons">delete</span>'.html_safe, admin_offering_page_question_option_path(offering, page, questions, option), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon'}

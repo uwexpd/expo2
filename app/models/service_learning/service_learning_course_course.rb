@@ -17,7 +17,9 @@ class ServiceLearningCourseCourse < ApplicationRecord
   
   def self.find_by_abbrev(param)
     match = param.match(/(\D+?)(\d+?)(\D+?)/)
-    self.find_by_dept_abbrev_and_course_no_and_section_id match[1], match[2], match[3]
+    return nil unless match # Prevent nil errors if match fails
+
+    find_by(dept_abbrev: match[1], course_no: match[2], section_id: match[3])
   end
   
   # Finds the first record whose course abbreviation matches the passed parameter and exists for the specified quarter.
@@ -27,10 +29,17 @@ class ServiceLearningCourseCourse < ApplicationRecord
   # FIXME: fix this so that we don't manually process the results when filtering by unit.
   def self.find_by_abbrev_and_quarter(param, quarter = Quarter.current_quarter, unit = nil)
     match = param.match(/(\D+?)(\d+?)(\D+?)/)
-    results = self.find_all_by_dept_abbrev_and_course_no_and_section_id_and_ts_year_and_ts_quarter(
-                  match[1], match[2], match[3], quarter.year, quarter.quarter_code_id
-                )
-    unit.nil? ? results.first : results.select{|r| r.service_learning_course.unit_id == unit.try(:id)}.first
+    return nil unless match # Prevent nil match error
+
+    results = where(
+      dept_abbrev: match[1],
+      course_no: match[2],
+      section_id: match[3],
+      ts_year: quarter.year,
+      ts_quarter: quarter.quarter_code_id
+    )
+    
+    unit.nil? ? results.first : results.find { |r| r.service_learning_course.unit_id == unit&.id }
   end
   
   def abbrev

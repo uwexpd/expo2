@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_03_204814) do
+ActiveRecord::Schema.define(version: 2025_03_25_232516) do
 
   create_table "academic_departments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -418,6 +418,7 @@ ActiveRecord::Schema.define(version: 2025_03_03_204814) do
     t.integer "creator_id"
     t.integer "updater_id"
     t.integer "deleter_id"
+    t.boolean "invisible"
     t.index ["application_for_offering_id"], name: "index_pages_on_app_id"
   end
 
@@ -1793,6 +1794,7 @@ ActiveRecord::Schema.define(version: 2025_03_03_204814) do
     t.integer "deleter_id"
     t.boolean "hide_in_admin_view"
     t.boolean "hide_in_reviewer_view"
+    t.boolean "invisible"
   end
 
   create_table "offering_question_options", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1806,6 +1808,7 @@ ActiveRecord::Schema.define(version: 2025_03_03_204814) do
     t.integer "deleter_id"
     t.integer "associate_question_id"
     t.string "ordering"
+    t.integer "next_page_id"
   end
 
   create_table "offering_question_validations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -2067,6 +2070,7 @@ ActiveRecord::Schema.define(version: 2025_03_03_204814) do
     t.boolean "disable_signature"
     t.boolean "virtual_proceeding"
     t.datetime "proceeding_public_display_at"
+    t.boolean "non_student"
   end
 
   create_table "omsfa_student_info", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

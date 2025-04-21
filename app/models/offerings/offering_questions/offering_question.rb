@@ -107,6 +107,8 @@ class OfferingQuestion < ApplicationRecord
   
   def add_required_error(page)
     begin
+      return if display_as == 'files' #
+
       if display_as == 'radio_options' && model_to_update.blank?
         add_error_message page and return if page.application_for_offering.instance_eval(attribute_to_update).nil?
       elsif display_as == 'checkbox_options'
@@ -120,11 +122,11 @@ class OfferingQuestion < ApplicationRecord
         add_error_message page and return if required? && page.application_for_offering.person.firstname.blank?
         add_error_message page and return if required? && page.application_for_offering.person.lastname.blank?
       else
-        if !model_to_update.blank?
+        if model_to_update.present?
           if required? && eval("page.application_for_offering.#{model_to_update}.#{attribute_to_update}.blank?")
             add_error_message page
           end
-        elsif (required? && !attribute_to_update.blank? && page.application_for_offering.instance_eval(attribute_to_update).blank?)
+        elsif (required? && attribute_to_update.present? && page.application_for_offering.instance_eval(attribute_to_update).blank?)
           add_error_message page
         end
       end

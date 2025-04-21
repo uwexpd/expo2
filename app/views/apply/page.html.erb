@@ -5,7 +5,7 @@
 <%= form_with model: @user_application, url: { action: 'update', page: @page.ordering}, id: 'apply_form' do |f| %>
 
 	<div class="card-content">
-		<%= content_tag('strong', "Section #{@page.ordering.to_s} of #{@offering.pages.count}", :id => 'application_page_number') %>
+		<%= content_tag('strong', "Section #{@page.ordering.to_s} of #{@user_application.visible_pages.count}", :id => 'application_page_number') %>
 		<%= render :partial => 'time_left' %>
 		<%= content_tag('h5', @page.title, :id => 'application_page_title') %>
 		<%= content_tag('div', raw(@page.introduction), class: 'page_intro') %>
@@ -26,7 +26,7 @@
 	
     </div>
 	
-	<div class="card-action"><%= render :partial => 'progress_nav_buttons' %></div>
+	<div class="card-action"><%= render :partial => 'progress_nav_buttons', locals: { page: @application_page} %></div>
 
 <% end %>
 	

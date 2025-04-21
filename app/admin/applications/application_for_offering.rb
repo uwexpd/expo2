@@ -202,6 +202,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
               end
               row ('Age') do |app|
                span @student.sdb.age rescue raw("<span class='empty'>Empty</span>")
+               span class: 'minor warning' if @student.sdb.age < 18 rescue nil
               end
               row ('Birthday') {|app| @student.sdb.birth_date.to_s rescue raw("<span class='empty'>Empty</span>")}
               row ('Email') {|app| @student.email}

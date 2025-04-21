@@ -1,8 +1,8 @@
 class ApplyController < ApplicationController
   skip_before_action :login_required
-  before_action :student_login_required_if_possible, except: :application
   before_action :fetch_offering, :except => :list
-  before_action :login_required, only: :application
+  before_action :student_login_required_if_possible, unless: -> { @offering&.non_student? }
+  before_action :login_required, if: -> { @offering&.non_student? }
   before_action :apply_alternate_stylesheet, :except => :list
   before_action :fetch_user_applications, :except => [:cancelled, :list]
   before_action :choose_application, :except => [:which, :cancelled, :list, :group_member_validation]
@@ -58,9 +58,11 @@ class ApplyController < ApplicationController
 
     # figure out which page to go to next
     @page = @offering.pages.find_by_ordering params[:page]
+    app_page = ApplicationPage.find_by(offering_page_id: @page, application_for_offering_id:  @user_application)
     page = @page.ordering
-    page = @page.next.ordering if params[:next_button]
-    page = @page.prev.ordering if params[:prev_button] 
+    page = app_page.next.ordering if params[:next_button]
+    page = app_page.prev.ordering if params[:prev_button]
+
     
     # Mark this page as started
     @user_application.start_page(@page)
@@ -72,6 +74,7 @@ class ApplyController < ApplicationController
     @user_application.set_status('in_progress')
 
     # update the application's attributes
+    Rails.logger.debug "🔍 Params before update: #{apply_params.inspect}"
     @user_application.update(apply_params) if apply_params
 
     # add a mentor if needed
@@ -387,7 +390,7 @@ class ApplyController < ApplicationController
   protected
   
   def fetch_offering
-    @offering = Offering.find params[:offering]
+    @offering = Offering.find_by(id: params[:offering]) if params[:offering].present?
     @reference_quarter = Quarter.find_by_date(@offering.deadline) rescue nil
   end
   
