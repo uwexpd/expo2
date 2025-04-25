@@ -22,6 +22,7 @@ $(document).on('turbolinks:load', function() {
   $('.collapsible').collapsible();
   $('select.material').formSelect();
   $('.input-field .charcounter').characterCounter();
+  $('.sidenav').sidenav();
   // End materializecss javascript initialization
   
   M.updateTextFields(); // Materializecss: Prefilling Text Inputs

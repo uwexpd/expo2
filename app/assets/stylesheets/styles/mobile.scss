@@ -1,0 +1,35 @@
+// Make 9.7 and below screen such as ipad mini to view full width
+@media only screen and (max-width: 992px) {
+  #main,
+  #sidebar {
+    width: 100% !important;
+    float: none !important;
+  }
+}
+
+/* Base style */
+#mobile-nav li.logo-text {
+  padding: 16px;  
+  color: white;  
+  background-color: #4b2e83; /* optional for contrast */
+}
+
+/* Make sure link inside inherits color */
+#mobile-nav li.logo-text a { 
+  padding-left: 1rem;
+  text-decoration: none;
+  display: block;
+  font-size: 36px;
+  font-family: "Open Sans", sans-serif;
+  letter-spacing: -2px;
+  text-transform: lowercase;
+  font-weight: 600;
+}
+
+/* Responsive adjustment if needed */
+@media (max-width: 600px) {
+  #mobile-nav li.logo-text {
+    font-size: 22px;
+    padding: 12px;
+  }
+}

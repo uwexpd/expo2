@@ -1,22 +1,47 @@
 <div id="header">
-	<div id="w-patch"></div>
-    <ul class="menu">
-	      <li class="logo-text"><a href='/expo/'>expo</a></li>
-	      <li id="account-nav">
-			<% if logged_in? %>
-				<%= vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS" : "Logged in as" %>
-				<strong><%= (current_user.fullname) %></strong></a>
-				<%= "[#{current_user.identity_type}]" if current_user.identity_type %>
-				<%= link_to 'Log out of vicarious mode', remove_vicarious_login_path if vicariously_logged_in? %>
-				<%= link_to profile_path(:return_to => request.url) do %>
-					<i class="material-icons middle_align">account_circle</i>
-				<% end %>
-				<a href="https://expd.uw.edu/expo-help" target="_blank"><i class="material-icons middle_align">help</i></a>
-				<%= link_to logout_path do %>
-						<i class="material-icons middle_align">logout</i>
-				<% end %>
-			<% end %>
-	  </li>
-    </ul>
-  </div>
+  <div id="w-patch"></div>
+
+  <!-- Hamburger icon (mobile trigger) -->
+  <a href="#" data-target="mobile-nav" class="sidenav-trigger white-text" style="position: absolute; top: 5px; right: 15px; font-size: 28px; z-index: 1000;">
+    <i class="mi md-32 sub_align">menu</i>
+  </a>
+
+  <!-- Desktop menu -->
+  <ul class="menu hide-on-med-and-down">
+    <li class="logo-text"><a href='/expo/'>expo</a></li>
+    <li id="account-nav">
+      <% if logged_in? %>
+        <%= vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS" : "Logged in as" %>
+        <strong><%= current_user.fullname %></strong>
+        <%= "[#{current_user.identity_type}]" if current_user.identity_type %>
+        <%= link_to 'Log out of vicarious mode', remove_vicarious_login_path if vicariously_logged_in? %>
+        <%= link_to profile_path(return_to: request.url) do %>
+          <i class="material-icons middle_align">account_circle</i>
+        <% end %>
+        <a href="https://expd.uw.edu/expo-help" target="_blank"><i class="material-icons middle_align">help</i></a>
+        <%= link_to logout_path do %>
+          <i class="material-icons middle_align">logout</i>
+        <% end %>
+      <% end %>
+    </li>
+  </ul>
+
+  <!-- Mobile menu -->
+  <ul class="sidenav" id="mobile-nav">  	
+    <li class="logo-text"><a href='/expo/'>expo</a></li>
+    <% if logged_in? %>
+      <li><span><%= vicariously_logged_in? ? "VICARIOUSLY LOGGED IN AS" : "Logged in as" %> <strong><%= current_user.fullname %></strong></span></li>
+      <li><%= "[#{current_user.identity_type}]" if current_user.identity_type %></li>
+      <% if vicariously_logged_in? %>
+        <li><%= link_to 'Log out of vicarious mode', remove_vicarious_login_path %></li>
+      <% end %>
+      <li><%= link_to profile_path(return_to: request.url) do %>
+        <i class="material-icons middle_align">account_circle</i> Profile
+      <% end %></li>
+      <li><a href="https://expd.uw.edu/expo-help" target="_blank"><i class="material-icons middle_align">help</i> Help</a></li>
+      <li><%= link_to logout_path do %>
+        <i class="material-icons middle_align">logout</i> Log out
+      <% end %></li>
+    <% end %>
+  </ul>
 </div>

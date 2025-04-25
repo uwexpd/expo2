@@ -1,3 +1,23 @@
+/* Media query for smaller screens (phones and tablets) */
+@media (max-width: 768px) {
+  #apply_header {
+    height: 100px;  /* Set a smaller height for mobile devices */
+  }
+
+  #apply_header .header_title {
+    position: relative; /* or remove it */
+  }
+
+  #apply_header.symposium2025 {
+    height: 120px;  /* Adjust the height for symposium2025 on small screens */
+  }
+
+  #apply_header .header_title.symposium2025 {
+  	background: url(image-path('symposium/2025/event-title.png'));
+    background-size: cover; /* Ensure the image still scales */
+  }
+}
+
 #apply_header{
 	height: 149px;
 	border-bottom: 1px solid #b2b2b2;
