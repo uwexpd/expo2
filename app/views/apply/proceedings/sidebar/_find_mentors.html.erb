@@ -13,7 +13,7 @@
 	<%= label_tag :mentor_department, "Mentor Department" %>
 	<%= select_tag :mentor_department,
 							options_for_select( @departments.map{|k,v| ["#{k} (#{v.size})", k]}.sort,
-							 					params[:mentor_department]), {multiple: true, class: 'chosen-select', data:  {placeholder: "Departments (#{@departments.size rescue 'Unknown'})"}} %>
+							 					params[:mentor_department]), multiple: true, class: 'select2', data: {placeholder: "Departments (#{@departments.size rescue 'Unknown'})"}, style: 'width: 100%' %>
 	
 
 	<br><br>												

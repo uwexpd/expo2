@@ -720,6 +720,24 @@ dl.big.numbers dd i {
 	width: 97%;
 }
 
+/* Custom Chosen style for multi-select */
+.chosen-container-multi .chosen-choices {
+  min-height: 40px;
+  border: 1px solid #d3d3d3;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 4px 6px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: style individual choice pills */
+.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+  height: 32px;
+  padding: 4px 6px;
+}
+
+/* End of Chose select style */
+
 .card .actions {
 	border-top: 1px solid #ddd;
     padding: 1rem;
@@ -921,4 +939,12 @@ textarea.auto_height, .sideblock.scoring textarea {
 	font-size: 1.2rem;
 	line-height: 2rem;
 }
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+  min-height: 40px;
+  border: 1px solid #d3d3d3;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
 

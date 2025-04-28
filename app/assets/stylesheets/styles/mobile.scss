@@ -33,3 +33,21 @@
     padding: 12px;
   }
 }
+
+/* Mobile-specific styling */
+@media (max-width: 768px) {
+  .chosen-container-single .chosen-single {
+    height: 35px;
+    line-height: 35px;
+  }
+
+  .chosen-container-multi .chosen-choices {
+    min-height: 35px;
+    padding: 4px 5px;
+  }
+
+  .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+    height: 28px;
+    padding: 4px;
+  }
+}
