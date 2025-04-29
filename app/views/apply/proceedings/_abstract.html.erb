@@ -20,7 +20,7 @@
 		<div class="two_column">
 		
 			<dl class="half">				
-				<% cache(:controller => 'proceedings', :action => 'result', :id => abstract.id, :action_suffix => 'abstract_presenters') do  %>
+				<% cache(["proceedings", "abstract_presenters", abstract.id, Date.current]) do %>
 		
 				<dt><%= pluralize_without_count (1 + abstract.group_members.count), "Presenter" %></dt>
 				<dd>
@@ -113,7 +113,7 @@
     
     <div class="card-reveal">
     	 <span class="project_title card-title light-blue-text darken-2"><%=  project_title %><i class="mi right">close</i></span>
-		<% cache(:controller => 'proceedings', :action => 'result', :id => abstract.id, :action_suffix => 'abstract_text') do %>
+		<% cache(["proceedings", "abstract_text", abstract.id, Date.current]) do %>
 			
 			<div class="abstract_text" id="abstract_text_<%= abstract.id %>">
 				
