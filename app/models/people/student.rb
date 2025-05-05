@@ -300,6 +300,11 @@ end
     sdb.majors.collect(&:major_branch_name).uniq.join(join_string)
   end
 
+  # FERPA allows the University to release a student’s directory information to anyone unless the student informs the Office of the University Registrar that they do not want directory information released.
+  def dir_release
+    sdb.dir_release
+  end
+
   # 0 => Seattle, 1=> Bothell, 2 => Tacoma
   # def campus_codes
   #   sdb.majors.collect(&:branch).uniq

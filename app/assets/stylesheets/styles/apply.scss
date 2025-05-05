@@ -406,7 +406,7 @@ label span {
 
 
 .apply.proceedings .accessibility{
-	color: #9498A1;	
+	// color: #9498A1;	
 	padding-top: 1rem;
 }
 
@@ -433,4 +433,12 @@ label span {
 #proceedings_lookup_form label, #proceedings_find_mentors label {
 	font-size: 1rem;
 	color: inherit;
+}
+
+#abstract_search_results .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-large):not(.btn-floating) {
+	color: #039be5;
+}
+
+#abstract_search_results .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-large):not(.btn-floating):hover {
+	color: #b7a57a;
 }

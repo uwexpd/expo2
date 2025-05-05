@@ -135,8 +135,10 @@ class Organization < ApplicationRecord
   # are marked as the primary contact
   # if it cant find any it will fall back to unit contacts then to all the contacts
   def primary_contacts_for_unit(unit)
-    c = contacts.find(:all, :conditions => {:organization_contact_units => {:unit_id => unit.id, :primary_contact => true}})
-    return c.empty? ? contacts_for_unit(unit) : c
+    # c = contacts.find(:all, :conditions => {:organization_contact_units => {:unit_id => unit.id, :primary_contact => true}})
+    # return c.empty? ? contacts_for_unit(unit) : c
+     primary = contacts.joins(:organization_contact_units).where(organization_contact_units: { unit_id: unit.id, primary_contact: true })
+    primary.exists? ? primary : contacts_for_unit(unit)
   end
   
   # Returns the quarter that this organization was last active, meaning that it had students placed in a service learning position.
