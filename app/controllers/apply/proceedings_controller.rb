@@ -185,7 +185,7 @@ class Apply::ProceedingsController < ApplyController
   
   # Fetches all primary presenters and group members in the confirmed status
   def fetch_applicants
-    @apps ||= @offering.application_for_offerings.with_status(:confirmed)
+    @apps ||= @offering.application_for_offerings.with_status(:confirmed).where(hide_proceeding_abstract: false)
     @all ||= (@apps + @apps.collect(&:group_members)).flatten.compact
     # @applicants ||= @all.collect(&:person).flatten.compact.uniq
   end

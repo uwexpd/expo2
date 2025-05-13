@@ -311,7 +311,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
         f.inputs "Abstract Review" do
           # render 'admin/applications/edit_abstract', { f: f, app: @app }
           f.input :review_comments, label: "Abstract Review Comments: <small class='light'>(Will be shared with the applicant)</small>".html_safe, :input_html => { :class => 'autogrow', :rows => 5, :cols => 40  }
-          f.input :hide_proceeding_abstract, label: 'Hide this abstract in the online proceedings/schedule.'
+          f.input :hide_proceeding_abstract, label: 'Checking this will hide the presenter card, including all presenter information, from the schedule.'
         end
       end
     end

@@ -113,17 +113,10 @@
     
     <div class="card-reveal">
     	 <span class="project_title card-title light-blue-text darken-2"><%=  project_title %><i class="mi right">close</i></span>
-		<% cache(["proceedings", "abstract_text", abstract.id, Date.current]) do %>
-			
-			<div class="abstract_text" id="abstract_text_<%= abstract.id %>">
-				
-			<% if abstract.hide_proceeding_abstract == true %>			
-				<p>This abstract is no longer available. Please contact <%= @offering.contact_email rescue 'undergradresearch@uw.edu' %> if you have any questions.</p></div>		
-			<% else %>		
-				<!-- Abstract -->		
-				<%= raw abstract.text(:abstract).body %></div>				
-			<% end %>
-			
+		<% cache(["proceedings", "abstract_text", abstract.id, Date.current]) do %>			
+			<div class="abstract_text" id="abstract_text_<%= abstract.id %>">			
+			<!-- Abstract -->		
+			<%= raw abstract.text(:abstract).body %></div>			
 		<% end %>
 	 </div>
 
