@@ -20,7 +20,11 @@
 		<div class="two_column">
 		
 			<dl class="half">				
-				<% cache(["proceedings", "abstract_presenters", abstract.id, Date.current]) do %>
+				<!-- Make sure to NOT use daily refresh caches. We need persistent caches to handle symposium event -->
+				<!-- Using update_at so the cache will automatically refresh when the abstract/application is saved -->
+				<!-- Example: Write fragment views/apply/proceedings/_abstract:7049532244dc344a787f0e3641d09f62/proceedings/abstract_presenters/138168/1744437415 -->
+				<% cache(["proceedings", "abstract_presenters", abstract.id, abstract.updated_at.to_i]) do %>
+
 		
 				<dt><%= pluralize_without_count (1 + abstract.group_members.count), "Presenter" %></dt>
 				<dd>
@@ -113,7 +117,7 @@
     
     <div class="card-reveal">
     	 <span class="project_title card-title light-blue-text darken-2"><%=  project_title %><i class="mi right">close</i></span>
-		<% cache(["proceedings", "abstract_text", abstract.id, Date.current]) do %>			
+		<% cache(["proceedings", "abstract_text", abstract.id, abstract.updated_at.to_i]) do %>
 			<div class="abstract_text" id="abstract_text_<%= abstract.id %>">			
 			<!-- Abstract -->		
 			<%= raw abstract.text(:abstract).body %></div>			
