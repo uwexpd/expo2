@@ -20,3 +20,27 @@
 	<%= submit_tag 'Search', :class => 'btn' %>
 	<%= link_to "CLEAR FILTERS", apply_proceedings_path, :class => 'clear_filter' %>
 <% end -%>
+
+<script>
+  $(document).ready(function () {
+    $('#proceedings_find_mentors').on('submit', function (e) {
+      let hasInput = false;
+
+      // Check text field
+      const mentorName = $.trim($('#mentor_name').val());
+      if (mentorName.length > 0) hasInput = true;
+
+      // Check multi-select
+      const mentorDepartment = $('#mentor_department').val();
+      if (mentorDepartment && mentorDepartment.length > 0) hasInput = true;
+
+      if (!hasInput) {
+        e.preventDefault();
+        $('#find_menter_error')
+          .text('Please enter a mentor name or select at least one department.')      
+      } else {
+        $('#find_menter_error').text('');
+      }
+    });
+  });
+</script>

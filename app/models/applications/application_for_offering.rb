@@ -149,6 +149,8 @@ class ApplicationForOffering < ApplicationRecord
     .where(application_status_types: { name: 'awarded' })
   }
 
+  scope :confirmed, -> { joins(current_application_status: :status_type).where(application_status_types: { name: 'confirmed' }) }
+
   scope :awardees, -> { joins('LEFT OUTER JOIN application_review_decision_types review on review.id = application_for_offerings.application_review_decision_type_id LEFT OUTER JOIN application_interview_decision_types interview on interview.id = application_for_offerings.application_interview_decision_type_id LEFT OUTER JOIN application_final_decision_types final on final.id = application_for_offerings.application_final_decision_type_id').where("case offerings.award_basis 
   when 'review'    then case when application_review_decision_type_id is null then 0 else review.yes_option end
   when 'interview' then case when application_interview_decision_type_id is null then 0 else interview.yes_option end 

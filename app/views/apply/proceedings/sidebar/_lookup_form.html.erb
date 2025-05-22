@@ -40,3 +40,31 @@
 	<%= submit_tag 'Search', :class => 'btn' %>
 	<%= link_to "CLEAR FILTERS", apply_proceedings_path, :class => 'clear_filter' %>
 <% end -%>
+
+<script>
+  $(document).ready(function () {
+    $('#proceedings_lookup_form').on('submit', function (e) {
+      let hasInput = false;
+
+      // Check student name
+      const studentName = $.trim($('#student_name').val());
+      if (studentName.length > 0) hasInput = true;
+
+      // Check selects
+      const selects = ['#student_major', '#application_category', '#student_award', '#student_campus', '#session_location'];
+      selects.forEach(function (selector) {
+        if ($(selector).val() && $(selector).val().length > 0) {
+          hasInput = true;
+        }
+      });
+
+      if (!hasInput) {
+        e.preventDefault();
+        $('#student_lookup_error')
+          .text('Please select at least one filter before searching.')          
+      } else {
+        $('#student_lookup_error').text('');
+      }
+    });
+  });
+</script>

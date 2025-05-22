@@ -44,20 +44,20 @@ class Apply::ProceedingsController < ApplyController
   
   def result
     add_breadcrumb "#{@offering.name} Schedules", @header_link
-    @query_strings = {}
-    @result = @apps.map(&:id) #[]
-    @result &= find_by_student_name(params[:student_name]) unless params[:student_name].blank?
-    @result &= find_by_major(params[:student_major]) unless params[:student_major].blank?
-    @result &= find_by_application_category(params[:application_category]) unless params[:application_category].blank?
-    @result &= find_by_award(params[:student_award]) unless params[:student_award].blank?
-    @result &= find_by_campus(params[:student_campus]) unless params[:student_campus].blank?
-    @result &= find_by_locations(params[:session_location]) unless params[:session_location].blank?
-    @result &= find_by_mentor_name(params[:mentor_name]) unless params[:mentor_name].blank?
-    @result &= find_by_department(params[:mentor_department]) unless params[:mentor_department].blank?
+    @query_strings = {}    
+    @result = @apps
 
-    @result = @result.uniq unless @result.empty?
-    @result = @offering.application_for_offerings.where(id: @result)
-    @result = @result.sort_by{|x| "#{x.offering_session.try(:session_group).to_s}#{x.offering_session.try(:identifier).to_s}"}    
+    # Subqueries to stimulate interseciton in SQL for MySQL.
+    @result = @result.where(id: find_by_student_name(params[:student_name]).select(:id)) unless params[:student_name].blank?
+    @result = @result.where(id: find_by_major(params[:student_major]).select(:id)) unless params[:student_major].blank?
+    @result = @result.where(id: find_by_application_category(params[:application_category]).select(:id)) unless params[:application_category].blank?
+    @result = @result.where(id: find_by_award(params[:student_award]).select(:id)) unless params[:student_award].blank?
+    @result = @result.where(id: find_by_campus(params[:student_campus]).select(:id)) unless params[:student_campus].blank?
+    @result = @result.where(id: find_by_locations(params[:session_location]).select(:id)) unless params[:session_location].blank?
+    @result = @result.where(id: find_by_mentor_name(params[:mentor_name]).select(:id)) unless params[:mentor_name].blank?
+    @result = @result.where(id: find_by_department(params[:mentor_department]).select(:id)) unless params[:mentor_department].blank?
+
+    @result = @result.joins(:offering_session).order("offering_sessions.session_group, offering_sessions.identifier")
 
     merge_file = params[:header] == 'false' ? nil : @offering.proceedings_pdf_letterhead.try(:path)
     
@@ -104,89 +104,102 @@ class Apply::ProceedingsController < ApplyController
   
   def find_by_student_name(query)
     @query_strings[:student_name] = query
-    result = []
+    return ApplicationForOffering.none if query.blank?
 
-    # Sanitize the query and split into name parts
-    name_conditions = []; group_name_conditions = []
-    query.split.each do |name_part|
-      name_part = name_part.downcase.gsub(/\\/, '\&\&').gsub(/'/, "''").delete(",").delete(".").delete("%")
-      name_conditions << "LOWER(people.firstname) LIKE '%#{name_part}%'"
-      name_conditions << "LOWER(people.lastname) LIKE '%#{name_part}%'"
-      group_name_conditions << "LOWER(application_group_members.firstname) LIKE '%#{name_part}%'"
-      group_name_conditions << "LOWER(application_group_members.lastname) LIKE '%#{name_part}%'"
-    end
+    name_parts = query.downcase.scan(/\w+/)
+    return ApplicationForOffering.none if name_parts.empty?
 
-    # Combine conditions for presenters and group members
-    name_conditions_query = name_conditions.join(" OR ")
-    group_name_conditions_query = (name_conditions + group_name_conditions).join(" OR ")
+    # Build SQL fragment and values for parameterized queries
+    person_sql = name_parts.map { |part| "(LOWER(people.firstname) LIKE ? OR LOWER(people.lastname) LIKE ?)" }.join(" AND ")
+    person_values = name_parts.flat_map { |part| ["%#{part}%", "%#{part}%"] }
 
-    # Fetch presenters
-    presenters = @offering.application_for_offerings
-                   .joins(:person, current_application_status: :status_type)
-                   .includes(:person)
-                   .where("application_status_types.name = 'confirmed' AND (#{name_conditions_query})")
-                   .order('people.firstname, people.lastname')
+    group_sql = name_parts.map { |part| "(LOWER(application_group_members.firstname) LIKE ? OR LOWER(application_group_members.lastname) LIKE ?)" }.join(" AND ")
+    group_values = name_parts.flat_map { |part| ["%#{part}%", "%#{part}%"] }
 
-    # Fetch group members
-    group_members = @offering.application_for_offerings
-                      .joins(current_application_status: :status_type, group_members: :person)
-                      .includes(group_members: :person)
-                      .where("application_status_types.name = 'confirmed' AND (#{group_name_conditions_query})")
-                      .order('people.firstname, people.lastname')
+    # Query presenter IDs
+    presenter_ids = @offering.application_for_offerings
+      .confirmed
+      .joins(:person)
+      .where(person_sql, *person_values)
+      .pluck(:id)
 
-    # Combine and deduplicate results
-    result = (presenters + group_members).uniq.map(&:id)
+    # Query group member IDs
+    group_member_ids = @offering.application_for_offerings
+      .confirmed
+      .joins(group_members: :person)
+      .where(group_sql, *group_values)
+      .pluck(:id)
+
+    result_ids = (presenter_ids + group_member_ids).uniq
+    return ApplicationForOffering.none if result_ids.empty?
+
+    ApplicationForOffering.where(id: result_ids)
+    
   end
 
   def find_by_mentor_name(query)
     @query_strings[:mentor_name] = query
-    result = []
-    
-    name_conditions = []
-    query.split.each do |name_part|
-      name_part = name_part.downcase.gsub(/\\/, '\&\&').gsub(/'/, "''").delete(",").delete(".").delete("%")
-      name_conditions << "LOWER(people.firstname) LIKE '%#{name_part}%'" 
-      name_conditions << "LOWER(people.lastname) LIKE '%#{name_part}%'"
-    end
-    mentors = @offering.application_for_offerings.joins(mentors: :person, current_application_status: :status_type).where("application_status_types.name = ?", 'confirmed').where(name_conditions.join(' OR ')).order('people.firstname, people.lastname')
+    return ApplicationForOffering.none if query.blank?
 
-    mentors = mentors.uniq.map(&:id)    
+    terms = query.downcase.scan(/\w+/)
+    return ApplicationForOffering.none if terms.empty?
+
+    like_clauses = terms.flat_map do |term|
+      [
+        "LOWER(people.firstname) LIKE ?",
+        "LOWER(people.lastname) LIKE ?"
+      ]
+    end
+
+    values = terms.flat_map { |term| ["%#{term}%", "%#{term}%"] }
+
+    @offering.application_for_offerings
+             .confirmed
+             .joins(mentors: :person)
+             .where(like_clauses.join(' OR '), *values)
+             .order('people.firstname, people.lastname')
   end
 
   def find_by_department(query)
     @query_strings[:mentor_department] = query
-    result_ids = @departments.values_at(*query).flatten    
+    result_ids = @departments.values_at(*query).flatten.compact
+    ApplicationForOffering.where(id: result_ids)
   end
 
   def find_by_major(query)
     @query_strings[:student_major] = query
     result_ids = @majors.values_at(*query).flatten.compact
+    ApplicationForOffering.where(id: result_ids)
   end
   
   def find_by_award(query)
     @query_strings[:student_award] = query
-    result_ids = @awards.values_at(*query).flatten
+    result_ids = @awards.values_at(*query).flatten.compact
+    ApplicationForOffering.where(id: result_ids)
   end
 
   def find_by_campus(query)
     @query_strings[:student_campus] = query
     result_ids = @campus.values_at(*query).flatten.compact
+    ApplicationForOffering.where(id: result_ids)
   end
 
   def find_by_locations(query)
     @query_strings[:session_location] = query
     result_ids = @locations.values_at(*query).flatten.compact
+    ApplicationForOffering.where(id: result_ids)
   end
 
   def find_by_application_category(query)
     @query_strings[:application_category] = query
-    result_ids = @application_category.values_at(*query).flatten.compact    
+    result_ids = @application_category.values_at(*query).flatten.compact
+    ApplicationForOffering.where(id: result_ids)
   end
   
   # Fetches all primary presenters and group members in the confirmed status
   def fetch_applicants
     @apps ||= @offering.application_for_offerings.with_status(:confirmed).where(hide_proceeding_abstract: false)
-    @all ||= (@apps + @apps.collect(&:group_members)).flatten.compact
+    # @all ||= (@apps + @apps.collect(&:group_members)).flatten.compact
     # @applicants ||= @all.collect(&:person).flatten.compact.uniq
   end
   
