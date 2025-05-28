@@ -12,10 +12,11 @@
                     class: 'add_favorite', 
                     id: "add_all_favorite_link" %>
       </div> -->
-
-    <%= render partial: 'session_heading', object: @offering_session %><br>
-    <%= render partial: 'abstract', collection: @presenters %>
-    <%= render 'accessibilty' %>
+    <div id="offering_session_abstracts">
+      <%= render partial: 'session_heading', object: @offering_session %><br>
+      <%= render partial: 'abstract', collection: @presenters %>
+      <%= render 'accessibilty' %>
+    </div>
   </div>
   
 </div>

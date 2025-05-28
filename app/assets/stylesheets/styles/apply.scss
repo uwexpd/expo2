@@ -434,10 +434,12 @@ label span {
 	color: inherit;
 }
 
-#abstract_search_results .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-large):not(.btn-floating) {
+#abstract_search_results .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-floating),
+#offering_session_abstracts .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-floating) {
 	color: #039be5;
 }
 
-#abstract_search_results .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-large):not(.btn-floating):hover {
+#abstract_search_results .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-floating):hover,
+#offering_session_abstracts .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-floating):hover {
 	color: #b7a57a;
 }
