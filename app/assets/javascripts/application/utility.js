@@ -14,6 +14,7 @@ $(document).ready(function(){
 // Turbolinks fix:
 // Refer to: https://stackoverflow.com/questions/18770517/rails-4-how-to-use-document-ready-with-turbo-links
 $(document).on('turbolinks:load', function() {
+  bindToggleLinks();
   // Materializecss javascript components initialization
   $('.tabs').tabs();
   $('.modal').modal();
@@ -133,13 +134,6 @@ $(document).on('turbolinks:load', function() {
       minimumInputLength: 2    
     });
 
-  $(document).on("click", "a[data-link-toggle]", function(){
-    var obj=$(this).attr('data-link-toggle');
-    if (Object.keys(obj).length > 0){
-        $(obj).toggle(400);
-     }
-  });
-
   $(document).ready(function() {
      $('input[data-checkbox]').change(function() {
         if ($(this).prop('checked')) {
@@ -232,3 +226,28 @@ function toggle_card(obj, display){
         $(obj).parent().hide();
     }
 }
+
+function bindToggleLinks() {
+  $(document)
+    .off("click", "a[data-link-toggle]")
+    .on("click", "a[data-link-toggle]", function(e) {
+      e.preventDefault();
+      var selector = $(this).data('link-toggle');
+      var target = $(selector);
+
+      if (selector) {
+          target.toggle(400, function() {
+          var icon = $(e.currentTarget).find("i.mi.symposium");
+          if ($(this).is(":visible")) {
+            icon.text("remove_circle");
+          } else {
+            icon.text("expand_circle_down");
+          }
+        });
+      }
+    });
+}
+
+
+$(document).on('turbolinks:render', bindToggleLinks);
+
