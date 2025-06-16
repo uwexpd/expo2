@@ -11,19 +11,16 @@ class GivepulseUser < GivepulseBase
                 :causes, :skills, :research_areas, :education, :tags,
                 :administrative_fields, :administrative_fields_detailed
 
-  # Simulate ActiveRecord's find_by method
-  # Example: GivepulseUser.find_by(group_id: '757578', user_id: '4228632') Sendbox data
+  # Simulate ActiveRecord's where method
+  # Example: GivepulseUser.where(group_id: '757578', user_id: '4228632') Sendbox data
   def self.where(attributes)
-    begin
-      # response = make_request('/users', attributes)
-      response = request_api('/users', attributes, method: :get)
+    begin      
+      response =  request_api('/users', attributes, method: :get)
       response = JSON.parse(response.body)
 
       if response['total'].to_i > 0
         results = response['results']        
-        users = results.map { |attrs| build_user(attrs) }
-        return users.first if users.size == 1
-        users
+        users = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }        
       else
         Rails.logger.warn("No users found with attributes: #{attributes}")
         nil
@@ -33,18 +30,13 @@ class GivepulseUser < GivepulseBase
       nil
     end
   end
-
-  # Alias `where` to `find_by`
-  def self.find_by(attributes)
-    where(attributes)
-  end
     
   # params => {:user=>{:administrative_fields=>{"81445"=>"No"}}} 
   def update_user(params)
     return false unless id
       
     begin
-        response = request_api("/users/#{id}", params, method: :put)
+        response =  GivepulseUser.request_api("/users/#{id}", params, method: :put)
         # Rails.logger.debug("Original Response received: #{response}")
         response = JSON.parse(response.body)
         # Rails.logger.debug("Json Response received: #{response}")
@@ -71,12 +63,6 @@ class GivepulseUser < GivepulseBase
   def fullname
     [first_name, middle_name, last_name].reject(&:blank?).join(' ')
   end
-
-  private
-
-  def self.build_user(attrs)
-    GivepulseUser.new(attrs)
-  end  
 
 
 end

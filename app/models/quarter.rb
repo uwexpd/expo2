@@ -71,6 +71,15 @@ class Quarter < ApplicationRecord
   def title
     quarter_code.name + " " + year.to_s
   end
+
+  def self.find_by_title(title)
+    season, year = title.strip.split(/\s+/, 2)
+    return nil unless season && year.to_s.match?(/^\d{4}$/)
+
+    joins(:quarter_code)
+      .where(quarter_codes: { name: season })
+      .find_by(year: year)
+  end
   
   def self.current_and_future_quarters(limit = nil, current_qtr = nil)
     first_day_cmp = !current_qtr.is_a?(Quarter) ? Time.now : current_qtr.first_day

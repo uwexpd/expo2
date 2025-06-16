@@ -4,7 +4,7 @@
 }
 
 .apply_nav .collection a.collection-item, .confirmation_nav .collection a.collection-item, .sidebar_nav .collection a.collection-item {
-  color: #039be5;
+  color: #1a62c7;
 }
 
 .apply_nav .collection .collection-item.active,
@@ -29,7 +29,7 @@
 }
 
 .apply_nav .collection.with-header .collection-header a:hover, .confirmation_nav .collection.with-header .collection-header a:hover, .sidebar_nav .collection.with-header .collection-header a:hover {
-	color: #b7a57a;
+	color: #85754d;
 }
 
 .apply_nav ul.collection li a.collection-item, .confirmation_nav ul.collection li a.collection-item, .sidebar_nav ul.collection li a.collection-item {
@@ -368,7 +368,7 @@ label span {
 
 .proceedings ul.schedule .location {
   font-size: 80%;
-  color: #999;
+  // color: #999;
 }
 
 .proceedings .session_identifier {
@@ -402,6 +402,11 @@ label span {
 .apply.proceedings .card .card-content .project_title.card-title, .apply.proceedings .card .card-reveal .project_title.card-title{
 	font-size: 18px;
 	font-weight: 500;
+	color: #1a62c7;
+}
+
+.apply.proceedings .card .card-content .project_title.card-title:hover, .apply.proceedings .card .card-reveal .project_title.card-title:hover{
+	color: #85754d;
 }
 
 .apply.proceedings .accessibility{
@@ -436,10 +441,15 @@ label span {
 
 #abstract_search_results .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-floating),
 #offering_session_abstracts .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-floating) {
-	color: #039be5;
+	color: #1a62c7;
 }
 
 #abstract_search_results .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-floating):hover,
 #offering_session_abstracts .card .card-action a:not(.btn):not(.btn-small):not(.btn-large):not(.btn-floating):hover {
-	color: #b7a57a;
+	color: #85754d;
 }
+
+#student_name::placeholder, #mentor_name::placeholder {
+	color: #7f8c8d;	
+}
+

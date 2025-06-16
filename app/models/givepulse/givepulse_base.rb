@@ -117,6 +117,7 @@ class GivepulseBase < ActiveResource::Base
         when :put
           response = connection.put(full_path, params.to_json, headers.merge(custom_headers))
         when :delete
+          full_path = "#{path}?#{params.to_query}"
           response = connection.delete(full_path, headers.merge(custom_headers))
         else
           raise ArgumentError, "Unsupported HTTP method: #{method}"
@@ -134,12 +135,20 @@ class GivepulseBase < ActiveResource::Base
       end
     end
 
-
-
     # Refresh the Authorization token
     def handle_token_refresh
       setup_authorization
     end
   end
+
+  def self.permitted_attrs
+    @permitted_attrs ||= instance_methods(false).grep(/=$/).map { |m| m.to_s.chomp('=') }
+  end
+
+  def self.find_by(attributes)
+    result = where(attributes)
+    result.is_a?(Array) ? result.first : result
+  end
+
 end
 

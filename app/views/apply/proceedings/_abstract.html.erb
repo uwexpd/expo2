@@ -5,7 +5,7 @@
 	<%#= render :partial => 'apply/proceedings/add_favorite', :object => abstract %>    
 	 <div class="card-content">
 		<% project_title = abstract.stripped_project_title.strip.html_safe %>
-		<span class="project_title card-title activator light-blue-text darken-2">
+		<span class="project_title card-title activator">
 			<%=  project_title %> <!--<i class='mi right'>more_vert</i> -->
 		</span>
 		<!--
@@ -116,7 +116,7 @@
     </div>
     
     <div class="card-reveal">
-    	 <span class="project_title card-title light-blue-text darken-2"><%=  project_title %><i class="mi right">close</i></span>
+    	 <span class="project_title card-title"><%=  project_title %><i class="mi right">close</i></span>
 		<% cache(["proceedings", "abstract_text", abstract.id, abstract.updated_at.to_i]) do %>
 			<div class="abstract_text" id="abstract_text_<%= abstract.id %>">			
 			<!-- Abstract -->		

@@ -1222,7 +1222,7 @@ class ApplicationForOffering < ApplicationRecord
   end
 
   def self.mge_awardees
-    # Rails.cache.fetch('mge_awardees', :expires_in => 2.weeks) do
+    Rails.cache.fetch('mge_awardees', :expires_in => 2.weeks) do
       # TODO: active relation [OR] doesn't work here. See if rails 6 fix this: https://github.com/rails/rails/issues/24055
       # mge_awarded_ids = ApplicationForOffering.joins(:offering).where("unit_id=2").awardees.pluck(:id)
       # siah_awarded_ids = ApplicationForOffering.joins(:offering).where("offerings.name = 'Summer Institute in the Arts and Humanities'").current_status_awardees.pluck(:id)
@@ -1235,7 +1235,7 @@ class ApplicationForOffering < ApplicationRecord
           'Mary Gates Leadership Scholarship'
         ])
         .where("quarters.year >= ?", 3.years.ago.year).awardees
-    # end
+    end
   end
   
   # Creates (or restores from cache) a hash with keys of major names and values of arrays of application ID numbers.

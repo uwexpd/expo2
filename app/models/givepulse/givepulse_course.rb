@@ -8,33 +8,25 @@ class GivepulseCourse < GivepulseBase
               :class_time, :class_type, :class_status, :sl_type, 
               :givepulse_organizer_id, :faculty_id, :faculty2_id, :faculty3_id
 
-  # Example Use: GivepulseCourse.find_by(term: 'SUM2025' , crn: 'BHS496A')
+  # Example Use: GivepulseCourse.where(term: 'SUM2025' , crn: 'BHS496A')
   # GivepulseCourse.where(group_id: 788279)
   def self.where(attributes)
   	begin
-
 	   response = request_api('/courses', attributes, method: :get)     
      response = JSON.parse(response.body)     
 
   	 if response['total'].to_i > 0
         results = response['results']
-        courses = results.map { |attrs| GivepulseCourse.new(attrs) }
+        courses = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }
         # Rails.logger.debug("***** DEBUG courses => #{courses.inspect}")
-        return courses.first if courses.size == 1
-        courses
   	 else
   	 	 Rails.logger.warn("No courses found with attributes: #{attributes}")
   	   nil
   	 end
-	rescue StandardError => e
+	  rescue StandardError => e
       Rails.logger.error("Error fetching courses: #{e.message}")
       nil
     end
-  end
-
-  # Alias `where` to `find_by`
-  def self.find_by(attributes)
-    where(attributes)
   end
 
   # Add course to GivePulse by SDB course object
@@ -66,13 +58,21 @@ class GivepulseCourse < GivepulseBase
 
   end
 
-  # Add course students to GivePulse
+  # Sync course students to GivePulse
   # If the student (email) exists, it will update the params in this case. [Tested]
-  # [TODO] handle course droppers and mismatch. 
-  def add_students
-    # Student.find(529893, 340224).each do |student| # For test
+  # Handle course droppers and mismatch. 
+  def sync_course_students
+    # Normalize for roster email comparison
+    sdb_emails = self.course_students.to_a.map { |s| s.email&.downcase }.compact
+    givepulse_students = self.givepulse_course_students || []
+    givepulse_emails = givepulse_students.map { |u| u.email&.downcase }.compact
+    
+    # 1. Sync current students
   	self.course_students.each do |student|
       
+      email = student.email&.downcase
+      next unless email
+
       admin_minor = student.sdb.age < 18 ? "Yes" : "No"
       admin_dir_release = student.dir_release ? "Yes" : "No"
       admin_fields = if Rails.env.production?
@@ -88,30 +88,65 @@ class GivepulseCourse < GivepulseBase
          email: student.email,
          # student_id: student.email.email.sub(/@uw\.edu\z/, ''), 
          administrative_fields: admin_fields,
-         group_id: self.group_id,
-         is_private: 1
+         group_id: self.group_id,         
         }
   	  }
+
+      # Set is_private only if not in GivePulse
+      unless givepulse_emails.include?(email)
+        post_params[:user][:is_private] = 1
+      end
+
   	  # Rails.logger.debug("Debug post_params => #{post_params}")
-  	  begin
-  	  	# response = make_post_request('/users', post_params, { 'Content-Type' => 'application/json' })
+  	  begin  	  	
         response = GivepulseCourse.request_api("/users", post_params, method: :post)
   	  	response_body = JSON.parse(response.body)
-  	  	# Rails.logger.debug("Add Students Debug response=> #{response}")
+  	  	# Rails.logger.debug("Sync Students Debug response=> #{response}")
     		if response.code.to_i == 200 || response_body["updated"] == true
-    			Rails.logger.info("Successfully added student with ID: #{response_body['user_id']}")
+    			Rails.logger.info("Successfully synced student with ID: #{response_body['user_id']}")
     		else
-    			Rails.logger.error("Failed to add student #{student.email}. Response code: #{response.code}, Response body: #{response.body}")
+    			Rails.logger.error("Failed to sync student #{student.email}. Response code: #{response.code}, Response body: #{response.body}")
     		end
   	  rescue StandardError => e
-  	    Rails.logger.error("Exception occurred while adding student #{student.email}: #{e.message}")
-  	  end
+  	    Rails.logger.error("Exception occurred while syncing student #{student.email}: #{e.message}")
+  	  end      
 	  end
+
+    # 2. Find and remove droppers
+    # droppers = givepulse_students.reject do |gp_user|
+    #   sdb_emails.include?(gp_user.email&.downcase)
+    # end
+
+    # droppers.each do |dropper|
+
+    #   drop_params = {
+    #         email: dropper.email,
+    #         course_id: self.id,
+    #         delete: "yes" 
+    #   }
+
+    #   begin
+    #     Rails.logger.info("Removing dropper, #{dropper.email}, from the GivePulse course #{self.crn}")
+    #     response = GivepulseCourse.request_api("/courseStudent", drop_params, method: :delete)
+    #     #Rails.logger.debug("Debug response DELETE => #{response}")
+
+    #     if response.code.to_i == 200
+    #       Rails.logger.info("Successfully removed #{dropper.email} from GivePulse course #{self.crn}")
+    #     else
+    #       Rails.logger.error("Failed to remove #{dropper.email}. Code: #{response.code}, Body: #{response.body}")
+    #     end
+    #   rescue StandardError => e
+    #     Rails.logger.error("Exception removing #{dropper.email}: #{e.message}")
+    #   end
+    # end
   end
 
   def quarter
-  	Quarter.find_by_abbrev(self.term)
-  end  
+  	# Quarter.find_by_abbrev(self.term)
+    # To be compatiable with Canvas: Term: "Summer 2025"
+    Quarter.find_by_title(self.term)
+  end
+
 
   # Branch/campus code: 0: Seattle, 1: Bothell, 2: Tacoma  
   # [TODO] We should add a custom field for this. There is external_id in GP we could use but it can be updated by admin users so not doing with that.
@@ -129,7 +164,34 @@ class GivepulseCourse < GivepulseBase
   end
   
   def course_students
-  	course.all_enrollees.flatten
+  	 course&.all_enrollees&.flatten || []
+  end
+
+  def givepulse_course_students
+    begin
+     response = GivepulseUser.request_api('/courseStudents', {course_id: self.id}, method: :get)
+     response = JSON.parse(response.body)
+
+     if response['total'].to_i > 0
+        results = response['results']
+        # Rails.logger.debug("***** DEBUG results => #{results.inspect}")
+        results.map { |attrs| GivepulseUser.new(attrs) }        
+     else
+       Rails.logger.warn("No course students found with the givepulse course: #{self.crn}")
+       []
+     end
+    rescue StandardError => e
+      Rails.logger.error("Error fetching course students: #{e.message}")
+      []
+    end 
+  end
+
+  def course_droppers
+    current_enrolled_student_emails = course_students.pluck(:email).compact.map(&:downcase)
+
+    givepulse_course_students.reject do |user|
+      user.email.present? && current_enrolled_student_emails.include?(user.email.downcase)
+    end
   end
 
   # Use community engaged courses GP group id to define campus code

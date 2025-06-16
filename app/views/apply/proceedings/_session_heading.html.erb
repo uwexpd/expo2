@@ -1,7 +1,7 @@
 <div class="session_heading">
 	<%= content_tag(:h5, "Session #{session_heading.identifier}") unless session_heading.identifier.blank? %>
 	<h4><%= session_heading.title %></h4>
-	<p class="light inline">
+	<p class="inline">
 		<%= session_heading.time_detail %>
 		<%= "| #{session_heading.location}" if (!@offering.virtual_proceeding && !session_heading.location.blank?) || (@current_user != :false && @current_user.admin && @current_user.in_unit?(3)) || Time.now >= @offering.proceeding_public_display_at if @offering.proceeding_public_display_at %>
 		<%= "| Moderated by #{session_heading.moderator.try(:fullname)}" unless session_heading.moderator.try(:fullname).blank? %>
