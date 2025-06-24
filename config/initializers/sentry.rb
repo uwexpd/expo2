@@ -1,6 +1,10 @@
+require 'dotenv' if defined?(Dotenv)
+
+Dotenv.load('/usr/local/apps/expo2/shared/.env') if defined?(Dotenv)
+
 Sentry.init do |config|
-  config.dsn = ENV.fetch("SENTRY_DNS")
-  
+  config.dsn = ENV.fetch("SENTRY_DSN")
+
   config.enabled_environments = %w[production]
 
   config.breadcrumbs_logger = [:active_support_logger, :http_logger]
