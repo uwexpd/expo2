@@ -176,7 +176,7 @@ class WebServiceResult
       @ssl_options ||= {
         :cert         => OpenSSL::X509::Certificate.new(File.open("#{Rails.root}/config/certs/#{config_options[:cert]}")),
         :key          => OpenSSL::PKey::RSA.new(File.open("#{Rails.root}/config/certs/#{config_options[:key]}")),
-        # :ca_file      => "#{Rails.root}/config/certs/#{config_options[:ca_file]}",
+        :ca_file      => "#{Rails.root}/config/certs/#{config_options[:ca_file]}",
         :verify_mode  => OpenSSL::SSL::VERIFY_PEER
       }
     end

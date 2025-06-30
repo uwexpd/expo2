@@ -1,16 +1,27 @@
 # An "Offering" in EXPo is anything that a student (or other user, potentially) can apply for.  Common examples would be scholarships, fellowships, programs (like a summer program), internships, courses that require an application process, etc. test
 class Offering < ApplicationRecord
   # include StringHelper #[TODO] It does not work with Tinymce format. 
-  stampable  
-    
+  stampable
+
   scope :sorting, -> {
-    left_outer_joins(:quarter_offered).
-    where(unit_id: current_user.blank? ? Unit.all.collect(&:id) : current_user.units.collect(&:id)).
-    order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC")
+    unit_ids = current_user.present? ? current_user.units.select(:id) : Unit.select(:id)
+
+    left_outer_joins(:quarter_offered)
+      .where(unit_id: unit_ids)
+      .order(Arel.sql("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC"))
   }
-  scope :current, -> { left_outer_joins(:quarter_offered).where("quarters.first_day >= ? OR (quarter_offered_id is null and year_offered >= ?)", Quarter.current_quarter.first_day, Time.now.year)}
+
+  scope :current, -> {
+    left_outer_joins(:quarter_offered)
+      .where("quarters.first_day >= ? OR (quarter_offered_id IS NULL AND year_offered >= ?)", Quarter.current_quarter.first_day, Time.current.year)
+  }
+
   scope :sorting_current, -> { sorting.current }
-  scope :sorting_past, -> { where(id: (sorting - sorting_current).map(&:id)).left_outer_joins(:quarter_offered).order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC") }
+
+  scope :sorting_past, -> {
+    ids_to_exclude = sorting_current.select(:id)
+    sorting.where.not(id: ids_to_exclude)
+  }
 
   belongs_to :unit
   has_many :applications, :class_name => "ApplicationForOffering"

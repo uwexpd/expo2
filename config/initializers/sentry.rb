@@ -3,7 +3,7 @@ require 'dotenv' if defined?(Dotenv)
 Dotenv.load('/usr/local/apps/expo2/shared/.env') if defined?(Dotenv)
 
 Sentry.init do |config|
-  config.dsn = ENV.fetch("SENTRY_DSN")
+  config.dsn = ENV.fetch("SENTRY_DNS")
 
   config.enabled_environments = %w[production]
 

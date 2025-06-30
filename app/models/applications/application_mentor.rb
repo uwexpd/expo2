@@ -195,15 +195,15 @@ class ApplicationMentor < ApplicationRecord
     if new_person_attributes[:id] == "-1"
       build_person(new_person_attributes.reject{|k,v| k == :id})
     elsif person
-      person.update_attributes(new_person_attributes.reject{|k,v| k == :id})
+      person.update(new_person_attributes.reject{|k,v| k == :id})
     elsif person = (Person.find(new_person_attributes[:id]) rescue nil)
-      person.update_attributes(new_person_attributes.reject{|k,v| k == :id})
+      person.update(new_person_attributes.reject{|k,v| k == :id})
     end
   end
 
   def answer_attributes=(answer_attributes)
       answer_attributes.each do |answer_id, attributes|
-        answers.find(answer_id).update_attributes(attributes)
+        answers.find(answer_id).update(attributes)
       end
     end
 

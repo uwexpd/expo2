@@ -22,7 +22,7 @@ class OfferingDashboardItem < ApplicationRecord
   # Allow saving of dashboard item through mass assignment
   def dashboard_item_attributes=(attrs)
     if dashboard_item
-      dashboard_item.update_attributes(attrs)
+      dashboard_item.update(attrs)
     else
       create_dashboard_item(attrs)
     end

@@ -68,7 +68,7 @@ class EventTime < ApplicationRecord
       invitee_attributes.merge!(:invitable => obj)
       invitee = invitees.create(invitee_attributes)
     else
-      invitee.update_attributes(invitee_attributes)
+      invitee.update(invitee_attributes)
     end
     invitee
   end

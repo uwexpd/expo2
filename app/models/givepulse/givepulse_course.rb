@@ -152,7 +152,7 @@ class GivepulseCourse < GivepulseBase
   # [TODO] We should add a custom field for this. There is external_id in GP we could use but it can be updated by admin users so not doing with that.
   def course
     return unless quarter
-
+    
     Course.find_by(
       ts_year: quarter.year,
       ts_quarter: quarter.quarter_code,
@@ -164,7 +164,24 @@ class GivepulseCourse < GivepulseBase
   end
   
   def course_students
-  	 course&.all_enrollees&.flatten || []
+     return [] unless course
+     sdb_course = course
+     qtr = quarter
+     all_courses = [sdb_course]
+     
+     if sdb_course.joint_listed?
+        cross_list_course = Course.find_by(
+          ts_year: qtr.year,
+          ts_quarter: qtr.quarter_code,
+          course_branch: self.branch_code,
+          course_no: sdb_course.with_course_no.to_s.strip,
+          dept_abbrev: sdb_course.with_dept_abbrev.to_s.strip,
+          section_id: sdb_course.with_section_id.to_s.strip
+        )
+        all_courses << cross_list_course if cross_list_course.present?
+     end 
+
+  	  all_courses.map(&:all_enrollees).compact.flatten
   end
 
   def givepulse_course_students

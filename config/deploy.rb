@@ -1,15 +1,20 @@
-require 'capistrano/rake'
+
 set :stage, :production
 
-set :deploy_to, '/usr/local/apps/expo2'
+set :deploy_to, '/usr/local/apps/expo3'
 set :repo_url,  'git@github.com:uwexpd/expo2.git'
-set :branch, 'master'
+set :branch, 'upgrade/ruby3-rails6'
 set :rails_env, :production
 set :bundle_flags, "--quiet"
 set :deploy_user, 'joshlin'
-server 'new.expo.uw.edu', user: 'joshlin', roles: %w{web app db}, primary: true
-set :rvm_ruby_version, '2.7.2' # set up which rvm ruby to use in server
+server 'dev.expo.uw.edu', user: 'joshlin', roles: %w{web app db}, primary: true
+# set :rvm_ruby_version, '2.7.2' # set up which rvm ruby to use in server
+set :rvm_ruby_version, '3.0.6'  # ← update this to your Ruby 3 version
 
+# for dev.expo.uw.edu
+set :default_env, {  
+  'SSL_CERT_FILE' => '/etc/ssl/certs/ca-certificates.crt'
+}
 
 # Tell cap your own private keys for git and use agent forwarding with this command.
 set :ssh_options, {
