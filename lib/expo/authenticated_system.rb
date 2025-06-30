@@ -183,6 +183,9 @@ module AuthenticatedSystem
 
     # Get auth data from shiboleth
     def get_auth_data
-          [request.env["eppn"].split("@").first, nil] rescue [nil, nil]
-    end    
+      uwnetid = request.env["uwnetid"]
+      return [uwnetid, nil] if uwnetid.present?
+
+      [nil, nil]
+    end
 end
