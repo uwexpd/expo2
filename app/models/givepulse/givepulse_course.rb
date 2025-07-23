@@ -9,7 +9,7 @@ class GivepulseCourse < GivepulseBase
               :givepulse_organizer_id, :faculty_id, :faculty2_id, :faculty3_id
 
   # Example Use: GivepulseCourse.where(term: 'SUM2025' , crn: 'BHS496A')
-  # GivepulseCourse.where(group_id: 788279)
+  # GivepulseCourse.find_by(group_id: 788279)
   def self.where(attributes)
   	begin
 	   response = request_api('/courses', attributes, method: :get)     
@@ -36,7 +36,7 @@ class GivepulseCourse < GivepulseBase
   		term: course.quarter.abbrev,
   		crn: course.abbrev,
   		crse_num: course.course_no,
-  		crse_title: course.dept_abbrev, 
+      subj_code: course.dept_abbrev,
   		crse_desc: crse_desc,
   		parent_givepulse_id: parent_givepulse_id,
   		section: course.section_id.strip
@@ -63,22 +63,32 @@ class GivepulseCourse < GivepulseBase
   # Handle course droppers and mismatch. 
   def sync_course_students
     # Normalize for roster email comparison
-    sdb_emails = self.course_students.to_a.map { |s| s.email&.downcase }.compact
+    sdb_emails = self.course_students.to_a.map do |entry|
+      student = entry.is_a?(Array) ? entry.first : entry
+      student.email&.downcase
+    end.compact
     givepulse_students = self.givepulse_course_students || []
     givepulse_emails = givepulse_students.map { |u| u.email&.downcase }.compact
     
     # 1. Sync current students
-  	self.course_students.each do |student|
-      
+    self.course_students.each do |entry|
+      if entry.is_a?(Array)
+        student, source_course = entry
+        course_section = "#{source_course.dept_abbrev.to_s.strip}"
+      else
+        student = entry
+        course_section = nil
+      end
+
       email = student.email&.downcase
       next unless email
 
       admin_minor = student.sdb.age < 18 ? "Yes" : "No"
       admin_dir_release = student.dir_release ? "Yes" : "No"
       admin_fields = if Rails.env.production?
-        { "236072" => admin_minor, "236073" => admin_dir_release }
+        { "236072" => admin_minor, "236073" => admin_dir_release, "239467" => course_section }
       else
-        { "81445" => admin_minor, "81773" => admin_dir_release }
+        { "81445" => admin_minor, "81773" => admin_dir_release, "82030" => course_section }
       end
 
   	  post_params = {
@@ -113,32 +123,56 @@ class GivepulseCourse < GivepulseBase
 	  end
 
     # 2. Find and remove droppers
-    # droppers = givepulse_students.reject do |gp_user|
-    #   sdb_emails.include?(gp_user.email&.downcase)
-    # end
+    droppers = givepulse_students.reject do |gp_user|
+      sdb_emails.include?(gp_user.email&.downcase)
+    end
 
-    # droppers.each do |dropper|
+    droppers.each do |dropper|
 
-    #   drop_params = {
-    #         email: dropper.email,
-    #         course_id: self.id,
-    #         delete: "yes" 
-    #   }
+      drop_params = {
+            email: dropper.email,
+            course_id: self.id,
+            delete: "yes"
+      }
 
-    #   begin
-    #     Rails.logger.info("Removing dropper, #{dropper.email}, from the GivePulse course #{self.crn}")
-    #     response = GivepulseCourse.request_api("/courseStudent", drop_params, method: :delete)
-    #     #Rails.logger.debug("Debug response DELETE => #{response}")
+      begin
+        Rails.logger.info("Removing dropper, #{dropper.email}, from the GivePulse course #{self.crn}")
 
-    #     if response.code.to_i == 200
-    #       Rails.logger.info("Successfully removed #{dropper.email} from GivePulse course #{self.crn}")
-    #     else
-    #       Rails.logger.error("Failed to remove #{dropper.email}. Code: #{response.code}, Body: #{response.body}")
-    #     end
-    #   rescue StandardError => e
-    #     Rails.logger.error("Exception removing #{dropper.email}: #{e.message}")
-    #   end
-    # end
+        response = GivepulseCourse.request_api("/courseStudent", drop_params, method: :delete)
+        #Rails.logger.debug("Debug response DELETE => #{response}")
+
+        if response.code.to_i == 200
+          Rails.logger.info("Successfully removed #{dropper.email} from GivePulse course #{self.crn}")
+         
+          # Send email notification to the course admins in CCUW         
+          GivepulseUser.where(group_id: self.group_id, role: 'admin').each do |course_admin|
+            link = Rails.env.production? ? "https://uw.givepulse.com/group/manage/users/#{self.group_id}" : "https://uw-dev.givepulse.com/group/manage/users/#{self.group_id}"
+
+            begin
+              mail = CommunityEngagedMailer.templated_message(
+                course_admin,
+                EmailTemplate.find_by_name("ccuw course dropper notification"),
+                course_admin.email,
+                link,
+                { student_name: "#{dropper.first_name} #{dropper.last_name}", student_email: dropper.email }
+              ).deliver_now
+
+              EmailContact.log(User.find_by_login('communityconnect').person.id, mail)
+              
+            rescue StandardError => e
+              Rails.logger.error("Failed to send dropper notification email to #{course_admin.email}: #{e.message}")
+              # Optionally: notify Sentry.
+            end
+          end
+
+        else
+          Rails.logger.error("Failed to remove #{dropper.email}. Code: #{response.code}, Body: #{response.body}")
+        end
+
+      rescue StandardError => e
+        Rails.logger.error("Exception removing #{dropper.email}: #{e.message}")
+      end
+    end
   end
 
   def quarter
@@ -158,31 +192,42 @@ class GivepulseCourse < GivepulseBase
       ts_quarter: quarter.quarter_code,
       course_branch: self.branch_code,
       course_no: self.crse_num,
-      dept_abbrev: self.crse_title,
+      dept_abbrev: self.subj_code,
       section_id: self.section
     )
   end
   
   def course_students
-     return [] unless course
-     sdb_course = course
-     qtr = quarter
-     all_courses = [sdb_course]
-     
-     if sdb_course.joint_listed?
-        cross_list_course = Course.find_by(
-          ts_year: qtr.year,
-          ts_quarter: qtr.quarter_code,
-          course_branch: self.branch_code,
-          course_no: sdb_course.with_course_no.to_s.strip,
-          dept_abbrev: sdb_course.with_dept_abbrev.to_s.strip,
-          section_id: sdb_course.with_section_id.to_s.strip
-        )
-        all_courses << cross_list_course if cross_list_course.present?
-     end 
+    return [] unless course
 
-  	  all_courses.map(&:all_enrollees).compact.flatten
+    sdb_course = course
+
+    # Default: just return flat list of students for non-cross-listed
+    return sdb_course.all_enrollees.to_a.compact unless sdb_course.joint_listed?
+
+    # Cross-listed: pair each student with the source course
+    result = []
+
+    # Main course
+    result += sdb_course.all_enrollees.to_a.compact.map { |student| [student, sdb_course] }
+
+    # Cross-listed course
+    cross_list_course = Course.find_by(
+      ts_year: quarter.year,
+      ts_quarter: quarter.quarter_code,
+      course_branch: self.branch_code,
+      course_no: sdb_course.with_course_no.to_s.strip,
+      dept_abbrev: sdb_course.with_dept_abbrev.to_s.strip,
+      section_id: sdb_course.with_section_id.to_s.strip
+    )
+
+    if cross_list_course.present?
+      result += cross_list_course.all_enrollees.to_a.compact.map { |student| [student, cross_list_course] }
+    end
+
+    result
   end
+
 
   def givepulse_course_students
     begin

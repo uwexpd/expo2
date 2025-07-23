@@ -1,5 +1,8 @@
 desc "Daily sync Community Engaged course roster to UW GivePuse."
-    task :givepulse_rouster_sync => :environment do
+    task :givepulse_roster_sync => :environment do
+        start_time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+        puts "=== #{start_time} : START givepulse_roster_sync ==="
+        
         sync_quarters = [Quarter.current_quarter, Quarter.current_quarter.next]
     	
         puts "#{sync_quarters.collect(&:title)} Course roster sync starts..."
@@ -19,5 +22,8 @@ desc "Daily sync Community Engaged course roster to UW GivePuse."
                 end
             end
         end
+
+        end_time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+        puts "=== #{end_time} : END givepulse_roster_sync ==="
 
     end
