@@ -1,0 +1,21 @@
+
+<ul class="link-list">
+
+	<%= content_tag :li, 
+					link_to("Show All", reviews_admin_committee_member_path(committee, member)
+					) if params[:offering_id] || params[:action] != 'reviews' %>
+	
+	<% offerings.sort.reverse.each do |offering| %>
+		<li class="<%= 'active' if params[:offering_id].present? && params[:offering_id].to_i == offering.id %>">
+			<% average_score = offering.uses_scored_review? ? 
+									"<span class='light'>( <span style='text-decoration:overline'>x</span> = 
+									#{'%.2f' % member.average_score(offering)} )</span>" : nil %>
+			<%= link_to "#{offering.quarter_offered.title} #{average_score}".html_safe, 
+						reviews_admin_committee_member_path(committee, member, offering_id: offering.id) rescue "Unknown offering quarter offered" %>
+		</li>
+	<% end %>
+
+
+</ul>
+
+<h3>Overall Average Score: <%= '%.2f' % @member.average_score %></h3>

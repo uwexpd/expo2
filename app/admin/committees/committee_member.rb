@@ -14,10 +14,24 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
   
   permit_params :person_id, :committee_member_type_id, :department, :expertise, :website_url, :recommender_id, :inactive, :permanently_inactive, :comment, :notes, :status_cache, committee_member_quarter_attributes: [:active, :comment]
 
+  member_action :reviews, method: :get
+
   controller do
-    before_action :set_committee_id, only: :index
+    before_action :set_committee_id, only: [:index, :reviews]
     def set_committee_id
       @committee = Committee.find(params[:committee_id])
+    end
+
+    def reviews
+      @member = @committee.members.find(params[:id])
+      @offerings = Offering.where(id: params[:offering_id] || @member.application_reviewers.pluck(:offering_id))
+
+      #session[:breadcrumbs].add "#{@member.fullname rescue "Details"}", :action => 'show'
+      #session[:breadcrumbs].add "Reviews"
+
+      respond_to do |format|
+        format.html { render template: "admin/committees/members/reviews" }
+      end
     end
   end
 
@@ -148,8 +162,15 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
     end
   end
 
-  sidebar "Review History", only: :show do
-  end
+  sidebar "Review History", only: [:show, :reviews] do
+    offerings = Offering.where(id: resource.application_reviewers.collect(&:offering_id))
+    render partial: "admin/committees/members/review_history", locals: {
+      committee: resource.committee,
+      member: resource,
+      offerings: offerings
+    }
+end
+
 
   sidebar "Instructions", only: :edit do
   end
