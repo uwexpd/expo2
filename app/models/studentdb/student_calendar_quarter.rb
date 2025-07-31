@@ -1,5 +1,5 @@
 class StudentCalendarQuarter < StudentInfo
-  self.table_name = "sys_tbl_39_calendar"
+  self.table_name = "sec.sys_tbl_39_calendar"
   self.primary_keys = :table_key
   
   def quarter

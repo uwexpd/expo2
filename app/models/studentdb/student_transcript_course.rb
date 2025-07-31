@@ -1,6 +1,6 @@
 # Every course that a student has taken has its own StudentTranscriptCourse records, organized by quarter and assembled under a StudentTranscript object.
 class StudentTranscriptCourse < StudentInfo
-  self.table_name = "transcript_courses_taken"
+  self.table_name = "sec.transcript_courses_taken"
   self.primary_keys = :system_key, :tran_yr, :tran_qtr, :index1
   belongs_to :transcript, :class_name => "StudentTranscript", :foreign_key => ["system_key", "tran_yr", "tran_qtr"]
   

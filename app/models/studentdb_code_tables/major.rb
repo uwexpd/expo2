@@ -1,6 +1,6 @@
 # Major codes
 class Major < StudentInfo
-  self.table_name = "sr_major_code"
+  self.table_name = "sec.sr_major_code"
   self.primary_keys = :major_branch, :major_pathway, :major_last_yr, :major_last_qtr, :major_abbr
   # belongs_to :major_extra, :foreign_key => [:major_branch, :major_pathway, :major_last_yr, :major_last_qtr, :major_abbr]  
   belongs_to :department, :class_name => "Department", :foreign_key => "major_dept"

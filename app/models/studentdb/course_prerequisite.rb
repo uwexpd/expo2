@@ -1,7 +1,7 @@
 #https://metadata.uw.edu/catalog/viewitem/Table/uwsdbdatastore.srcourseprereq
 
 class CoursePrerequisite < StudentInfo
-  self.table_name = "sr_course_prereq"
+  self.table_name = "sec.sr_course_prereq"
   self.primary_keys = :course_branch, :department_abbrev, :course_number  
 
   def title

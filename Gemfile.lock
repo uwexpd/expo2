@@ -472,7 +472,6 @@ GEM
       activesupport
       ostruct
     will_paginate (4.0.1)
-    wkhtmltopdf-binary (0.12.6.9)
     xdan-datetimepicker-rails (2.5.4)
       jquery-rails
       rails (>= 3.2.16)
@@ -564,7 +563,6 @@ DEPENDENCIES
   web-console (~> 4.0)
   wicked_pdf
   will_paginate (~> 4.0)
-  wkhtmltopdf-binary
 
 BUNDLED WITH
    2.5.23

@@ -1,6 +1,6 @@
 # Registration is the prospective view of the interaction between the student and the University of Washington's course offerings. Registration is the entity of record until Grade Posting/Transcript Generation (process JSR405), at which time the entity of record becomes the transcript (a retrospective view). Note that this implies that the validity of data in Registration ends at this time. Registration is current and future quarter student enrollment information and student program information. For information on prior quarters, refer instead to the transcript tables.
 class StudentRegistration < StudentInfo
-  self.table_name = "registration"
+  self.table_name = "sec.registration"
   self.primary_keys = :system_key, :regis_yr, :regis_qtr
   belongs_to :student_record, :class_name => "StudentRecord", :foreign_key => "system_key"
   has_many :courses, :class_name => "StudentRegistrationCourse", :foreign_key => ["system_key", "regis_yr", "regis_qtr"] do

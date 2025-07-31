@@ -1,5 +1,5 @@
 class StudentTransferCourse < StudentInfo
-  self.table_name = "sr_transfer_crs"
+  self.table_name = "sec.sr_transfer_crs"
   self.primary_keys = :system_key, :institution_code
   belongs_to :transfer, :class_name => "StudentTransfer", :foreign_key => ["system_key", "institution_code"]
   

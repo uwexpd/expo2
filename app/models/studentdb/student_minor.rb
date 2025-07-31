@@ -1,6 +1,6 @@
 # The student_1_minor entity displays a student's chosen secondary ("minor") course(s) through the University (college, minor, pathway). (Compare student_1_college.)
 class StudentMinor < StudentInfo
-  self.table_name = "student_1_minor_group"
+  self.table_name = "sec.student_1_minor_group"
   self.primary_keys = :system_key, :index1, :minor_number
   belongs_to :student_record, :class_name => "StudentRecord", :foreign_key => "system_key"
   

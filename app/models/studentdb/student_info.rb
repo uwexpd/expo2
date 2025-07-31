@@ -2,7 +2,8 @@
 class StudentInfo < ActiveRecord::Base
 
   self.abstract_class = true # this says that this class does not have an associated table in the DB
-  establish_connection :uwsdb # any sub-classes will initiate a connection to our ODBC DSN when loaded
+  establish_connection :edwpub # any sub-classes will initiate a connection to our ODBC DSN when loaded
+  
 
   # Set some options to work with the UWSDB tables properly
   #self.pluralize_table_names = false  # don't do this because it seems to be a global change, not just on StudentInfo models

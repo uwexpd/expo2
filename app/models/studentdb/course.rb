@@ -2,7 +2,7 @@
 # 
 # The course can have _registrants_ and _extra_enrollees_. Extra enrollees are Students who have been identified by program staff as being enrolled in this Course. This is useful because our copy of the Student DB has a 24-hour delay, so if a student registers for a course and then tries to immediately register for a service learning opportunity (for instance), EXPo will not show them as a registrant.
 class Course < StudentInfo
-  self.table_name = "time_schedule"
+  self.table_name = "sec.time_schedule"
   self.primary_keys = :ts_year, :ts_quarter, :course_branch, :course_no, :dept_abbrev, :section_id
   
   has_many :service_learning_course_courses

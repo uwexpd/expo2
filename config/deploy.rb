@@ -1,7 +1,7 @@
 
 set :stage, :production
 
-set :deploy_to, '/usr/local/apps/expo3'
+set :deploy_to, '/usr/local/apps/expo2'
 set :repo_url,  'git@github.com:uwexpd/expo2.git'
 set :branch, 'upgrade/ruby3-rails6'
 set :rails_env, :production
