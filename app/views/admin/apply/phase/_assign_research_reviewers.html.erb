@@ -1,0 +1,72 @@
+<%= form_with url: admin_apply_assign_reviewer_path(@offering, @phase, @task), html: { id: "assign_reviewers_#{@task.id}" } do |f| %>
+
+<% 
+@apps = []
+@task.application_status_types_array.each{|t| @apps << @offering.applications_with_status(t.name)}
+@apps = @apps.flatten.uniq
+@reviewers = @offering.reviewers.sort_by(&:lastname_first) rescue []
+@grouped_reviewers = @reviewers.group_by { |reviewer| reviewer.committee_member_type.name }
+
+# Now, for each group (specialist/generalist), break them into rows of 2
+@grouped_reviewers.transform_values! { |reviewers| reviewers.in_groups_of(2, false) }
+
+%>
+<br>
+<div id="assign_reviewers_<%= @task.id %>_functions" class='highlight_box'>
+	<p>Select application(s) and check one or multiple reviewers to mass assign by clicking on the submit button below. This will update the selected applications to status: Reviewers Assigned</p>
+	<strong>Assign reviewers:</strong>
+	<% if @grouped_reviewers.present? %>
+      <div class="tabs">
+	      <ul class="nav nav-tabs">
+	        <li class="active">
+	          <a href="#generalist_tab" data-toggle="tab">Generalist (<%= @grouped_reviewers["generalist"].flatten.size rescue nil %>)</a>
+	        </li>
+	        <li>
+	          <a href="#specialist_tab" data-toggle="tab">Specialist (<%= @grouped_reviewers["specialist"].flatten.size rescue nil %>)</a>
+	        </li>
+	      </ul>
+	      <div class="tab-content">
+	      <% %w(generalist specialist).each_with_index do |type, index| %>
+	        <div id="<%= type %>_tab" class="tab-pane <%= 'active' if index.zero? %>">
+	          <% if @grouped_reviewers[type].present? %>
+	            <table class="highlightless borderless">
+	              <% @grouped_reviewers[type].each do |row| %>
+	                <tr>
+	                  <% row.each do |reviewer| %>
+	                    <% reviewer_apps = reviewer.applications_for_review.for(@offering) %>
+	                    <td>
+	                      <%= check_box_tag "reviewer[#{reviewer.id}]", reviewer.id %>
+	                      <a class='tooltip' title='<%= reviewer.expertise %>'><%= reviewer.person.fullname %></a>
+	                      (<%= link_to reviewer_apps.size, '#', data: { link_toggle: "#reviewer_applicants_#{reviewer.id}"} %>)
+	                      - <small class='gray'><%= reviewer.department %></small>
+	                      <div id="reviewer_applicants_<%= reviewer.id %>" class="reviewer_applicants_<%= reviewer.id %> " style="display:none">
+							<%= render :partial => "applicant_mini", 
+										:collection => reviewer_apps, 
+										:locals => { :reviewer => reviewer } %>
+						  </div>
+	                    </td>       
+	                  <% end %>
+	                </tr>
+	              <% end %>
+	            </table>
+	          <% else %>
+	            <p>No <%= type %> reviewers available.</p>
+	          <% end %>
+	        </div>
+	      <% end %>
+	    </div>
+      </div>
+    <% else %>
+      <p>No reviewers for this quarter.</p>
+    <% end %>
+</div>
+<br>
+
+
+<%= render :partial => "admin/apply/phase/applicant_list", :locals => { :phase_task => @phase_task, :task => @task } %>
+<br>
+	<%= hidden_field_tag :redirect_to_action, 'phase' %>
+	<%= hidden_field_tag "new_status", "reviewers_assigned" %>
+	<%= f.submit "Confirm Reviewers and Update Status for Selected", :name => "change_status", data: { disable_with: 'Processing...' } %>
+
+<% end %>

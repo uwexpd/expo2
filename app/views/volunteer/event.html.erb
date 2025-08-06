@@ -3,7 +3,7 @@
 <%= title(@event.title) %>
 <div class="card content">
 <h4>Volunteer Staff: <%= @event.title %></h4>
-<p><%= simple_format @event.description %></p>
+<p><%= @event.description.html_safe %></p>
 
 <% Array(@staff).each do |staff_error_obj| %>
 	<%= render "shared/error_messages", :target => staff_error_obj %>

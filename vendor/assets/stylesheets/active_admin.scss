@@ -25,6 +25,7 @@ $am-theme-accent: #b7a57a;
 @import 'shared';
 @import 'buttons';
 @import 'index_table';
+@import 'custom_tabs';
 
 @import 'activeadmin_reorderable';
 
@@ -1618,4 +1619,13 @@ button:disabled {
   color: #666;            /* Dark grey text */
   cursor: not-allowed;    /* Change cursor to indicate disabled state */
   opacity: 0.6;           /* Reduce opacity */
+}
+
+.applicant_mini {
+	display: inline;
+	padding: 2px;
+	border: 1px solid #c5dafd;
+	margin-right: 5px;
+	line-height: 2.2em;
+	background: #d8d8d8;
 }

@@ -2,9 +2,9 @@
 <% return_to = params[:return_to] ? { :return_to => params[:return_to] } : {} %>
 
 <%= title(@event.title) %>
-<div class="card content">
+<div class="card content rsvp">
     <h4>RSVP for <%= @event.title %></h4>
-    <p><%= simple_format @event.description %></p>
+    <p><%=  @event.description.html_safe %></p>
 
     <%= render :partial => 'rsvp/event_rsvp', :locals => {:current_date => current_date, 
                                                      :return_to => return_to} %>
