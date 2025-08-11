@@ -74,7 +74,7 @@ class GivepulseCourse < GivepulseBase
     self.course_students.each do |entry|
       if entry.is_a?(Array)
         student, source_course = entry
-        course_section = "#{source_course.dept_abbrev.to_s.strip}"
+        course_section = "#{source_course.short_title}"
       else
         student = entry
         course_section = nil

@@ -4,11 +4,15 @@ class GivepulseBase < ActiveResource::Base
   # self.site = 'https://api2-dev.givepulse.com' 
   # self.headers['Content-Type'] = 'application/json'
   def self.site
-    @site ||= if Rails.env.production?
-                'https://api2.givepulse.com'  # Production URL
-              else
-                'https://api2-dev.givepulse.com'  # Development URL
-              end
+    if defined?(@site) && @site.present?
+      @site
+    else
+      Rails.env.production? ? 'https://api2.givepulse.com' : 'https://api2-dev.givepulse.com'
+    end
+  end
+
+  def self.site=(value)
+    @site = value
   end
   
 
@@ -139,7 +143,24 @@ class GivepulseBase < ActiveResource::Base
     def handle_token_refresh
       setup_authorization
     end
-  end
+
+    # Temporarily use a different site (and force new auth token)
+    def with_site(temp_site)
+      old_site = @site
+      old_headers = @givepulse_headers.dup
+
+      self.site = temp_site
+      @givepulse_headers = { 'Content-Type' => 'application/json' } # reset headers to force re-auth
+
+      setup_authorization
+
+      yield
+    ensure
+      self.site = old_site
+      @givepulse_headers = old_headers
+    end
+
+  end # end of 'class << self'
 
   def self.permitted_attrs
     @permitted_attrs ||= instance_methods(false).grep(/=$/).map { |m| m.to_s.chomp('=') }

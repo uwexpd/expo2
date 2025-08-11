@@ -170,6 +170,9 @@ class ServiceLearningPosition < ApplicationRecord
   PLACEHOLDER_CODES = %w(title description context_description impact_description ideal_number_of_slots number_of_slots)
   PLACEHOLDER_ASSOCIATIONS = %w(organization quarter previous supervisor orientation location)
   
+  has_many :service_learning_positions_sector_types_links, :foreign_key => "service_learning_position_id", :dependent => :destroy
+  has_many :service_learning_positions_sector_types, :through => :service_learning_positions_sector_types_links
+
   # Pipeline things
   has_many :pipeline_positions_subjects_links, :foreign_key => "pipeline_position_id"
   has_many :pipeline_positions_tutoring_types_links, :foreign_key => "pipeline_position_id"
@@ -584,6 +587,10 @@ class ServiceLearningPosition < ApplicationRecord
     }
     
     self.update_attributes(counts)
+  end
+
+  def education_sector?
+    service_learning_positions_sector_type_ids.include?(1)
   end
   
   protected

@@ -1158,12 +1158,12 @@ class ApplicationForOffering < ApplicationRecord
   
   # Returns the login_link for the primary applicant
   def login_link
-    apply_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering)
+    apply_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering.id)
   end
 
   # Returns the link that admin users can use to get directly to this application
   def admin_link
-    admin_app_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering, :id => self)
+    admin_offering_application_url(:host => Rails.configuration.constants["base_url_host"], :offering_id => offering.id, :id => self.id)
   end
 
   def update_offering_session_counts
