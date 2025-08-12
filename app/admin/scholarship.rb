@@ -259,5 +259,50 @@ ActiveAdmin.register Scholarship do
   filter :need_based_true, label: 'Need based', as: :select, collection: [["Yes", "true"], ["No", "false"]]
   filter :is_national_true, label: 'National', as: :select, collection: [["Yes", "true"], ["No", "false"]]
   
+  filter :disabilities_disability_id_in,
+       label: "Disability",
+       as: :select,
+       collection: Disability.where.not(id: 4).pluck(:name, :id),
+       include_blank: 'Any',
+       multiple: true,
+       input_html: { class: 'select2' }
+        
+  filter :ethnicities_ethnicity_id_in,
+       label: "Ethnicities or racial groups",
+       as: :select,
+       collection: OmsfaEthnicity.pluck(:name, :id),
+       include_blank: 'Any',
+       multiple: true,
+       input_html: { class: 'select2' }
+
+  filter :lgbtqi_community_true, label: 'LGBTQI community', as: :select, collection: [["Yes", "true"], ["No", "false"]]
+  filter :veteran_true, label: 'Veterans', as: :select, collection: [["Yes", "true"], ["No", "false"]]
+  
+  filter :is_departmental_true,
+       label: "Are offered by UW",
+       as: :select,
+       collection: [['Yes', 'true'], ['No', 'false']],
+       include_blank: 'Any'
+
+  filter :types_type_id_in,
+       label: "Support activities",
+       as: :select,
+       collection: Type.pluck(:name, :id),
+       include_blank: 'Any',
+       multiple: true,
+       input_html: { class: 'select2' }
+
+  filter :gap_year_true,
+       label: "Support gap year experiences",
+       as: :select,
+       collection: [['Yes', 'true'], ['No', 'false']],
+       include_blank: 'Any'
+
+  filter :graduate_school_true,
+       label: "Support graduate studies",
+       as: :select,
+       collection: [['Yes', 'true'], ['No', 'false']],
+       include_blank: 'Any'
+
   
 end
