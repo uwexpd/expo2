@@ -27,11 +27,11 @@ class GivepulseGroup < GivepulseBase
         users = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }        
       else
         Rails.logger.warn("No groups found with attributes: #{attributes}")
-        nil
+        []
       end
     rescue StandardError => e
       Rails.logger.error("Error fetching group: #{e.message}")
-      nil
+      []
     end
   end
     

@@ -17,11 +17,11 @@ class GivepulseEvent < GivepulseBase
         events = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }
       else
         Rails.logger.warn("No events found with attributes: #{attributes}")
-        nil
+        []
       end
     rescue StandardError => e
       Rails.logger.error("Error fetching events: #{e.message}")
-      nil
+      []
     end
   end
 

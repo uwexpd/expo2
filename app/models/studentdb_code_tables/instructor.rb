@@ -7,6 +7,14 @@ class Instructor < StudentInfo
     instr_name.strip
   end
 
+  def firstname
+    fullname.to_s.split(',')[1].to_s.strip
+  end
+
+  def lastname
+    fullname.to_s.split(',')[0].to_s.strip
+  end
+
   def email
     unless instr_netid.blank?        
       instr_netid.strip + "@uw.edu"

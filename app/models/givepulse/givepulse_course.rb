@@ -13,7 +13,7 @@ class GivepulseCourse < GivepulseBase
   def self.where(attributes)
   	begin
 	   response = request_api('/courses', attributes, method: :get)     
-     response = JSON.parse(response.body)     
+     response = JSON.parse(response.body)
 
   	 if response['total'].to_i > 0
         results = response['results']
@@ -21,42 +21,14 @@ class GivepulseCourse < GivepulseBase
         # Rails.logger.debug("***** DEBUG courses => #{courses.inspect}")
   	 else
   	 	 Rails.logger.warn("No courses found with attributes: #{attributes}")
-  	   nil
+  	   []
   	 end
 	  rescue StandardError => e
       Rails.logger.error("Error fetching courses: #{e.message}")
-      nil
+      []
     end
   end
 
-  # Add course to GivePulse by SDB course object
-  def self.add_course(course, parent_givepulse_id = nil, crse_desc = nil)
-  	
-  	post_params = {
-  		term: course.quarter.abbrev,
-  		crn: course.abbrev,
-  		crse_num: course.course_no,
-      subj_code: course.dept_abbrev,
-  		crse_desc: crse_desc,
-  		parent_givepulse_id: parent_givepulse_id,
-  		section: course.section_id.strip
-  	}
-
-  	begin
-  	  	response = make_post_request('/course', post_params, { 'Content-Type' => 'application/json' })
-  	  	response_body = JSON.parse(response.body)
-  	  	Rails.logger.debug("Debug response=> #{response}")
-
-		if response.code.to_i == 200 || response_body['total'].to_i > 0
-			Rails.logger.info("Successfully created course ID: #{response_body['results']['gorup_id']}")
-		else
-			Rails.logger.error("Failed to add course. Response code: #{response.code}, Response body: #{response_body}")
-		end
-	rescue StandardError => e
-	    Rails.logger.error("Exception occurred while creating course: #{e.message}")
-	end
-
-  end
 
   # Sync course students to GivePulse
   # If the student (email) exists, it will update the params in this case. [Tested]
@@ -266,6 +238,76 @@ class GivepulseCourse < GivepulseBase
 
     campus_ids[self.parent_givepulse_id]
   end
-  
+
+  def instructors
+    return [] unless course
+
+    course.course_meeting_times
+        .flat_map { |mt| mt.course_instructors.map(&:instructor) }
+        .compact
+        .uniq
+  end
+
+  # Sync course instructors to GivePulse, adding instructor to a CCUW memeber.  
+  # If the instructor (email) exists, it will update the params in this case. 
+  # Then the PM can add instructor when they create a course.
+  # We do NOT drop any instructors' memebership.  
+  def sync_course_instructors
+    instructors.each do |instructor|
+      next if instructor.email.blank?
+
+      post_params = {
+        user: {
+          first_name: instructor.firstname,
+          last_name:  instructor.lastname,
+          email:      instructor.email,
+          group_id:   Rails.env.production? ? '1246545' : '757578'
+        }
+      }
+
+      begin
+        response       = GivepulseCourse.request_api("/users", post_params, method: :post)
+        response_body  = JSON.parse(response.body)
+
+        if response.code.to_i == 200 || response_body["updated"] == true
+          Rails.logger.info("Successfully synced instructor with ID: #{response_body['user_id']}")
+        else
+          Rails.logger.error("Failed to sync instructor #{instructor.email}. Response code: #{response.code}, Response body: #{response.body}")
+        end
+
+      rescue StandardError => e
+        Rails.logger.error("Exception occurred while syncing instructor #{instructor.email}: #{e.message}")
+      end
+    end
+  end
+
+  # Add course to GivePulse by SDB course object
+  def self.add_course(course, parent_givepulse_id = nil, crse_desc = nil)
+    
+    post_params = {
+      term: course.quarter.abbrev,
+      crn: course.abbrev,
+      crse_num: course.course_no,
+      subj_code: course.dept_abbrev,
+      crse_desc: crse_desc,
+      parent_givepulse_id: parent_givepulse_id,
+      section: course.section_id.strip
+    }
+
+    begin
+        response = GivepulseCourse.request_api('/course', post_params, method: :post)
+        response_body = JSON.parse(response.body)
+        Rails.logger.debug("Debug response=> #{response}")
+
+      if response.code.to_i == 200 || response_body['total'].to_i > 0
+        Rails.logger.info("Successfully created course ID: #{response_body['results']['group_id']}")
+      else
+        Rails.logger.error("Failed to add course. Response code: #{response.code}, Response body: #{response_body}")
+      end
+    rescue StandardError => e
+        Rails.logger.error("Exception occurred while creating course: #{e.message}")
+    end
+  end
+
 
 end

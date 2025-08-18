@@ -23,11 +23,11 @@ class GivepulseUser < GivepulseBase
         users = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }        
       else
         Rails.logger.warn("No users found with attributes: #{attributes}")
-        nil
+        []
       end
     rescue StandardError => e
       Rails.logger.error("Error fetching users: #{e.message}")
-      nil
+      []
     end
   end
     
