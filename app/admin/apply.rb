@@ -153,6 +153,17 @@
       redirect_to session[:return_to_after_email_queue] || url_for(:action => redirect_to_action)
     end
 
+    def remove_reviewer
+      app = ApplicationForOffering.find(params[:application_id])
+      app.remove_reviewer = (params[:reviewer_id])
+
+      respond_to do |format|
+        format.js   # remove_reviewer.js.erb
+        format.html { redirect_back fallback_location: root_path, notice: "Reviewer removed." }
+      end
+    end
+
+
     def send_interviewer_invite_emails
       return false if params[:email_template_id].nil?
       unless params[:select].present?

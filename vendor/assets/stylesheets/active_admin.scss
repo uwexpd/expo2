@@ -1621,10 +1621,49 @@ button:disabled {
 }
 
 .applicant_mini {
-	display: inline;
-	padding: 2px;
-	border: 1px solid #c5dafd;
-	margin-right: 5px;
-	line-height: 2.2em;
-	background: #d8d8d8;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;          /* tighter padding */
+  margin: 2px 4px;           /* smaller margin */
+  border-radius: 12px;       /* smaller, pill-like */
+  background: #f0f4ff;
+  border: 1px solid #a7c0ff;
+  font-size: 0.85em;         /* slightly smaller text */
+  line-height: 1.2;
+  color: #333;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.applicant_mini:hover {
+  background: #e4ecff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Name link inside tag */
+.removable-applicant {
+  text-decoration: none;
+  color: #333;
+  margin-right: 4px;        /* reduced gap before X */
+}
+
+/* Remove button (X) */
+.removable-applicant::after {
+  content: "✖";
+  display: inline-block;
+  color: #aaa;
+  font-size: 1em;           /* medium size X */
+  margin-left: 4px;         /* closer to text */
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  cursor: pointer;
+}
+
+.applicant_mini:hover .removable-applicant::after {
+  opacity: 1;
+  color: #e74c3c;
+}
+
+.applicant_mini .removable-applicant:hover::after {
+  color: #c0392b;
+  transform: scale(1.1);
 }

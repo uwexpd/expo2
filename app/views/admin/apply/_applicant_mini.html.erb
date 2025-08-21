@@ -3,7 +3,16 @@
 <% not_assigned_to_str = applicant_mini.unassigned_review_committee_members.collect{|r| "applicant_mini_not_assigned_to_#{r.id}"}.compact.join(" ") %>
 
 <div id="<%= div_id %>" class="applicant_mini <%= assigned_to_str %> <%= not_assigned_to_str %>">
-	<%= applicant_mini.fullname %>
+	<%= link_to applicant_mini.fullname,
+              admin_apply_remove_reviewer_path(offering: @offering.id,
+                                               phase: @phase.id,
+                                               id: @task.id, application_id: applicant_mini.id,
+                                                    reviewer_id: reviewer.id),
+              method: :delete,
+              remote: true,
+              class: "removable-applicant",
+              data: { confirm: "Remove #{applicant_mini.fullname} from #{reviewer.person.fullname}?" } %>
+
 	 <%#= link_to "details", { :action => 'show', :id => applicant_mini }, 
 			:popup => true,
 			:class => 'tooltip',

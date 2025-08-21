@@ -40,10 +40,10 @@
 	                      (<%= link_to reviewer_apps.size, '#', data: { link_toggle: "#reviewer_applicants_#{reviewer.id}"} %>)
 	                      - <small class='gray'><%= reviewer.department %></small>
 	                      <div id="reviewer_applicants_<%= reviewer.id %>" class="reviewer_applicants_<%= reviewer.id %> " style="display:none">
-							<%= render :partial => "applicant_mini", 
-										:collection => reviewer_apps, 
-										:locals => { :reviewer => reviewer } %>
-						  </div>
+												<%= render :partial => "applicant_mini", 
+															:collection => reviewer_apps, 
+															:locals => { :reviewer => reviewer } %>
+											  </div>
 	                    </td>       
 	                  <% end %>
 	                </tr>
@@ -54,7 +54,7 @@
 	          <% end %>
 	        </div>
 	      <% end %>
-	    </div>
+	      </div>
       </div>
     <% else %>
       <p>No reviewers for this quarter.</p>

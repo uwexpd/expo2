@@ -34,6 +34,9 @@ Rails.application.routes.draw do
     match 'admin/apply/:offering/phases/:phase/tasks/mass_update', to: 'admin/apply#mass_update', as: :admin_apply_phase_task_mass_update, via: [:get, :post]
     post 'admin/apply/:offering/phases/:phase/tasks/:id/assign_reviewer', to: 'admin/apply#mass_assign_reviewers', as: :admin_apply_assign_reviewer
     post 'admin/apply/:offering/phases/:phase/tasks/:id/change_status', to: 'admin/apply#mass_status_change', as: :admin_apply_change_status
+
+    delete 'admin/apply/:offering/phases/:phase/tasks/:id/app/:application_id/remove_reviewer/:reviewer_id', to: 'admin/apply#remove_reviewer', as: :admin_apply_remove_reviewer
+
     post 'admin/apply/:offering/phases/:phase/tasks/:id/send_reviewer_invite', to: 'admin/apply#send_reviewer_invite_emails', as: :admin_apply_send_reviewer_invite
     post 'admin/apply/:offering/phases/:phase/tasks/:id/send_interviewer_invite_emails', to: 'admin/apply#send_interviewer_invite_emails', as: :admin_apply_send_interviewer_invite_emails
     post 'admin/apply/:offering/phases/:phase/tasks/:id/assign_review_decision', to: 'admin/apply#assign_review_decision', as: :admin_apply_assign_review_decision

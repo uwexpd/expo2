@@ -1,4 +1,13 @@
-$("#review_committee").html("<%= j render 'review_committee' %>");
+//$("#review_committee").html("<%= j render 'review_committee' %>");
+$("#applicant_reviewers_table_<%= @app.id %>").html("<%= j render partial: 'admin/applications/applicant_reviewers_table' %>");
+
+<% if @flash_message.present? %>
+	$(".flashes").html('<div class="flash flash_notice"><%= j @flash_message %></div>')
+             .fadeIn()
+             .delay(5000)
+             .fadeOut();
+<% end %>
+
 
 // Reinitialize Select2 elements
 initializeSelect2();

@@ -45,6 +45,13 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
         end
 
         @app.add_reviewer params['application']['new_reviewer'] unless params['application']['new_reviewer'].blank?
+        # set up js flash message
+        if params['commit'] == "Add" && params['application'] && params['application']['new_reviewer'].present?
+          @flash_message = "Reviewer added successfully."
+        elsif params['commit'] == "Drop" && params['application'] && params['application']['remove_reviewer'].present?
+          @flash_message = "Reviewer dropped successfully."
+        end
+
 
         if !update_application_status && @app.update(app_params)
           flash[:notice] = "Application changes saved."
@@ -80,12 +87,17 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
 
       session[:return_to_after_email_queue] = request.referer
-      redirect_to admin_email_queues_path and return if EmailQueue.messages_waiting?
 
       respond_to do |format|
-        format.html { redirect_to :action => 'show', :id => @app, :anchor => anchor }
-        format.js
+        if EmailQueue.messages_waiting?
+          format.html { redirect_to admin_email_queues_path and return }
+          format.js
+        else
+          format.html { redirect_to :action => 'show', :id => @app, :anchor => anchor }
+          format.js
+        end
       end
+
     end
 
     def composite_report
