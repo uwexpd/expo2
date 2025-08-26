@@ -92,7 +92,7 @@ class Event < ApplicationRecord
   end
   
   # Create a copy event including times, staff_positions, staff_positions_shifts
-  def deep_clone!
+  def deep_dup!
     opts = {}
     opts[:except] = [            
         :other_nametags,
@@ -102,9 +102,7 @@ class Event < ApplicationRecord
       :times,
       {:staff_positions => :shifts }
       ]
-    copy = self.clone(opts) 
-    copy.update_attribute(:title, copy.title.to_s + " Copy")
-    copy
+    self.dup(opts)
   end
   
   # Send a reminder to user, a day before event time

@@ -26,7 +26,9 @@ class GivepulseEvent < GivepulseBase
   end
 
   # Eg: Import events for Seattle CEC: GivepulseEvent.create_events(36265, group_id: 792610)
+  # GivepulseEvent.create_events([35914, 35919, 36256, 36257, 36258, 36259, 36260], group_id: 1479577)
   def self.create_events(ids, params = {})
+
     begin
       import_positions =  ServiceLearningPosition.where(id: ids)
     rescue ActiveRecord::RecordNotFound
@@ -36,6 +38,8 @@ class GivepulseEvent < GivepulseBase
     success_count = 0
     failure_count = 0
     failed_ids = []
+
+    Rails.logger.info("Start to import #{import_positions.size} positions")
 
     import_positions.each do |import_position|
       # Build merged params for each position

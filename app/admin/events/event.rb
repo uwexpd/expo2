@@ -11,6 +11,33 @@ ActiveAdmin.register Event do
     @invitees = @event.invitees
   end  
 
+  member_action :copy, method: :post do
+    original_event = Event.find(params[:id])
+
+    if copy_event = original_event.deep_dup!
+      copy_event.update(title: copy_event.title + " Copy")
+      redirect_to edit_admin_event_path(copy_event), notice: "Successfully copied #{@event.title}. You can customize the details below."
+    else
+      redirect_to admin_event_path(original_event), alert: "An error occurred while cloning the event."
+    end
+  end
+
+   action_item :copy, only: :show do
+     link_to 'Copy Offering', copy_admin_event_path(event), method: :post, data: { confirm: 'Are you sure you want to copy this event?' }
+   end
+
+   controller do
+    before_action :check_user_unit, :except => [ :index, :new, :create ]
+
+    protected
+
+    def check_user_unit
+      @event = Event.find(params[:event_id] || params[:id])
+      require_user_unit @event.unit
+    end
+
+  end
+
   index do
     column ('Title') {|event| link_to event.title, admin_event_path(event) }
     column ('Type') {|event| event.event_type if event.event_type}
@@ -19,7 +46,9 @@ ActiveAdmin.register Event do
     column ('Invited') {|event| event.invitees.size }
     column ('Expected') {|event| event.attendees.size }
     column ('Attended') {|event| event.attended.size }
-    actions
+    actions default: true do |event|
+      link_to 'Copy Event', copy_admin_event_path(event), method: :post, data: { confirm: 'Are you sure you want to copy this event?' }
+    end
   end
   
   show do

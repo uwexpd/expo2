@@ -16,7 +16,6 @@ class GivepulseGroup < GivepulseBase
                 :type                # String - Type (description missing)
 
   # Simulate ActiveRecord's where method
-  # Example: GivepulseUser.where(group_id: '757578', user_id: '4228632') Sendbox data
   def self.where(attributes)
     begin      
       response =  request_api('/groups', attributes, method: :get)
