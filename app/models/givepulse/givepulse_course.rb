@@ -177,24 +177,41 @@ class GivepulseCourse < GivepulseBase
     # Default: just return flat list of students for non-cross-listed
     return sdb_course.all_enrollees.to_a.compact unless sdb_course.joint_listed?
 
-    # Cross-listed: pair each student with the source course
+    # Cross-listed: pair each student with the source course, need to handle cycles (A → B → C → A).
+    # ECFS 200 A crossed list with ECFS 200 B 
+    # ECFS 200 B crossed list with ECFS 200 C 
+    # ECFS 200 C crossed list with ECFS 200 A
+
     result = []
+    seen_students = Set.new # ensures uniqueness by student.id.    
+    visited_courses = Set.new # ensures we don’t revisit courses (avoids your A → B → C → A loop).
+    queue = [sdb_course]
 
-    # Main course
-    result += sdb_course.all_enrollees.to_a.compact.map { |student| [student, sdb_course] }
+    while queue.any?
+      current_course = queue.shift
+      next if visited_courses.include?(current_course.id)
 
-    # Cross-listed course
-    cross_list_course = Course.find_by(
-      ts_year: quarter.year,
-      ts_quarter: quarter.quarter_code,
-      course_branch: self.branch_code,
-      course_no: sdb_course.with_course_no.to_s.strip,
-      dept_abbrev: sdb_course.with_dept_abbrev.to_s.strip,
-      section_id: sdb_course.with_section_id.to_s.strip
-    )
+      visited_courses << current_course.id
 
-    if cross_list_course.present?
-      result += cross_list_course.all_enrollees.to_a.compact.map { |student| [student, cross_list_course] }
+      # Add students (ensure unique by student.id)
+      current_course.all_enrollees.to_a.compact.each do |student|
+        next if seen_students.include?(student.id) # or student.uwregid
+
+        seen_students << student.id
+        result << [student, current_course]
+      end
+
+      # Find cross-listed course and enqueue
+      cross_list_course = Course.find_by(
+        ts_year: quarter.year,
+        ts_quarter: quarter.quarter_code,
+        course_branch: branch_code,
+        course_no: current_course.with_course_no.to_s.strip,
+        dept_abbrev: current_course.with_dept_abbrev.to_s.strip,
+        section_id: current_course.with_section_id.to_s.strip
+      )
+
+      queue << cross_list_course if cross_list_course.present?
     end
 
     result
