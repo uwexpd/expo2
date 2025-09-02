@@ -15,7 +15,13 @@
 	  <% end %>
 		<% if time.start_time.to_date != current_date %>
 		<tr class="rowset-header">
-			<td colspan=3><big><%= time.time_detail(:date_only => true) %></big></td>
+			<td colspan=3><big><%= time.time_detail(:date_only => true) %></big>
+				<span class="smaller padding_left"><%= link_to "Add to Calendar (.ics)", calendar_rsvp_event_path(@event, time.id, format: :ics) %>
+				</span> |
+				<span class="smaller">
+					<%= link_to "Add to Google Calendar", google_calendar_url(@event, time), target: "_blank", rel: "noopener" %>
+				</span>
+			</td>
 		</tr>
 		<% current_date = time.start_time.to_date %>
 		<% end -%>

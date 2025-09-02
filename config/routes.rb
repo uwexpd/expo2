@@ -132,6 +132,7 @@ Rails.application.routes.draw do
 
     # RSVP for events
     get 'rsvp/event/:id', to: 'rsvp#event', as: :rsvp_event
+    get 'rsvp/event/:id/calendar/:time_id', to: 'rsvp#calendar', as: :calendar_rsvp_event
     post 'rsvp/attend/:id', to: 'rsvp#attend', as: :rsvp_attend
     delete 'rsvp/unattend/:id', to: 'rsvp#unattend', as: :rsvp_unattend
     get 'rsvp', to: 'rsvp#index', as: :rsvp

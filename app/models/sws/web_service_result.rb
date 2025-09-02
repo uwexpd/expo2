@@ -210,12 +210,20 @@ class WebServiceResult
   # Encapsulates the raw data from the service into a Nokogiri::XML object. Override in subclasses to do something else. 
   # Update: Changed to parse JSON
   def self.encapsulate_data(raw_data)
-    # puts "DEBUG raw_data => #{raw_data}"
-    return nil if raw_data.nil? || (raw_data.respond_to?(:empty?) && raw_data.empty?) || raw_data == "ture"
-    raw_data = clean raw_data
-    JSON.parse raw_data
-    #Nokogiri::XML(raw_data)
+    # Skip nil, empty string, or "true"
+    return nil if raw_data.nil? ||
+                  (raw_data.respond_to?(:empty?) && raw_data.empty?) ||
+                  raw_data == "true"
+
+    # Only run cleaners if it's a String
+    if raw_data.is_a?(String)
+      raw_data = clean(raw_data)
+      JSON.parse(raw_data)
+    else
+      raw_data  # already a boolean, number, etc.
+    end
   end
+
 
   # Raises an error if the cert, key, or CA file does not exist.
   def self.check_cert_paths!

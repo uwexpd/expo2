@@ -106,6 +106,7 @@ gem 'caxlsx_rails'
 
 gem 'activeadmin_reorderable'
 gem 'acts_as_list'
+gem 'icalendar', '~> 2.7'
 
 group :production do  
   gem 'omniauth-shibboleth'

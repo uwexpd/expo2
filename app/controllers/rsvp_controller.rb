@@ -1,3 +1,5 @@
+require 'icalendar'
+
 class RsvpController < ApplicationController
   skip_before_action :login_required, raise: false
   before_action :student_login_required_if_possible
@@ -20,7 +22,7 @@ class RsvpController < ApplicationController
     apply_alternate_stylesheet(@event)
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html
       format.xml  { render :xml => @event }
     end
   end
@@ -62,6 +64,18 @@ class RsvpController < ApplicationController
     end
   end
 
+  # Generate an .ics file link
+  def calendar
+    @event = Event.find(params[:id])
+    @time = @event.times.find(params[:time_id])
+
+    respond_to do |format|
+      format.ics do
+        render plain: @event.to_ics(@time), content_type: 'text/calendar'
+      end
+      format.html { redirect_to action: "event", id: @event.id }
+    end
+  end
 
   protected
 
