@@ -1,0 +1,46 @@
+<%= fields_for "population[condition_attributes][#{condition.id}]", condition do |cf| %>
+
+<tr id="condition_<%= condition.id %>" class="condition">
+
+  <!-- Attribute dropdown -->
+  <td class='select'>
+    <%= cf.select :attribute_name, condition.possible_attributes, 
+                  {include_blank: true},
+                  {data: { remote: true, 
+                          url: admin_query_condition_refresh_dropdowns_path(@population, condition.id || "new"),
+                          target: "condition_#{condition.id}_attribute_container" }
+                  } %>
+    <div id="condition_indicator_<%= condition.id || 'new' %>" class="indicator" style="display:none;"></div>
+  </td>
+
+  <!-- Eval method dropdown -->
+  <td id="condition_<%= condition.id %>_eval_method_container" class='select'>
+    <%= render partial: "admin/queries/conditions/eval_method_dropdown", object: condition %>
+    <div id="condition_eval_method_indicator_<%= condition.id || 'new' %>" class="indicator" style="display:none;"></div>
+  </td>
+
+  <!-- Value dropdown -->
+  <td id="condition_<%= condition.id %>_value_container">
+    <%= render partial: "admin/queries/conditions/value_dropdown", object: condition %>
+    <div id="condition_value_indicator_<%= condition.id || 'new' %>" class="indicator" style="display:none;"></div>
+  </td>
+
+  <!-- Remove link -->
+  <td>
+    <%= link_to "<span class='mi'>delete</span>".html_safe,
+                admin_query_condition_path(@population, condition),
+                method: :delete,
+                remote: true,
+                data: { confirm: "Are you sure?" },
+                class: "delete action_icon" %>
+  </td>
+
+  <!-- Hidden fields and indicator -->
+  <td>
+    <div id="condition_indicator_<%= condition.id %>"></div>
+    <%= cf.hidden_field :id %>
+    <%= cf.hidden_field :should_destroy %>
+  </td>
+
+</tr>
+<% end %>

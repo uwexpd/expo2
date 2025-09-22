@@ -31,7 +31,7 @@ ActiveAdmin.register OfferingQuestion, as: 'questions'  do
 		    respond_to do |format|
 		      format.html { redirect_to(admin_offering_page_questions_path(@offering, @page)) }
 		      format.js { render js: "$('.delete').bind('ajax:success', function() {$(this).closest('tr').fadeOut();});"}
-			end
+			  end
 		end
 
 		protected

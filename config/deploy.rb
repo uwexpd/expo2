@@ -1,4 +1,4 @@
-require 'capistrano/rake'
+# require 'capistrano/rake'
 set :stage, :production
 
 set :deploy_to, '/usr/local/apps/expo2'
@@ -10,6 +10,11 @@ set :deploy_user, 'joshlin'
 server 'new.expo.uw.edu', user: 'joshlin', roles: %w{web app db}, primary: true
 set :rvm_ruby_version, '2.7.2' # set up which rvm ruby to use in server
 
+
+# for dev.expo.uw.edu
+set :default_env, {
+  'SSL_CERT_FILE' => '/etc/ssl/certs/ca-certificates.crt'
+}
 
 # Tell cap your own private keys for git and use agent forwarding with this command.
 set :ssh_options, {

@@ -1,6 +1,7 @@
-require 'dotenv' if defined?(Dotenv)
-
-Dotenv.load('/usr/local/apps/expo2/shared/.env') if defined?(Dotenv)
+if defined?(Dotenv)
+  dotenv_file = '/usr/local/apps/expo2/shared/.env'
+  Dotenv.load(dotenv_file) if File.exist?(dotenv_file)
+end
 
 Sentry.init do |config|
   config.dsn = ENV.fetch("SENTRY_DNS")

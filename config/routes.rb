@@ -68,6 +68,7 @@ Rails.application.routes.draw do
     match 'admin/communicate/email/resample', to: 'admin/email#resample_placeholder_codes', via: [:get, :post], as: :admin_email_resample
     get 'invitees/event/:event_id', to: 'admin/invitees#index', as: 'admin_invitees_event'
     post 'admin/queries/:id/refresh_dropdowns', to: 'admin/queries#refresh_dropdowns', as: 'admin_query_refresh_dropdowns'
+    match 'admin/queries/:query_id/conditions/:id/refresh_dropdowns', to: 'admin/conditions#refresh_dropdowns', as: 'admin_query_condition_refresh_dropdowns', via: [:get, :post, :patch]
 
     ActiveAdmin.routes(self)    
     namespace :admin do

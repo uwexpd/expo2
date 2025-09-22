@@ -6,18 +6,20 @@
 		of the following conditions:
 	</h4>
 
-	<table id="conditions">
-		<%#= render :partial => "admin/queries/conditions/condition", 
-					:collection => @population.conditions,
-					:locals => { :f => f } %>
+	<table id="conditions" class='borderless'>		
+		<%= render :partial => "admin/queries/conditions/condition", 
+					:collection => @population.conditions %>
+	</table>	
 
-	</table>
+	<%= link_to "<span class='mi md-20'>add</span>Add another condition".html_safe,
+	   admin_query_conditions_path(@population, condition: { skip_validations: true }),
+	  method: :post,
+	  remote: true,
+	  class: "button add",
+	  data: { disable_with: "Adding..." } %>
 
-	<%#= link_to_remote "Add another condition",
-	 					{:url => population_conditions_path(@population, "condition[skip_validations]" => true),
-	 					:method => :post,
-						:indicator => "new_condition"},
-						:class => "add button" %>
-	<%#= indicator "new_condition" %>
+	<!-- optional loading indicator -->
+	<span id="new_condition" style="display:none;">Loading...</span>
+
 
 </div>

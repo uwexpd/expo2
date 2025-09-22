@@ -6,9 +6,18 @@ task :givepulse_roster_sync => :environment do
   sync_quarters = [Quarter.current_quarter, Quarter.current_quarter.next]
 
   puts "#{sync_quarters.collect(&:title)} Course roster sync starts..."
+
+  if ENV["GIVEPULSE_PRO_TOKEN"].blank?
+    puts "Missing GIVEPULSE_PRO_TOKEN in ENV. Aborting."
+    exit 1
+  else
+    token_preview = ENV["GIVEPULSE_PRO_TOKEN"][0..8] + "..."
+    puts "GIVEPULSE_PRO_TOKEN is present: #{token_preview} (length=#{ENV["GIVEPULSE_PRO_TOKEN"].length})"
+  end
   
   # Get GP CE courses with sync quarters:
   sync_quarters.each do |quarter|
+      puts "Running GivepulseCourse.where(term: #{quarter.title.inspect})"
       ce_courses =  GivepulseCourse.where(term: quarter.title)
 
       if ce_courses.blank?
@@ -17,10 +26,15 @@ task :givepulse_roster_sync => :environment do
           puts "Found courses: #{ce_courses.collect(&:crn).join(', ')} in #{quarter.title}"
 
           ce_courses.each do |gp_course|
-              gp_course.sync_course_students
-              puts "Sucessfully synced #{gp_course.crn} #{gp_course.course_students.size} students."
-              gp_course.sync_course_instructors
-              puts "Sucessfully synced #{gp_course.crn} instructors: #{gp_course.instructors.flatten.collect(&:fullname).uniq}"
+
+            if gp_course.course.blank?
+              puts "Skipping #{gp_course.crn}: no associated SDB course found."
+              next
+            end
+            gp_course.sync_course_students
+            puts "Sucessfully synced #{gp_course.crn} #{gp_course.course_students.size} students."
+            gp_course.sync_course_instructors
+            puts "Sucessfully synced #{gp_course.crn} instructors: #{gp_course.instructors.flatten.collect(&:fullname).uniq}"
           end
       end
   end

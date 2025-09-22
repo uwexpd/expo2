@@ -4,7 +4,13 @@ ActiveAdmin.register Population, as: 'queries' do
   config.sort_order = 'updated_at_desc'
   config.per_page = [50, 100, 200, 400]
 
-  permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set
+  permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set, conditions_attributes: [
+                  :id, 
+                  :eval_method, 
+                  :value, 
+                  :skip_validations, 
+                  :_destroy
+                ]
 
   scope 'My Queries', default: true do |queries|
     queries.creator(current_user)
@@ -75,7 +81,7 @@ ActiveAdmin.register Population, as: 'queries' do
       format.js
     end
     
-  end
+  end  
 
   index do
     column ('Title'){|population| link_to population.title, admin_query_path(population) }

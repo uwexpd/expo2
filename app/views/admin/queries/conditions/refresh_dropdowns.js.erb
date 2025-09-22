@@ -1,0 +1,7 @@
+$("#condition_<%= @condition.id %>_eval_method_container").html(
+  "<%= j render partial: 'admin/queries/conditions/eval_method_dropdown', object: @condition, locals: { disabled: false } %>"
+);
+
+$("#condition_<%= @condition.id %>_value_container").html(
+  "<%= j render partial: 'admin/queries/conditions/value_dropdown', object: @condition, locals: { disabled: false } %>"
+);

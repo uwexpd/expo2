@@ -142,7 +142,11 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
       end
     end
     panel "Quarters" do
-        paginated_collection(member.committee_member_quarters.page(params[:page]).per(10).order('id DESC'), download_links: false) do
+        paginated_collection(
+          member.committee_member_quarters.order(id: :desc).paginate(page: params[:quarters_page], per_page: 10),
+          param_name: :quarters_page,
+          download_links: false
+        ) do
           table_for(collection, sortable: false) do
             column('Quarter'){|quarter| link_to quarter.quarter.title, admin_committee_committee_quarter_path(committee, quarter.committee_quarter)}
             column('Active?'){|quarter| status_tag "Yes", class: 'green small' if quarter.active?}
@@ -151,7 +155,12 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
         end
     end
     panel "Meetings" do 
-        paginated_collection(member.committee_member_meetings.page(params[:page]).per(15).order('id DESC'), download_links: false) do
+        paginated_collection(
+          member.committee_member_meetings.order(id: :desc)
+                .paginate(page: params[:meetings_page], per_page: 15),
+          param_name: :meetings_page,
+          download_links: false
+        ) do
           table_for(collection, sortable: false) do
             column('Meeting'){|meeting| link_to "#{meeting.committee_meeting.title} (#{meeting.committee_meeting.start_date.year})", 
           admin_committee_meeting_path(committee, meeting.committee_meeting)}

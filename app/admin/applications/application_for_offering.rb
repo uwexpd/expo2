@@ -339,6 +339,7 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
       render "search_applicant", {offering_id: application.offering.id}
   end
 
+  filter :person_email, as: :string
   filter :person_firstname, as: :string
   filter :person_lastname, as: :string
   filter :id, label: 'Application ID'

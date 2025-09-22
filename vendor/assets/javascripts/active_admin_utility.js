@@ -159,3 +159,26 @@ $(document).on('click', '#show-details-button', function(event) {
       }
     });
 });
+
+
+$(document).on('change', 'select[data-remote="true"]', function() {
+  var $select = $(this);
+  var url = $select.data('url');
+  var targetEval = '#condition_' + $select.data('target') + '_eval_method_container';
+  var targetValue = '#condition_' + $select.data('target') + '_value_container';
+  var $indicator = $('#condition_indicator_' + $select.data('target'));
+
+  if ($indicator.length) $indicator.show();
+
+  // $.ajax({
+  //   url: url,
+  //   type: 'PATCH', // send as PATCH to trigger update
+  //   data: $select.closest('form').serialize(),
+  //   dataType: 'script',
+  //   complete: function() {
+  //     if ($indicator.length) $indicator.hide();
+  //   }
+  // });
+});
+
+

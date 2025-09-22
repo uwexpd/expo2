@@ -24,6 +24,7 @@ class Population < ApplicationRecord
   
   has_many :population_group_members, :as => :population_groupable
   has_many :population_groups, :through => :population_group_members
+  accepts_nested_attributes_for :conditions, allow_destroy: true
   
   validates_presence_of :title
   # validates_presence_of :populatable, :starting_set, :on => :update, :unless => :custom_query?

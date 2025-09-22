@@ -39,8 +39,12 @@ class PopulationCondition < ApplicationRecord
 
   # Returns the possible valid criteria based on the population_criteria YAML file.
   def valid_criteria
-    @valid_criteria ||= YAML::load(ERB.new((IO.read("#{RAILS_ROOT}/config/population_criteria.yml"))).result) || []
+    @valid_criteria ||= begin
+      file_path = Rails.root.join("config", "population_criteria.yml")
+      YAML.load(ERB.new(File.read(file_path)).result) || []
+    end
   end
+
   
   # Returns a hash of the possible values for this condition based on the valid_criteria.
   def values

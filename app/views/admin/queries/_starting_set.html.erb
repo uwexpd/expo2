@@ -48,7 +48,7 @@
 								["#{p.title} (#{pluralize(p.read_attribute(:objects_count), "record")})", p.id]},
 							'Open to Anyone' => @everyone_populations.collect{|p| 
 								["#{p.title} (#{pluralize(p.read_attribute(:objects_count), "record")})", p.id]}
-							}						
+							}
 						 %>
 						<%= grouped_options_for_select grouped_options %>
 					</select>
