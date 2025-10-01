@@ -8,7 +8,7 @@ class GivepulseCourse < GivepulseBase
               :class_time, :class_type, :class_status, :sl_type, 
               :givepulse_organizer_id, :faculty_id, :faculty2_id, :faculty3_id
 
-  # Example Use: GivepulseCourse.where(term: 'SUM2025' , crn: 'BHS496A')
+  # Example Use: GivepulseCourse.where(term: 'Autumn 2025' , crn: 'BHS496A')
   # GivepulseCourse.find_by(group_id: 788279)
   def self.where(attributes)
   	begin
@@ -116,8 +116,14 @@ class GivepulseCourse < GivepulseBase
         if response.code.to_i == 200
           Rails.logger.info("Successfully removed #{dropper.email} from GivePulse course #{self.crn}")
          
-          # Send email notification to the course admins in CCUW         
-          GivepulseUser.where(group_id: self.group_id, role: 'admin').each do |course_admin|
+          # Send email notification to the course admins in CCUW
+          # Fetch course admins from Givepulse API
+          course_admins = GivepulseUser.where(group_id: self.group_id, role: 'admin')
+
+          # Exclude the admin with communityconnect@uw.edu
+          course_admins.reject! { |admin| admin.email == 'communityconnect@uw.edu' }
+
+          course_admins.each do |course_admin|
             link = Rails.env.production? ? "https://uw.givepulse.com/group/manage/users/#{self.group_id}" : "https://uw-dev.givepulse.com/group/manage/users/#{self.group_id}"
 
             begin

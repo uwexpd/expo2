@@ -8,7 +8,7 @@ ActiveAdmin.register User do
   
   permit_params :admin, :email, :picture, roles_attributes: [:role_id, :unit_id, :_destroy, :id]
 
-  before_action -> { check_permission("user_manager") }
+  before_action -> { check_permission("user_manager") }, except: [:picture]
 
   scope :all
   scope :admin
@@ -24,7 +24,7 @@ ActiveAdmin.register User do
   end
 
   member_action :picture, :method => :get do    
-    send_file Rails.root.join("files", "pubcookie_user", params[:id], params[:mounted_as], params[:filename])
+    send_file Rails.root.join("files", "user", params[:id], params[:mounted_as], params[:filename])
   end
 
   controller do

@@ -23,7 +23,7 @@
 		</tr>
 
 		<% current_time = @offering.earliest_interview_timeblock_start
-		   interval = 15.minutes
+		   interval = 15.minutes #1.hours 
 		   while current_time <= @offering.latest_interview_timeblock_end			  
 		%>
 		      <%= render partial: "apply/timeslot_row", object: current_time, locals: { :person_record => @offering_interviewer } %>

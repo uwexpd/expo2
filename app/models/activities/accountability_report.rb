@@ -497,7 +497,7 @@ class AccountabilityReport < ApplicationRecord
     puts "Saved results output to #{dump_results!(:raw)}"
     
     puts "Accumulating: ActivityProject... ", true
-    activity_projects = ActivityProject.of_type(@activity_type).for_quarter(@quarters)
+    activity_projects = ActivityProject.of_type(@activity_type).for_quarters(@quarters)
     for activity_project in activity_projects
       print "|"
       for activity_quarter in activity_project.quarters

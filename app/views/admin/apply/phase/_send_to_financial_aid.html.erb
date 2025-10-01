@@ -29,14 +29,14 @@
 
 <div class="big-border box">
 <h4><i class='mi uw_purple'>approval</i> Financial Aid Approval</h4>
-<strong>UW NetID of financial aid approver:</strong>
-<%= text_field_tag :financial_aid_approver_uw_netid, @offering.financial_aid_approver_uw_netid %>
+<div class='string input'>
+	<strong>UW NetID of financial aid approver:</strong>
+	<%= text_field_tag :financial_aid_approver_uw_netid, @offering.financial_aid_approver_uw_netid %>
 
-<br>
-<strong>UW NetID of fund disburser:</strong>
-<%= text_field_tag :disbersement_approver_uw_netid, @offering.disbersement_approver_uw_netid %>
-
-<br>
+	<br>
+	<strong>UW NetID of fund disburser:</strong>
+	<%= text_field_tag :disbersement_approver_uw_netid, @offering.disbersement_approver_uw_netid %>
+</div>
 <%= hidden_field_tag "new_status", "awaiting_financial_aid_approval" %>
 <%= f.submit "Send Request for Financial Aid Eligibility Approval", class: 'small' %>
 <em class="light"><%= "Last sent #{time_ago_in_words(@offering.financial_aid_approval_request_sent_at)} ago." rescue nil %></em>

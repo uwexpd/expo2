@@ -24,7 +24,7 @@
 	<%= render :partial => "admin/apply/phase/applicant_list", :locals => { :phase_task => @phase_task, :task => @task } %>
 </div>
 
-<div id="change_status_<%= @task.id %>_functions" class="big-border box">
+<div id="change_status_<%= @task.id %>_functions" class="big-border box select input">
 	<h4><i class='mi uw_purple'>refresh</i> Set new status:</h4>
 	Set new status to:
 	<select name="new_status">

@@ -7,18 +7,22 @@ task :givepulse_roster_sync => :environment do
 
   puts "#{sync_quarters.collect(&:title)} Course roster sync starts..."
 
-  if ENV["GIVEPULSE_PRO_TOKEN"].blank?
-    puts "Missing GIVEPULSE_PRO_TOKEN in ENV. Aborting."
+  # Pick correct token depending on environment
+  token_key = Rails.env.production? ? "GIVEPULSE_PRO_TOKEN" : "GIVEPULSE_BASIC_TOKEN"
+  token     = ENV[token_key]
+
+  if token.blank?
+    puts "Missing #{token_key} in ENV. Aborting."
     exit 1
   else
-    token_preview = ENV["GIVEPULSE_PRO_TOKEN"][0..8] + "..."
-    puts "GIVEPULSE_PRO_TOKEN is present: #{token_preview} (length=#{ENV["GIVEPULSE_PRO_TOKEN"].length})"
+    token_preview = token[0..8] + "..."
+    puts "#{token_key} is present: #{token_preview} (length=#{token.length})"
   end
   
   # Get GP CE courses with sync quarters:
   sync_quarters.each do |quarter|
       puts "Running GivepulseCourse.where(term: #{quarter.title.inspect})"
-      ce_courses =  GivepulseCourse.where(term: quarter.title)
+      ce_courses =  GivepulseCourse.where(term: quarter.title, limit: 50)
 
       if ce_courses.blank?
           puts "No courses found for #{quarter.title}"
@@ -70,7 +74,7 @@ task givepulse_import_courses: :environment do
   )
 
   # prod_courses = GivepulseCourse.where(term: current_quarter.title, crn: 'CSS 295 A')
-  prod_courses = GivepulseCourse.where(term: current_quarter.title)
+  prod_courses = GivepulseCourse.where(term: current_quarter.title, limit: 50)
   if prod_courses.blank?
     puts "No PROD courses found for term #{current_quarter.title}"
     next

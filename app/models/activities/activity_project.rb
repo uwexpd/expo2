@@ -6,7 +6,7 @@ class ActivityProject < Activity
 
   # Only return records with quarters that match the requested quarter
   # scope :for_quarter, -> (quarter) { joins(:quarters).where("activity_quarters.quarter_id IN (#{quarter.is_a?(Array) ? quarter.collect(&:id).join(",") : quarter.id})").uniq }
-  scope :for_quarter, ->(q) {
+  scope :for_quarters, ->(q) {
     joins(:quarters)
     .select("DISTINCT activities.*")
     .where("activity_quarters.quarter_id IN (?)", q.is_a?(Array) ? q.pluck(:id) : q.id)

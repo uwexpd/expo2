@@ -317,6 +317,11 @@ tr.borderless {
 	padding: 0 16px;
 }
 
+/* Preserve button text color for visited links */
+.btn:visited, .btn-large:visited, .btn-small:visited, .btn-floating:visited {
+    color: #fff;
+}
+
 .btn:hover, .btn-small:hover, .btn-large:hover {
  	background-color: #6e579b;
 }
