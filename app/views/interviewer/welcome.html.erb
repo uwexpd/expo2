@@ -7,11 +7,14 @@
 
 <p>We are excited to have you involved as an interviewer this quarter. Please provide the following information so that we can begin forming interview groups and scheduling interviews with students.</p>
 
-<h4>1. Not this Quarter?</h4>
+<h5>Not this Quarter?</h5>
 <p>If you <strong>cannot</strong> serve on the committee this quarter, please 
 	<%= link_to "click here", action: 'not_this_quarter', :id => @offering_interviewer.id %>.</p>
+
 <br>
-<h4>2. Conflicts of Interest (optional)</h4>
+
+<% unless @offering.unit.abbreviation == 'mge' %>
+<h5>Conflicts of Interest (optional)</h5>
 <%= form_for :conflict_of_interests do |f| %>	
 	<p>Below you will find the list of students who may be interviewed this quarter. If you feel that you need to recuse yourself from interviewing a specific student due to a conflict of interest, please check the box next to the student's name and click the "Recuse Myself from Selected Interviews" button.</p>
 
@@ -35,9 +38,10 @@
 	<%= hidden_field_tag 'no_meeting', params[:no_meeting].blank? ? nil : params[:no_meeting] %>
 <% end %>
 <br>
+<% end %>
 
 <%= form_for @offering_interviewer, url: {action: :welcome} do |f| %>
-	<h4>3. Special Requests or Notes?</h4>	
+	<h5>Special Requests or Notes?</h5>
 	<div class="input-field">
 		<%= f.text_area :special_notes, class: 'materialize-textarea' %>
 		<%= f.label :special_notes, "If you have any special notes for the program staff, enter them here" %>
@@ -49,7 +53,7 @@
 	
 <% end %>
 <br>
-<h4>4. Submit Your Availability for Interviews</h4>
+<h5>Submit Your Availability for Interviews</h5>
 <p>You can submit your availability using our online system. This will help us to more easily schedule interviews with students.</p>
 <p><%= button_to "Submit Your Availability →", {action: :interview_availability,
 											   committee: params[:committee].blank? ? nil : params[:committee],

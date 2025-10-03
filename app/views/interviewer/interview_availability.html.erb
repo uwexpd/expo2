@@ -3,7 +3,13 @@
 <h4>Input Your Availability for Interviews</h4>
 <%= form_for "complete" do |f| %>
 <ol>
-	<li>Using the calendar below, click on the times that you are available for interviews with students.  Interviews last approximately 45 minutes so please provide at least 45 minute increments (these can begin on the quarter hour).  The more flexible you can be with your schedule the more easily we will be able to schedule interviews.  Please hold these times on your personal calendar. <em>To mark a time unavailable, select the same time slot to cancel your availability for that time.</em></li>
+	<li>
+		<%# Using the calendar below, click on the times that you are available for interviews with students.  Interviews last approximately 45 minutes so please provide at least 45 minute increments (these can begin on the quarter hour).  %>
+		Using the calendar below, click on the times that you are available for interviews with students. Interviews last approximately 45 minutes;  we are expecting interview committees to do ~6 interviews, so please select <u>at least two</u>, 3-hour blocks.
+
+		<br><br>
+		The more flexible you can be with your schedule the more easily we will be able to schedule interviews. Please hold these times on your personal calendar (we will also hold calendar invites once we've confirmed times/committees closer to the interview dates). <em>To mark a time unavailable, select the same time slot to cancel your availability for that time.</em>
+	</li>
 
 	<li style="margin-top:1em;">When you've finished marking your availability, <%= f.submit "Click here to save your responses →", class: 'btn small' %></li>
 	<%= hidden_field_tag 'committee', params[:committee].blank? ? nil : params[:committee] %>
@@ -23,7 +29,7 @@
 		</tr>
 
 		<% current_time = @offering.earliest_interview_timeblock_start
-		   interval = 15.minutes #1.hours 
+		   interval = 3.hours #15.minutes
 		   while current_time <= @offering.latest_interview_timeblock_end			  
 		%>
 		      <%= render partial: "apply/timeslot_row", object: current_time, locals: { :person_record => @offering_interviewer } %>

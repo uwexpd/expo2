@@ -1,8 +1,8 @@
-<% title "#{@scholarship.title} | Scholarship Database | University of Washington" %>
+<% title "#{@scholarship.title} | OMSFA Scholarship Database | UW" %>
 
-<div class="card scholarship_detail">
+<div class="card content scholarship_detail">
 
-	<h4><%= @scholarship.title %></h4>
+	<h5><%= @scholarship.title %></h5>
 
 	<p class="smaller">Website:  <%= @scholarship.website_name.blank? ? "N/A" : link_to(@scholarship.website_name, @scholarship.website_url) %></p>
 

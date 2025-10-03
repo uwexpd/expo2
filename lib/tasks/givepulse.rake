@@ -36,9 +36,9 @@ task :givepulse_roster_sync => :environment do
               next
             end
             gp_course.sync_course_students
-            puts "Sucessfully synced #{gp_course.crn} #{gp_course.course_students.size} students."
             gp_course.sync_course_instructors
-            puts "Sucessfully synced #{gp_course.crn} instructors: #{gp_course.instructors.flatten.collect(&:fullname).uniq}"
+            puts "Sucessfully synced #{gp_course.crn} #{gp_course.course_students.size} students, " \
+            "instructors: #{gp_course.instructors.flatten.collect(&:fullname).uniq}"
           end
       end
   end

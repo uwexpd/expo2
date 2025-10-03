@@ -753,7 +753,8 @@ ul.sherlock-buttons{
 	display: inline;
 }
 	
-#site_title a:hover, #dashboard a:hover, #modules a:hover, #tools a:hover, #people a:hover {
+#site_title a:hover, #dashboard a:hover, #modules a:hover, #tools a:hover, 
+#groups a:hover, #databases a:hover {
 	opacity: 0.8;
 }
 
@@ -1040,7 +1041,6 @@ ul.link-list li a:hover,  ul.link-list li:hover {
 /**
  **  Utility Nav Menu
  */
-
 #utility_nav > li a {    
     text-align: right;
 }
