@@ -4,7 +4,8 @@ ActiveAdmin.register Population, as: 'queries' do
   config.sort_order = 'updated_at_desc'
   config.per_page = [50, 100, 200, 400]
 
-  permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set, conditions_attributes: [
+  permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set,  :condition_operator, :result_variant, :custom_result_variant,
+      conditions_attributes: [
                   :id, 
                   :eval_method, 
                   :value, 
@@ -220,6 +221,11 @@ ActiveAdmin.register Population, as: 'queries' do
         div class: 'panel_contents' do
           div :class => 'content-block' do
             render "conditions", { :population => f.object }
+          end
+        end
+        div class: 'panel_contents' do
+          div :class => 'content-block' do
+            render "result_variant", { :population => f.object }
           end
         end
       end

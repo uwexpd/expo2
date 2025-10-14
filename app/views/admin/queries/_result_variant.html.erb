@@ -1,0 +1,71 @@
+<% 
+	@population ||= population
+	klass = @population.starting_objects_class if @population.starting_objects_class 
+%>
+
+<div class="big-border box" id="result_variant" <%= "style='display:none'" if @population.custom_query? %>>
+  <h4><i class='mi'>view_list</i> Choose a different result set for output:</h4>
+
+  <dl class="inline-definitions">
+    <dt>Result set</dt>
+    <% associations = klass.reflect_on_all_associations(:has_many).map { |a| a.name.to_s }.sort rescue [] %>
+
+    <dd>
+      <!-- Default dropdown section -->
+      <div id="result_variant_container" class='input select' style="<%= 'display:none;' if @population.custom_result_variant? %>">
+        <%= select_tag "population[result_variant]",
+                     options_for_select(associations, @population.result_variant),
+                     { include_blank: 'Use the starting set' } %>
+
+        <%= separator.html_safe %>
+
+        <%= link_to "Customize", "#",
+            id: "customize_result_variant_link",
+            class: " toggle-result-variant",
+            data: { toggle_show: "#custom_result_variant_container", toggle_hide: "#result_variant_container" } %>
+      </div>
+
+      <!-- Custom text area section -->
+      <div id="custom_result_variant_container" style="<%= 'display:none;' unless @population.custom_result_variant? %>">
+        <%= text_area_tag "population[custom_result_variant]",  @population.custom_result_variant, rows: 7, cols: 60 %><br>
+
+        <%= separator.html_safe %>
+
+        <%= link_to "Choose from list", "#",
+            id: "choose_result_variant_link",
+            class: "toggle-result-variant",
+            data: { toggle_show: "#result_variant_container", toggle_hide: "#custom_result_variant_container", clear: "#population_custom_result_variant" } %>
+      </div>
+    </dd>
+  </dl>
+</div>
+
+<script>
+  $(document).on('click', '.toggle-result-variant', function(e) {
+    e.preventDefault();
+
+    var showTarget = $(this).data('toggle-show');
+    var hideTarget = $(this).data('toggle-hide');
+
+    // Hide current, show target
+    $(hideTarget).slideUp(200);
+    $(showTarget).slideDown(200);
+  });
+
+  // Ensure correct visibility when the page loads (e.g., after validation errors)
+  $(function() {
+    var customField = $('#population_custom_result_variant');
+    var hasCustomValue = $.trim(customField.val()) !== '';
+
+    if (hasCustomValue) {
+      // Show the custom variant area
+      $('#custom_result_variant_container').show();
+      $('#result_variant_container').hide();
+    } else {
+      // Show the default dropdown
+      $('#result_variant_container').show();
+      $('#custom_result_variant_container').hide();
+    }
+  });
+</script>
+

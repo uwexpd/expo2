@@ -10,11 +10,11 @@ class Unit < ApplicationRecord
   #   
   has_many :organization_quarters, :class_name => "OrganizationQuarter", :foreign_key => "unit_id"
   #   
-  #   has_many :service_learning_positions, :class_name => "ServiceLearningPosition", :foreign_key => "unit_id"
-  #   has_many :service_learning_courses, :class_name => "ServiceLearningCourse", :foreign_key => "unit_id"
+  has_many :service_learning_positions, :class_name => "ServiceLearningPosition", :foreign_key => "unit_id"
+  has_many :service_learning_courses, :class_name => "ServiceLearningCourse", :foreign_key => "unit_id"
   #   
-  #   has_many :organization_contact_units, :dependent => :destroy
-  #   has_many :organization_contacts, :through => :organization_contact_units
+  has_many :organization_contact_units, :dependent => :destroy
+  has_many :organization_contacts, :through => :organization_contact_units
   #   
   #   has_many :service_learning_position_shares
   #   

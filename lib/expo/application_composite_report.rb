@@ -37,10 +37,17 @@ class ApplicationCompositeReport
       result.is_a?(Array) ? result : [result]
     end.flatten.compact
     # puts "Get parts filenames => #{parts.inspect}"
-
-    # Check that the parts filenames exist
-    parts.delete_if {|p| !File.exists?(p.to_s) }
-    puts "ERROR: No files to combine" if parts.empty?
+    
+    # Filter out missing, directory, or non-PDF files
+    parts.select! do |p|
+      next false if p.blank?
+      p = p.to_s
+      File.exist?(p) && !File.directory?(p) && File.extname(p).downcase == ".pdf"
+    end
+    if parts.empty?
+      puts "ERROR: No valid PDF files to combine."
+      return nil
+    end
 
     puts "Combining the following files:"
     parts.each{|p| puts "   #{p}"}

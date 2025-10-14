@@ -8,6 +8,7 @@ class OfferingPage < ApplicationRecord
   acts_as_list column: :ordering, scope: :offering
   
   validates_uniqueness_of :ordering, :scope => :offering_id
+  validates :description, length: { maximum: 255, message: "cannot exceed 255 characters" }
 
   def <=>(o)
     ordering <=> o.ordering rescue 0

@@ -128,8 +128,8 @@ class Population < ApplicationRecord
       if attributes[:id].blank?
         conditions.build(attributes)
       else
-        condition = conditions.detect{ |c| c.id == condition_id.to_i }
-        condition.attributes = attributes
+        condition = conditions.find{ |c| c.id == condition_id.to_i }
+        condition.attributes = attributes if condition
       end
     end
   end
@@ -139,10 +139,11 @@ class Population < ApplicationRecord
       if c.should_destroy?
         c.destroy
       else
-        c.save(false)
+        c.save(validate: false)
       end
     end
   end
+
 
   # Generates the objects array by looping through all of the conditions. We separate this from the public
   # +objects+ method so that we can take advantage of caching better.
