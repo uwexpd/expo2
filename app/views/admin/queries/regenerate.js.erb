@@ -1,0 +1,5 @@
+<% dom_id = "population_#{@population.id}" %>
+
+if ($('#<%= dom_id %>').length) {
+  $('#<%= dom_id %>').html('<%= j render @population %>');  
+}

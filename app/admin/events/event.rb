@@ -22,11 +22,11 @@ ActiveAdmin.register Event do
     end
   end
 
-   action_item :copy, only: :show do
+  action_item :copy, only: :show do
      link_to 'Copy Offering', copy_admin_event_path(event), method: :post, data: { confirm: 'Are you sure you want to copy this event?' }
-   end
+  end
 
-   controller do
+  controller do
     before_action :check_user_unit, :except => [ :index, :new, :create ]
 
     protected

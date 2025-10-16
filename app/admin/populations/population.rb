@@ -1,4 +1,4 @@
-ActiveAdmin.register Population, as: 'queries' do
+ActiveAdmin.register Population, as: 'query' do
   batch_action :destroy, false
   menu parent: 'Modules', label: "<i class='mi padding_right'>find_in_page</i> Queries".html_safe, priority: 45
   config.sort_order = 'updated_at_desc'
@@ -13,11 +13,11 @@ ActiveAdmin.register Population, as: 'queries' do
                   :_destroy
                 ]
 
-  scope 'My Queries', default: true do |queries|
-    queries.creator(current_user)
+  scope 'My Queries', default: true do |query|
+    query.creator(current_user)
   end
-  scope 'My Program(s) Queries' do |queries|
-    queries.unit(current_user)
+  scope 'My Program(s) Queries' do |query|
+    query.unit(current_user)
   end
   scope 'Everyone', :everyone
   scope :all
@@ -80,9 +80,39 @@ ActiveAdmin.register Population, as: 'queries' do
         render partial: 'results', locals: { population: @population }
       end 
       format.js
+    end    
+  end
+
+  member_action :copy, method: :post do
+    original_query = Population.find(params[:id])
+
+    if copy_query = original_query.deep_dup!      
+      redirect_to edit_admin_query_path(copy_query), notice: "Successfully copied #{original_query.title}. You can customize the details below."
+    else
+      redirect_to admin_query_path(original_event), alert: "An error occurred while cloning the query."
     end
-    
-  end  
+  end
+
+  member_action :regenerate, method: :post do
+    @population = Population.find(params[:id])
+    @population.generate_objects!
+
+    # Rails 5+ doesn't have expire_action by default; if you use caching,
+    # you may need to expire caches differently, or skip if not used.
+    # expire_action action: 'show', format: :xls
+    # expire_action controller: 'stats', action: 'population'
+
+    flash[:notice] = "Successfully regenerated query results."
+
+    respond_to do |format|
+      format.html { redirect_to resource_path(@population) }
+      format.js   { render layout: false }
+    end
+  end
+
+  action_item :copy, only: :show do
+     link_to 'Copy Query', copy_admin_query_path(query), method: :post, data: { confirm: 'Are you sure you want to copy this query?' }
+  end
 
   index do
     column ('Title'){|population| link_to population.title, admin_query_path(population) }
@@ -95,26 +125,28 @@ ActiveAdmin.register Population, as: 'queries' do
        end
     end
     column ('Creator') {|population| population.creator.firstname_first rescue nil }
-    actions
+    actions default: true do |population|
+      link_to 'Copy Query', copy_admin_query_path(population), method: :post, data: { confirm: 'Are you sure you want to copy this query?' }
+    end
   end
 
   show do
-    panel "#{queries.title}".html_safe, class: ' panel_contents' do
+    panel "#{query.title}".html_safe, class: ' panel_contents' do
       div class: 'content-block caption' do
-        status_tag 'auto-generated', class: 'small orange right' if queries.system?
-        status_tag 'manual', class: 'small right' if queries.is_a?(ManualPopulation)        
-        span object_timestamp_details(queries)
+        status_tag 'auto-generated', class: 'small orange right' if query.system?
+        status_tag 'manual', class: 'small right' if query.is_a?(ManualPopulation)        
+        span object_timestamp_details(query)        
       end
        
     end
 
     attributes_table title: "<i class='mi'>info</i> Details".html_safe do
-      unless queries.description.blank?
+      unless query.description.blank?
         row ('Description') {|q| q.description.html_safe }
       end
-      if queries.custom_query?
+      if query.custom_query?
         row ('Query') {|q| q.custom_query }
-      elsif !queries.is_a?(ManualPopulation)
+      elsif !query.is_a?(ManualPopulation)
         row ('Based on') do |q|
           span q.populatable_type
           id_str = q.populatable.identifier_string rescue q.populatable.title rescue q.populatable.name rescue nil
@@ -122,7 +154,7 @@ ActiveAdmin.register Population, as: 'queries' do
           span "(#{q.starting_set})" if q.starting_set
         end
 
-        unless queries.conditions.empty?
+        unless query.conditions.empty?
           row ('Conditions') do |q|
             para "Matching #{q.condition_operator} of the following conditions:"
             ul class: 'left-indent' do
@@ -137,18 +169,23 @@ ActiveAdmin.register Population, as: 'queries' do
           end
         end
 
-        unless queries.result_variant.blank?
+        unless query.result_variant.blank?
           row ('Result set') {|q| q.result_variant }        
         end
 
       end
         
-      unless queries.is_a?(ManualPopulation)
+      unless query.is_a?(ManualPopulation)
         row ('Generated') {|q| span "#{time_ago_in_words(q.objects_generated_at)} ago", class: "#{'red_color' if Time.now - q.objects_generated_at > 1.month}" if q.objects_generated_at }
       end
 
-      row ('Result') {|q| pluralize q.objects.size, "record" }
-      
+      row ('Result') do |q|
+        span (pluralize q.objects.size, "record") + " - "
+        span class: 'smaller' do
+          link_to "Regenerate".html_safe, regenerate_admin_query_path(resource), method: :post, data: { confirm: 'Are you sure?' }
+        end
+      end
+
       row ('Outputs') do |q|
         if q.output_fields.blank?
           span "No output fields have been defined. ", class: 'light'
@@ -184,13 +221,13 @@ ActiveAdmin.register Population, as: 'queries' do
       div class: 'content-block' do
         div class: 'big-border box gray', style: 'display: grid' do
           h4 do
-            span "<i class='mi'>view_list</i> #{ pluralize queries.objects.size, 'record' }".html_safe
-            span link_to "<i class='mi'>fullscreen</i> Open in the new window".html_safe, objects_admin_query_path(queries),class: 'right'
+            span "<i class='mi'>view_list</i> #{ pluralize query.objects.size, 'record' }".html_safe
+            span link_to "<i class='mi'>fullscreen</i> Open in the new window".html_safe, objects_admin_query_path(query),class: 'right'
           end
           
           div id: 'objects_placeholder', style: 'overflow:auto; display: none'          
 
-          div link_to "<i class='mi'>visibility</i> Show Details".html_safe, "#", id: 'show-details-button', class: 'button small flat', data: { id: queries.id, path: results_admin_query_path(queries) }
+          div link_to "<i class='mi'>visibility</i> Show Details".html_safe, "#", id: 'show-details-button', class: 'button small flat', data: { id: query.id, path: results_admin_query_path(query) }
 
           div id: 'objects_indicator', style: 'display:none' do
             span image_tag('loading.gif', class: 'loading')
@@ -236,8 +273,18 @@ ActiveAdmin.register Population, as: 'queries' do
     end
   end
 
-  sidebar 'Actions', only: [:show, :edit] do
-
+  sidebar "Actions", only: [:show, :edit] do
+    ul class: 'link-list' do
+      li do
+        span link_to "<i class='mi'>content_copy</i> Copy this query".html_safe, copy_admin_query_path(resource), method: :post, data: { confirm: 'Are you sure?' }
+      end
+      li do
+        span link_to "<i class='mi'>table_view</i> Results".html_safe, objects_admin_query_path(resource), method: :get
+      end
+      li do
+        span link_to "<i class='mi'>refresh</i> Regenerate".html_safe, regenerate_admin_query_path(resource), method: :post, data: { confirm: 'Are you sure?' }
+      end
+    end
   end
 
   filter :title

@@ -209,21 +209,25 @@ class Population < ApplicationRecord
   end
 
   # Clone
-  def clone!
+  def deep_dup!
     opts = {}
     opts[:except] = [:object_ids]
     opts[:include] = [:conditions]
-    p2 = self.clone(opts)
-    p2.update_attribute(:title, p2.title + " Copy")
-    until p2.valid? && !p2.errors.on(:title)
+    p2 = self.dup(opts)
+    # Update title
+    p2.title = "#{p2.title} Copy"
+
+    # Ensure unique/valid title
+    while !p2.valid? || p2.errors[:title].present?
       if p2.title[/\d+$/].nil?
         p2.title += " 2"
       else
         new_num = p2.title[/\d+$/].to_i + 1
         p2.title.gsub!(/\d+$/, new_num.to_s)
       end
-    end 
-    p2.save
+    end
+
+    p2.save!
     p2
   end
 

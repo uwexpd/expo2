@@ -22,6 +22,10 @@
 	font-size: x-small;
 }
 
+.index_table tbody tr:hover, .panel_contents table tbody tr:hover {
+	background-color: #F5F5DC;
+}
+
 #index_table_offerings .col-unit, { min-width: 80px; }
 #index_table_offerings .col-quarter { min-width: 120px; }
 #index_table_events .col-type { min-width: 110px; }

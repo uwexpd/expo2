@@ -11,7 +11,7 @@
 	
 		<dt>Major(s):</dt>
 		<% major = general.sdb.majors_list(true, "<br>") %>
-		<dd><%= major.blank? ? "<span class='empty'>empty</span>".html_safe : major %> </dd>
+		<dd><%= raw major.blank? ? "<span class='empty'>empty</span>" : major %> </dd>
 
 		<dt>Class:</dt>
 		<dd><%= general.sdb.class_standing_description rescue nil %></dd>
