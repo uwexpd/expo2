@@ -1,0 +1,38 @@
+wb = xlsx_package.workbook
+
+# Define styles
+header_style = wb.styles.add_style(b: true, bg_color: 'CCCCCC', alignment: { horizontal: :center })
+default_style = wb.styles.add_style(border: { style: :thin, color: 'DDDDDD' }, alignment: { vertical: :center })
+
+wb.add_worksheet(name: "Population Data") do |sheet|
+  # Prepare header row
+  header = @population.output_fields.map do |field|
+    if (m = field.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/))
+      m[1].to_s.titleize rescue "-ERROR-"
+    else
+      field.to_s.titleize rescue field.to_s
+    end
+  end
+
+  sheet.add_row header
+
+  # Add data rows
+  @population.objects.each do |object|
+    row = @population.output_fields.map do |field|
+      if (m = field.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/))
+        code = m[2]
+        # Assuming to_pdf_octals is a custom method available on String
+        code = code.to_pdf_octals rescue code
+      else
+        code = field
+      end
+
+      begin
+        object.instance_eval(code).to_s
+      rescue StandardError
+        nil
+      end
+    end
+    sheet.add_row row
+  end
+end

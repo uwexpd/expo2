@@ -4,7 +4,7 @@ ActiveAdmin.register Population, as: 'query' do
   config.sort_order = 'updated_at_desc'
   config.per_page = [50, 100, 200, 400]
 
-  permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set,  :condition_operator, :result_variant, :custom_result_variant,
+  permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set,  :condition_operator, :result_variant, :custom_result_variant, :custom_query, :use_custom_query,
       conditions_attributes: [
                   :id, 
                   :eval_method, 
@@ -24,6 +24,21 @@ ActiveAdmin.register Population, as: 'query' do
 
   controller do
     before_action :fetch_populations, only: [ :objects, :results, :refresh_dropdowns]
+
+    # def show
+    #   respond_to do |format|
+    #     format.html
+    #     format.xlsx do
+    #       if @population.output_fields.blank?
+    #         flash[:error] = "Before downloading the Excel output for this query, please select the fields to include in the ouput."
+    #         redirect_to :action => "output"
+    #       else
+    #         render xlsx: 'show', filename: "query_#{@population.id}.xlsx"
+    #       end
+          
+    #     end
+    #   end
+    # end
 
     def edit
       populate_vars_by_access_level
@@ -69,6 +84,7 @@ ActiveAdmin.register Population, as: 'query' do
           render :partial => "objects"
         else
           redirect_to results_admin_query_path(@population)
+          #redirect_to action: :show, format: :xlsx
         end
       }
     end
@@ -110,8 +126,20 @@ ActiveAdmin.register Population, as: 'query' do
     end
   end
 
+  member_action :download, method: :get do
+    @population = Population.find(params[:id])
+    if @population.output_fields.blank?
+      redirect_to resource_path(@population), alert: "Please select fields before downloading."
+      return
+    end
+    @objects = @population.objects
+    respond_to do |format|       
+        format.xlsx { render xlsx: 'download', filename: "Report_#{@population.title}_#{@population.id}.xlsx" }
+      end
+  end
+
   action_item :copy, only: :show do
-     link_to 'Copy Query', copy_admin_query_path(query), method: :post, data: { confirm: 'Are you sure you want to copy this query?' }
+     link_to 'Copy Query', copy_admin_query_path(resource), method: :post, data: { confirm: 'Are you sure you want to copy this query?' }
   end
 
   index do
@@ -131,22 +159,22 @@ ActiveAdmin.register Population, as: 'query' do
   end
 
   show do
-    panel "#{query.title}".html_safe, class: ' panel_contents' do
+    panel "#{resource.title}".html_safe, class: ' panel_contents' do
       div class: 'content-block caption' do
-        status_tag 'auto-generated', class: 'small orange right' if query.system?
-        status_tag 'manual', class: 'small right' if query.is_a?(ManualPopulation)        
-        span object_timestamp_details(query)        
+        status_tag 'auto-generated', class: 'small orange right' if resource.system?
+        status_tag 'manual', class: 'small right' if resource.is_a?(ManualPopulation)        
+        span object_timestamp_details(resource)        
       end
        
     end
 
-    attributes_table title: "<i class='mi'>info</i> Details".html_safe do
-      unless query.description.blank?
+    attributes_table title: "<i class='mi uw_purple'>info</i> Details".html_safe do
+      unless resource.description.blank?
         row ('Description') {|q| q.description.html_safe }
       end
-      if query.custom_query?
+      if resource.custom_query?
         row ('Query') {|q| q.custom_query }
-      elsif !query.is_a?(ManualPopulation)
+      elsif !resource.is_a?(ManualPopulation)
         row ('Based on') do |q|
           span q.populatable_type
           id_str = q.populatable.identifier_string rescue q.populatable.title rescue q.populatable.name rescue nil
@@ -154,7 +182,7 @@ ActiveAdmin.register Population, as: 'query' do
           span "(#{q.starting_set})" if q.starting_set
         end
 
-        unless query.conditions.empty?
+        unless resource.conditions.empty?
           row ('Conditions') do |q|
             para "Matching #{q.condition_operator} of the following conditions:"
             ul class: 'left-indent' do
@@ -169,13 +197,13 @@ ActiveAdmin.register Population, as: 'query' do
           end
         end
 
-        unless query.result_variant.blank?
+        unless resource.result_variant.blank?
           row ('Result set') {|q| q.result_variant }        
         end
 
       end
         
-      unless query.is_a?(ManualPopulation)
+      unless resource.is_a?(ManualPopulation)
         row ('Generated') {|q| span "#{time_ago_in_words(q.objects_generated_at)} ago", class: "#{'red_color' if Time.now - q.objects_generated_at > 1.month}" if q.objects_generated_at }
       end
 
@@ -217,17 +245,17 @@ ActiveAdmin.register Population, as: 'query' do
 
     end # end of attributes_table
     
-    panel "<i class='mi'>table_view</i> Results".html_safe, class: 'panel_contents' do
+    panel "<i class='mi uw_purple'>table_view</i> Results".html_safe, class: 'panel_contents' do
       div class: 'content-block' do
         div class: 'big-border box gray', style: 'display: grid' do
           h4 do
-            span "<i class='mi'>view_list</i> #{ pluralize query.objects.size, 'record' }".html_safe
-            span link_to "<i class='mi'>fullscreen</i> Open in the new window".html_safe, objects_admin_query_path(query),class: 'right'
+            span "<i class='mi'>view_list</i> #{ pluralize resource.objects.size, 'record' }".html_safe
+            span link_to "<i class='mi'>fullscreen</i> Open in the new window".html_safe, objects_admin_query_path(resource),class: 'right'
           end
           
           div id: 'objects_placeholder', style: 'overflow:auto; display: none'          
 
-          div link_to "<i class='mi'>visibility</i> Show Details".html_safe, "#", id: 'show-details-button', class: 'button small flat', data: { id: query.id, path: results_admin_query_path(query) }
+          div link_to "<i class='mi'>visibility</i> Show Details".html_safe, "#", id: 'show-details-button', class: 'button small flat', data: { id: resource.id, path: results_admin_query_path(resource) }
 
           div id: 'objects_indicator', style: 'display:none' do
             span image_tag('loading.gif', class: 'loading')
@@ -280,6 +308,9 @@ ActiveAdmin.register Population, as: 'query' do
       end
       li do
         span link_to "<i class='mi'>table_view</i> Results".html_safe, objects_admin_query_path(resource), method: :get
+      end
+      li do
+        span link_to "<i class='mi'>sim_card_download</i> Spreadsheet Download".html_safe, download_admin_query_path(resource, :format => :xlsx)
       end
       li do
         span link_to "<i class='mi'>refresh</i> Regenerate".html_safe, regenerate_admin_query_path(resource), method: :post, data: { confirm: 'Are you sure?' }

@@ -44,6 +44,11 @@ a.button.flat, button[type='submit'].flat {
     padding: 6px;
 }
 
+a.button.smaller, button[type='submit'].smaller {
+    padding: 0.2rem;
+    font-size: 0.75rem;
+}
+
 a.button.add {
 	margin-top: 1rem;
 }

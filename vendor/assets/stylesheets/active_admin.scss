@@ -25,6 +25,7 @@ $am-theme-accent: #b7a57a;
 @import 'shared';
 @import 'buttons';
 @import 'index_table';
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&family=Source+Code+Pro&display=swap');
 
 @import 'activeadmin_reorderable';
 
@@ -115,7 +116,19 @@ For example, to change the default status-tag color: */
 }
 
 .code {
-	font-family: "Courier New", Courier, mono !important;
+	// font-family: "Courier New", Courier, mono !important;
+  font-family: 'Fira Code', 'Source Code Pro', Consolas, 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  background-color: #f5f7fa;       /* Light, soft gray */
+  color: #2d2d2d;                  /* Dark text */
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  resize: vertical;
+  font-feature-settings: "liga" 1;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 .half_width {
@@ -821,7 +834,7 @@ ul.link-list li a small {
 }
 
 ul.link-list li a:hover,  ul.link-list li:hover {
-	background-color: #efefef;
+	background-color: #F5F5DC;
 	text-decoration: none;
 }
 

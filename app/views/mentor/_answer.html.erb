@@ -12,6 +12,7 @@
 	  <div class="input-field inline">
 		<%= qf.text_field :answer, :size => answer.question.size %>
 	  </div>
+	  <%= "<small class='caption'> Number only</small>".html_safe if answer.question.must_be_number %>
 	<% end %>
 
 </div>

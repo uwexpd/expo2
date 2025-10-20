@@ -157,32 +157,46 @@ class Population < ApplicationRecord
   # Offering instead of just the Offering objects. Note that this is not used for custom queries.
   def generate_objects!
     if custom_query?
+      # Be cautious with eval - consider safer alternatives
       results = eval(custom_query)
     else
-      objects = any? ? [] : starting_objects.clone
-      objects_to_delete = []
-      puts "Evaluating #{starting_objects.size} objects and #{conditions.size} condition(s)..."
-      for obj in starting_objects
-        # print "\n   #{obj.id}: "
-        for condition in conditions
-          # print " [C#{condition.id}:"
+      # Initialize objects depending on any? or all? condition
+      filtered_objects = any? ? [] : starting_objects.dup
+      objects_to_remove = []
+
+      Rails.logger.info "Evaluating #{starting_objects.size} objects and #{conditions.size} condition(s)..."
+
+      starting_objects.each do |obj|
+        conditions.each do |condition|
           if condition.passes?(obj)
-            # print "PASS]"
-            objects << obj and break if any?
+            if any?
+              filtered_objects << obj
+              break
+            end
           else
-            # print "FAIL]"
-            objects_to_delete << obj and break if all?
+            if all?
+              objects_to_remove << obj
+              break
+            end
           end
         end
       end
-      results = objects - objects_to_delete
+
+      results = filtered_objects - objects_to_remove
+
       unless result_variant.blank?
-        results = results.collect{|r| r.instance_eval(result_variant)}.flatten
+        results = results.flat_map { |r| r.instance_eval(result_variant) }
       end
     end
+
     update_object_ids(results)
-    update_attribute(:objects_generated_at, Time.now)
-    update_attribute(:objects_count, self.object_ids.values.flatten.uniq.size)
+
+    # Use update_columns to update multiple attributes in one DB query without callbacks
+    update_columns(
+      objects_generated_at: Time.current,
+      objects_count: object_ids.values.flatten.uniq.size
+    )
+
     results
   end
 

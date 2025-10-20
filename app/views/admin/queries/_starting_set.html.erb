@@ -3,9 +3,14 @@
 	klass = @population.populatable_type.constantize unless @population.populatable_type.blank?
 %>
 
-<div class="big-border box" id="starting_set">
+<div class="big-border box" id="starting_set" <%= "style=display:none" if @population.custom_query? %>>
 
-	<h4><i class='mi'>view_list</i>Start with this object</h4>
+	<h4><i class='mi'>view_list</i> Start with this object
+		<span class="right">
+		<%= link_to "<i class='mi md-16'>build</i> Write custom query".html_safe, "#", 
+            class: 'button smaller', 
+            id: 'write_custom_query_link' %></span>
+	</h4>
 
 	<dl class="inline-definitions">
 
@@ -100,3 +105,47 @@
 
 	</dl>
 </div>
+
+<div class="big-border box" id="custom_query" <%= "style=display:none" unless @population.custom_query? %>>
+
+  <h4><i class='mi'>view_list</i> Use this custom query
+    <span class="right">
+      <%= link_to "<i class='mi md-16'>ballot</i> Select a starting set".html_safe, "#", 
+            class: 'button smaller', 
+            id: 'select_starting_set_link' %>
+    </span>
+  </h4>
+
+  <% unless @current_user.has_role?(:custom_query_writer) %>
+    <%= content_tag(:span, "You are not allowed to write custom queries.", class: 'error-message') %>
+  <% end %>
+
+  <%= text_area :population, :custom_query, rows: 5, style: "width: 99%", class: 'code', 
+        disabled: !@current_user.has_role?(:custom_query_writer) %>
+
+  <p class="caption">This code snippet must return an array of objects.</p>
+
+  <%= hidden_field_tag :use_custom_query, @population.custom_query?.to_s, id: 'use_custom_query' %>
+</div>
+
+<script>
+  $(document).ready(function() {
+	  function toggleSections(useCustom) {
+	    $('#custom_query').toggle(200);
+	    $('#starting_set').toggle(200);
+	    $('#result_variant').toggle(200);
+	    $('#conditions_container').toggle(200);
+	    $('#use_custom_query').val(useCustom);
+	  }
+
+	  $('#write_custom_query_link').on('click', function(e) {
+	    e.preventDefault();
+	    toggleSections('true');
+	  });
+
+	  $('#select_starting_set_link').on('click', function(e) {
+	    e.preventDefault();
+	    toggleSections('false');
+	  });
+	});
+</script>

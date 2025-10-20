@@ -3,7 +3,7 @@
 	klass = @population.starting_objects_class if @population.starting_objects_class 
 %>
 
-<div class="big-border box" id="result_variant" <%= "style='display:none'" if @population.custom_query? %>>
+<div class="big-border box" id="result_variant" <%= "style=display:none" if @population.custom_query? %>>
   <h4><i class='mi'>view_list</i> Choose a different result set for output:</h4>
 
   <dl class="inline-definitions">
@@ -27,7 +27,7 @@
 
       <!-- Custom text area section -->
       <div id="custom_result_variant_container" style="<%= 'display:none;' unless @population.custom_result_variant? %>">
-        <%= text_area_tag "population[custom_result_variant]",  @population.custom_result_variant, rows: 7, cols: 60 %><br>
+        <%= text_area_tag "population[custom_result_variant]",  @population.custom_result_variant, class: 'code', rows: 7, cols: 60 %><br>
 
         <%= separator.html_safe %>
 
