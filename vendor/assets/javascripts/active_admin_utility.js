@@ -53,6 +53,9 @@ $(function() {
          'border-radius': '50%'
        });
      }
+
+     // initialize your sortable list in population_out_fields.js
+     restorePopulationFieldCodesSortable();
     
 });
 

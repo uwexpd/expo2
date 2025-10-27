@@ -1,4 +1,5 @@
 //= require active_admin/base
+//= require sortable.min
 //= require activeadmin_addons/all
 //= require active_material
 //= require tinymce
@@ -11,3 +12,4 @@
 //= require email/write
 //= require insert_at_cursor
 //= require activeadmin_reorderable
+//= require population_output_fields

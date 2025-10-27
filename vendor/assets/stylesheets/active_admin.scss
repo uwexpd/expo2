@@ -1407,6 +1407,56 @@ textarea#email_body {
 	padding-bottom: .75rem;
 }
 
+ul#all_population_field_codes {
+	padding-left: 0px;
+	line-height: 1.25rem;
+}
+
+.population_field_codes ul li, .population_field_codes ul, .population_field_codes {
+	list-style-type: none;
+	padding: 0;	
+	font-size: 95%;
+}
+
+.population_field_codes.selected label {
+	position: relative;
+    float: left;
+    width: 15%;    
+}
+
+.population_field_codes .sort-handle {
+    display: none;
+}
+
+#selected_population_field_codes .sort-handle {    
+    display: inline;    
+}
+
+.placeholder_text_link span.custom {
+	margin-right: 5px;
+}
+
+.output a.placeholder_text_link:hover {
+    background: url(image-path('app/add.png')) no-repeat left;
+    cursor: pointer;
+}
+
+#all_population_field_codes a.placeholder_text_link.selected {
+    background: url(image-path('app/tick.png')) no-repeat left;
+}
+
+.output a.placeholder_text_link.selected:hover, #all_population_field_codes a.placeholder_text_link.selected:hover  {
+    background: url(image-path('app/cross.png')) no-repeat left;
+    text-decoration: line-through;
+}
+
+.output a.placeholder_text_link {
+    display: inline;
+    border-bottom: none;
+    background: none;
+    padding-left: 22px;
+}
+
 a.placeholder_text_link {
 	color: inherit;
 	border-bottom: 1px solid #c5dafd;
@@ -1420,6 +1470,7 @@ a.placeholder_text_link:hover {
 	text-decoration: none;
 	cursor: W-resize;
 }
+
 
 .question_review_title {
 	font-weight: bold;
@@ -1572,16 +1623,6 @@ tr.details td {
     width: 112px;
     height: 136px;
 	padding: 0.75rem;
-}
-
-.population_field_codes ul li, .population_field_codes ul, .population_field_codes {
-	list-style-type: none;
-	padding: 0;	
-	font-size: 95%;
-}
-
-.placeholder_text_link span.custom {
-	margin-right: 5px;
 }
 
 

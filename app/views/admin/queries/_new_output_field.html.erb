@@ -1,0 +1,23 @@
+<br>
+<h6>Add a custom output field:</h6>
+
+<label for="new_output_field_title">Title:</label>
+<%= text_field_tag :new_output_field_title, nil, class: 'string input', style: 'width: 80%;' %>
+
+<br>
+
+<label for="new_output_field">Code:</label>
+<%= text_area_tag :new_output_field, nil, class: 'code', rows: 4, style: 'width: 80%;' %>
+
+
+<%= link_to "<i class='mi md-18'>add_circle</i> Add".html_safe, "#", id: 'add_custom_output_field_button', class: 'button small flat' %>
+
+<script>
+  $(document).ready(function() {
+    $('#add_custom_output_field_button').off('click').on('click', function(event) {
+      event.preventDefault();
+      addCustomOutputField();
+    });
+  });
+
+</script>

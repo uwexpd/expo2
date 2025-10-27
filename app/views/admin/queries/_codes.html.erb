@@ -1,0 +1,46 @@
+<% selected ||= false %>
+<% prefix ||= nil %>
+
+<% codes.sort_by { |c| c == 'id' ? '0' : c }.each do |code| %>
+  <% 
+    custom_output_field = false
+    custom_tag = ''
+    association_name = prefix&.titleize || @objects.first.class.to_s.titleize
+    code_text = ''
+
+    if code.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/)
+      custom_output_field = true
+      code_text = "#{code}"
+      match_data = code.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/)
+      association_name = match_data[1]
+      code = match_data[2]      
+      custom_tag = content_tag(:span, 'Custom', class: 'custom outline tag', style: 'margin-left:0')
+    else
+      code_text = prefix.nil? ? code : "#{prefix}.#{code}"
+    end
+
+    klass = code_text.gsub(/[\?, \(\)\-\=\:\#\|\;\"\'\.\<\>\[\]\{\}]/, '_')
+    sample_error = content_tag(:span, "can't sample", class: 'sample_error')
+    # sample_text = begin
+    #   truncate(eval("@object_sample.#{code_text}"), length: 400)
+    # rescue
+    #   sample_error
+    # end if defined?(@object_sample) && @object_sample
+
+    # sample_text_span = content_tag(:span, sample_text, class: 'sample_text', style: 'display:none') if sample_text
+    sample_text_span = ''.html_safe
+
+    handle_span = content_tag(:span, content_tag(:span, 'swap_vert'), class: 'sort-handle mi')
+    association_text_span = content_tag(:span, association_name, class: 'association')
+    arrow_icon = arrow_icon = content_tag(:i, 'arrow_right', class: 'mi')
+    code_text_span = content_tag(:span, code_text, class: 'fieldName', style: 'display:none')
+  %>
+
+  <li class="<%= "placeholder_#{klass}_link_container" %> <%= 'custom_output_field' if custom_output_field %>" id="placeholder_link_container_<%= SecureRandom.random_number(10_000_000_000) %>">
+    <%= handle_span %>
+    <%= link_to "#{custom_tag}#{association_text_span}#{arrow_icon}#{code}#{code_text_span}#{sample_text_span}".html_safe,
+                '#',
+                onclick: "toggleOutputField('output_fields', 'code_text', this); return false;",
+                class: "placeholder_text_link #{'selected' if selected || @population.output_fields.include?(code_text)}" %>
+  </li>
+<% end %>

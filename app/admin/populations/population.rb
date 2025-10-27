@@ -4,7 +4,7 @@ ActiveAdmin.register Population, as: 'query' do
   config.sort_order = 'updated_at_desc'
   config.per_page = [50, 100, 200, 400]
 
-  permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set,  :condition_operator, :result_variant, :custom_result_variant, :custom_query, :use_custom_query,
+  permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set,  :condition_operator, :result_variant, :custom_result_variant, :custom_query,
       conditions_attributes: [
                   :id, 
                   :eval_method, 
@@ -23,22 +23,7 @@ ActiveAdmin.register Population, as: 'query' do
   scope :all
 
   controller do
-    before_action :fetch_populations, only: [ :objects, :results, :refresh_dropdowns]
-
-    # def show
-    #   respond_to do |format|
-    #     format.html
-    #     format.xlsx do
-    #       if @population.output_fields.blank?
-    #         flash[:error] = "Before downloading the Excel output for this query, please select the fields to include in the ouput."
-    #         redirect_to :action => "output"
-    #       else
-    #         render xlsx: 'show', filename: "query_#{@population.id}.xlsx"
-    #       end
-          
-    #     end
-    #   end
-    # end
+    before_action :fetch_populations, only: [ :objects, :results, :refresh_dropdowns, :output]
 
     def edit
       populate_vars_by_access_level
@@ -52,6 +37,35 @@ ActiveAdmin.register Population, as: 'query' do
       
       respond_to do |format|
         format.js
+      end
+    end
+
+     def update
+      @population = Population.find(params[:id])
+      @population.attributes = permitted_params[:population]
+      @population.system = false
+      @population.custom_query = nil if params[:use_custom_query] != "true" || !current_user.has_role?(:custom_query_writer)      
+
+      if @population.save        
+        begin
+          @population.generate_objects!          
+        rescue
+          if @population.custom_query?
+            @population.errors.add(:base, "Your custom query is not valid. Please try again or select a starting set instead.")
+          else
+            @population.errors.add(:base, "There was an error while generating your query.")
+          end
+          flash.now[:alert] = @population.errors.full_messages.join(', ')
+          return render :edit
+        end
+
+        # expire_action action: 'show', format: :xls
+        # expire_action controller: 'stats', action: 'population'
+
+        flash[:notice] = "Successfully updated query."
+        redirect_to resource_path(@population)
+      else
+        render :edit        
       end
     end
 
@@ -69,7 +83,6 @@ ActiveAdmin.register Population, as: 'query' do
     end
 
     # private
-    
     # def population_params
     #   params.require(:population).permit(:title, :description, :access_level, :populatable_type, :populatable_id, :starting_set)
     # end
@@ -96,8 +109,27 @@ ActiveAdmin.register Population, as: 'query' do
         render partial: 'results', locals: { population: @population }
       end 
       format.js
-    end    
+    end
   end
+
+  member_action :output, method: :get do
+    respond_to do |format|
+      format.html
+    end
+  end
+
+  member_action :save_output_fields, method: :put do
+  @population = Population.find(params[:id])
+  if @population.update(output_fields: params[:output_fields])
+    respond_to do |format|
+      format.js { render js: "$('#save_output_fields_status').html('<span class=\"uw_green\"><i class=\"mi\">check_circle</i> Saved</span>');" }
+    end
+  else
+    respond_to do |format|
+      format.js { render js: "$('#save_output_fields_status').html('<span class=\"mi red_color\">error</span> Save Failed');" }
+    end
+  end
+end
 
   member_action :copy, method: :post do
     original_query = Population.find(params[:id])
@@ -111,14 +143,23 @@ ActiveAdmin.register Population, as: 'query' do
 
   member_action :regenerate, method: :post do
     @population = Population.find(params[:id])
-    @population.generate_objects!
+    begin
+        @population.generate_objects!
+        flash[:notice] = "Successfully regenerated query results."  
+    rescue
+        if @population.custom_query?
+          flash[:alert] = "Your custom query is not valid. Please update it or select a starting set instead."
+        else
+          flash[:alert] = "There was an error while generating your query."            
+        end
+    end
 
     # Rails 5+ doesn't have expire_action by default; if you use caching,
     # you may need to expire caches differently, or skip if not used.
     # expire_action action: 'show', format: :xls
     # expire_action controller: 'stats', action: 'population'
 
-    flash[:notice] = "Successfully regenerated query results."
+    
 
     respond_to do |format|
       format.html { redirect_to resource_path(@population) }
@@ -207,39 +248,42 @@ ActiveAdmin.register Population, as: 'query' do
         row ('Generated') {|q| span "#{time_ago_in_words(q.objects_generated_at)} ago", class: "#{'red_color' if Time.now - q.objects_generated_at > 1.month}" if q.objects_generated_at }
       end
 
-      row ('Result') do |q|
+      row ('Results') do |q|
         span (pluralize q.objects.size, "record") + " - "
         span class: 'smaller' do
           link_to "Regenerate".html_safe, regenerate_admin_query_path(resource), method: :post, data: { confirm: 'Are you sure?' }
         end
       end
 
-      row ('Outputs') do |q|
+      row ('Output') do |q|
         if q.output_fields.blank?
           span "No output fields have been defined. ", class: 'light'
-          # span link_to("Create one.", output_population_path(q))
-        end
-        ul id: "selected_population_field_codes", class: "population_field_codes readonly" do
-          q.output_fields.each do |code|
-            if code.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/)
-              custom_output_field = true
-              association_name = code.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/)[1]
-              code = code.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/)[2]
-              code_text = "#{code}"
-              custom_tag = "<span class=\"custom outline tag\" style=\"margin-left:0\">Custom</span>"
-            else
-              custom_output_field = false
-              association_name = code.split(".").size > 1 ? code.split(".").first.titleize : q.objects.first.class.to_s.titleize
-              # code_text = code.split(".").last
-              code_text = code.split(".").size > 1 ? code.split(".")[1..(code.split(".").size-1)].join(".") : code
-              custom_tag = ""
-            end 
-            association_text_span = content_tag(:span, association_name, :class => 'association')
-            
-            li class: "#{'custom_output_field' if custom_output_field}" do
-               span raw(custom_tag + association_text_span + "<i class='mi'>arrow_right</i>" + code_text), class: "placeholder_text_link"
+          span link_to "<i class='mi'>ballot</i> Create one".html_safe, output_admin_query_path(resource), class: 'button smaller'
+        else
+          span link_to "<i class='mi'>ballot</i> Edit output fields".html_safe, output_admin_query_path(resource), class: 'button smaller right'
+
+          ul id: "selected_population_field_codes", class: "population_field_codes readonly" do
+            q.output_fields.each do |code|
+              if code.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/)
+                custom_output_field = true
+                association_name = code.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/)[1]
+                code = code.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/)[2]
+                code_text = "#{code}"
+                custom_tag = "<span class=\"custom outline tag\" style=\"margin-left:0\">Custom</span>"
+              else
+                custom_output_field = false
+                association_name = code.split(".").size > 1 ? code.split(".").first.titleize : q.objects.first.class.to_s.titleize
+                # code_text = code.split(".").last
+                code_text = code.split(".").size > 1 ? code.split(".")[1..(code.split(".").size-1)].join(".") : code
+                custom_tag = ""
+              end 
+              association_text_span = content_tag(:span, association_name, :class => 'association')
+              
+              li class: "#{'custom_output_field' if custom_output_field}" do
+                 span raw(custom_tag + association_text_span + "<i class='mi'>arrow_right</i>" + code_text), class: "placeholder_text_link"
+              end
             end
-          end  
+          end
         end
       end
 
@@ -301,13 +345,16 @@ ActiveAdmin.register Population, as: 'query' do
     end
   end
 
-  sidebar "Actions", only: [:show, :edit] do
+  sidebar "Actions", only: [:show, :edit, :output] do
     ul class: 'link-list' do
       li do
         span link_to "<i class='mi'>content_copy</i> Copy this query".html_safe, copy_admin_query_path(resource), method: :post, data: { confirm: 'Are you sure?' }
       end
       li do
-        span link_to "<i class='mi'>table_view</i> Results".html_safe, objects_admin_query_path(resource), method: :get
+        span link_to "<i class='mi'>ballot</i> Edit Output Fields".html_safe, output_admin_query_path(resource)
+      end
+      li do
+        span link_to "<i class='mi'>table_view</i> Results".html_safe, objects_admin_query_path(resource)
       end
       li do
         span link_to "<i class='mi'>sim_card_download</i> Spreadsheet Download".html_safe, download_admin_query_path(resource, :format => :xlsx)

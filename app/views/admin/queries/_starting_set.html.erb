@@ -124,7 +124,7 @@
         disabled: !@current_user.has_role?(:custom_query_writer) %>
 
   <p class="caption">This code snippet must return an array of objects.</p>
-
+  
   <%= hidden_field_tag :use_custom_query, @population.custom_query?.to_s, id: 'use_custom_query' %>
 </div>
 

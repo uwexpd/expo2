@@ -1,0 +1,29 @@
+<% selected ||= false %>
+
+<% if codes.present? %>
+  <li>    
+    <h3><i class='mi uw_purple'>dataset</i> <%= @objects.first.class.to_s.titleize %></h3>
+    <ul>
+      <%= render partial: "codes", object: codes,
+                 locals: { association_name: @objects.first.class.to_s.titleize, selected: selected } %>
+    </ul>
+  </li>
+<% end %>
+
+<% if associations.present? %>
+  <% associations.each do |association| %>
+    <li>      
+      <h3><i class='mi uw_purple'>dataset</i> <%= association.titleize %></h3>
+      <ul>
+        <% begin %>
+          <% codes_for_association = (['id'] + Array(@objects.first.public_send(association).class::PLACEHOLDER_CODES)).flatten %>
+        <% rescue StandardError %>
+          <% codes_for_association = [] %>
+        <% end %>
+
+        <%= render partial: "codes", object: codes_for_association,
+                   locals: { prefix: association, association_name: association.titleize, selected: selected } %>
+      </ul>
+    </li>
+  <% end %>
+<% end %>

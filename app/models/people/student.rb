@@ -14,6 +14,8 @@ class Student < Person
   attr_accessor :electronic_signature
   
   delegate :class_standing_description, :raw_gpa, :gpa, :institution_name, :majors_list, :minors_list, :minors, :majors, :age, :transfer_student?, :washington_state_resident?, :to => :sdb
+
+  PLACEHOLDER_CODES = %w(fullname formal_fullname firstname lastname his_her him_her he_she email salutation formal_greeting class_standing_description majors_list minors_list institution_name awards_list pipeline_email_stop student_no system_key transfer_student?)
   
   SDB_CACHE_VALIDITY_LENGTH = {
      :name     => 1.month,

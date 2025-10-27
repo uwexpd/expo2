@@ -3,9 +3,9 @@
 		<div class='content-block objects'>
 		  <h1><i class='mi uw_purple'>list</i> <%= @population.title %>
 		  	<span class="right">
-					<%= link_to "<i class='mi small'>arrow_back</i> Back".html_safe, admin_query_path(@population), :class => "button smaller flat" %>
+					<%= link_to "<i class='mi md-18'>arrow_back</i> Back".html_safe, admin_query_path(@population), :class => "button smaller flat" %>
 					<%#= link_to "Output Fields", output_population_path(@population), :class => "button icon-left list" %>
-					<%#= link_to "Excel Download", admin_query_path(@population, :format => :xls), :class => "button icon-left xls" %>
+					<%= link_to "<i class='mi md-18'>sim_card_download</i> Download".html_safe, download_admin_query_path(resource, :format => :xlsx), class: 'button smaller flat' %>
 				</span>
 		  </h1>
 		  <div id="bar_indicator">
