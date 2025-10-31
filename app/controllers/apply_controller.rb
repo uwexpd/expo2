@@ -60,7 +60,7 @@ class ApplyController < ApplicationController
     @page = @offering.pages.find_by_ordering params[:page]
     app_page = ApplicationPage.find_by(offering_page_id: @page, application_for_offering_id:  @user_application)
     page = @page.ordering
-    page = app_page.next.ordering if params[:next_button]
+    page = app_page.next.ordering if params[:next_button] || params[:continue_anyway]
     page = app_page.prev.ordering if params[:prev_button]
 
     

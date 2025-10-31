@@ -13,7 +13,7 @@
 															applicant_reviewer.committee_member), target: '_blank' %>
 		<% else %>
 
-			<%= applicant_reviewer.committee_score? ? "Committee" : applicant_reviewer.fullname %>
+			<%= applicant_reviewer.committee_score? ? "Committee" : applicant_reviewer.fullname rescue 'Error!' %>
 		<% end %>
 		
 		<%= content_tag(:span, applicant_reviewer.committee_member_type.name, :class => 'light') rescue nil %>

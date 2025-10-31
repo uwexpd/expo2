@@ -5,6 +5,7 @@ ActiveAdmin.register CommitteeMember, as: 'member' do
   # actions :all, :except => [:destroy]
   config.per_page = [25, 50, 100, 150, 200, 300, 500]
   config.sort_order = ""
+  actions :all, except: [:destroy]
 
   scope 'Active & Responded', :active_and_responded, default: true
   scope 'Active but not responded', :not_responded
