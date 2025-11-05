@@ -3,7 +3,7 @@ ActiveAdmin.register ResearchOpportunity do
   config.sort_order = 'submitted_at_desc'
   menu parent: 'Databases', priority: 30, label: "<i class='mi padding_right'>school</i> Research Opportunities".html_safe
 
-  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit, :availability, :social, :social_if_yes
+  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit, :availability, :social, :social_if_yes, :eligible_for_credit
   
   member_action :email_queue, :method => :put do
     @opportunity = ResearchOpportunity.find(params[:id])
@@ -66,6 +66,7 @@ ActiveAdmin.register ResearchOpportunity do
             row ('Submitted Person'){|opportunity| opportunity.submitted_person}
             row :paid
             row :work_study
+            row :eligible_for_credit
             row :location
             row 'How long is the opportunity available?', &:availability
             row 'Social media consent', &:social
@@ -108,6 +109,7 @@ ActiveAdmin.register ResearchOpportunity do
           f.input :research_area4, as: :select, collection: ResearchArea.all.collect{|a|[ a.name, a.id ]}.sort, input_html: { class: "select2", :style => 'width:50%;' }
           f.input :paid, as: :boolean
           f.input :work_study, as: :boolean
+          f.input :eligible_for_credit, as: :boolean
           f.input :location, as: :select, collection: ['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other']
           f.input :availability, label: 'How long is the opportunity available?', as: :select, collection: options_for_select([
             ['Available Until Filled (Closes once filled)', 'Available Until Filled'],
@@ -134,6 +136,7 @@ ActiveAdmin.register ResearchOpportunity do
   # filter :removed, as: :boolean
   filter :paid, as: :boolean
   filter :work_study, as: :boolean
+  filter :eligible_for_credit, as: :boolean
   filter :location, as: :select, collection: ['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other']
   filter :submitted_at, label: 'Submit Date', as: :date_range
   filter :end_date, label: 'End Date (auto-remove)', as: :date_range

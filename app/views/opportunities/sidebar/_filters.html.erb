@@ -17,6 +17,9 @@
 	<label>Work study?</label>
 		<%= f.select :work_study_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.work_study_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
 
+	<label>Eligible for credit?</label>
+	<%= f.select :eligible_for_credit, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.eligible_for_credit), {include_blank: "Any"}, {class: 'browser-default'}  %>
+
 	<label>Location</label>
 		<%= f.select :location_in, options_for_select(['UW Seattle', 'UW Bothell', 'UW Tacoma', 'Off campus – South Lake Union', 'Off campus – Fred Hutch Cancer Research Center', 'Off campus – Seattle Children’s', 'Off campus – Other'], @search.location_in), {include_blank: 'Any'}, {class: 'browser-default'} %>
 
