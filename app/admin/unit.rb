@@ -41,10 +41,10 @@ ActiveAdmin.register Unit do
         #         end
     end
     
-    panel "Users & Roles (#{unit.users.count})", only: :show do
+    panel "Users & Roles (#{unit.users.distinct.count})", only: :show do
       div :class => 'content-block' do
         if unit.users.any?
-          table_for unit.users.order(:login) do
+          table_for unit.users.distinct.order(:login) do
             column 'Username' do |user|
               div do
                 span link_to user.login, admin_user_path(user)
