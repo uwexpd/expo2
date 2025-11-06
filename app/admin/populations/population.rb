@@ -348,6 +348,9 @@ end
   sidebar "Actions", only: [:show, :edit, :output] do
     ul class: 'link-list' do
       li do
+        span link_to "<i class='mi'>email</i> Email this query".html_safe, admin_email_write_path("select[#{resource.class.to_s}]": [resource.id])
+      end
+      li do
         span link_to "<i class='mi'>content_copy</i> Copy this query".html_safe, copy_admin_query_path(resource), method: :post, data: { confirm: 'Are you sure?' }
       end
       li do

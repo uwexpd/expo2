@@ -44,7 +44,8 @@ ActiveAdmin.register ServiceLearningCourse do
   end
 
   filter :alternate_title
-  filter :unit
+  filter :quarter, as: :select, input_html: { class: "select2", multiple: 'multiple'}
+  filter :unit, as: :select, input_html: { class: "select2", multiple: 'multiple'}
 
 
 end

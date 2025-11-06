@@ -79,6 +79,7 @@ ActiveAdmin.register User do
         h2 "User: #{user.login}" do
           span '(PubCookies User)', :class => 'light small' if user.is_a? PubcookieUser
           status_tag 'admin', class: 'admin small' if user.admin?
+          span " - #{link_to user.fullname, admin_person_path(user.person), target: '_blank'}".html_safe
         end
 
         div class: 'content-block' do

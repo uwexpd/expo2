@@ -31,9 +31,7 @@ ActiveAdmin.register Unit do
         row :name
         row :short_title
         row :abbreviation
-        row :description
-        row :phone
-        row :email
+        row :description        
         row :home_url
         row :engage_url
         row :show_on_expo_welcome
@@ -42,14 +40,56 @@ ActiveAdmin.register Unit do
         #           image_tag logo_url
         #         end
     end
+    
+    panel "Users & Roles (#{unit.users.count})", only: :show do
+      div :class => 'content-block' do
+        if unit.users.any?
+          table_for unit.users.order(:login) do
+            column 'Username' do |user|
+              div do
+                span link_to user.login, admin_user_path(user)
+                span "@u", class: 'light' if user.is_a?(PubcookieUser)
+                status_tag 'admin', class: 'admin tag small' if user.admin?
+              end
+            end
+            column 'Person' do |user|
+              link_to user.person.fullname, admin_person_path(user.person), target: '_blank' rescue nil
+            end
+            column 'Roles' do |user|
+              unit_roles = user.roles.for(unit.id).to_a
+              global_roles = user.roles.for(nil).to_a
+              roles = (unit_roles + global_roles).select { |r| !r.role_id.nil? }.uniq
+              if roles.any?
+                ul class: 'bulletless', style: 'margin-left: -3em;' do
+                  roles.each do |role|
+                    li do
+                      span role.name
+                      span "(Global)", class: 'light small' if role.unit_id.nil?
+                    end
+                  end
+                end
+              # else
+              #   span 'No roles assigned', class: 'small light'
+              end
+            end
+            column 'Functions' do |user|            
+                span link_to '<span class="mi">visibility</span>'.html_safe, admin_user_path(user), class: 'action_icon'
+                span link_to '<span class="mi">edit</span>'.html_safe, edit_admin_user_path(user), class: 'action_icon'            
+            end
+          end
+        else
+          para "No users assigned to this unit.", class: 'light'
+        end
+      end
+    end
   end
   
   sidebar "Last updated at", only: :show do
     attributes_table do
+      row :phone
+      row :email
       row :updated_at
-      row :updater_id
-      # row ('At') {|r|r.updated_at}
-      #       row ('By') {|r|r.updater_id}
+      row ('Updated by') {|r| link_to r.updater.firstname_first, admin_user_path(r.updater) rescue nil}
     end
   end
   
