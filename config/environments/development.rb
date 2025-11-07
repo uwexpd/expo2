@@ -49,8 +49,8 @@ Rails.application.configure do
 
 
   # ActionMailer Config
-  config.action_mailer.perform_deliveries = false # Set it to true to send the email in dev mode  
-  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true #false # Set it to true to send the email in dev mode
+  config.action_mailer.delivery_method = :letter_opener #:smtp
   config.action_mailer.default_url_options = { :host => "localhost:3000" }
   config.action_mailer.smtp_settings = YAML.load_file("#{Rails.root}/config/email.yml")[Rails.env].symbolize_keys
 

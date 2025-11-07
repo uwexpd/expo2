@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      /* Reset styles */
+      body, table, td, p, a, li, blockquote {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      table, td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      img {
+        -ms-interpolation-mode: bicubic;
+        border: 0;
+        outline: none;
+        text-decoration: none;
+      }
+      
+      /* Main styles */
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: #f5f5f5;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333333;
+      }
+      
+      .email-wrapper {
+        width: 100%;
+        background-color: #f5f5f5;
+        padding: 20px 0;
+      }
+      
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      
+      .email-header {
+        background-color: #4b2e83;
+        padding: 30px 20px 10px;
+        text-align: left;
+        border-radius: 8px 8px 0 0;
+      }
+      
+      .uw-logo-container {
+        margin-bottom: 15px;
+      }
+      
+      .uw-logo-cell {
+        vertical-align: middle;
+        padding-right: 15px;
+      }
+      
+      .uw-wordmark-cell {
+        vertical-align: middle;
+      }
+      
+      .uw-logo-img {
+        max-width: 70px;
+        height: auto;
+        display: block;
+      }
+      
+      .uw-wordmark-img {
+        max-width: 300px;
+        height: auto;
+        display: block;
+      }
+      
+      .uw-system-name {
+        color: #ffffff;
+        font-size: 3rem;        
+        letter-spacing: -3px;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 600;
+        text-transform: lowercase;        
+      }
+      
+      .email-body {
+        padding: 30px 30px 20px 30px;
+        background-color: #ffffff;
+        text-align: left;
+      }
+      
+      .greeting {
+        font-size: 14px;
+        color: #333333;
+        margin-bottom: 15px;
+      }
+      
+      .subject-line {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333333;
+        margin-bottom: 20px;
+      }
+      
+      .divider {
+        border-top: 1px solid #e0e0e0;
+        margin: 20px 0;
+      }
+      
+      .content {
+        font-size: 14px;
+        color: #333333;
+        line-height: 1.8;
+      }
+      
+      .content p {
+        margin: 0 0 15px 0;
+      }
+      
+      .content a {
+        color: #0066cc;
+        text-decoration: underline;
+      }
+      
+      .content ul {
+        margin: 10px 0;
+        padding-left: 25px;
+      }
+      
+      .content li {
+        margin-bottom: 8px;
+      }
+      
+      .email-footer {
+        text-align: center;
+        padding: 20px 30px 30px 30px;
+        background-color: #f5f5f5;
+        font-size: 12px;
+        color: #666666;
+      }
+      
+      .footer-logo {
+        margin-bottom: 15px;
+        max-width: 250px;
+        height: auto;
+      }
+      
+      .footer-text {
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+      
+      .footer-link {
+        color: #0066cc;
+        text-decoration: underline;
+      }
+      
+      .recipient-info {
+        margin-top: 15px;
+        font-size: 11px;
+        color: #999999;
+      }
+      
+      .recipient-info a {
+        color: #0066cc;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <%
+      # Define base URL and image URLs once for the entire template
+      # Logos are in public/expo/logos/ folder, accessible directly via URL
+      base_url = "http://localhost:3000" #"https://#{Rails.configuration.constants['base_url_host']}"
+      w_logo_url = "#{base_url}/expo/logos/W-Logo_White.png"
+      wordmark_url = "#{base_url}/expo/logos/Wordmark_center_white.png"
+      signature_logo_url = "#{base_url}/expo/logos/Signature_Center_Purple_RGB.png"
+    %>
+    <div class="email-wrapper">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td align="center">
+            <div class="email-container">
+              <!-- Header -->
+              <div class="email-header">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" class="uw-logo-container">
+                  <tr>
+                    <td class="uw-logo-cell">
+                      <img src="<%= w_logo_url %>" alt="University of Washington" class="uw-logo-img" />
+                    </td>
+                    <td class="uw-wordmark-cell">
+                      <img src="<%= wordmark_url %>" alt="University of Washington" class="uw-wordmark-img" />
+                    </td>
+                  </tr>
+                </table>
+                <div class="uw-system-name">EXPO</div>
+              </div>
+              
+              <!-- Body -->
+              <div class="email-body">
+                <%= yield %>
+              </div>
+              
+              <!-- Footer -->
+              <div class="email-footer">
+                <img src="<%= signature_logo_url %>" alt="University of Washington" class="footer-logo" />
+                <div class="footer-text">
+                  <%= Rails.configuration.constants['center_name'] %><br>
+                  <%= Rails.configuration.constants['university_name'] %>
+                </div>
+                <% recipient_email = @email || @user&.email || (@users&.first&.respond_to?(:email) ? @users&.first&.email : nil) || (@users&.first&.respond_to?(:person) ? @users&.first&.person&.email : nil) %>
+                <% if recipient_email.present? %>
+                <div class="recipient-info">
+                  This email was sent to <a href="mailto:<%= recipient_email %>" class="footer-link"><%= recipient_email %></a>
+                </div>
+                <% end %>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
+

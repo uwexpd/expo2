@@ -177,6 +177,12 @@ Rails.application.routes.draw do
 
     # Mentor & Moderator
     get 'mentor', to: 'mentor#index', as: :mentor
+    get 'mentor/ferpa_reminder', to: 'mentor#ferpa_reminder', as: :mentor_ferpa_reminder
+    post 'mentor/ferpa_reminder', to: 'mentor#ferpa_reminder'
+    get 'mentor/ferpa_statement', to: 'mentor#ferpa_statement', as: :mentor_ferpa_statement
+    get 'mentor/offering/:offering_id/ferpa_reminder', to: 'mentor#ferpa_reminder', as: :mentor_offering_ferpa_reminder
+    post 'mentor/offering/:offering_id/ferpa_reminder', to: 'mentor#ferpa_reminder'
+    get 'mentor/offering/:offering_id/ferpa_statement', to: 'mentor#ferpa_statement', as: :mentor_offering_ferpa_statement
     get 'mentor/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_map
     get 'mentor/offering/:offering_id/map/:mentor_id/:token', to: 'mentor#map', as: :mentor_offering_map
     get 'mentor/offering/:offering_id', to: 'mentor#index', as: :mentor_offering
@@ -205,6 +211,9 @@ Rails.application.routes.draw do
 
     # Interviewer
     get 'interviewer/:offering', to: 'interviewer#index', as: :interviewer
+    get 'interviewer/:offering/ferpa_reminder', to: 'interviewer#ferpa_reminder', as: :interviewer_ferpa_reminder
+    post 'interviewer/:offering/ferpa_reminder', to: 'interviewer#ferpa_reminder'
+    get 'interviewer/:offering/ferpa_statement', to: 'interviewer#ferpa_statement', as: :interviewer_ferpa_statement
     get 'interviewer/:offering/show/:id', to: 'interviewer#show'
     post 'interviewer/:offering/show/:id/composite_report', to: 'interviewer#composite_report', as: :interviewer_composite_report
     get 'interviewer/:offering/view/:id', to: 'interviewer#view'
@@ -228,6 +237,9 @@ Rails.application.routes.draw do
 
     # Reviewer
     get 'reviewer/:offering', to: 'reviewer#index', as: :reviewer
+    get 'reviewer/:offering/ferpa_reminder', to: 'reviewer#ferpa_reminder', as: :reviewer_ferpa_reminder
+    post 'reviewer/:offering/ferpa_reminder', to: 'reviewer#ferpa_reminder'
+    get 'reviewer/:offering/ferpa_statement', to: 'reviewer#ferpa_statement', as: :reviewer_ferpa_statement
     get 'reviewer/:offering/show/:id', to: 'reviewer#show'
     get 'reviewer/:offering/show/:id/view', to: 'reviewer#view', as: :reviewer_view_file
     post 'reviewer/:offering/show/:id/composite_report', to: 'reviewer#composite_report', as: :reviwer_composite_report

@@ -1,0 +1,7 @@
+<%= render partial: 'shared/ferpa_reminder', locals: {
+  interface_type: 'mentor',
+  offering: @offering,
+  form_path: params[:offering_id] ? mentor_offering_ferpa_reminder_path(params[:offering_id]) : mentor_ferpa_reminder_path,
+  return_to: params[:return_to]
+} %>
+

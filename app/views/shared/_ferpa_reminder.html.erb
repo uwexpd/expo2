@@ -1,0 +1,91 @@
+<% 
+  # Accept local variables:
+  # interface_type: "reviewer", "interviewer", or "mentor"
+  # offering: the offering object (optional for mentor)
+  # form_path: the path to submit the form to
+  # return_to: optional return path after confirmation
+  
+  interface_type ||= "reviewer"
+  interface_name = case interface_type
+    when "reviewer" then "Reviewer"
+    when "interviewer" then "Interviewer"
+    when "mentor" then "Mentor"
+    else "Reviewer"
+  end
+  interface_name_lower = interface_type
+%>
+
+<div class='card content'>
+  <div class='content-block'>
+    <h4>Confidentiality Agreement and FERPA Reminder for <%= interface_name.pluralize %></h4>
+
+    <p>As a <%= interface_name.downcase %> for EXP-Online (&ldquo;EXPO&rdquo;), you have access to student application data that must be kept confidential. This data is governed by the Federal Family Rights and Privacy Act of 1974 (FERPA) and should be used solely for the purpose of <%= case interface_type
+      when "reviewer" then "reviewing applications"
+      when "interviewer" then "conducting interviews"
+      when "mentor" then "providing mentorship and recommendations"
+      else "reviewing applications"
+    end %><% if offering %> for the <%= offering.title %><% end %>.</p>
+
+    <p><strong class="uw_green">You will be reminded of these policies every three months.</strong></p>
+
+    <div class="box">
+
+      <p><strong>By clicking the button below, you agree to and acknowledge that you understand the following:</strong></p>
+
+      <ol class="extra_space">
+        <li>All student data in EXPO is governed by the Federal Family Rights and Privacy Act of 1974 (FERPA). I have read and understand the <%= link_to "Statement of Responsibilities Regarding FERPA Requirements and the Student Database (SDB)", case interface_type
+      when "reviewer" then reviewer_ferpa_statement_path(offering)
+      when "interviewer" then interviewer_ferpa_statement_path(offering)
+      when "mentor" then (offering ? mentor_offering_ferpa_statement_path(offering.id) : mentor_ferpa_statement_path)
+      else reviewer_ferpa_statement_path(offering)
+    end, target: '_blank'  %> and understand that the responsibilities listed in that statement also applies to student data contained in EXPO. This includes, but is not limited to, the following:
+          <ul class="list_style">
+            <li>Contact information and communication history</li>
+            <li>Online applications for scholarships or events, which may include essays and other submissions</li>
+            <li>Academic records, transcripts, and GPA information</li>
+            <li>Online evaluations, both submitted by the student and those submitted by others regarding student work</li>
+            <li>Personal information and demographic data</li>
+          </ul>
+          </li>
+
+        <li>All application data contained in EXPO is considered confidential unless I have been given authorization to release it. I will not share the information contained within EXPO with others unless given permission or unless the information was provided with the intent to be shared as part of the <%= case interface_type
+      when "reviewer" then "review"
+      when "interviewer" then "interview"
+      when "mentor" then "mentorship"
+      else "review"
+    end %> process.</li>
+    
+        <li>I will not allow others to use my account and will keep my password private.</li>
+        
+        <li>I understand that my access to student application data is limited to the applications I have been assigned to <%= case interface_type
+      when "reviewer" then "review"
+      when "interviewer" then "interview"
+      when "mentor" then "provide mentorship for"
+      else "review"
+    end %><% if offering %> for the <%= offering.title %><% end %>.</li>
+        
+      </ol>
+
+    </div>
+
+    <div class="highlight_box electronic_signature">
+
+      <%= form_tag form_path do %>
+        <%= hidden_field_tag :return_to, return_to if return_to.present? %>
+      
+        <center>
+        <%= submit_tag "I, #{@current_user.fullname}, understand and agree to these policies", class: 'btn' %>
+        <br><br>
+          <strong>Username:</strong> <%= @current_user.login %>
+          &mdash;
+          <strong>Date:</strong> <%= Time.now.to_s(:date_with_full_month) %>        
+        </center>
+
+      <% end -%>
+
+    </div>
+
+    <p><em>If you have any questions regarding this agreement, please e-mail <%= link_to "expohelp@uw.edu", "mailto:expohelp@uw.edu" %>.</em></p>
+  </div>
+</div>
+

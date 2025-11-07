@@ -1,8 +1,9 @@
 class MentorController < ApplicationController
   skip_before_action :check_if_contact_info_blank
   before_action :fetch_offering
-  before_action :apply_alternate_stylesheet  
-  before_action :check_if_contact_info_is_current, :except => ['update', 'map']
+  before_action :apply_alternate_stylesheet, :except => [:ferpa_reminder, :ferpa_statement]
+  before_action :check_if_contact_info_is_current, :except => ['update', 'map', 'ferpa_reminder', 'ferpa_statement']
+  before_action :check_mentor_ferpa_reminder_date, :except => [:ferpa_reminder, :ferpa_statement]
   before_action :fetch_breadcrumb
 
   def index
@@ -157,6 +158,26 @@ class MentorController < ApplicationController
       send_file file_path, x_sendfile: true
     end
   end
+
+  def ferpa_reminder
+    # Fetch offering for this action
+    @offering = Offering.find(params[:offering_id]) if params[:offering_id]
+    if request.post? && params[:commit]
+      @current_user.update(ferpa_reminder_date: Time.now)
+      redirect_path = params[:return_to].present? ? params[:return_to] : (params[:offering_id] ? mentor_offering_path(params[:offering_id]) : mentor_path)
+      return redirect_to redirect_path
+    end
+  end
+
+  def ferpa_statement
+    # Fetch offering for this action
+    @offering = Offering.find(params[:offering_id]) if params[:offering_id]
+    if params[:offering_id]
+      add_breadcrumb "FERPA Reminder", mentor_offering_ferpa_reminder_path(params[:offering_id])
+    else
+      add_breadcrumb "FERPA Reminder", mentor_ferpa_reminder_path
+    end
+  end
   
   protected
   
@@ -201,6 +222,16 @@ class MentorController < ApplicationController
                                     "The deadline was #{@offering.mentor_deadline.to_s(:date_at_time12)}.",
                                     "If you have questions, contact #{@offering.contact_name} at #{(@offering.contact_email)}
                                     or #{@offering.contact_phone}.")
+    end
+  end
+
+  def check_mentor_ferpa_reminder_date
+    if @current_user 
+      if @current_user.ferpa_reminder_date.nil? || @current_user.ferpa_reminder_date < 3.months.ago
+        offering_id = params[:offering_id] || @offering&.id
+        redirect_path = offering_id ? mentor_offering_ferpa_reminder_path(offering_id, return_to: request.fullpath) : mentor_ferpa_reminder_path(return_to: request.fullpath)
+        redirect_to redirect_path and return
+      end
     end
   end
 

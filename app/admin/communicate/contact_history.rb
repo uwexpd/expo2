@@ -35,7 +35,7 @@ ActiveAdmin.register ContactHistory do
        row ('To') {|contact| contact.email_to rescue "" }
        row ('Subject') {|contact| contact.email.subject  rescue "" }
        row ('Date') {|contact| contact.email.date rescue "" }       
-       row ('Body') {|contact| simple_format(contact.email.body.to_s) }
+       row ('Body') {|contact| simple_format(EmailBodyExtractor.extract(contact.email)[:text]) }
     end
   end
 

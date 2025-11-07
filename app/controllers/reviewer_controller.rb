@@ -1,8 +1,10 @@
 class ReviewerController < ApplicationController
-  before_action :fetch_person, :fetch_offering, :fetch_review_committee_member, :fetch_apps
-  before_action :fetch_app, :except => [:index, :criteria, :extra_instructions, :finalize, :multi_composite_report]
+  before_action :fetch_offering
+  before_action :fetch_person, :fetch_review_committee_member, :fetch_apps, :except => [:ferpa_reminder, :ferpa_statement]
+  before_action :fetch_app, :except => [:index, :criteria, :extra_instructions, :finalize, :multi_composite_report, :ferpa_reminder, :ferpa_statement]
   before_action :fetch_application_reviewer, :only => [:show, :update, :composite_report, :transcript]
-  before_action :initialize_breadcrumbs  
+  before_action :check_reviewer_ferpa_reminder_date, :except => [:ferpa_reminder, :ferpa_statement]
+  before_action :initialize_breadcrumbs
   
   def index
     @apps = @apps.sort_by(&:fullname)
@@ -92,6 +94,22 @@ class ReviewerController < ApplicationController
   
   def extra_instructions
     render :action => "extra_instructions"
+  end
+
+  def ferpa_reminder
+    # Fetch offering for this action
+    @offering = Offering.find(params[:offering])
+    if request.post? && params[:commit]
+      @current_user.update(ferpa_reminder_date: Time.now)
+      redirect_path = params[:return_to].present? ? params[:return_to] : reviewer_path(@offering)
+      return redirect_to redirect_path
+    end
+  end
+
+  def ferpa_statement
+    # Fetch offering for this action
+    @offering = Offering.find(params[:offering]) if params[:offering]
+    add_breadcrumb "FERPA Reminder", reviewer_ferpa_reminder_path(@offering)
   end
   
   def update
@@ -187,7 +205,15 @@ class ReviewerController < ApplicationController
   def initialize_breadcrumbs
     add_breadcrumb "Reviewer Interface", reviewer_path(@offering)
     add_breadcrumb @offering.title
-  end  
+  end
+
+  def check_reviewer_ferpa_reminder_date
+    if @current_user && session[:vicarious_user].blank?
+      if @current_user.ferpa_reminder_date.nil? || @current_user.ferpa_reminder_date < 3.months.ago
+        redirect_to reviewer_ferpa_reminder_path(@offering, return_to: request.fullpath) and return
+      end
+    end
+  end
 
   private
 

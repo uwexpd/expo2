@@ -976,3 +976,14 @@ textarea.auto_height, .sideblock.scoring textarea {
   list-style-type: disc;
   margin-left: 4em;
 }
+
+.box {
+	border: 1px solid #ddd;
+    padding: 10px;
+    margin: 1em 0;
+    border-radius: 5px;
+}
+
+.extra_space {
+	line-height: 2em;
+}

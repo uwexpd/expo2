@@ -1,0 +1,22 @@
+<div class="greeting">
+  Hi <%= @users.first.person.fullname rescue "EXPO user" %>,
+</div>
+
+<div class="subject-line">
+  Your UW EXPO Username Reminder
+</div>
+
+<div class="divider"></div>
+
+<div class="content">
+  <p>Your username<%= 's are' if @users.size > 1 %>: <strong><%= @users.collect(&:login).join(', ') %></strong></p>
+  
+  <p>If you have any questions about this email, please contact our tech staff by replying to this message.</p>
+  
+  <p>Thank you,<br>
+  EXP-Online Staff<br>
+  <%= Rails.configuration.constants['center_name'] %><br>
+  <%= Rails.configuration.constants['university_name'] %></p>
+</div>
+
+

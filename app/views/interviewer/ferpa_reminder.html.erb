@@ -1,0 +1,7 @@
+<%= render partial: 'shared/ferpa_reminder', locals: {
+  interface_type: 'interviewer',
+  offering: @offering,
+  form_path: interviewer_ferpa_reminder_path(@offering),
+  return_to: params[:return_to]
+} %>
+

@@ -1,0 +1,24 @@
+<div class="greeting">
+  Hi <%= @user.person.fullname rescue "EXPO user" %>,
+</div>
+
+<div class="subject-line">
+  Welcome to UW EXPO online system
+</div>
+
+<div class="divider"></div>
+
+<div class="content">
+  <p>Welcome to UW EXPO system! Thanks for signing up.</p>
+  
+  <p>Your username is: <strong><%= @user.login %></strong></p>
+  
+  <p>If you have any questions about this email, please contact our staff by replying to this message.</p>
+  
+  <p>Thank you,<br>
+  EXP-Online Staff<br>
+  <%= Rails.configuration.constants['center_name'] %><br>
+  <%= Rails.configuration.constants['university_name'] %></p>
+</div>
+
+

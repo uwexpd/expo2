@@ -88,7 +88,7 @@ ActiveAdmin.register EmailQueue do
        row ('Subject') {|queue| queue.email.subject  || "" }
        row ('Cc') {|queue| queue.email.cc.join(',').to_s rescue "" } if queue.email.cc
        row ('Bcc') {|queue| queue.email.bcc.join(',') rescue "" } if queue.email.bcc
-       row ('Body'){|queue| simple_format(queue.email.body.to_s) }
+       row ('Body'){|queue| simple_format(EmailBodyExtractor.extract(queue.email)[:text]) }
     end
   end
 

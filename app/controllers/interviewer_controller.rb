@@ -1,8 +1,10 @@
 class InterviewerController < ApplicationController
   skip_before_action :check_if_contact_info_blank
-  before_action :fetch_offering, :fetch_person, :fetch_committee_member
-  before_action :fetch_offering_interviewer, :except => [:inactive]
-  before_action :check_if_contact_info_is_current, :except => [:update, :inactive]
+  before_action :fetch_offering
+  before_action :fetch_person, :fetch_committee_member, :except => [:ferpa_reminder, :ferpa_statement]
+  before_action :fetch_offering_interviewer, :except => [:inactive, :ferpa_reminder, :ferpa_statement]
+  before_action :check_if_contact_info_is_current, :except => [:update, :inactive, :ferpa_reminder, :ferpa_statement]
+  before_action :check_interviewer_ferpa_reminder_date, :except => [:ferpa_reminder, :ferpa_statement]
   before_action :initialize_breadcrumbs, except: [:mark_available, :mark_unavailable]
 
   def index
@@ -234,6 +236,22 @@ class InterviewerController < ApplicationController
     render :action => 'criteria'
   end
 
+  def ferpa_reminder
+    # Fetch offering for this action
+    @offering = Offering.find(params[:offering])
+    if request.post? && params[:commit]
+      @current_user.update(ferpa_reminder_date: Time.now)
+      redirect_path = params[:return_to].present? ? params[:return_to] : interviewer_path(@offering)
+      return redirect_to redirect_path
+    end
+  end
+
+  def ferpa_statement
+    # Fetch offering for this action
+    @offering = Offering.find(params[:offering]) if params[:offering]
+    add_breadcrumb "FERPA Reminder", interviewer_ferpa_reminder_path(@offering)
+  end
+
   def finalize
     if params[:commit]
       for interviewer in @offering_interviewer.offering_interview_interviewers
@@ -277,6 +295,14 @@ class InterviewerController < ApplicationController
   def initialize_breadcrumbs
     add_breadcrumb "Interviewer Interface", interviewer_path(@offering)
     add_breadcrumb @offering.title
+  end
+
+  def check_interviewer_ferpa_reminder_date
+    if @current_user && session[:vicarious_user].blank?
+      if @current_user.ferpa_reminder_date.nil? || @current_user.ferpa_reminder_date < 3.months.ago
+        redirect_to interviewer_ferpa_reminder_path(@offering, return_to: request.fullpath) and return
+      end
+    end
   end
 
   private

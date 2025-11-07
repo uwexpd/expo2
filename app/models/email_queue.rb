@@ -53,7 +53,8 @@ class EmailQueue < ApplicationRecord
   # when this object was created, execute that command now as well.
   def release
     # Delivers by logging the encoded message to $stdout
-    email.delivery_method :logger if Rails.env != 'production'
+    # Comment this out as we use letter_open to view the delivery
+    # email.delivery_method :logger if Rails.env != 'production' 
     
     if EmailContact.log(person_id, email.deliver!, application_status, original, contactable)
        self.destroy
