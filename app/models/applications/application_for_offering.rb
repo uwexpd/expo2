@@ -1323,17 +1323,6 @@ class ApplicationForOffering < ApplicationRecord
     end
   end
 
-  private
-  
-  # If an invalid application_category is still assigned, then reset it to nil. A category is invalid if it does not match the
-  # ApplicationType that is currently assigned to this application.
-  def check_validity_of_application_category
-    unless application_category.nil? || application_type.nil?
-      application_category.reload && application_type.reload
-      self.application_category_id = nil unless application_category.offering_application_type_id == application_type_id
-    end
-  end
-
   # Defines setter methods for all questions in this Offering that are defined as dynamic answers.
   # For checkbox, set answer with +offering_quesiton_option_id+ 
   def define_dynamic_answer_setters!    
@@ -1350,4 +1339,15 @@ class ApplicationForOffering < ApplicationRecord
     end
   end
   
+  private
+
+  # If an invalid application_category is still assigned, then reset it to nil. A category is invalid if it does not match the
+  # ApplicationType that is currently assigned to this application.
+  def check_validity_of_application_category
+    unless application_category.nil? || application_type.nil?
+      application_category.reload && application_type.reload
+      self.application_category_id = nil unless application_category.offering_application_type_id == application_type_id
+    end
+  end
+
 end

@@ -138,7 +138,7 @@
       .email-footer {
         text-align: center;
         padding: 20px 30px 30px 30px;
-        background-color: #f5f5f5;
+        background-color: #e8e3d3;
         font-size: 12px;
         color: #666666;
       }
@@ -175,7 +175,7 @@
     <%
       # Define base URL and image URLs once for the entire template
       # Logos are in public/expo/logos/ folder, accessible directly via URL
-      base_url = "http://localhost:3000" #"https://#{Rails.configuration.constants['base_url_host']}"
+      base_url = "https://#{Rails.configuration.constants['base_url_host']}" #"http://localhost:3000"
       w_logo_url = "#{base_url}/expo/logos/W-Logo_White.png"
       wordmark_url = "#{base_url}/expo/logos/Wordmark_center_white.png"
       signature_logo_url = "#{base_url}/expo/logos/Signature_Center_Purple_RGB.png"

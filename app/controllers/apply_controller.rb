@@ -73,8 +73,10 @@ class ApplyController < ApplicationController
     # mark this application as in progress
     @user_application.set_status('in_progress')
 
+    # make sure define_dynamic_answer_setters! is called before mass assignment happens so this ensures that the dynamic setters exist at the time of assignment.
+    @user_application.define_dynamic_answer_setters!
     # update the application's attributes
-    Rails.logger.debug "🔍 Params before update: #{apply_params.inspect}"
+    # Rails.logger.debug "🔍 Params before update: #{apply_params.inspect}"
     @user_application.update(apply_params) if apply_params
 
     # add a mentor if needed
