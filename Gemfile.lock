@@ -179,6 +179,8 @@ GEM
     concurrent-ruby (1.2.2)
     connection_pool (2.3.0)
     crass (1.0.6)
+    css_parser (1.17.1)
+      addressable
     csv (3.3.0)
     date (3.3.3)
     debug_inspector (1.1.0)
@@ -317,6 +319,14 @@ GEM
     omniauth-shibboleth (1.3.0)
       omniauth (>= 1.0.0)
     ostruct (0.6.3)
+    premailer (1.22.0)
+      addressable
+      css_parser (>= 1.12.0)
+      htmlentities (>= 4.0.0)
+    premailer-rails (1.12.0)
+      actionmailer (>= 3)
+      net-smtp
+      premailer (~> 1.7, >= 1.7.9)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -533,6 +543,7 @@ DEPENDENCIES
   mysql2 (= 0.5.3)
   nokogiri
   omniauth-shibboleth
+  premailer-rails
   pry (~> 0.14.2)
   puma
   rack-mini-profiler
