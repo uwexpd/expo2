@@ -32,6 +32,7 @@ class GivepulseUser < GivepulseBase
   end
     
   # params => {:user=>{:administrative_fields=>{"81445"=>"No"}}} 
+  # example: GivepulseUser.find_by(id: 4228632).update_user({user: {administrative_fields: {"81773" => "Yes" }}})
   def update_user(params)
     return false unless id
       

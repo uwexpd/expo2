@@ -1,0 +1,36 @@
+<%
+# Replace %link% with the actual link
+@text.gsub!("%link%", @link)
+
+# Replace %attribute% with the corresponding attribute from @group_member
+@text.gsub!(/\%([a-z0-9_.]+)\%/) do |a|
+  eval("@group_member.#{a.gsub(/\%/,'')}")
+rescue
+  nil
+end
+
+# Escape HTML entities
+escaped_text = ERB::Util.html_escape(@text)
+
+# Convert URLs to clickable links
+escaped_text = escaped_text.gsub(/(https?:\/\/[^\s<>]+)/, '<a href="\1" style="color: #0066cc; text-decoration: underline;">\1</a>')
+
+# Convert existing links
+escaped_text = escaped_text.gsub(/&lt;a href="([^"]+)"[^&]*&gt;([^&]+)&lt;\/a&gt;/, '<a href="\1" style="color: #0066cc; text-decoration: underline;">\2</a>')
+
+# Format into paragraphs
+paragraphs = escaped_text.split(/\n\s*\n/).reject(&:blank?)
+if paragraphs.length > 0
+  html_content = paragraphs.map do |paragraph|
+    para_text = paragraph.strip
+    para_text = para_text.gsub(/\n/, '<br>')
+    "<p>#{para_text}</p>"
+  end.join("\n")
+else
+  html_content = "<p>#{escaped_text.gsub(/\n/, '<br>')}</p>"
+end
+%>
+
+<div class="content">
+  <%= html_content.html_safe %>
+</div>

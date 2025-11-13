@@ -1,5 +1,6 @@
 class ApplyMailer < ActionMailer::Base
-
+  layout 'email'
+  
   def status_update(application_for_offering, email_template, recipients, sent_at = Time.now, 
                     link = apply_url(
                         host: Rails.configuration.constants["base_url_host"],
@@ -20,7 +21,14 @@ class ApplyMailer < ActionMailer::Base
     @cc         = application_for_offering.final_feedback_person.email if cc_to_feedback_person && !application_for_offering.final_feedback_person.nil?    
     @recipients = recipients
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    # Set email for layout footer (use first recipient if array, or recipient if string)
+    @email = recipients.is_a?(Array) ? recipients.first : recipients
+
+    # mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at, cc: @cc) do |format|
+      format.html
+      format.text
+    end
   end
   
   def mentor_status_update(mentor, email_template, recipients, sent_at = Time.now, link = mentor_url(:host => Rails.configuration.constants["base_url_host"]))
@@ -34,7 +42,14 @@ class ApplyMailer < ActionMailer::Base
     @from       = email_template.from    
     @recipients = recipients
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    # Set email for layout footer (use first recipient if array, or recipient if string)
+    @email = recipients.is_a?(Array) ? recipients.first : recipients
+
+    # mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at) do |format|
+      format.html
+      format.text
+    end
   end
   
   def group_member_status_update(group_member, email_template, recipients, sent_at = Time.now, link = apply_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering))
@@ -44,7 +59,14 @@ class ApplyMailer < ActionMailer::Base
     @link         = link    
     @recipients   = recipients
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    # Set email for layout footer (use first recipient if array, or recipient if string)
+    @email = recipients.is_a?(Array) ? recipients.first : recipients
+
+    # mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at) do |format|
+      format.html
+      format.text
+    end
   end
 
   def mentor_thank_you(mentor, email_template, recipients, sent_at = Time.now, link = mentor_url(:host => Rails.configuration.constants["base_url_host"]))
@@ -58,7 +80,14 @@ class ApplyMailer < ActionMailer::Base
     @from       = email_template.from    
     @recipients = recipients
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    # Set email for layout footer (use first recipient if array, or recipient if string)
+    @email = recipients.is_a?(Array) ? recipients.first : recipients
+
+    # mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at) do |format|
+      format.html
+      format.text
+    end
   end
   
   
@@ -69,10 +98,14 @@ class ApplyMailer < ActionMailer::Base
     @sent_on    = sent_at
     @recipients = recipients
 
-    mail(to: @recipients,
-         subject: @subject,
-         from: Rails.configuration.constants['system_help_email'],
-         date: sent_at)
+    # Set email for layout footer (use first recipient if array, or recipient if string)
+    @email = recipients.is_a?(Array) ? recipients.first : recipients
+
+    # mail(to: @recipients, subject: @subject, from: email_template.from, date: sent_at)
+    mail(to: @recipients, subject: @subject, from: Rails.configuration.constants['system_help_email'], date: sent_at) do |format|
+      format.html
+      format.text
+    end    
   end
 
   def interviewer_message(offering_interviewer, email_template, offering, 
@@ -86,7 +119,13 @@ class ApplyMailer < ActionMailer::Base
     @invite_link = invite_link
     @recipients  = offering_interviewer.person.email
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now)
+    # Set email for layout footer (use first recipient if array, or recipient if string)
+    @email = @recipients.is_a?(Array) ? @recipients.first : @recipients
+
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now) do |format|
+      format.html
+      format.text
+    end
   end
 
   def reviewer_message(offering_reviewer, email_template, offering, link = reviewer_url(:host => Rails.configuration.constants["base_url_host"], :offering => offering))
@@ -96,7 +135,13 @@ class ApplyMailer < ActionMailer::Base
     @link       = link
     @recipients = offering_reviewer.person.email
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now)    
+    # Set email for layout footer (use first recipient if array, or recipient if string)
+    @email = @recipients.is_a?(Array) ? @recipients.first : @recipients
+
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now) do |format|
+      format.html
+      format.text
+    end
   end
 
 
@@ -107,7 +152,13 @@ class ApplyMailer < ActionMailer::Base
     @link       = link
     @recipients = recipients
 
-    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now)
+    # Set email for layout footer (use first recipient if array, or recipient if string)
+    @email = recipients.is_a?(Array) ? recipients.first : recipients
+
+    mail(to: @recipients, subject: @subject, from: email_template.from, date: Time.now) do |format|
+      format.html
+      format.text
+    end
   end
 
 end

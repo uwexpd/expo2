@@ -1,0 +1,14 @@
+<%
+# Escape the static text and insert dynamic content
+# Since this is a static message with embedded Ruby, we'll process it into HTML
+
+# Prepare the message with interpolated values
+message = "This is a notification that #{ERB::Util.html_escape(@mentee.fullname)} has submitted an application that includes a mentor with no e-mail access. The mentor's name is #{ERB::Util.html_escape(@mentor.firstname)} #{ERB::Util.html_escape(@mentor.lastname)}. You might want to contact #{ERB::Util.html_escape(@mentee.firstname)} (#{ERB::Util.html_escape(@mentee.email)}) to coordinate."
+
+# Convert to HTML paragraph
+html_content = "<p>#{message}</p>"
+%>
+
+<div class="content">
+  <%= html_content.html_safe %>
+</div>

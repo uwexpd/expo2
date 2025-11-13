@@ -1,0 +1,38 @@
+<%
+# Process the text template similar to the text version
+# replace %link% with a link to the Apply controller
+processed_text = @text.dup  # Don't modify the original
+processed_text.gsub!("%link%", @link) if @link.present?
+processed_text.gsub!("%availability_link%", @availability_link) if @availability_link.present?
+
+# replace %attribute% with @application_for_offering.attribute
+processed_text.gsub!(/\%([a-z0-9_.]+)\%/) { |a| eval("@application_for_offering.#{a.gsub!(/\%/,'')}") rescue nil }
+
+# Convert plain text to HTML
+# First, escape HTML entities
+html_content = ERB::Util.html_escape(processed_text.to_s)
+# Convert URLs to links (do this after escaping to avoid double-escaping)
+html_content = html_content.gsub(/(https?:\/\/[^\s<>]+)/, '<a href="\1" style="color: #0066cc; text-decoration: underline;">\1</a>')
+# Convert existing links (already in HTML format) - restore them
+html_content = html_content.gsub(/&lt;a href="([^"]+)"[^&]*&gt;([^&]+)&lt;\/a&gt;/, '<a href="\1" style="color: #0066cc; text-decoration: underline;">\2</a>')
+# Convert double line breaks to paragraphs
+paragraphs = html_content.split(/\n\s*\n/).reject(&:blank?)
+if paragraphs.length > 0
+  html_content = paragraphs.map do |paragraph|
+    para_text = paragraph.strip
+    # Replace single line breaks within paragraphs with <br>
+    para_text = para_text.gsub(/\n/, '<br>')
+    "<p>#{para_text}</p>"
+  end.join("\n")
+else
+  # If no double line breaks, treat entire content as one paragraph with <br> for line breaks
+  html_content = "<p>#{html_content.gsub(/\n/, '<br>')}</p>"
+end
+
+# Get the recipient name for greeting
+recipient_name = @application_for_offering.person.fullname rescue "Applicant"
+%>
+
+<div class="content">
+  <%= html_content.html_safe %>
+</div>

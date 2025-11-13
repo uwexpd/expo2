@@ -3,7 +3,36 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <% @text = TextTemplate.parse(@text, @object, @link) %>
-	  <%= @text %>        
+    <%
+      require 'erb'
+      # Use text_template parse logic
+      text = TextTemplate.parse(@text, @object, @link)
+
+      # Attempt to get a nice greeting
+      recipient_name = if defined?(@object) && @object.respond_to?(:person) && @object.person.respond_to?(:fullname)
+        @object.person.fullname
+      elsif @object.respond_to?(:fullname)
+        @object.fullname
+      else
+        nil
+      end
+      recipient_name ||= "there"
+
+      # Escape, linkify, break paragraphs
+      escaped = ERB::Util.html_escape(text.to_s)
+      escaped = escaped.gsub(/(https?:\/\/[^\s<>")]+)/i, '<a href="\1" style="color: #0066cc; text-decoration: underline; word-break: break-all;">\1</a>')
+      paragraphs = escaped.split(/\n\s*\n/)
+      if paragraphs.length > 1 || (paragraphs.length == 1 && paragraphs.first.strip.length > 0)
+        html_content = paragraphs.reject { |p| p.strip.blank? }.map do |para|
+          para = para.strip.gsub(/\n/, '<br>')
+          "<p>#{para}</p>"
+        end.join("\n")
+      else
+        html_content = "<p>#{escaped.gsub(/\n/, '<br>')}</p>" if escaped.present?
+      end
+    %>    
+    <div class="content">
+      <%= html_content.html_safe %>
+    </div>
   </body>
 </html>
