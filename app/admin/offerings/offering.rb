@@ -25,7 +25,7 @@ ActiveAdmin.register Offering do
   end  
 
    action_item :copy, only: :show do
-     link_to 'Copy Offering', copy_admin_offering_path(offering), method: :post, data: { confirm: 'Are you sure you want to copy this offering?' }
+     link_to "<i class='mi md-18'>content_copy</i> Copy Offering".html_safe, copy_admin_offering_path(offering), method: :post, data: { confirm: 'Are you sure you want to copy this offering?' }
    end
 
   controller do

@@ -32,6 +32,9 @@ ActiveAdmin.register EventStaffPosition, as: 'staff_position' do
             span link_to '<span class="mi">delete</span>'.html_safe, admin_event_staff_position_shift_path(event, staff_position, shift), method: :delete, data: { confirm:'Are you sure?', :remote => true}, class: 'delete action_icon'
                }
        end
+       div class: 'padding' do
+        link_to '<span class="mi md-20">add_circle</span>New Shift'.html_safe, new_admin_event_staff_position_shift_path(event, staff_position), class: 'button'
+       end
     end    
   end
 

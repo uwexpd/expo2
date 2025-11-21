@@ -66,10 +66,9 @@ class GivepulseBase < ActiveResource::Base
         connection = ActiveResource::Connection.new(site)
       
         full_path = params.present? && [:get, :delete].include?(method) ? "#{path}?#{params.to_query}" : path
-        # Debugging: Log the method, full_path, and params (if any)         
-         #Rails.logger.debug("Making #{method.upcase} request to: #{full_path}")
-         #Rails.logger.debug("Request Headers: #{headers}")         
-         #Rails.logger.debug("Request Params: #{params.to_json}") if method != :get && params.present?
+         # Rails.logger.debug("Making #{method.upcase} request to: #{full_path}")
+         # Rails.logger.debug("Request Headers: #{headers}")
+         # Rails.logger.debug("Request Params: #{params.to_json}") if method != :get && params.present?
 
         case method
         when :get

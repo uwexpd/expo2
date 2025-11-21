@@ -46,7 +46,7 @@ ActiveAdmin.register Population, as: 'query' do
       @population.system = false
       @population.custom_query = nil if params[:use_custom_query] != "true" || !current_user.has_role?(:custom_query_writer)      
 
-      if @population.save        
+      if @population.save
         begin
           @population.generate_objects!          
         rescue
@@ -59,7 +59,7 @@ ActiveAdmin.register Population, as: 'query' do
           return render :edit
         end
 
-        # expire_action action: 'show', format: :xls
+        Rails.cache.delete("population_#{@population.id}_download_xlsx")
         # expire_action controller: 'stats', action: 'population'
 
         flash[:notice] = "Successfully updated query."
@@ -96,8 +96,7 @@ ActiveAdmin.register Population, as: 'query' do
         if @population.output_fields.blank?
           render :partial => "objects"
         else
-          redirect_to results_admin_query_path(@population)
-          #redirect_to action: :show, format: :xlsx
+          redirect_to results_admin_query_path(@population)          
         end
       }
     end
@@ -121,6 +120,7 @@ ActiveAdmin.register Population, as: 'query' do
   member_action :save_output_fields, method: :put do
   @population = Population.find(params[:id])
   if @population.update(output_fields: params[:output_fields])
+    Rails.cache.delete("population_#{@population.id}_download_xlsx")
     respond_to do |format|
       format.js { render js: "$('#save_output_fields_status').html('<span class=\"uw_green\"><i class=\"mi\">check_circle</i> Saved</span>');" }
     end
@@ -155,11 +155,9 @@ end
     end
 
     # Rails 5+ doesn't have expire_action by default; if you use caching,
-    # you may need to expire caches differently, or skip if not used.
-    # expire_action action: 'show', format: :xls
+    # you may need to expire caches differently, or skip if not used.    
     # expire_action controller: 'stats', action: 'population'
-
-    
+    Rails.cache.delete("population_#{@population.id}_download_xlsx")
 
     respond_to do |format|
       format.html { redirect_to resource_path(@population) }
@@ -167,20 +165,49 @@ end
     end
   end
 
-  member_action :download, method: :get do
+  member_action :download, method: :get do    
+    
     @population = Population.find(params[:id])
+
     if @population.output_fields.blank?
       redirect_to resource_path(@population), alert: "Please select fields before downloading."
       return
-    end
-    @objects = @population.objects
-    respond_to do |format|       
-        format.xlsx { render xlsx: 'download', filename: "Report_#{@population.title}_#{@population.id}.xlsx" }
-      end
-  end
+    end    
 
-  action_item :copy, only: :show do
-     link_to 'Copy Query', copy_admin_query_path(resource), method: :post, data: { confirm: 'Are you sure you want to copy this query?' }
+    cache_key = "population_#{params[:id]}_download_xlsx"
+
+    # Cache XLSX binary
+    xlsx_data = Rails.cache.fetch(cache_key) do
+      package = Axlsx::Package.new
+      workbook = package.workbook
+
+      # prepare a renderer to evaluate the template
+      view = ActionView::Base.new(ActionController::Base.view_paths, {})
+      view.class_eval { include ApplicationHelper }
+
+      # assign instance variables used in your .xlsx.axlsx template
+      view.instance_variable_set(:@population, @population)
+      view.instance_variable_set(:@objects, @population.objects)
+      view.instance_variable_set(:@xlsx_package, package)
+
+      # render the .axlsx template — this fills the package
+      view.render(
+        template: "admin/queries/download",
+        formats: [:xlsx],
+        handlers: [:axlsx]
+      )
+
+      # return the final binary (this is what gets cached)
+      package.to_stream.read
+    end
+
+     # Send cached file
+    send_data xlsx_data,
+              filename: "Report_#{@population.title}_#{@population.id}.xlsx",
+              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    # respond_to do |format|       
+    #   format.xlsx { render xlsx: 'download', filename: "Report_#{@population.title}_#{@population.id}.xlsx" }
+    # end
   end
 
   index do

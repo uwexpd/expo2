@@ -77,7 +77,7 @@ ActiveAdmin.register EventStaffPositionShift, as: 'shift' do
     f.actions
   end
 
-  sidebar "Staff Positions", only: [:show] do
+  sidebar "Shifts", only: [:show] do
     render "admin/events/staff_positions/shifts", event: shift.position.event, position: shift.position
   end
 

@@ -107,6 +107,20 @@ class GivepulseCourse < GivepulseBase
             delete: "yes"
       }
 
+      # find droper's registrations and cancel them
+      registraitons = GivepulseRegistration.where(user_id: dropper.id, group_id: self.group_id)
+
+      # ---- Cancel registrations for this course ----
+      cancelled_events = []
+      if registraitons.present?
+        registraitons.each do |registration|
+          registration.cancel!(send_notification: true)
+        end
+        # Gather event titles for cancelled registrations                
+        cancelled_events = registraitons.map { |registration| registration.try(:event)["title"]}.join(", ")
+      end
+      # ---- END Cancel ----
+
       begin
         Rails.logger.info("Removing dropper, #{dropper.email}, from the GivePulse course #{self.crn}")
 
@@ -115,7 +129,7 @@ class GivepulseCourse < GivepulseBase
 
         if response.code.to_i == 200
           Rails.logger.info("Successfully removed #{dropper.email} from GivePulse course #{self.crn}")
-         
+                     
           # Send email notification to the course admins in CCUW
           # Fetch course admins from Givepulse API
           course_admins = GivepulseUser.where(group_id: self.group_id, role: 'admin')
@@ -124,7 +138,7 @@ class GivepulseCourse < GivepulseBase
           course_admins.reject! { |admin| admin.email == 'communityconnect@uw.edu' }
 
           course_admins.each do |course_admin|
-            link = Rails.env.production? ? "https://uw.givepulse.com/group/manage/users/#{self.group_id}" : "https://uw-dev.givepulse.com/group/manage/users/#{self.group_id}"
+            link = Rails.env.production? ? "https://uw.givepulse.com/group/manage/users/#{self.group_id}" : "https://uw-dev.givepulse.com/group/manage/users/#{self.group_id}"            
 
             begin
               mail = CommunityEngagedMailer.templated_message(
@@ -132,7 +146,7 @@ class GivepulseCourse < GivepulseBase
                 EmailTemplate.find_by_name("ccuw course dropper notification"),
                 course_admin.email,
                 link,
-                { student_name: "#{dropper.first_name} #{dropper.last_name}", student_email: dropper.email }
+                { student_name: "#{dropper.first_name} #{dropper.last_name}", student_email: dropper.email, cancelled_events: cancelled_events }
               ).deliver_now
 
               EmailContact.log(User.find_by_login('communityconnect').person.id, mail)

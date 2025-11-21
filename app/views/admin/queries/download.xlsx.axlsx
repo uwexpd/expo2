@@ -17,7 +17,7 @@ wb.add_worksheet(name: "Population Data") do |sheet|
   sheet.add_row header
 
   # Add data rows
-  @population.objects.each do |object|
+  @objects.each do |object|
     row = @population.output_fields.map do |field|
       if (m = field.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/))
         code = m[2]

@@ -1,4 +1,4 @@
-ActiveAdmin.register Event do  
+ActiveAdmin.register Event do
   batch_action :destroy, false
   config.sort_order = 'id_desc'
   menu parent: 'Modules', priority: 20, label: "<i class='mi padding_right'>event</i> Events".html_safe
@@ -23,7 +23,7 @@ ActiveAdmin.register Event do
   end
 
   action_item :copy, only: :show do
-     link_to 'Copy Offering', copy_admin_event_path(event), method: :post, data: { confirm: 'Are you sure you want to copy this event?' }
+    link_to "<i class='mi md-18'>content_copy</i> Copy Event".html_safe, copy_admin_event_path(event), method: :post, data: { confirm: 'Are you sure you want to copy this event?' }
   end
 
   controller do
@@ -66,6 +66,7 @@ ActiveAdmin.register Event do
        row ('RSVP Reminder') { |event| event.reminder_email_template.title if event.reminder_email_template}
        row ('Volunteer Signup Confirmation') { |event| event.staff_signup_email_template.title if event.staff_signup_email_template }
        row ('Public Event?'){|event| event.public? ? 'Public' : 'Private' }
+       row :capacity
     end
   end
   
@@ -77,6 +78,7 @@ ActiveAdmin.register Event do
       #f.input :capacity, :input_html => { :style => 'width:25%;' }
       f.input :unit, label: 'Sponsor', as: :select, include_blank: false, required: true
       f.input :event_type_id, as: :select, collection: EventType.all.sort
+      f.input :capacity, input_html: { style: 'width:10%;' }
       default_offering_id = params[:offering_id] if params[:offering_id].present?
       f.input :offering_id, as: :select, collection: Offering.order(id: :desc).map{|o| [o.title, o.id]}, selected: default_offering_id, input_html: { class: 'chosen-select' }
         div 'Optionally link this event to an offering.', class: 'caption'

@@ -33,17 +33,18 @@ class GivepulseRegistration < GivepulseBase
   # Update a registration, e.g., to cancel it.
   #
   # Example:
-  # reg = GivepulseRegistration.new(id: 507151)
+  # reg = GivepulseRegistration.find_by(id: 507151)
   # reg.cancel!(send_notification: true)
   #
   def update(params)
     return false unless id
 
     begin
-      response = GivepulseRegistration.request_api('/registrations', params.merge(registration_id: id), method: :put)
+      response = GivepulseRegistration.request_api("/registrations?id=#{id}", params, method: :put)
+      # Rails.logger.debug("Original Response received: #{response}")
       parsed = JSON.parse(response.body)
 
-      if response.code.to_i == 200 && parsed['message'].to_s.include?('success')
+      if response.code.to_i == 200 && parsed['message'].to_s.include?('success')        
         Rails.logger.info("Successfully updated registration #{id}: #{parsed['message']}")
         parsed
       else
@@ -66,8 +67,10 @@ class GivepulseRegistration < GivepulseBase
     return false unless id
 
     update(
-      notification: send_notification ? 1 : 0,
-      status: 'cancel'
+      {
+        notification: send_notification ? 1 : 0,
+        action: 'cancel'
+      }      
     )
   end
 
@@ -80,11 +83,10 @@ class GivepulseRegistration < GivepulseBase
   def self.cancel_registration(registration_id, send_notification: false)
     begin
       response = request_api(
-        '/registrations',
-        {
-          registration_id: registration_id,
+        "/registrations?id=#{registration_id}",
+        {          
           notification: send_notification ? 1 : 0,
-          status: 'cancel'
+          action: 'cancel'
         },
         method: :put
       )

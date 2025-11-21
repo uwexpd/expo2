@@ -30,6 +30,10 @@
 	font-size: larger;
 }
 
+.padding {
+	padding: 1rem;
+}
+
 .padding_left {
 	padding-left: 1rem;
 }
@@ -46,8 +50,12 @@
 	padding-bottom: 1rem;
 }
 
+.margin {
+	margin: 1rem;
+}
+
 .margin_left {
-	margin-left: 1rem
+	margin-left: 1rem;
 }
 
 .margin_right {
@@ -55,11 +63,11 @@
 }
 
 .margin_top {
-	margin-top: 1rem
+	margin-top: 1rem;
 }
 
 .margin_bottom {
-	margin-bottom: 1rem
+	margin-bottom: 1rem;
 }
 
 .caption {

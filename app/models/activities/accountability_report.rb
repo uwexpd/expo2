@@ -138,10 +138,10 @@ class AccountabilityReport < ApplicationRecord
   belongs_to :activity_type
   validates_presence_of :quarter_abbrevs, :activity_type_id
   validates_uniqueness_of :quarter_abbrevs, :scope => :activity_type_id
-  
+
   # Initializes a new AccountabilityReport. Specify an array or quarter abbreviations (e.g., "WIN2008") and an ActivityType
-  # abbreviation (e.g., "S" or "R").
-  def after_initialize
+    # abbreviation (e.g., "S" or "R").
+  def initialize_defaults    
     @quarters = quarters
     @activity_type = activity_type
     # puts "Initializing AccountabilityReport..."
@@ -163,7 +163,7 @@ class AccountabilityReport < ApplicationRecord
   
   def title
     return read_attribute(:title) unless read_attribute(:title).blank?
-    "#{@activity_type.title} Accountability Report (#{quarters.collect(&:abbrev).join(", ")})"
+    "#{activity_type.title} Accountability Report (#{quarters.collect(&:abbrev).join(", ")})"
   end
   
   def quarters
@@ -171,9 +171,9 @@ class AccountabilityReport < ApplicationRecord
   end
   
   # Returns the location of YAML file that stores the student data hash based a key name.
-  # The base path is +RAILS_ROOT/files/activity_results/results_[quarters_hash]_[activity_type_abbreviation]_[key].yml+
+  # The base path is +Rails.root/files/activity_results/results_[quarters_hash]_[activity_type_abbreviation]_[key].yml+
   def results_file_path(key)
-    File.join(RAILS_ROOT, "files", "activity_results", "results_#{id.to_s}_#{key.to_s}.yml")
+    File.join(Rails.root, "files", "activity_results", "results_#{id.to_s}_#{key.to_s}.yml")
   end
 
   # Generates results for the specified key by calling the associated results method:
@@ -217,20 +217,20 @@ class AccountabilityReport < ApplicationRecord
   
   # Stores a status message into a file that can be read at any time.
   def update_status(msg)
-    status_file_path = File.join(RAILS_ROOT, "files", "activity_results", "status_#{id.to_s}.log")
+    status_file_path = File.join(Rails.root, "files", "activity_results", "status_#{id.to_s}.log")
     File.open(status_file_path, 'w') {|f| f << msg }
   end
   
   # Returns the current status message that's stored in the status file.
   def status
-    status_file_path = File.join(RAILS_ROOT, "files", "activity_results", "status_#{id.to_s}.log")
+    status_file_path = File.join(Rails.root, "files", "activity_results", "status_#{id.to_s}.log")
     return nil unless File.exists? status_file_path
     File.open(status_file_path, 'r').read
   end
   
   # Reads a report's status without having to instantiate the object.
   def self.status(id)
-    status_file_path = File.join(RAILS_ROOT, "files", "activity_results", "status_#{id.to_s}.log")
+    status_file_path = File.join(Rails.root, "files", "activity_results", "status_#{id.to_s}.log")
     return nil unless File.exists? status_file_path
     File.open(status_file_path, 'r').read    
   end
@@ -249,7 +249,7 @@ class AccountabilityReport < ApplicationRecord
 
   # Creates a status file and writes to start
   def self.mark_as_in_progress(id)
-    status_file_path = File.join(RAILS_ROOT, "files", "activity_results", "status_#{id.to_s}.log")
+    status_file_path = File.join(Rails.root, "files", "activity_results", "status_#{id.to_s}.log")
     File.open(status_file_path, 'w') {|f| f << "Regenerating..." }
   end
   
@@ -452,7 +452,7 @@ class AccountabilityReport < ApplicationRecord
   end
   
   def log_file_path
-    File.join(RAILS_ROOT, "files", "activity_results", "results_#{id.to_s}_#{@log_step.to_s}.log")
+    File.join(Rails.root, "files", "activity_results", "results_#{id.to_s}_#{@log_step.to_s}.log")
   end
   
   # Loads the results array from the YAML file cache produced by #dump_results!. If the cache file doesn't exist, this method
@@ -850,8 +850,8 @@ class AccountabilityReport < ApplicationRecord
       @reports.join("\n                                 ")
     end
     
-    private
-        
+    private    
+
     def source(activity)
       klass, id = activity[:source].split("_")
       klass.constantize.find(id) rescue nil
