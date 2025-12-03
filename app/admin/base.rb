@@ -26,7 +26,19 @@ ActiveAdmin.register_page "Base" do
 	      flash[:alert] = "You need to provide either a user ID or a username and identity type."
 	      return redirect_to admin_path
 	    end
-	    if user
+	    if user	    	
+	      # Prevent admin from logging in as restricted roles
+	      restricted_roles = [:user_manager, :unit_manager, :accountability_manager]
+	      # Check if current user has any of the restricted roles
+    		current_user_has_restricted_role = restricted_roles.any? { |role| @current_user.has_role?(role) }
+
+    		unless current_user_has_restricted_role
+		      if restricted_roles.any? { |role| user.has_role?(role) }
+		        flash[:alert] = "Admins are not allowed to login as User manager, Unit manager, or Accountability manager."
+		        return redirect_to admin_path
+		      end
+		    end
+		    
 	      return check_permission(:vicarious_login) unless @current_user.has_role?(:vicarious_login)
 	      session[:original_user] = @current_user.id
 	      session[:vicarious_token] = user.token

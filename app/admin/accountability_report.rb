@@ -4,6 +4,7 @@ ActiveAdmin.register AccountabilityReport do
     menu parent: 'Tools'
     config.filters = false
     config.paginate = false
+    before_action -> { check_permission("accountability_manager") }
         
     permit_params :year
     
@@ -39,7 +40,7 @@ ActiveAdmin.register AccountabilityReport do
                             else
                               # span link_to("Generate", generate_admin_accountability_report_path(report))
                             end
-                          els                            
+                          else                          
                             span "Not found", class: 'empty'
                           end
                         end

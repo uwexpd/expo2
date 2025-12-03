@@ -1,4 +1,5 @@
 <%
+# Replace %link%
 @text.gsub!("%link%", @link)
 
 # Replace %mentor.attribute%
@@ -39,7 +40,7 @@ escaped_text = ERB::Util.html_escape(@text)
 # Convert URLs to clickable links
 escaped_text = escaped_text.gsub(/(https?:\/\/[^\s<>]+)/, '<a href="\1" style="color: #0066cc; text-decoration: underline;">\1</a>')
 
-# Convert existing links (if any) - assuming they are in HTML format
+# Convert existing links (if any)
 escaped_text = escaped_text.gsub(/&lt;a href="([^"]+)"[^&]*&gt;([^&]+)&lt;\/a&gt;/, '<a href="\1" style="color: #0066cc; text-decoration: underline;">\2</a>')
 
 # Split into paragraphs based on double line breaks
