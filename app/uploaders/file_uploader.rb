@@ -56,7 +56,8 @@ class FileUploader < CarrierWave::Uploader::Base
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
-    "#{model.application_for_offering.id.to_s}-#{model.title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/,'')}-#{model.id}.#{file.extension}" unless file.nil?
+    # "#{model.application_for_offering.id.to_s}-#{model.title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/,'')}-#{model.id}.#{file.extension}" unless file.nil?
+    "#{model.application_for_offering.id.to_s}-#{model.title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/,'')}.#{file.extension}" unless file.nil?
   end
 
   def filepath
