@@ -291,7 +291,10 @@ class GivepulseCourse < GivepulseBase
   # We do NOT drop any instructors' memebership.  
   def sync_course_instructors
     instructors.each do |instructor|
-      next if instructor.email.blank?
+      if instructor.email.blank?
+        Rails.logger.info("Instructor with ID: #{instructor.id} has a blank email and will be skipped.")
+        next
+      end
 
       post_params = {
         user: {
