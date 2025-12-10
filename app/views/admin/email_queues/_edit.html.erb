@@ -27,7 +27,12 @@
 					</tr>
 					<tr class="row text input">
 						<th>Body</th>
-						<td><%= text_area_tag "email_queue[email][body]", EmailBodyExtractor.extract(@email_queue.email)[:text], rows: 20, cols: 145 %></td>
+						<td><%= text_area_tag(
+										      "email_queue[email][body]",
+										      (EmailBodyExtractor.extract(@email_queue.email)[:text] rescue @email_queue.email.body.to_s),
+										      rows: 20,
+										      cols: 145
+										    ) %></td>
 					</tr>
 				</tbody>				
 			</table>
