@@ -2,6 +2,7 @@
 <% condition = value_dropdown %>
 <% dom_id = "population[condition_attributes][#{condition.id}][value]" %>
 
+
 <% if condition.values == "boolean" %>
 	
 	<%= radio_button_tag dom_id, true, condition.value == "true" %>
@@ -12,18 +13,19 @@
 	
 <% elsif condition.values.is_a?(Hash) && condition.values.include?("collection") %>
 
-	<span class='select'><%= select_tag dom_id, 
+	<span class='select'>	
+	<%= select_tag dom_id, 
 					options_from_collection_for_select(condition.values_collection, 
 														condition.values["ids"], 
 														condition.values["titles"],
 														condition.value_with_typecast), 
-					:disabled => disabled %></span>
+					disabled: disabled %></span>
 
 <% elsif condition.values.is_a?(Array) %>
 
 	<span class='select'><%= select_tag dom_id, 
 					options_for_select(condition.values, condition.value_with_typecast), 
-					:disabled => disabled %></span>
+					disabled: :disabled %></span>
 
 <% else %>
 	<span class='string input'>

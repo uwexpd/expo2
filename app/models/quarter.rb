@@ -1,5 +1,5 @@
 class Quarter < ApplicationRecord
-  #include Comparable
+  include Comparable
   stampable
   
   belongs_to :quarter_code

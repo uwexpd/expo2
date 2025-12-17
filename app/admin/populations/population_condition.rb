@@ -40,7 +40,14 @@ ActiveAdmin.register PopulationCondition, as: 'conditions' do
           @condition = @population.conditions.new(first_params.permit(:attribute_name, :eval_method, :value, :skip_validations, :should_destroy))
         else
           @condition = @population.conditions.find(params[:id])
-          @condition.update(condition_attributes_params) if params[:population].present?
+          if params[:population]
+            # Merge skip_validations: true into the attributes if you want to skip validations
+            update_params = condition_attributes_params
+            update_params[:skip_validations] = true
+            unless @condition.update(update_params)
+              Rails.logger.error "Validation errors: #{@condition.errors.full_messages.join(', ')}"
+            end
+          end
         end
 
         respond_to { |format| format.js { render 'admin/queries/conditions/refresh_dropdowns' } }

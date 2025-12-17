@@ -78,7 +78,7 @@ ActiveAdmin.register ApplicationMentor, as: 'mentor' do
       else
         f.input :application_for_offering_id, input_html: { style: 'width:25%;'}
       end      
-      f.input :person_id, input_html: { style: 'width:25%;' }
+      f.input :person_id, label: 'Person ID', input_html: { style: 'width:25%;' }, hint: "Please use EXPO Person ID from #{link_to 'Find Person by Name or Email.', admin_people_path, target: '_blank'}".html_safe
       f.input :firstname, input_html: { style: 'width:50%;' }
       f.input :lastname, input_html: { style: 'width:50%;' }
       f.input :email, input_html: { style: 'width:50%;' }

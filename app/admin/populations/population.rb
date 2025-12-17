@@ -5,11 +5,13 @@ ActiveAdmin.register Population, as: 'query' do
   config.per_page = [50, 100, 200, 400]
 
   permit_params :title, :description, :access_level, :populatable_type, :populatable_id, :starting_set,  :condition_operator, :result_variant, :custom_result_variant, :custom_query,
-      conditions_attributes: [
+      condition_attributes: [
                   :id, 
+                  :attribute_name,
                   :eval_method, 
                   :value, 
                   :skip_validations, 
+                  :should_destroy,
                   :_destroy
                 ]
 
@@ -48,8 +50,10 @@ ActiveAdmin.register Population, as: 'query' do
 
       if @population.save
         begin
-          @population.generate_objects!          
-        rescue
+          @population.generate_objects!    
+        rescue => e
+          # Rails.logger.error("Error generating objects for Population ID #{@population.id}: #{e.message}")
+          # Rails.logger.error(e.backtrace.join("\n"))
           if @population.custom_query?
             @population.errors.add(:base, "Your custom query is not valid. Please try again or select a starting set instead.")
           else
@@ -59,7 +63,7 @@ ActiveAdmin.register Population, as: 'query' do
           return render :edit
         end
 
-        Rails.cache.delete("population_#{@population.id}_download_xlsx")
+        # Rails.cache.delete("population_#{@population.id}_download_xlsx")
         # expire_action controller: 'stats', action: 'population'
 
         flash[:notice] = "Successfully updated query."
@@ -120,7 +124,7 @@ ActiveAdmin.register Population, as: 'query' do
   member_action :save_output_fields, method: :put do
   @population = Population.find(params[:id])
   if @population.update(output_fields: params[:output_fields])
-    Rails.cache.delete("population_#{@population.id}_download_xlsx")
+    # Rails.cache.delete("population_#{@population.id}_download_xlsx")
     respond_to do |format|
       format.js { render js: "$('#save_output_fields_status').html('<span class=\"uw_green\"><i class=\"mi\">check_circle</i> Saved</span>');" }
     end
@@ -157,7 +161,7 @@ end
     # Rails 5+ doesn't have expire_action by default; if you use caching,
     # you may need to expire caches differently, or skip if not used.    
     # expire_action controller: 'stats', action: 'population'
-    Rails.cache.delete("population_#{@population.id}_download_xlsx")
+    # Rails.cache.delete("population_#{@population.id}_download_xlsx")
 
     respond_to do |format|
       format.html { redirect_to resource_path(@population) }
@@ -174,40 +178,41 @@ end
       return
     end    
 
-    cache_key = "population_#{params[:id]}_download_xlsx"
+    # cache_key = "population_#{params[:id]}_download_xlsx"
 
-    # Cache XLSX binary
-    xlsx_data = Rails.cache.fetch(cache_key) do
-      package = Axlsx::Package.new
-      workbook = package.workbook
+    # # Cache XLSX binary
+    # xlsx_data = Rails.cache.fetch(cache_key) do
+    #   package = Axlsx::Package.new
+    #   workbook = package.workbook
 
-      # prepare a renderer to evaluate the template
-      view = ActionView::Base.new(ActionController::Base.view_paths, {})
-      view.class_eval { include ApplicationHelper }
+    #   # prepare a renderer to evaluate the template
+    #   view = ActionView::Base.new(ActionController::Base.view_paths, {})
+    #   view.class_eval { include ApplicationHelper }
 
-      # assign instance variables used in your .xlsx.axlsx template
-      view.instance_variable_set(:@population, @population)
-      view.instance_variable_set(:@objects, @population.objects)
-      view.instance_variable_set(:@xlsx_package, package)
+    #   # assign instance variables used in your .xlsx.axlsx template
+    #   view.instance_variable_set(:@population, @population)
+    #   view.instance_variable_set(:@objects, @population.objects)
+    #   view.instance_variable_set(:@xlsx_package, package)
 
-      # render the .axlsx template — this fills the package
-      view.render(
-        template: "admin/queries/download",
-        formats: [:xlsx],
-        handlers: [:axlsx]
-      )
+    #   # render the .axlsx template — this fills the package
+    #   view.render(
+    #     template: "admin/queries/download",
+    #     formats: [:xlsx],
+    #     handlers: [:axlsx]
+    #   )
 
-      # return the final binary (this is what gets cached)
-      package.to_stream.read
-    end
-
-     # Send cached file
-    send_data xlsx_data,
-              filename: "Report_#{@population.title}_#{@population.id}.xlsx",
-              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    # respond_to do |format|       
-    #   format.xlsx { render xlsx: 'download', filename: "Report_#{@population.title}_#{@population.id}.xlsx" }
+    #   # return the final binary (this is what gets cached)
+    #   package.to_stream.read
     # end
+
+    #  # Send cached file
+    # send_data xlsx_data,
+    #           filename: "Report_#{@population.title}_#{@population.id}.xlsx",
+    #           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    @objects = @population.objects
+    respond_to do |format|       
+      format.xlsx { render xlsx: 'download', filename: "Report_#{@population.title}_#{@population.id}.xlsx" }
+    end
   end
 
   index do
@@ -255,7 +260,7 @@ end
             para "Matching #{q.condition_operator} of the following conditions:"
             ul class: 'left-indent' do
               q.conditions.each do |condition|
-                li do
+                li class: 'padding_bottom' do
                   span condition.attribute_name, class: 'outline tag'
                   span condition.eval_method
                   span condition.value, class: 'outline tag'

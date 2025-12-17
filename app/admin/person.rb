@@ -22,6 +22,22 @@ ActiveAdmin.register Person do
     end    
   end
 
+  # collection_action :search, method: :get do
+  #   term = params[:q]
+  #   people = Person.where("first_name LIKE :term OR last_name LIKE :term", term: "%#{term}%")
+  #                  .order(:last_name)
+  #                  .limit(20)
+
+  #   render json: people.map { |p|
+  #     {
+  #       id: p.id,
+  #       full_name: p.full_name,
+  #       person_identifier: p.person_id,
+  #       email: p.email,
+  #       text: p.full_name # fallback
+  #     }
+  #   }
+  # end
 
   index pagination_total: false do
     column 'Name' do |person|

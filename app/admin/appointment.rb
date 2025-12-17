@@ -47,7 +47,7 @@ ActiveAdmin.register Appointment do
       f.input :staff_person_id, as: :select, required: true,
                collection: User.admin.reject{|u| u.person.firstname.nil?}.sort_by{|u| u.person.firstname}.map{|u| [u.fullname, u.person_id]}, 
                include_blank: false, input_html: { class: "select2", style: "width: 50%"}
-      f.input :student_id, label: 'Student EXPO ID', :input_html => { :style => 'width:50%;' }
+      f.input :student_id, label: 'Student EXPO ID', :input_html => { :style => 'width:50%;' }, hint: "Please use EXPO Person ID from #{link_to 'Find Student by Name or Email.', admin_students_path, target: '_blank'}".html_safe, input_html: { style: 'width: 25%'}
       f.input :check_in_time, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
       f.input :drop_in
       f.input :contact_type_id, as: :select, collection: ContactType.all

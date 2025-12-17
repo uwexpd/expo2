@@ -9,7 +9,7 @@
 	<table id="conditions" class='borderless'>		
 		<%= render :partial => "admin/queries/conditions/condition", 
 					:collection => @population.conditions %>
-	</table>	
+	</table>
 
 	<%= link_to "<span class='mi md-20'>add</span>Add another condition".html_safe,
 	   admin_query_conditions_path(@population, condition: { skip_validations: true }),
