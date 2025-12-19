@@ -19,6 +19,7 @@
 		  </h4>
 		  <ul id="selected_population_field_codes" class="sortable">
 		    <% @population.output_fields.each do |output_field| %>
+		      <% output_field = CGI.unescapeHTML(output_field) %>
 		      <% code = if output_field =~ /^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/
 		                  output_field
 		                elsif output_field.include?(".")
@@ -44,7 +45,7 @@
 		  <%= render partial: "codes_container", locals: { codes: codes, associations: associations } %>
 		</ul>
 
-		<%= text_area_tag :output_fields, @population.read_attribute(:output_fields), rows: 5, cols: 60, style: "display:none" %>
+		<%= text_area_tag :output_fields, @population.read_attribute(:output_fields), rows: 5, cols: 60, style: "display:block" %>
 
 		<script>
 		  var commitOutputFieldsURL = "<%= url_for(action: 'save_output_fields') %>";

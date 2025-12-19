@@ -21,8 +21,15 @@ wb.add_worksheet(name: "Population Data") do |sheet|
     row = @population.output_fields.map do |field|
       if (m = field.match(/^CUSTOM_OUTPUT_FIELD\((.+)\):(.+)/))
         code = m[2]
-        # Assuming to_pdf_octals is a custom method available on String
-        code = code.to_pdf_octals rescue code
+        # code = code.to_pdf_octals #rescue code
+        begin
+          code = CGI.unescapeHTML(code) rescue code
+          # puts "decoded_code: #{code}"
+          code = code.to_pdf_octals rescue code
+        rescue => e
+          puts "Encoding error with code: #{code}"
+          raise e
+        end
       else
         code = field
       end
