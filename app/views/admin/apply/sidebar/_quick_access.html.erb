@@ -21,7 +21,11 @@
 	<% end -%>
 	
 	<% if @offering.interview_committee %>
-		<li><%= link_to "<i class='mi'>leaderboard</i> Interview Committee", admin_committee_path(@offering.interview_committee), :class => "icon-left people" %></li>
+		<li><%= link_to "<i class='mi'>group</i> Interview Committee".html_safe, admin_committee_path(@offering.interview_committee) %></li>
+	<% end -%>
+
+	<% if @offering.interviewers.any? %>
+		<li><%= link_to "<i class='mi'>groups</i> Manger Interviewers".html_safe, admin_offering_interviewers_path(@offering) %></li>
 	<% end -%>
 
 	<% if @offering.uses_scored_review? %>

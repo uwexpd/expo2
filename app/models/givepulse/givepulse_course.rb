@@ -29,7 +29,6 @@ class GivepulseCourse < GivepulseBase
     end
   end
 
-
   # Sync course students to GivePulse
   # If the student (email) exists, it will update the params in this case. [Tested]
   # Handle course droppers and mismatch. 
@@ -98,7 +97,7 @@ class GivepulseCourse < GivepulseBase
     droppers = givepulse_students.reject do |gp_user|
       sdb_emails.include?(gp_user.email&.downcase)
     end
-
+    Rails.logger.info("Droppers to be removed: #{droppers.size}")
     droppers.each do |dropper|
 
       drop_params = {
@@ -240,21 +239,37 @@ class GivepulseCourse < GivepulseBase
 
   def givepulse_course_students
     begin
-     response = GivepulseUser.request_api('/courseStudents', {course_id: self.id}, method: :get)
-     response = JSON.parse(response.body)
+      all_results = []
+      limit = 50  # GivePulse mxa num for limit
+      offset = 0
+      total = nil
 
-     if response['total'].to_i > 0
-        results = response['results']
-        # Rails.logger.debug("***** DEBUG results => #{results.inspect}")
-        results.map { |attrs| GivepulseUser.new(attrs) }        
-     else
-       Rails.logger.warn("No course students found with the givepulse course: #{self.crn}")
-       []
-     end
+      loop do
+        response = GivepulseUser.request_api('/courseStudents', { course_id: self.id, limit: limit, offset: offset }, method: :get)
+        response_body = JSON.parse(response.body)
+
+        # Set total on first response
+        total ||= response_body['total'].to_i
+        results = response_body['results']
+
+        break if results.empty?
+
+        all_results.concat(results)
+
+        # Increment offset for next batch
+        offset += limit
+
+        # Stop if we've fetched all records
+        break if all_results.size >= total
+      end
+
+      # Convert results to GivepulseUser instances
+      all_results.map { |attrs| GivepulseUser.new(attrs) }
+
     rescue StandardError => e
       Rails.logger.error("Error fetching course students: #{e.message}")
       []
-    end 
+    end
   end
 
   def course_droppers

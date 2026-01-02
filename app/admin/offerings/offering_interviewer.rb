@@ -13,7 +13,19 @@ ActiveAdmin.register OfferingInterviewer, as: 'interviewer' do
     column ('Email'){|interviewer| interviewer.person_record.email}
     column :special_notes
     actions
-  end    
+  end
+
+  batch_action :send_emails, confirm: "Are you sure to send mass emails?" do |ids|
+    members = []
+    batch_action_collection.find(ids).each do |member|
+      members << member if member
+    end
+    redirect_to admin_email_write_path("select[#{members.first.class.to_s}]": members)
+  end
+
+  sidebar "Quick Access", only: :index do
+    render "admin/apply/sidebar/quick_access"
+  end 
 
   form do |f|
   	semantic_errors *f.object.errors.keys
