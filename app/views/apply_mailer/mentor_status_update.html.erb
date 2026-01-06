@@ -1,20 +1,23 @@
 <%
-@text.gsub!("%link%", @link)
+
+processed_text = @text.dup  # Don't modify the original
+
+processed_text.gsub!("%link%", @link)
 
 # Replace %mentor.attribute%
-@text.gsub!(/\%mentor\.([a-z0-9_.]+)\%/) do |a|
-  @mentor.reload
+processed_text.gsub!(/\%mentor\.([a-z0-9_.]+)\%/) do |a|   
+  @mentor.reload  
   attr_name = Regexp.last_match(1)
   begin
-    value = @mentor.send(attr_name)
+    value = @mentor.send(attr_name)    
     ERB::Util.html_escape(value.to_s)
   rescue
     ''
-  end
+  end  
 end
 
 # Replace %mentee.attribute%
-@text.gsub!(/\%mentee\.([a-z0-9_.]+)\%/) do |a|
+processed_text.gsub!(/\%mentee\.([a-z0-9_.]+)\%/) do |a|
   begin
     value = @mentee.send($1)
     ERB::Util.html_escape(value.to_s)
@@ -24,7 +27,7 @@ end
 end
 
 # Replace %offering.attribute%
-@text.gsub!(/\%offering\.([a-z0-9_.]+)\%/) do |a|
+processed_text.gsub!(/\%offering\.([a-z0-9_.]+)\%/) do |a|
   begin
     value = @offering.send($1)
     ERB::Util.html_escape(value.to_s)
@@ -34,7 +37,7 @@ end
 end
 
 # Escape HTML entities
-escaped_text = ERB::Util.html_escape(@text)
+escaped_text = ERB::Util.html_escape(processed_text)
 
 # Convert URLs to clickable links
 escaped_text = escaped_text.gsub(/(https?:\/\/[^\s<>]+)/, '<a href="\1" style="color: #0066cc; text-decoration: underline;">\1</a>')

@@ -140,7 +140,7 @@ ActiveAdmin.register Person do
              end
              unless person.former_organization_contacts.blank?
                table_for person.former_organization_contacts do
-                 column('Former Organization'){|contact| link_to contact.organization.name, admin_organization_path(contact.organization)}
+                  column('Former Organization'){|contact| link_to contact.organization.name, admin_organization_path(contact.organization) rescue "<span class='warning'>Organization Not Found<span>".html_safe}
                  column('Units'){|contact| contact.units.collect(&:name).join("<br>").html_safe}
                end
              end

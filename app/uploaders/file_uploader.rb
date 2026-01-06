@@ -56,8 +56,36 @@ class FileUploader < CarrierWave::Uploader::Base
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
-    # "#{model.application_for_offering.id.to_s}-#{model.title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/,'')}-#{model.id}.#{file.extension}" unless file.nil?
     "#{model.application_for_offering.id.to_s}-#{model.title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/,'')}.#{file.extension}" unless file.nil?
+
+    # [TODO] Roll out this patch when summer off time to be safe
+    # unless file.nil?
+    #   # Generate the new filename with model.id
+    #   new_filename = if model.persisted? && model.id
+    #                "#{model.application_for_offering.id}-#{model.title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/, '')}-#{model.id}.#{file.extension}"
+    #              else
+    #                # For unsaved models, fallback to old filename pattern
+    #                "#{model.application_for_offering.id}-#{model.title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/, '')}.#{file.extension}"
+    #              end
+
+    #   # Paths to check
+    #   store_directory = File.join(Rails.root, 'files', 'application_file', mounted_as.to_s, model.application_for_offering.id.to_s)
+
+    #   new_filepath = File.join(store_directory, new_filename)
+    #   old_filename = "#{model.application_for_offering.id}-#{model.title.gsub(/[\s,\.\\\/\*\?\%\:\|\"\'\<\>]?/, '')}.#{file.extension}"
+    #   old_filepath = File.join(store_directory, old_filename)
+
+    #   # Check if new file exists
+    #   if File.exist?(new_filepath)
+    #     new_filename
+    #   elsif File.exist?(old_filepath)
+    #     # Fall back to old filename
+    #     old_filename
+    #   else
+    #     # Default to new filename (or old filename if new doesn't exist)
+    #     new_filename
+    #   end
+    # end
   end
 
   def filepath

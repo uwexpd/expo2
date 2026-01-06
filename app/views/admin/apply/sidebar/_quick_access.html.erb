@@ -24,7 +24,7 @@
 		<li><%= link_to "<i class='mi'>group</i> Interview Committee".html_safe, admin_committee_path(@offering.interview_committee) %></li>
 	<% end -%>
 
-	<% if @offering.interviewers.any? %>
+	<% if @offering.interview_committee.nil? && @offering.offering_interviewers.any? %>
 		<li><%= link_to "<i class='mi'>groups</i> Manger Interviewers".html_safe, admin_offering_interviewers_path(@offering) %></li>
 	<% end -%>
 
