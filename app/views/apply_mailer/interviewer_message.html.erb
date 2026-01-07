@@ -1,10 +1,12 @@
 <%
+processed_text = @text.dup  # Don't modify the original
+
 # Replace %link% and %invite_link% with actual links
-@text.gsub!("%link%", @link)
-@text.gsub!("%invite_link%", @invite_link)
+processed_text.gsub!("%link%", @link)
+processed_text.gsub!("%invite_link%", @invite_link)
 
 # Replace %attribute% with the corresponding attribute from @offering_interviewer
-@text.gsub!(/\%([a-z0-9_.]+)\%/) do |a|
+processed_text.gsub!(/\%([a-z0-9_.]+)\%/) do |a|
   @offering_interviewer.reload
   eval("@offering_interviewer.#{a.gsub(/\%/,'')}")
 rescue
@@ -12,7 +14,7 @@ rescue
 end
 
 # Escape HTML entities
-escaped_text = ERB::Util.html_escape(@text)
+escaped_text = ERB::Util.html_escape(processed_text)
 
 # Convert URLs to clickable links
 escaped_text = escaped_text.gsub(/(https?:\/\/[^\s<>]+)/, '<a href="\1" style="color: #0066cc; text-decoration: underline;">\1</a>')
