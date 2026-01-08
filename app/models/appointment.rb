@@ -40,5 +40,12 @@ class Appointment < ApplicationRecord
     s = Student.find_or_create_by_system_key(q)
     self.student_id = s.id unless s.nil?
   end
+
+  ransacker :student_no_search do |parent|
+    # This creates a subquery to filter by student number
+    Arel::Nodes::SqlLiteral.new(
+      "(SELECT people.student_no FROM people WHERE people.id = appointments.student_id)"
+    )
+  end
   
 end

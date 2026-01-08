@@ -128,7 +128,6 @@ class GivepulseBase < ActiveResource::Base
       end
 
       # If response is a Hash with a code key, check the code
-      # (Adjust this based on your request_api implementation)
       if response.is_a?(Hash) && response[:code]
         if response[:code].to_i != 200
           Rails.logger.error("Response code: #{response[:code]}, message: #{response[:message]}")

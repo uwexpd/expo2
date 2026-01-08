@@ -11,6 +11,19 @@ ActiveAdmin.register Appointment do
 
   permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type
   
+  # controller do
+  #   def scoped_collection
+  #     if params[:q].present? && params[:q][:student_no_search].present?
+  #        students = Student.student_number_eq(params[:q][:student_no_search])
+  #        logger.debug "Debug: #{students.inspect}"
+  #        # Filter appointments by student IDs
+  #        super.where(student_id: students.pluck(:id)) if students
+  #     else
+  #       super
+  #     end
+  #   end
+  # end
+
   index do
     column ('Time') {|appointment| link_to appointment.start_time.to_s(:long_time12), admin_appointment_path(appointment)}
     column ('Type') {|appointment| status_tag appointment.contact_type.title, class: 'small' if appointment.contact_type}
@@ -57,7 +70,8 @@ ActiveAdmin.register Appointment do
     end
     f.actions
   end
-  
+  filter :student_no_search_eq, label: 'Student Number'
+  filter :staff_person, as: :select, collection: User.admin.reject{|u| u.person.firstname.nil?}.sort_by{|u| u.person.firstname}.map{|u| [u.fullname, u.person_id]}, input_html: { class: 'select2', multiple: 'multiple'}
   filter :unit_id, as: :select, collection: Unit.all.pluck(:name, :id), input_html: { class: 'select2', multiple: 'multiple'}
   filter :start_time, label: 'Date', as: :date_range
   filter :check_in_time, label: 'Checkin Date', as: :date_range
