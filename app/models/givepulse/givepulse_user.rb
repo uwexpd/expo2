@@ -12,19 +12,11 @@ class GivepulseUser < GivepulseBase
                 :administrative_fields, :administrative_fields_detailed
 
   # Simulate ActiveRecord's where method
-  # Example: GivepulseUser.where(group_id: '757578', user_id: '4228632') Sendbox data
+  # Example: GivepulseUser.where(group_id: 1479596)
   def self.where(attributes)
-    begin      
-      response =  request_api('/users', attributes, method: :get)
-      response = JSON.parse(response.body)
-
-      if response['total'].to_i > 0
-        results = response['results']        
-        users = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }        
-      else
-        Rails.logger.warn("No users found with attributes: #{attributes}")
-        []
-      end
+    begin
+      results = fetch_all_records('/users', attributes)
+      results.map { |attrs| new(attrs.slice(*permitted_attrs)) }
     rescue StandardError => e
       Rails.logger.error("Error fetching users: #{e.message}")
       []

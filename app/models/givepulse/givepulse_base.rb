@@ -112,5 +112,46 @@ class GivepulseBase < ActiveResource::Base
     result.is_a?(Array) ? result.first : result
   end
 
+  def self.fetch_all_records(endpoint, params = {})
+    all_results = []
+    limit = 50 # Currently GivePUlse only allows to get 50 records
+    offset = 0
+    total = nil
+
+    loop do
+      response = request_api(endpoint, params.merge(limit: limit, offset: offset), method: :get)
+      # Rails.logger.debug("Original Response received: #{response}")
+      # Check if response is a Hash and contains a code or error
+      if response.is_a?(Hash) && response[:error]
+        Rails.logger.error("API Error: #{response[:error]}")
+        break
+      end
+
+      # If response is a Hash with a code key, check the code
+      # (Adjust this based on your request_api implementation)
+      if response.is_a?(Hash) && response[:code]
+        if response[:code].to_i != 200
+          Rails.logger.error("Response code: #{response[:code]}, message: #{response[:message]}")
+          break
+        end
+      end
+      
+      response_body = JSON.parse(response.body)
+      # Rails.logger.debug("Json Parse Response body received: #{response_body}")
+
+      total ||= response_body['total'].to_i
+      results = response_body['results'] || []
+
+      break if results.empty?
+
+      all_results.concat(results)
+      offset += limit
+
+      break if all_results.size >= total
+    end
+
+    all_results
+  end
+
 end
 

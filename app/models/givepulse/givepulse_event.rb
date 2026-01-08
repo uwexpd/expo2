@@ -5,19 +5,16 @@ class GivepulseEvent < GivepulseBase
 
   PERMITTED_ATTRS = instance_methods(false).grep(/=$/).map { |m| m.to_s.chomp('=') }
 
-   # Simulate ActiveRecord's where method. e.g.: where(id: "226983")
+   # Simulate ActiveRecord's where method. e.g.: GivepulseEvent.where(group_id: 1479596)
   def self.where(attributes)
     begin
-      response = request_api('/events', attributes, method: :get)      
-      response = JSON.parse(response.body)
-      # Rails.logger.debug("Json Response received: #{response}")
+      results = fetch_all_records('/events', attributes)
 
-      if response['total'].to_i > 0
-        results = response['results']
-        events = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }
-      else
+      if results.empty?
         Rails.logger.warn("No events found with attributes: #{attributes}")
         []
+      else
+        results.map { |attrs| new(attrs.slice(*permitted_attrs)) }
       end
     rescue StandardError => e
       Rails.logger.error("Error fetching events: #{e.message}")

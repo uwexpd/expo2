@@ -11,19 +11,10 @@ class GivepulseCourse < GivepulseBase
   # Example Use: GivepulseCourse.where(term: 'Autumn 2025' , crn: 'BHS496A')
   # GivepulseCourse.find_by(group_id: 788279)
   def self.where(attributes)
-  	begin
-	   response = request_api('/courses', attributes, method: :get)     
-     response = JSON.parse(response.body)
-
-  	 if response['total'].to_i > 0
-        results = response['results']
-        courses = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }
-        # Rails.logger.debug("***** DEBUG courses => #{courses.inspect}")
-  	 else
-  	 	 Rails.logger.warn("No courses found with attributes: #{attributes}")
-  	   []
-  	 end
-	  rescue StandardError => e
+    begin
+      results = fetch_all_records('/courses', attributes)
+      results.map { |attrs| new(attrs.slice(*permitted_attrs)) }
+    rescue StandardError => e
       Rails.logger.error("Error fetching courses: #{e.message}")
       []
     end

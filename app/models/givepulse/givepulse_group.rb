@@ -15,18 +15,17 @@ class GivepulseGroup < GivepulseBase
                 :search_keywords,    # String - Query for groups by just their search keywords (fuzzy search)
                 :type                # String - Type (description missing)
 
-  # Simulate ActiveRecord's where method
+  # Example: GivepulseGroup.where(parent_id: 1246545)
+  # e.g.GivepulseGroup.where(group_id: 1861869)
   def self.where(attributes)
-    begin      
-      response =  request_api('/groups', attributes, method: :get)
-      response = JSON.parse(response.body)
+    begin
+      results = fetch_all_records('/groups', attributes)
 
-      if response['total'].to_i > 0
-        results = response['results']        
-        users = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }        
-      else
+      if results.empty?
         Rails.logger.warn("No groups found with attributes: #{attributes}")
         []
+      else
+        results.map { |attrs| new(attrs.slice(*permitted_attrs)) }
       end
     rescue StandardError => e
       Rails.logger.error("Error fetching group: #{e.message}")

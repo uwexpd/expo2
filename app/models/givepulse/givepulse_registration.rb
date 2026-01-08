@@ -9,19 +9,16 @@ class GivepulseRegistration < GivepulseBase
                 :user, :event, :group
 
   # == Query ==
-  # Example:
-  # GivepulseRegistration.where(group_id: 127821, status: ['Registered'])
-  #
+  # Example: GivepulseRegistration.where(group_id: 127821, status: ['Registered'])
+  # PROD: GivepulseRegistration.where(group_id: 1479596, status: ['Registered'])
   def self.where(attributes)
     begin
-      response = request_api('/registrations', attributes, method: :get)
-      parsed = JSON.parse(response.body)
-
-      if parsed['total'].to_i > 0
-        parsed['results'].map { |attrs| new(attrs.slice(*permitted_attrs)) }
-      else
+      results = fetch_all_records('/registrations', attributes)
+      if results.empty?
         Rails.logger.warn("No registrations found with attributes: #{attributes}")
         []
+      else
+        results.map { |attrs| new(attrs.slice(*permitted_attrs)) }
       end
     rescue StandardError => e
       Rails.logger.error("Error fetching registrations: #{e.message}")

@@ -22,7 +22,7 @@ task :givepulse_roster_sync => :environment do
   # Get GP CE courses with sync quarters:
   sync_quarters.each do |quarter|
       puts "Running GivepulseCourse.where(term: #{quarter.title.inspect})"
-      ce_courses =  GivepulseCourse.where(term: quarter.title, limit: 50)
+      ce_courses =  GivepulseCourse.where(term: quarter.title)
 
       if ce_courses.blank?
           puts "No courses found for #{quarter.title}"
