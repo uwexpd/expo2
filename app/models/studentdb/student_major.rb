@@ -1,7 +1,7 @@
 # The student_1_college entity displays a student's chosen primary ("major") course through the University (college, major, pathway) and the degree to which the student aspires (degree level, degree type). (Compare student_1_minor.)
 class StudentMajor < StudentInfo
   self.table_name = "student_1_college_major"
-  self.primary_keys = :system_key, :index1, :major_number
+  self.primary_keys = :system_key, :index1
   belongs_to :student_record, :class_name => "StudentRecord", :foreign_key => "system_key"
   
   delegate :discipline_category, :to => :major
