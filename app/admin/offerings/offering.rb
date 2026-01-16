@@ -363,6 +363,6 @@ ActiveAdmin.register Offering do
   filter :name, as: :string
   filter :open_date, as: :date_range
   filter :deadline, as: :date_range
-  filter :unit_id, as: :select, collection: Unit.all.pluck(:name, :id), if: proc {@current_user.has_role?("user_manager")}
+  filter :unit_id, as: :select, collection: Unit.all.pluck(:name, :id), if: proc {@current_user.has_role?("user_manager")}, input_html: { class: 'select2', multiple: 'multiple'}
 
 end

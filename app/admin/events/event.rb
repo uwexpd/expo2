@@ -154,7 +154,7 @@ ActiveAdmin.register Event do
   # end
   
   filter :title, as: :string
-  filter :unit_id, as: :select, collection: Unit.all.pluck(:name, :id)
-  filter :event_type, as: :select, collection: EventType.all.pluck(:title, :id)
+  filter :unit_id, as: :select, collection: Unit.all.pluck(:name, :id), input_html: { class: 'select2', multiple: 'multiple'}
+  filter :event_type, as: :select, collection: EventType.all.pluck(:title, :id), input_html: { class: 'select2', multiple: 'multiple'}
 
 end

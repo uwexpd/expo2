@@ -14,7 +14,7 @@ class UserUnitRole < ApplicationRecord
   # Unit can be nil and Role can be nil, but not both.
   def unit_or_role_must_be_defined
     if unit_id.blank? && role_id.blank?
-      errors.add_to_base "Either the unit or the role must be defined; you can't leave both blank."
+      errors.add(:base, "Either the unit or the role must be defined; you can't leave both blank.")
     end
   end
 

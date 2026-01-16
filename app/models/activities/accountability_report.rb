@@ -693,7 +693,7 @@ class AccountabilityReport < ApplicationRecord
   # * For activities with a department_id defined in the Activity record, we use that department
   # * For ActivityCourse records, a separate "reporting department" can be specified, in which case we populate a
   #   :reporting_department attribute in the hash (as long as the reporting department is not the same as the activity department).
-  # * For ServiceLearningPlacements, the department is set as "0_Carlson Center". In June, 2011, break down Carlson Center Placement to departments and inject courses.
+  # * For ServiceLearningPlacements, the department is set as "0_Carlson Center". In June, 2011, break down Carlson Center Placement to departments and inject courses. Update Carlson Cetner to CELE.
   # * For objects that have an associated Unit in EXPO (e.g., Scholarship offerings and symposium), the department is set
   #   as "0_<unit name>"
   # * For all others, the the department is set as "0_<department_name>"
@@ -734,7 +734,7 @@ class AccountabilityReport < ApplicationRecord
               elsif a.unit_id == 9
                 service_learning_department_identifier = "0_Bothell Service-Learning"
               else 
-                service_learning_department_identifier = "0_Carlson Center"                                
+                service_learning_department_identifier = "0_Community Engagement & Leadership Education (CELE) Center"
               end              
                           
             # print "E"
