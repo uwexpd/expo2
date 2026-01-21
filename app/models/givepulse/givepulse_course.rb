@@ -47,10 +47,13 @@ class GivepulseCourse < GivepulseBase
 
       admin_minor = student.sdb.age < 18 ? "Yes" : "No"
       admin_dir_release = student.dir_release ? "Yes" : "No"
+      admin_campus = student.major_branch_list rescue ''
+      admin_class_standing = student.sdb.class_standing_description(show_upcoming_graduation: true) rescue ''
+      admin_student_major = student.sdb.majors_list(true, ", ") rescue ''
       admin_fields = if Rails.env.production?
-        { "236072" => admin_minor, "236073" => admin_dir_release, "239467" => course_section }
+        { "236072" => admin_minor, "236073" => admin_dir_release, "239467" => course_section, "268083" => admin_campus, "268084" => admin_class_standing, "268085" => admin_student_major }
       else
-        { "81445" => admin_minor, "81773" => admin_dir_release, "82030" => course_section }
+        { "81445" => admin_minor, "81773" => admin_dir_release, "82030" => course_section, "82591" => admin_campus, "82592" => admin_class_standing, "82593" => admin_student_major }
       end
 
   	  post_params = {

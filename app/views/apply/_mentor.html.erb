@@ -72,6 +72,7 @@
 							</label></p>
 						<% else %>
 							<% @offering.mentor_types.each do |mentor_type| %>
+							    <% next if mentor_type.application_mentor_type.nil? %>
 								<p>
 								  <label>
 									 <%= mf.radio_button :application_mentor_type_id, mentor_type.application_mentor_type_id, {class: "with-gap"} %>
