@@ -72,6 +72,21 @@ class Quarter < ApplicationRecord
     quarter_code.name + " " + year.to_s
   end
 
+  # The academic year always starts with Autumn quarter of the same calendar year
+  def academic_year
+    if quarter_code == 4
+      # Autumn quarter: academic year is current year to next year
+      "#{year}-#{year + 1}"
+    else
+      # Winter, Spring, Summer quarters: academic year is previous year to current year
+      "#{year - 1}-#{year}"
+    end
+  end
+
+  def title_with_academic_year
+    "#{title.split.first} #{academic_year}"
+  end
+
   def self.find_by_title(title)
     season, year = title.strip.split(/\s+/, 2)
     return nil unless season && year.to_s.match?(/^\d{4}$/)

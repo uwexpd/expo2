@@ -49,6 +49,12 @@ class Course < StudentInfo
   def course_title
     read_attribute :course_title
   end
+
+  # Returns 'Graduate' if course_no >= 500, else 'Undergraduate'. For Collobratory use
+  def course_level
+    return 'Graduate' if course_no.present? && course_no >= 500
+    'Undergraduate'
+  end
   
   # Tries to parse a string into dept_abbrev, course_no, and section_id
   def self.match(abbrev)
