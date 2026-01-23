@@ -139,12 +139,14 @@ class ApplicationCompositeReport
              render_partial('admin/applications/question_review', audience: :download)
            when :scoring
              render_partial('admin/applications/scoring')
-           end
+           end    
     verify_file_path(part_filename(part))
+    
     pdf = WickedPdf.new.pdf_from_string(data,
                                     page_size: 'Letter',
                                     margin: { bottom: 20, top: 20 },
                                     footer: { left: "#{part.to_s.split.map(&:capitalize).join(' ') }", right: '[page] of [topage]'},
+                                    encoding: 'UTF-8'
                                     )
     File.open(part_filename(part), 'wb') do |file|
       file.write(pdf)
