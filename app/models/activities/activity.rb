@@ -8,7 +8,7 @@ ActivityCourse::    for tracking an entire UW course for a particular quarter
 ActivityProject::   for tracking an ongoing project, such as Students in Service, that lasts several weeks or even several quarters
 ActivityEvent::     for tracking a one-time event, such as the MLK Day of Service, that has a more limited scope.
 =end
-class Activity < ActiveRecord::Base
+class Activity < ApplicationRecord
   stampable
 
   belongs_to :department
