@@ -31,6 +31,10 @@ module Expo2
     # Allow for models or class in subdirectories off models and expo lib
     config.eager_load_paths += Dir["#{config.root}/app/models/**/"]
     config.eager_load_paths += Dir["#{config.root}/lib/expo/**/"]
+
+    config.autoload_paths << Rails.root.join('app', 'services')
+    config.eager_load_paths << Rails.root.join('app', 'services')
+
     
     config.constants = config_for(:constants)
 

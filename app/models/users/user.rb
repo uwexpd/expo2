@@ -135,9 +135,11 @@ class User < ApplicationRecord
   # Returns the authorizations that this user has for the specified role in an array of UserUnitRoleAuthorization objects,
   # or nil if the user does not have the role assigned.
   def authorizations_for(role)
-    auth_roles = roles.find(:all, :joins => :role, :include => :authorizations, :conditions => { "roles.name" => role.to_s })
+    auth_roles = roles.joins(:role).includes(:authorizations).where(roles: { name: role.to_s })
+
     return nil if auth_roles.empty?
-    auth_roles.collect(&:authorizations).flatten.compact
+
+    auth_roles.flat_map(&:authorizations).compact
   end
   
   # Returns true if this user is assigned a role for the specified unit.

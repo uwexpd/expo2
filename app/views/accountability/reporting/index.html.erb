@@ -1,0 +1,76 @@
+<% title "#{@year} Accountability Reporting" %>
+<div class="card content">
+<h5><strong>
+  Welcome, <%= @my.firstname %>.
+  <span class="light smaller">
+    &raquo; <%= @department.name %>
+    <small>(<%= link_to "change", :action => 'choose_department' %>)</small>
+  </span></strong>
+</h5>
+
+<%= raw HelpText.caption :reporting_interface_welcome, AccountabilityReport %>
+
+<ul class="collection margin_left" style="margin-top: 2rem">
+  <li class="presentation collection-item avatar" style="padding-top: 1.25rem">
+    <i class='mi circle purple darken-4'>school</i> <%= link_to "Report courses", accountability_reporting_courses_path(@year), class: 'larger' %>
+    <br>
+    <div>
+      <%= @activity_types.map do |activity_type|
+          count = if activity_type.id == 1
+                    @course_activity_type_ids.count(activity_type.id)
+                  else
+                    @service_learning_courses_total = 0
+                    @course_activity_type_ids.count(activity_type.id) + @service_learning_courses_total
+                  end
+          "<strong class=\"larger green-text text-darken-3\">#{count}</strong> #{activity_type.title} courses"
+        end.join(", ").html_safe %>    
+      </div>
+  </li>
+
+  <li class="people collection-item avatar padding_top" style="padding-top: 1.25rem">
+    <i class='mi circle purple darken-4'>person</i> <%= link_to "Report individual involvement", accountability_reporting_individuals_path(@year), class: 'larger' %>
+    <br>
+    <div>
+      <%= @activity_types.map do |activity_type|
+            count = @individual_activity_type_ids.count(activity_type.id)
+            "<strong class=\"larger green-text text-darken-3\">#{count}</strong> #{activity_type.title} students"
+          end.join(", ").html_safe %>
+    </div>
+  </li>
+
+  <!--
+  <li class="pages">
+    <%#= link_to "View summary report", action: 'summary' %>
+    <br>View a summary of your department's reported involvement.
+  </li>
+  -->
+
+  <li class="authorize collection-item avatar" style="padding-top: 1.25rem">
+    <i class='mi circle purple darken-4'>admin_panel_settings</i> <%= link_to "Authorize or delegate reporting privileges", accountability_reporting_authorizations_url(@year), class: 'larger' %>
+    <br>
+    <div>
+      Current <%= @department.name %> users:
+      <code><strong><%= @department.accountability_coordinator_authorizations.map(&:login).uniq.join(", ") %></strong></code>
+   </div>
+  </li>
+</ul>
+</div>
+<%# Sidebar partial calls %>
+<% content_for(:sidebar) do %>
+  <div class="sideblock card sidebar_nav">
+    <%= render partial: "accountability/reporting/sidebar/submit" %>
+  </div>
+<% end %>
+<% if @department_authorizations.size > 1 %>
+  <% content_for(:sidebar) do %>
+    <div class="sideblock card sidebar_nav">
+      <%= render partial: "accountability/reporting/sidebar/choose_department" %>
+    </div>
+  <% end %>
+<% end %>
+<% content_for(:sidebar) do %>
+  <div class="sideblock card sidebar_nav">
+    <%= render partial: "accountability/reporting/sidebar/choose_year" %>
+  </div>
+<% end %>
+<%# sidebar :faq %>

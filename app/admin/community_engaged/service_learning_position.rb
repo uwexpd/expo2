@@ -4,8 +4,8 @@ ActiveAdmin.register ServiceLearningPosition do
   config.per_page = [30, 50, 100, 200, 300]
   menu parent: 'Tools'
   
-  scope "#{Quarter.current_quarter.title}", :current_quarter, default: true
-  scope "All", :sorting
+  scope "#{Quarter.current_quarter.title}", :current_quarter
+  scope "All", :sorting, default: true
 
   permit_params :title, :organization_quarter_id
   

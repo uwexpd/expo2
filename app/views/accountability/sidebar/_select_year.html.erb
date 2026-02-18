@@ -1,0 +1,25 @@
+<ul class="collection with-header">
+    <li class="collection-header">
+      <strong>
+        <i class='mi' aria-hidden="true">analytics</i>
+        Detailed Reports
+      </strong>
+    </li>
+
+    <% @years.reverse.each do |year| %>
+      <%= link_to accountability_year_path(year),
+                  class: "collection-item #{'active' if params[:year].to_s == year.to_s}" do %>
+        <span><%= year %></span>
+
+        <%# Option A: Use Materialize badge for DRAFT %>
+        <% if @draft_years.include?(year) %>
+          <span class="new badge red" data-badge-caption="DRAFT"></span>
+        <% end %>
+
+        <%# Option B: Use existing tag style, keep this instead of the badge %>
+        <%# if @draft_years.include?(year) %>
+        <%#   content_tag(:strong, "DRAFT", class: "status_tag warning right") %>
+        <%# end %>
+      <% end %>
+    <% end %>
+</ul>

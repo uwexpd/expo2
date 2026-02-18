@@ -1,0 +1,14 @@
+<ul class="collection with-header">
+	<li class="collection-header"><strong>Navigation</strong></li>
+	
+	<%= link_to "<i class='mi padding_right'>home</i> #{@year} Reporting Home".html_safe, accountability_reporting_path(@year), class: 'collection-item', style: 'padding-left: 1rem' %>
+
+	<% unless current_page?(accountability_reporting_courses_path(@year)) %>
+		<%= link_to "<i class='mi padding_right'>school</i> Report courses".html_safe, accountability_reporting_courses_path(@year), class: 'collection-item', style: 'padding-left: 1rem' %>
+	<% end %>
+
+	<% unless current_page?(accountability_reporting_individuals_path(@year)) %>
+		<%= link_to "<i class='mi padding_right'>person</i> Report individual involvement".html_safe, accountability_reporting_individuals_path(@year), class: 'collection-item', style: 'padding-left: 1rem' %>
+	<% end %>
+	
+</ul>

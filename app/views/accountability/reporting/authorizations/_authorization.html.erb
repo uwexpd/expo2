@@ -1,0 +1,12 @@
+	<tr id="authorization_<%= authorization.id %>">
+		<td><%= authorization.login %></td>
+		<td><%= authorization.fullname %></td>
+		<td>
+		  <% unless current_user == authorization.user %>
+		    <%= link_to "<i class='mi'>delete_forever</i>".html_safe, accountability_reporting_authorization_path(@year, authorization),
+		                method: :delete,
+		                remote: true,
+		                data: { confirm: "Are you sure?", disable_with: "Deleting..."} %>		   
+		  <% end %>
+		</td>
+	</tr>

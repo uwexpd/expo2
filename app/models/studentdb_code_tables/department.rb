@@ -8,11 +8,9 @@ class Department < StudentInfo
   belongs_to :college, :class_name => "College", :foreign_key => [:dept_branch, :dept_college]
   belongs_to :department_extra, :class_name => "DepartmentExtra", :foreign_key => "dept_code", :primary_key => "dept_code"
   
-  # has_many :accountability_coordinator_authorizations, 
-  #             :class_name => "UserUnitRoleAuthorization", 
-  #             :as => :authorizable,
-  #             :include => { :user_unit_role => :role },
-  #             :conditions => { "roles.name" => "accountability_department_coordinator" }
+  has_many :accountability_coordinator_authorizations, -> {
+    joins(user_unit_role: :role).where(roles: { name: 'accountability_department_coordinator' }).distinct
+  }, class_name: 'UserUnitRoleAuthorization', as: :authorizable
   
   delegate :email, :fullname, :chair_name, :chair_title, :chair_email, :to => :department_extra
   

@@ -1,0 +1,10 @@
+<ul class="collection with-header years-scroll">
+	<li class="collection-header">Accountability Years</li>
+	<!-- Links -->
+	<% AccountabilityReport.years.reverse.each do |year| %>
+		<%= link_to url_for(year: year),
+		            class: "collection-item #{'active' if params[:year].to_s == year.to_s}" do %>
+		  <span><%= year %></span>
+		<% end %>
+	<% end %>
+</ul>

@@ -47,6 +47,12 @@ storage/
 /package-lock.json
 /yarn.lock
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
 # Ingore outputs folder
 /outputs
 

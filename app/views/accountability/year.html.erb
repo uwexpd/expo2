@@ -1,0 +1,38 @@
+<% title "2024 Accountability Report" %>
+<div class="card content">
+  <h5>
+    <%= @year %> Accountability Report
+    <span class="light right">
+      <%= link_to "<i class='mi'>download</i> Download in Excel".html_safe, { format: :xlsx }, class: 'waves-effect waves-light btn-small' %>
+    </span>
+  </h5>
+
+  <%= raw(HelpText.caption(:accountability_report_note, AccountabilityReport)) %>
+
+  <h6>Quarters: <%= @quarter_abbrevs.join(", ") %></h6>
+
+  <strong>Activity Types:</strong>
+  <ul>
+    <% @report_objects.each do |activity_type, report| %>
+      <li>
+        <%= activity_type.title %>
+        <span class="light">
+          <% if report.in_progress? %>
+            <span class="error-message">(Currently being generated)</span>
+          <% else %>
+            (Generated on <%= report.generated_at.to_s(:date_at_time12) %>)
+          <% end %>
+
+          <% unless report.finalized? %>
+            <span class="status_tag red ">DRAFT</span>
+          <% end %>
+        </span>
+      </li>
+    <% end %>
+  </ul>
+
+  <table class="accountability highlight responsive-table outlined-table">
+    <%= render partial: "year_partial" %>
+  </table>
+  <br>
+</div>

@@ -728,7 +728,9 @@ class ApplicationForOffering < ApplicationRecord
     s = s.to_s if s.is_a?(Symbol)
     if respect_sequence
       offering_status = offering.statuses.joins(:application_status_type).where("application_status_types.name" => s).first
-      return false if offering_status && status_sequence < offering_status.sequence
+      if offering_status && offering_status.sequence && status_sequence < offering_status.sequence
+        return false
+      end
     end
     statuses.collect(&:name).include?(s)
   end

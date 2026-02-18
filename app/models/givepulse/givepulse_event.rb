@@ -22,9 +22,30 @@ class GivepulseEvent < GivepulseBase
     end
   end
 
+  # Create an event via GivePulse API
+  # @param event_params [Hash] event attributes to send in the API request
+  # @return [Hash, nil] parsed response on success, nil on failure
+  def self.create_event(event_params)
+    begin
+      response = request_api("/events", event_params, method: :post)
+
+      if response.code.to_i == 200
+        response_body = JSON.parse(response.body)
+        Rails.logger.info("Successfully created new event: #{response_body['event_id']}")        
+        return response_body
+      else
+        Rails.logger.warn("Failed to create event: #{response.status} - #{response.body}")        
+        return nil
+      end
+    rescue StandardError => e
+      Rails.logger.error("Error creating event: #{e.message}")      
+      return nil
+    end
+  end
+
   # Eg: Import events for Seattle CEC: GivepulseEvent.create_events(36265, group_id: 792610)
   # GivepulseEvent.create_events([35914, 35919, 36256, 36257, 36258, 36259, 36260], group_id: 1479577)
-  def self.create_events(ids, params = {})
+  def self.migrate_events(ids, params = {})
 
     begin
       import_positions =  ServiceLearningPosition.where(id: ids)

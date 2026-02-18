@@ -8,44 +8,51 @@ ActivityCourse::    for tracking an entire UW course for a particular quarter
 ActivityProject::   for tracking an ongoing project, such as Students in Service, that lasts several weeks or even several quarters
 ActivityEvent::     for tracking a one-time event, such as the MLK Day of Service, that has a more limited scope.
 =end
-class Activity < ApplicationRecord
+class Activity < ActiveRecord::Base
   stampable
 
   belongs_to :department
-  
-  validates_presence_of :activity_type_id
+
+  validates :activity_type_id, presence: true
   validates_associated :quarters
-  has_many :quarters, :class_name => "ActivityQuarter", :dependent => :destroy
+  has_many :quarters, class_name: 'ActivityQuarter', dependent: :destroy
 
-  # The number of "real" hours of activity that each course credit should be counted for.
+  # Constants
   COURSE_CREDIT_TO_HOURS_MULTIPLIER = 3
-  
-  # The number of weeks in a quarter.
   WEEKS_PER_QUARTER = 10
-
-  # The number of total hours for a quarter that a ServiceLearningPlacement should count for.
   SERVICE_LEARNING_PLACEMENT_NUMBER_OF_HOURS = 20
-  
-  scope :for_quarter, -> (quarter) { where(:quarter_id => quarter.id).uniq }
 
-  # TODO change syntax for rails 4
-  # scope :of_type, lambda { |t|
-  #     { :select => "DISTINCT activities.*", 
-  #       :conditions => { :activity_type_id => (t.is_a?(String) ? ActivityType.find_by_abbreviation(t).id : (t.is_a?(ActivityType) ? t.id : t)) }}
-  #   }
+  # Scopes
+  scope :for_quarter, ->(q) {
+    quarter_ids = q.is_a?(Array) ? q.map(&:id) : q.id
+    select('DISTINCT activities.*').where(quarter_id: quarter_ids)
+  }
 
-  # Calculates the number of hours for a given activity.
+  scope :of_type, ->(t) {
+    activity_type_id = case t
+                       when String
+                         ActivityType.find_by(abbreviation: t)&.id
+                       when ActivityType
+                         t.id
+                       else
+                         t
+                       end
+    select('DISTINCT activities.*').where(activity_type_id: activity_type_id)
+  }
+
+  # Calculates the number of hours for a given activity source
   def self.number_of_hours(source)
     return source.number_of_hours if source.respond_to?(:number_of_hours)
-    h = case
-    when source.is_a?(StudentRegistrationCourse)
-      source.credits * COURSE_CREDIT_TO_HOURS_MULTIPLIER * WEEKS_PER_QUARTER
-    when source.is_a?(ServiceLearningPlacement)
-      SERVICE_LEARNING_PLACEMENT_NUMBER_OF_HOURS    
-    end
-    h
-  end
 
+    case source
+    when StudentRegistrationCourse
+      source.credits * COURSE_CREDIT_TO_HOURS_MULTIPLIER * WEEKS_PER_QUARTER
+    when ServiceLearningPlacement
+      SERVICE_LEARNING_PLACEMENT_NUMBER_OF_HOURS
+    else
+      nil
+    end
+  end
 end
 
 

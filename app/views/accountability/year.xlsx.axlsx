@@ -1,0 +1,200 @@
+hide_college_title ||= false
+wb = xlsx_package.workbook
+
+# Define styles used throughout the workbook
+header_style = wb.styles.add_style(
+  b: true,
+  alignment: { horizontal: :center, vertical: :center, wrap_text: true },
+  border: Axlsx::STYLE_THIN_BORDER,
+  bg_color: "FFFFFF" # White background for clean look
+)
+
+subheader_style = wb.styles.add_style(
+  b: true,
+  alignment: { horizontal: :center, vertical: :center },
+  border: Axlsx::STYLE_THIN_BORDER,
+  font_size: 9
+)
+
+bold_center_style = wb.styles.add_style(
+  b: true,
+  alignment: { horizontal: :center },
+  border: Axlsx::STYLE_THIN_BORDER
+)
+
+bold_style = wb.styles.add_style(
+  b: true,
+  border: Axlsx::STYLE_THIN_BORDER
+)
+
+number_style = wb.styles.add_style(
+  num_fmt: 3, # #,##0 format
+  alignment: { horizontal: :right },
+  border: Axlsx::STYLE_THIN_BORDER
+)
+
+precision_style = wb.styles.add_style(
+  num_fmt: 1, # #,##0.0 format
+  alignment: { horizontal: :right },
+  border: Axlsx::STYLE_THIN_BORDER
+)
+
+border_style = wb.styles.add_style(border: Axlsx::STYLE_THIN_BORDER)
+
+# New style for College cell with vertical centering
+college_cell_style = wb.styles.add_style(
+  b: true,
+  alignment: { vertical: :center },
+  border: Axlsx::STYLE_THIN_BORDER
+)
+
+wb.add_worksheet(name: "Accountability Report #{@year}") do |sheet|
+  
+  # --- HEADER ROWS ---
+
+  header_row_1 = []
+  header_row_1 << (hide_college_title ? "" : "College")
+  header_row_1 << (hide_college_title ? "" : "Department")
+  @report_objects.each do |activity_type, report|
+    title = activity_type.title
+    title += " DRAFT" unless report.finalized?
+    header_row_1 << title
+    header_row_1 += ["", ""]
+  end
+  sheet.add_row header_row_1, style: header_style
+
+  sheet.merge_cells("A1:A2") unless hide_college_title
+  sheet.merge_cells("B1:B2") unless hide_college_title
+
+  start_col = hide_college_title ? 0 : 2
+  @report_objects.each_with_index do |(_activity_type, _report), idx|
+    first_col = start_col + idx * 3
+    last_col = first_col + 2
+    first_cell = sheet.rows[0].cells[first_col]
+    last_cell = sheet.rows[0].cells[last_col]
+    if first_cell && last_cell
+      sheet.merge_cells("#{first_cell.r}:#{last_cell.r}")
+      # Set wrap text and vertical alignment on merged cell
+      first_cell.style = wb.styles.add_style(
+          b: true,
+          alignment: { horizontal: :center, vertical: :center, wrap_text: true },
+          border: Axlsx::STYLE_THIN_BORDER,
+          bg_color: "FFFFFF"
+        )
+    else
+      Rails.logger.warn "Skipping merge_cells due to missing cells at #{first_col} or #{last_col}"
+    end
+  end
+
+  header_row_2 = []
+  header_row_2 += ["", ""] unless hide_college_title
+  @activity_types.each do |_|
+    header_row_2 += ["Number of students", "Number of student-quarters", "Number of hours"]
+  end
+  sheet.add_row header_row_2, style: subheader_style
+
+  # --- DATA ROWS ---
+
+  @colleges.sort_by { |k, _v| k == "Other" ? "ZZZZ" : k }.each do |college_name, data|
+    college_total_students = Hash.new(0)
+    college_total_quarter = Hash.new(0)
+    college_total_hours = Hash.new(0)
+
+    departments = data[:department].sort_by { |k, _v| k == "Unknown" ? "ZZZZ" : k }
+    first_department = true
+    first_row_index = sheet.rows.size + 1
+
+    departments.each do |department_name, results|
+      row = []
+
+      if first_department && !hide_college_title
+        row << college_name
+        first_department = false
+      elsif !hide_college_title
+        row << nil
+      end
+
+      row << department_name
+
+      @activity_types.each do |activity_type|
+        students = (results[activity_type][:total][:students].uniq.size rescue 0)
+        quarters = (results[activity_type][:quarters].sum { |_q, val| val[:number_of_students] } rescue 0)
+        hours = (results[activity_type][:quarters].sum { |_q, val| val[:number_of_hours] } rescue 0)
+
+        row << students
+        row << quarters
+        row << hours
+
+        college_total_students[activity_type] += students
+        college_total_quarter[activity_type] += quarters
+        college_total_hours[activity_type] += hours
+      end
+
+      styles = []
+      if !hide_college_title
+        styles << college_cell_style
+        styles << border_style
+      else
+        styles << border_style
+      end
+      styles += [number_style, number_style, precision_style].cycle(@activity_types.size).to_a
+
+      sheet.add_row row, style: styles
+    end
+
+    last_row_index = sheet.rows.size
+    if !hide_college_title && last_row_index > first_row_index
+      sheet.merge_cells("A#{first_row_index}:A#{last_row_index}")
+    end
+
+    subtotal_row = []
+    subtotal_row << "SubTotal:" unless hide_college_title
+    subtotal_row << "" unless hide_college_title
+    @activity_types.each do |activity_type|
+      subtotal_row << college_total_students[activity_type]
+      subtotal_row << college_total_quarter[activity_type]
+      subtotal_row << college_total_hours[activity_type]
+    end
+    subtotal_styles = []
+    subtotal_styles << bold_style unless hide_college_title
+    subtotal_styles << bold_style unless hide_college_title
+    subtotal_styles += [number_style, number_style, precision_style].cycle(@activity_types.size).to_a
+    sheet.add_row subtotal_row, style: subtotal_styles
+
+    sheet.add_row []
+  end
+
+  footer_header_row = []
+  footer_header_row << "" unless hide_college_title
+  footer_header_row << "Department"
+  @activity_types.each do |activity_type|
+    footer_header_row += ["Number of students", "Number of student-quarters", "Number of hours"]
+  end
+  sheet.add_row footer_header_row, style: header_style
+
+  total_row = []
+  total_row << "TOTALS:" unless hide_college_title
+  total_row << "" unless hide_college_title
+  @activity_types.each do |activity_type|
+    total_students = @reports[activity_type] ? @reports[activity_type][:total][:number_of_students] : 0
+    total_quarters = @reports[activity_type] ? @reports[activity_type][:total][:student_quarters] : 0
+    total_hours = @reports[activity_type] ? @reports[activity_type][:total][:number_of_hours] : 0
+
+    total_row << total_students
+    total_row << total_quarters
+    total_row << total_hours
+  end
+  total_styles = []
+  total_styles << bold_style unless hide_college_title
+  total_styles << bold_style unless hide_college_title
+  total_styles += [number_style, number_style, precision_style].cycle(@activity_types.size).to_a
+  sheet.add_row total_row, style: total_styles
+
+  col_widths = []
+  col_widths << 30 unless hide_college_title  # wider College column for better vertical centering
+  col_widths << 35                             # wider Department column to avoid squeezing
+  @activity_types.size.times do
+    col_widths += [20, 20, 20]  # wider numeric columns for each activity type
+  end
+  sheet.column_widths *col_widths
+end

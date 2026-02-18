@@ -30,5 +30,67 @@ class PersonResource < WebServiceResult
     fetch_record ? self.find(result_regid) : result_regid
   end
 
+  # Fetch FULL by REGID
+  def self.find_full(regid)
+    raw = connection.get("#{self.element_path}/#{regid}/full.json")
+    data = self.encapsulate_data(raw)
+    return nil if data.nil? || data.empty?
+    self.new(data['Person'] || data)
+  end
+
+  # Resolve netid → regid, then fetch FULL
+  def self.find_full_by_uw_netid(netid)
+    regid = self.find_by_attribute(:uwNetID, netid, false) # returns regid
+    return nil unless regid
+    find_full(regid)
+  end
+
+  class << self
+    alias_method :find_full_by_netid, :find_full_by_uw_netid
+  end
+
+
+  # Safely get the underlying attributes hash regardless of where it’s stored.
+  def attrs
+    if respond_to?(:attributes) && attributes.is_a?(Hash) && !attributes.empty?
+      attributes
+    elsif instance_variable_defined?(:@attributes) && @attributes.is_a?(Hash)
+      @attributes
+    elsif instance_variable_defined?(:@id) && @id.is_a?(Hash)
+      @id
+    else
+      {}
+    end
+  end
+
+
+  # 1) DisplayName (fallback to PreferredFirstName + PreferredSurname if needed)
+  def display_name
+    attrs['DisplayName'] ||
+      begin
+        first = attrs['PreferredFirstName'] || attrs['RegisteredFirstMiddleName']
+        last  = attrs['PreferredSurname']   || attrs['RegisteredSurname']
+        [first, last].compact.join(' ').presence
+      end
+  end
+
+  # Convenience accessor for the EmployeePersonAffiliation blob
+  def employee_affiliation
+    attrs.dig('PersonAffiliations', 'EmployeePersonAffiliation') || {}
+  end
+
+  # 2) EmployeePersonAffiliation["HomeDepartment"]
+  def employee_home_department
+    employee_affiliation['HomeDepartment']
+  end
+
+  # 3) EmployeePersonAffiliation["EmployeeWhitePages"]["EmailAddresses"]
+  def employee_email_addresses
+    employee_affiliation.dig('EmployeeWhitePages', 'EmailAddresses') || []
+  end
+
+
+
+
 
 end

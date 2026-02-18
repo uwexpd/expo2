@@ -51,7 +51,7 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
       column ('Student No.') {|student| highlight student.student_no, params.dig(:q, :student_number_eq) }
       column ('Class') {|student| student.sdb.class_standing_description(:show_upcoming_graduation => true) rescue nil}
       column ('Major(s)') {|student| raw(student.sdb.majors_list(true, "<br>")) rescue nil}
-      column ('Created At') {|student| "#{time_ago_in_words student.created_at} ago"}
+      column ('Created At') {|student| "#{time_ago_in_words student.created_at} ago" if student.created_at}
     # end
   end
 

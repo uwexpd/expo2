@@ -1,31 +1,34 @@
 # Models a individual student project that should be counted in an accountability report. See AccountabilityReport for more information.
 class ActivityProject < Activity
-  validates_presence_of :system_key
-  
-  belongs_to :student, :class_name => "StudentRecord", :foreign_key => "system_key"
+  validates :system_key, presence: true
 
-  # Only return records with quarters that match the requested quarter
-  # scope :for_quarter, -> (quarter) { joins(:quarters).where("activity_quarters.quarter_id IN (#{quarter.is_a?(Array) ? quarter.collect(&:id).join(",") : quarter.id})").uniq }
+  # Associations
+  belongs_to :student, class_name: 'StudentRecord', foreign_key: 'system_key', optional: true
+
+  # Scopes
+  # Returns records with quarters matching the requested quarter(s)
   scope :for_quarters, ->(q) {
-    joins(:quarters)
-    .select("DISTINCT activities.*")
-    .where("activity_quarters.quarter_id IN (?)", q.is_a?(Array) ? q.pluck(:id) : q.id)
+    quarter_ids = q.is_a?(Array) ? q.map(&:id) : q.id
+    joins(:quarters).select('DISTINCT activities.*').where('activity_quarters.quarter_id IN (?)', quarter_ids)
   }
-  
-  # Only return records assigned to this department
-  scope :for_department, -> (d) {
-    if d.is_a?(DepartmentExtra)
-      if !d.dept_code.blank?
-        where(:department_id => d.dept_code)
+
+  # Returns records assigned to the specified department
+  scope :for_department, ->(d) {
+    case d
+    when DepartmentExtra
+      if d.dept_code.present?
+        where(department_id: d.dept_code)
       elsif d.fixed_name.blank?
-        where(:department_id => 99999999) # return nothing
+        where(department_id: 99999999) # return no results
       else
-        where(:department_name => d.fixed_name )
+        where(department_name: d.fixed_name)
       end
-    elsif d.is_a?(Department)
-      where(:department_id => d.id )
-    elsif d.is_a?(String)
-      where(:department_name => d )
+    when Department
+      where(department_id: d.id)
+    when String
+      where(department_name: d)
+    else
+      none # returns an empty ActiveRecord::Relation if none of the above
     end
   }
 
@@ -34,5 +37,4 @@ class ActivityProject < Activity
   def self.correct_dept_id(obj)
     obj.is_a?(DepartmentExtra) ? obj.dept_code : obj.id
   end
-  
 end

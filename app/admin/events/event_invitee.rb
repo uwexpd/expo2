@@ -4,6 +4,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
   batch_action :destroy, false
   config.sort_order = 'people.firstname_asc'
   menu false
+  actions :all, except: [:new]
 
   scope :all, default: true
   scope 'Checked in', :checked_in

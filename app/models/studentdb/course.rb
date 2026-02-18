@@ -55,6 +55,13 @@ class Course < StudentInfo
     return 'Graduate' if course_no.present? && course_no >= 500
     'Undergraduate'
   end
+
+  def instructors
+    course_meeting_times
+        .flat_map { |mt| mt.course_instructors.map(&:instructor) }
+        .compact
+        .uniq
+  end
   
   # Tries to parse a string into dept_abbrev, course_no, and section_id
   def self.match(abbrev)

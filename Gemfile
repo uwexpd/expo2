@@ -108,6 +108,7 @@ gem 'activeadmin_reorderable'
 gem 'acts_as_list'
 gem 'icalendar', '~> 2.7'
 gem 'premailer-rails'
+gem 'faraday'
 
 group :production do  
   gem 'omniauth-shibboleth'
@@ -139,6 +140,5 @@ group :development do
   gem 'ed25519', '>= 1.2', '< 2.0'
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'  
   # gem 'meta_request'
-  gem 'httparty'
   gem 'letter_opener'
 end

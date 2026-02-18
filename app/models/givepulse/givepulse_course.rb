@@ -111,6 +111,15 @@ class GivepulseCourse < GivepulseBase
         end
         # Gather event titles for cancelled registrations                
         cancelled_events = registraitons.map { |registration| registration.try(:event)["title"]}.join(", ")
+
+        # Call update_user method on the dropper after cancelling registrations
+        # update admin archive require field to the course title
+        dropper.update_user({
+          user: {         
+           administrative_fields: Rails.env.production? ? { "271861" => self.short_title} : { "82638" => self.short_title },
+           group_id: self.group_id,
+          }
+        })
       end
       # ---- END Cancel ----
 
@@ -356,6 +365,10 @@ class GivepulseCourse < GivepulseBase
     rescue StandardError => e
         Rails.logger.error("Exception occurred while creating course: #{e.message}")
     end
+  end
+
+  def short_title
+    (crn + " " + term) rescue nil
   end
 
 

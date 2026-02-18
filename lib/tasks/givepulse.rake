@@ -48,6 +48,29 @@ task :givepulse_roster_sync => :environment do
 end
 
 
+desc "Quarterly sync all users admin fields to UW Givepulse."
+task :givepulse_users_sync => :environment do
+  start_time = Time.now
+  puts "=== #{start_time.strftime("%Y-%m-%d %H:%M:%S")} : START User Sync ==="
+  Rails.logger.info("Starting Givepulse user sync at #{start_time}")
+
+  group_id = Rails.env.production? ? "1246545" : "757578" # CCUW parent group id
+
+  begin
+    message = GivepulseUser.sync_group_members(group_id)
+    puts message
+    Rails.logger.info(message)
+  rescue StandardError => e
+    error_message = "Error during Givepulse user sync: #{e.message}"
+    puts error_message
+    Rails.logger.error(error_message)
+  end
+
+  end_time = Time.now
+  puts "=== #{end_time.strftime("%Y-%m-%d %H:%M:%S")} : END User Sync ==="
+  Rails.logger.info("Completed Givepulse user sync at #{end_time}, duration: #{(end_time - start_time).round(2)} seconds")
+end
+
 desc 'Fetch courses from PROD and create them in DEV'
 task givepulse_import_courses: :environment do
 

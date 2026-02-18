@@ -1,0 +1,12 @@
+<ul class="collection with-header">
+ <li class="collection-header"><strong>Add New User <i class='mi'>add_circle</i></strong></li>
+ 	<div class='card-content'>
+		<p style='padding-bottom: 0.5rem'>Enter a user's <strong>UW NetID</strong> to give them access to report and edit for your department:</p>
+
+		<%= form_tag accountability_reporting_authorizations_path(@year), remote: true do %>
+		    <%= text_field_tag :uw_netid, nil, class: 'browser-default' %>
+		    <br><br>
+		    <%= submit_tag "Authorize", class: 'btn' %>
+		<% end %>
+	</div>
+</ul>

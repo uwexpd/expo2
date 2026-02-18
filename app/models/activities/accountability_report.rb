@@ -139,6 +139,8 @@ class AccountabilityReport < ApplicationRecord
   validates_presence_of :quarter_abbrevs, :activity_type_id
   validates_uniqueness_of :quarter_abbrevs, :scope => :activity_type_id
 
+  after_initialize :initialize_defaults
+
   # Initializes a new AccountabilityReport. Specify an array or quarter abbreviations (e.g., "WIN2008") and an ActivityType
     # abbreviation (e.g., "S" or "R").
   def initialize_defaults    
@@ -153,12 +155,12 @@ class AccountabilityReport < ApplicationRecord
   end
   
   # Returns the possible years for all reports that have been created.
-  def self.years
-    self.find_by_sql("SELECT DISTINCT year FROM accountability_reports ORDER BY year").collect(&:year).collect(&:to_i)
+  def self.years    
+    distinct.order(:year).pluck(:year).map(&:to_i)
   end
   
   def self.years_with_finalized
-    self.find_by_sql("SELECT DISTINCT year FROM accountability_reports WHERE finalized = 1 ORDER BY year").collect(&:year).collect(&:to_i)
+    where(finalized: true).distinct.order(:year).pluck(:year).map(&:to_i)
   end
   
   def title
@@ -172,8 +174,12 @@ class AccountabilityReport < ApplicationRecord
   
   # Returns the location of YAML file that stores the student data hash based a key name.
   # The base path is +Rails.root/files/activity_results/results_[quarters_hash]_[activity_type_abbreviation]_[key].yml+
-  def results_file_path(key)
-    File.join(Rails.root, "files", "activity_results", "results_#{id.to_s}_#{key.to_s}.yml")
+  def results_file_path(key)    
+    Rails.root.join('files', 'activity_results', "results_#{id}_#{key}.yml")
+  end
+
+  def status_file_path
+    Rails.root.join('files', 'activity_results', "status_#{id}.log")
   end
 
   # Generates results for the specified key by calling the associated results method:
@@ -212,27 +218,18 @@ class AccountabilityReport < ApplicationRecord
   # used for final statistics (with the key "with_departments"). Returns nil if that results file doesn't exist.
   def generated_at
     return nil unless File.exist?(results_file_path(:with_departments))
-    File.mtime(results_file_path(:with_departments))
+    File.mtime(results_file_path(:with_departments))  
   end
   
   # Stores a status message into a file that can be read at any time.
-  def update_status(msg)
-    status_file_path = File.join(Rails.root, "files", "activity_results", "status_#{id.to_s}.log")
-    File.open(status_file_path, 'w') {|f| f << msg }
+  def update_status(msg)    
+    File.write(status_file_path, msg)
   end
   
   # Returns the current status message that's stored in the status file.
   def status
-    status_file_path = File.join(Rails.root, "files", "activity_results", "status_#{id.to_s}.log")
-    return nil unless File.exists? status_file_path
-    File.open(status_file_path, 'r').read
-  end
-  
-  # Reads a report's status without having to instantiate the object.
-  def self.status(id)
-    status_file_path = File.join(Rails.root, "files", "activity_results", "status_#{id.to_s}.log")
-    return nil unless File.exists? status_file_path
-    File.open(status_file_path, 'r').read    
+    return nil unless File.exist?(status_file_path)
+    File.read(status_file_path)
   end
 
   # Returns true if this report is currently being generated.
@@ -241,22 +238,36 @@ class AccountabilityReport < ApplicationRecord
     status.match(/^Generated on/).nil?
   end
   
+  # Reads a report's status without having to instantiate the object.
+  def self.status(id)
+    path = Rails.root.join('files', 'activity_results', "status_#{id}.log")
+    return nil unless File.exist?(path)
+    File.read(path)
+  end  
+  
   # Returns true if the report's status indicates that it's still processing (i.e., if status is anything other than "Generated on...")
+  # stat = "Generated on 2026-01-28"
+  # stat !~ /^Generated on/  # => false (because it *does* start with "Generated on")
+  # stat = "Regenerating..."
+  # stat !~ /^Generated on/  # => true (because it does *not* start with "Generated on")
   def self.in_progress?(id)
-    return false unless AccountabilityReport.status(id)
-    AccountabilityReport.status(id).match(/^Generated on/).nil?
+    # return false unless AccountabilityReport.status(id)
+    # AccountabilityReport.status(id).match(/^Generated on/).nil?
+    stat = status(id)
+    return false unless stat
+    stat !~ /^Generated on/
   end
 
   # Creates a status file and writes to start
   def self.mark_as_in_progress(id)
-    status_file_path = File.join(Rails.root, "files", "activity_results", "status_#{id.to_s}.log")
-    File.open(status_file_path, 'w') {|f| f << "Regenerating..." }
+    path = Rails.root.join('files', 'activity_results', "status_#{id}.log")
+    File.write(path, "Regenerating...")
   end
   
   # Calculates the totals for all records in the data hash.
   def final_statistics(force = false)
     @log_step = nil
-    load_results(:with_departments, force) if force || @results.empty?
+    load_results(:with_departments, force) if force ||  (@results && @results.empty?)
     update_status("Generated on #{generated_at.to_s(:date_at_time12)}") if generated_at
     puts "Calculating final statistics."
     stats = {:department => {}}
@@ -433,10 +444,13 @@ class AccountabilityReport < ApplicationRecord
   # with_averages_added:: After the average number of hours have been calculated and inserted into the results with no hours.
   #
   def dump_results!(key)
+    # file_path = results_file_path(key)
+    # File.open(file_path, "w") do |f|
+    #   f.write @results.to_yaml
+    # end
+    # file_path
     file_path = results_file_path(key)
-    File.open(file_path, "w") do |f|
-      f.write @results.to_yaml
-    end
+    File.write(file_path, @results.to_yaml)
     file_path
   end
 
@@ -461,17 +475,22 @@ class AccountabilityReport < ApplicationRecord
   def load_results(key, force = false)
     @log_step = key
     file_path = results_file_path(key)
-    print "Loading results from #{file_path}... "
+    Rails.logger.info "Loading results from #{file_path}... "
+
     if File.exist?(file_path)
       if force
-        puts "force reload requested.\nForcing regeneration of #{key.to_s} results to #{file_path}..."
+        Rails.logger.info "Force reload requested.\nForcing regeneration of #{key} results to #{file_path}..."
         return generate_results!(key)
       end
-      @results = YAML::load(File.open(file_path))
-      puts "done."
-      puts "Read #{@results.size} results from #{File.mtime(file_path).to_s(:long)}"
+
+      File.open(file_path) do |file|
+        @results = YAML.safe_load(file, permitted_classes: [Date, Time, Symbol], aliases: true)
+      end
+
+      Rails.logger.info "Done."
+      Rails.logger.info "Read #{@results.size} results from #{File.mtime(file_path).to_s(:long)}"
     else
-      puts "not found."
+      Rails.logger.info "Not found."
       @log_step = key
       generate_results!(key)
     end

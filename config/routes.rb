@@ -281,6 +281,41 @@ Rails.application.routes.draw do
     match 'community_engaged/contact/:id', to: 'service_learning#contact', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
     match 'community_engaged/risk/:id', to: 'service_learning#risk', via: [:get, :post, :put, :patch], :quarter_abbrev => 'current'
 
+    # Accountability    
+    scope '/accountability/reporting/:year',
+        module: 'accountability/reporting',
+        as: :accountability_reporting do
+
+      match 'choose_department', to: 'choose_department', as: :choose_department, via: [:get, :post]
+      post 'submit', to: 'submit'
+      
+      resources :authorizations
+
+      resources :courses do
+        collection do
+          post :mass_add
+          put  :mass_create
+        end
+      end
+
+      resources :individuals do
+        collection do
+          get  :upload
+          put  :upload_map
+          put  :upload_create
+          match :mass_add, via: :all
+          post :student_search
+          get  :individual_reporting_template
+        end
+      end
+    end
+    
+    get 'accountability/reporting/:year', to: 'accountability/reporting#index', as: :accountability_reporting
+
+    get 'accountability/year/:id', to: 'accountability#year', as: :accountability_year
+    get 'accountability', to: 'accountability#index', as: :accountability
+
+
     # Sidekiq admin routes
     Sidekiq::Web.use Rack::Auth::Basic do |username, password|
       # Protect against timing attacks:

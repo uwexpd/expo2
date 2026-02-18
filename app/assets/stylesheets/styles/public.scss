@@ -987,3 +987,101 @@ textarea.auto_height, .sideblock.scoring textarea {
 .extra_space {
 	line-height: 2em;
 }
+
+.outlined-table {
+  border: 1px solid #e0e0e0;
+  border-collapse: collapse;
+}
+
+.outlined-table th,
+.outlined-table td {
+  border: 1px solid #e0e0e0;
+}
+
+tr.total td {
+    background: #f1f1f1 repeat-x 0 top;
+    font-weight: bold;
+}
+
+.menu_list.collection {	
+	margin: 1rem 0 0 0;
+}
+
+// Navigation sidebar group
+.apply_nav, .confirmation_nav, .sidebar_nav {
+	padding:0;
+}
+
+.apply_nav .collection a.collection-item, .confirmation_nav .collection a.collection-item, .sidebar_nav .collection a.collection-item {
+  color: #0074bb;
+}
+
+.apply_nav .collection .collection-item.active,
+.apply_nav .collection li.collection-item.active a,
+.confirmation_nav .collection .collection-item.active,
+.confirmation_nav .collection li.collection-item.active a,
+.sidebar_nav .collection .collection-item.active,
+.sidebar_nav .collection li.collection-item.active a {
+	// background-color: #4b2e83;
+	color: #eafaf9;
+}
+
+.apply_nav .collection.with-header .collection-header, .confirmation_nav .collection.with-header .collection-header, .sidebar_nav .collection.with-header .collection-header {
+	font-weight: 700;
+	background-color: #4b2e83;
+	padding: 15px 20px;
+	color: white
+}
+
+.apply_nav .collection.with-header .collection-header a, .confirmation_nav .collection.with-header .collection-header a, .sidebar_nav .collection.with-header .collection-header a{
+	color: white;
+}
+
+.apply_nav .collection.with-header .collection-header a:hover, .confirmation_nav .collection.with-header .collection-header a:hover, .sidebar_nav .collection.with-header .collection-header a:hover {
+	color: #85754d;
+}
+
+.apply_nav ul.collection li a.collection-item, .confirmation_nav ul.collection li a.collection-item, .sidebar_nav ul.collection li a.collection-item {
+	padding-left: 3rem;
+}
+
+.apply_nav .collection a.collection-item i.material-icons, .confirmation_nav .collection a.collection-item i.material-icons {
+	margin-left: -1.2em;
+}
+
+.sidebar_nav .collection-item small.light {
+	padding-right: .5rem;	
+}
+
+.sidebar_nav .collection-item.active small.light {
+	color: white;
+}
+
+.sidebar_nav ul.collection {
+	border: none;
+	margin: 1rem 0 0 0;
+}
+// Navigation sidebar group
+
+.years-scroll {
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.welcome-links {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.welcome-links li {
+	padding: 2rem;
+	padding-left: 2rem;
+	margin: 0 10px;
+	border-bottom: 1px solid #f2f2f2;	
+}
+
+.welcome-links li:hover {
+	background-color: #fdfbce;
+}

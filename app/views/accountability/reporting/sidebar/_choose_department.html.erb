@@ -1,0 +1,11 @@
+<ul class="collection with-header">
+  <li class="collection-header">My Departments</li>
+
+  <% @department_authorizations.each do |dauth| %>
+    <%= link_to_unless_current(
+          dauth.authorizable.name,
+          { action: 'choose_department', accountability_department_authid: dauth.id },
+          class: "collection-item #{'active' if params[:accountability_department_authid].to_s == dauth.id.to_s}"
+        ) %>
+  <% end %>
+</ul>

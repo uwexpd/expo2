@@ -71,3 +71,6 @@ end
 # Production server:
 #curl --cert /usr/local/apps/expo2/current/config/certs/expo.uaa.washington.edu.ic.crt --key /usr/local/apps/expo2/current/config/certs/expo.uw.edu.key https://ws.api.uw.edu/student/v5/person/899DE73E18B3764FAACE327C45060B50.json
 #=> Successfully get the search result
+
+# Local use curl to get person
+#curl --cert /Users/joshlin/Sites/expo2/config/certs/expo.uaa.washington.edu.ic.crt --key /Users/joshlin/Sites/expo2/config/certs/expo.uw.edu.key https://ws.api.uw.edu/identity/v2/person/joshlin.json
