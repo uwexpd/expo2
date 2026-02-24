@@ -1,22 +1,22 @@
 <ul class="collection with-header">
   <li class="collection-header"><strong>Confirm Data Entered</strong></li>
-  <div class='card-content' style="margin: -0.75rem 0;">
+  <div class='card-content'>
     <%= form_tag(action: "submit") do %>
-      <p class='small' style="padding-bottom: 0.5rem;">
+      <p class='small'>
         Selecting Submit and Continue will save your data. Once all unit information is entered, please click Submit below.
       </p>
 
-      <%= submit_tag "Save and Continue", class: 'btn small' %><br>
+      <%= submit_tag "Save and Continue", class: 'btn small' %><br><br>
 
-      <p class='small' style="padding: 0.5rem 0">
+      <p class='small'>
         By clicking Submit, I confirm that all available data for
         <%= @department.name %>.
       </p>
 
-      <%= submit_tag "Submit", data: { confirm: "Are you sure?" }, class: 'btn small uw_metallic_bg_gold' %><br>
+      <%= submit_tag "Submit", data: { confirm: "Are you sure?" }, class: 'btn small uw_metallic_bg_gold' %><br><br>
       <% end %>
 
-      <p class="caption" style="padding: 0.5rem 0">
+      <p class="caption">
         A notification email will be sent to other coordinators and the accountability administrator.
       </p>
     </div>

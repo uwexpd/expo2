@@ -487,7 +487,7 @@
                         ApplyMailer.templated_message(@offering.disbersement_approver.person, 
                         EmailTemplate.find_by_name("disbersement approval request"), 
                         @offering.disbersement_approver.person.email, 
-                        "http://#{Rails.configuration.constants["base_url_host"]}/admin/apply/disberse").deliver_now if params[:commit]
+                        "https://#{Rails.configuration.constants["base_url_host"]}/admin/apply/disberse").deliver_now if params[:commit]
         flash[:notice] = "Saved financial aid eligibility approvals. Thank you."
         redirect_to_action = params[:redirect_to_action] || "finaid_approve"
         redirect_to :action => redirect_to_action

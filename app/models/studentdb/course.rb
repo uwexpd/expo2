@@ -73,21 +73,29 @@ class Course < StudentInfo
   # of all course sections that are valid in all course branches. Specify an optional section_id option to limit just to
   # that section ID.
   def self.find_all_by_short_title(dept_abbrev, course_no, quarters, extra_conditions = {})
-    quarters = [quarters] unless quarters.is_a?(Array)
-    extra_conditions.delete :section_id if extra_conditions[:section_id].blank?
+    quarters = Array(quarters)
+
+    extra_conditions = extra_conditions.dup
+    extra_conditions.delete(:section_id) if extra_conditions[:section_id].blank?
+
     results = []
-    for quarter in quarters
-      for course_branch in [0,1,2]
-        conditions = {  :ts_year => quarter.year, 
-                        :ts_quarter => quarter.quarter_code_id, 
-                        :dept_abbrev => dept_abbrev.upcase, 
-                        :course_no => course_no,
-                        :course_branch => course_branch,
-                        :delete_flag => '' }.merge(extra_conditions)
-        results << find(:all, :conditions => conditions)
+
+    quarters.each do |quarter|
+      [0, 1, 2].each do |course_branch|
+        conditions = {
+          ts_year: quarter.year,
+          ts_quarter: quarter.quarter_code_id,
+          dept_abbrev: dept_abbrev.upcase,
+          course_no: course_no,
+          course_branch: course_branch,
+          delete_flag: ''
+        }.merge(extra_conditions)
+
+        results << where(conditions).to_a
       end
     end
-    results.flatten.compact.uniq
+
+    results.flatten.uniq
   end
   
   # Returns an array of StudentRegistrationCourse records who are registered for this Course. We do this by searching through the

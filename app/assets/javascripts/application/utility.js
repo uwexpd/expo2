@@ -233,6 +233,7 @@ function bindToggleLinks() {
     .on("click", "a[data-link-toggle]", function(e) {
       e.preventDefault();
       var selector = $(this).data('link-toggle');
+      if (!selector) return;
       var target = $(selector);
 
       if (selector) {
@@ -248,6 +249,4 @@ function bindToggleLinks() {
     });
 }
 
-
 $(document).on('turbolinks:render', bindToggleLinks);
-

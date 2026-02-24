@@ -1,7 +1,7 @@
 <% editable = false %>
 
 <% service_learning_courses.each do |course, number_of_students| %>
-<tr>
+<tr class='borderless'>
 	<td width="20%"><%= course %></td>
 	<td width="20%"></td>
 	<td width="20%"><%= pluralize number_of_students, "student" %></td>

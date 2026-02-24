@@ -1,5 +1,10 @@
-<h3>When You're Finished</h3>
-
-When you're done adding courses, click here to go back to the list:
-<br>
-<center><%= link_to "I'm Done", accountability_reporting_courses_url(@year), :class => "button" %></center>
+<ul class="collection with-header">
+  <li class="collection-header">
+    <strong>When You're Finished</strong>
+  </li>
+  <div class='card-content'>
+	When you're done adding courses, click here to go back to the list:
+	<br><br>
+	<%= link_to "I'm Done", accountability_reporting_courses_url(@year), :class => "btn small" %>
+  </div>
+</ul>

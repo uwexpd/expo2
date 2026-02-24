@@ -1,0 +1,84 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: 'Invitees') do |sheet|
+  # -----------------------------
+  # Header row
+  # -----------------------------
+  headers = [
+    'ID',
+    'First Name',
+    'Last Name',
+    'Student No',
+    'Email',
+    'Expected?',
+    'Attended?',
+    'Time'
+  ]
+
+  # Dynamic extra fields
+  if @event.extra_fields.present?
+    headers.concat(@event.extra_fields.keys)
+  end
+
+  headers.concat([
+    'Sub-time',
+    'Sub-time Title',
+    'Sub-time Location',
+    'Sub-time Facilitator'
+  ])
+
+  sheet.add_row headers
+
+  # -----------------------------
+  # Data rows
+  # -----------------------------
+  @invitees.each do |invitee|
+    person = invitee.person
+
+    row = [
+      invitee.id,
+      person&.firstname || '#error',
+      person&.lastname || '#error',
+      person&.student_no || '#error',
+      person&.email || '#error',
+      invitee.attending? ? 'Yes' : 'No',
+      invitee.checked_in? ? 'Yes' : 'No',
+      invitee.event_time&.time_detail
+    ]
+
+    # Extra fields (values)
+    if @event.extra_fields.present?
+      @event.extra_fields.values.each do |val|
+        begin
+          row << auto_link(eval(sanitize(val)))
+        rescue
+          row << '#error'
+        end
+      end
+    end
+
+    # Sub-time fields
+    if invitee.sub_time
+      row << invitee.sub_time.time_detail(time_only: true)
+      row << invitee.sub_time.title
+      row << invitee.sub_time.location_text
+      row << invitee.sub_time.facilitator
+    else
+      row.concat([nil, nil, nil, nil])
+    end
+
+    sheet.add_row row
+  end
+
+  # -----------------------------
+  # Formatting
+  # -----------------------------
+  sheet.sheet_view.pane do |pane|
+    pane.state = :frozen
+    pane.y_split = 1
+    pane.top_left_cell = 'A2'
+    pane.active_pane = :bottom_left
+  end
+
+  sheet.column_widths(*headers.map { 20 })
+end

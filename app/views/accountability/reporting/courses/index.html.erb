@@ -1,46 +1,76 @@
-<%= make_main_content_blocked %>
+<% title "#{@year} Accountability Reporting" %>
 
-<div class="content-block">
-	<h1 class="big-icon presentation" style="margin-bottom: 0"><%= @year %> Courses
-		<span class="light">&raquo; <%= @department.name %></span>
-	</h1>
-	<%= HelpText.caption :reporting_interface_report_courses_instruction, AccountabilityReport %>	
+<div class="card content">
+	<h5><i class='mi uw_purple'>school</i> <%= @year %> Courses
+		<small class="light">&raquo; <%= @department.name %></small>
+	</h5>
+	<%= raw HelpText.caption :reporting_interface_report_courses_instruction, AccountabilityReport %>
 </div>
 
-<% for activity_type in @activity_types %>
-<div class="content-block">
-	<h3><%= activity_type.title %> Courses</h3>
+<% @activity_types.each do |activity_type|  %>
+<div class="card content">
+	<h6><%= activity_type.title %> Courses</h6>
 
-	<%= render :partial => "accountability/reporting/finalized_note" if @accountability_reports[activity_type.id].finalized? %>
+	<%= render partial: "accountability/reporting/finalized_note" if @accountability_reports[activity_type.id].finalized? %>
 
 	<dl class="inline-definitions">
+	  <% @quarters.each do |quarter| %>
+	    <% service_learning_courses = @service_learning_courses[activity_type.id][quarter.id] %>
 
-		<% for quarter in @quarters %>
-		<% service_learning_courses = @service_learning_courses[activity_type.id][quarter.id] %>
-		<dt>
-			<%= quarter.title %>
-			<br><small class="light"><%= pluralize @activities[activity_type.id][quarter.id].size + service_learning_courses.size, "course" %></small>
-		</dt>
+	    <dt>
+	      <%= quarter.title %>
+	      <br>
+	      <span class="light">
+	        <%= pluralize(
+	              @activities[activity_type.id][quarter.id].size + service_learning_courses.size,
+	              "course"
+	            ) %>
+	      </span>
+	    </dt>
 
-		<dd>
-			<table>
-			<%= render :partial => 'course', :collection => @activities[activity_type.id][quarter.id] %>
-			<%= render :partial => 'service_learning_courses', :locals => {:service_learning_courses => service_learning_courses} unless service_learning_courses.blank? %>
-			
-			<% if @activities[activity_type.id][quarter.id].empty? && service_learning_courses.empty? %>
-			<tr class="light" id="empty_<%= quarter.id %>">
-				<td colspan=5>No courses reported</td>
-			</tr>
-			<% end -%>
-			
-			</table>
-		</dd>
-		<% end -%>
+	    <dd>
+	      <table class='highlight'>
+	        <%= render partial: "course",
+	                   collection: @activities[activity_type.id][quarter.id] %>
 
+	        <%= render partial: "service_learning_courses",
+	                   locals: { service_learning_courses: service_learning_courses } if service_learning_courses.present? %>
+
+	        <% if @activities[activity_type.id][quarter.id].empty? && service_learning_courses.empty? %>
+	          <tr class="light borderless" id="empty_<%= quarter.id %>">
+	            <td colspan="5">No courses reported</td>
+	          </tr>
+	        <% end %>
+	      </table>
+	    </dd>
+	  <% end %>
 	</dl>
 </div>
 <% end -%>
 
-<% sidebar "accountability/reporting/sidebar/navigation" %>
-<% sidebar :add_last_years_courses, :add_course  unless @finalized %>
-<% sidebar :faq %>
+<% content_for(:sidebar) do %>
+  <div class="sideblock card sidebar_nav">
+    <%= render partial: "accountability/reporting/sidebar/navigation" %>
+  </div>
+<% end %>
+
+<% unless @finalized %>
+	<% content_for(:sidebar) do %>
+		<div class="sideblock card sidebar_nav">
+		<%= render partial: "accountability/reporting/courses/sidebar/add_last_years_courses" %>
+		</div>
+	<% end  %>
+	<% content_for(:sidebar) do %>
+		<div class="sideblock card sidebar_nav">
+		<%= render partial: "accountability/reporting/courses/sidebar/add_course" %>
+		</div>
+	<% end  %>
+
+<% end %>
+
+<% content_for(:sidebar) do %>
+  <div class="sideblock card sidebar_nav">
+    <%= render partial: "accountability/reporting/courses/sidebar/faq" %>
+  </div>
+<% end %>
+

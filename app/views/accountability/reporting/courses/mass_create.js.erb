@@ -1,0 +1,18 @@
+<% if params[:abbrev_hash].present? %>
+  var hash = "<%= j params[:abbrev_hash] %>";
+
+  if ($("#results_form_" + hash).length > 0) {
+    $("#results_form_" + hash).html(
+      "<%= j render(partial: 'mass_create_result') %>"
+    );
+
+    var $results = $("#results_" + hash);
+    $results.removeClass("red-background green-background");
+
+    <% if @errors.empty? %>
+      $results.addClass("green-background complete");
+    <% else %>
+      $results.addClass("red-background");
+    <% end %>
+  }
+<% end %>

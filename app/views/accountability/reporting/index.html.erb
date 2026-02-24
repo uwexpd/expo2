@@ -12,7 +12,7 @@
 
 <ul class="collection margin_left" style="margin-top: 2rem">
   <li class="presentation collection-item avatar" style="padding-top: 1.25rem">
-    <i class='mi circle purple darken-4'>school</i> <%= link_to "Report courses", accountability_reporting_courses_path(@year), class: 'larger' %>
+    <i class='mi circle purple darken-4'>school</i> <%= link_to "Report courses", accountability_reporting_courses_path(@year), class: 'bold' %>
     <br>
     <div>
       <%= @activity_types.map do |activity_type|
@@ -28,7 +28,7 @@
   </li>
 
   <li class="people collection-item avatar padding_top" style="padding-top: 1.25rem">
-    <i class='mi circle purple darken-4'>person</i> <%= link_to "Report individual involvement", accountability_reporting_individuals_path(@year), class: 'larger' %>
+    <i class='mi circle purple darken-4'>person</i> <%= link_to "Report individual involvement", accountability_reporting_individuals_path(@year), class: 'bold' %>
     <br>
     <div>
       <%= @activity_types.map do |activity_type|
@@ -46,7 +46,7 @@
   -->
 
   <li class="authorize collection-item avatar" style="padding-top: 1.25rem">
-    <i class='mi circle purple darken-4'>admin_panel_settings</i> <%= link_to "Authorize or delegate reporting privileges", accountability_reporting_authorizations_url(@year), class: 'larger' %>
+    <i class='mi circle purple darken-4'>admin_panel_settings</i> <%= link_to "Authorize or delegate reporting privileges", accountability_reporting_authorizations_url(@year), class: 'bold' %>
     <br>
     <div>
       Current <%= @department.name %> users:
@@ -73,4 +73,8 @@
     <%= render partial: "accountability/reporting/sidebar/choose_year" %>
   </div>
 <% end %>
-<%# sidebar :faq %>
+<% content_for(:sidebar) do %>
+  <div class="sideblock card sidebar_nav">
+    <%= render partial: "accountability/reporting/sidebar/faq" %>
+  </div>
+<% end %>

@@ -30,13 +30,16 @@ class UsersController < ApplicationController
     @user.valid? 
   end
 
-  def create    
+  def create
     @user = User.new(user_params)
     if User.where("email = ? AND type is NULL", params[:user][:person_attributes][:email].strip).take
       flash[:alert] = "This email address is already in use."
       render :action => 'new'
     else      
       @user.email = params[:user][:person_attributes][:email].strip rescue nil
+      @user.login = params[:user][:login].strip if params[:user][:login].present?
+      @user.person.firstname = params[:user][:person_attributes][:firstname].strip if params[:user][:person_attributes][:firstname].present?
+      @user.person.lastname = params[:user][:person_attributes][:lastname].strip if params[:user][:person_attributes][:lastname].present?
       @user.save!
       self.current_user = @user
       redirect_back_or_default(root_url)

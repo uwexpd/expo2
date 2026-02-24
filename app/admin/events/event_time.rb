@@ -29,6 +29,19 @@ ActiveAdmin.register EventTime, as: 'times' do
     redirect_to admin_email_write_path("select[#{invitees.first.class.to_s}]": invitees)
   end
 
+  member_action :download_invitees, method: :get do
+    @time = EventTime.find(params[:id])
+    @event = @time.event
+    @invitees = @time.invitees.includes(:person)
+
+    respond_to do |format|
+      format.xlsx do
+        render xlsx: 'admin/events/times/invitees',
+               filename: "Invitees_#{@event.id}_#{@time.id}.xlsx"
+      end
+    end
+  end
+
   show do
     attributes_table do
        row ('Event') {|event_time| link_to event.title, admin_event_path(event) }
@@ -38,7 +51,23 @@ ActiveAdmin.register EventTime, as: 'times' do
        row ('Capacity') {|event_time| event_time.capacity }
        row ('Notes') {|event_time| event_time.notes.html_safe }
     end
-    panel 'Invitees' do
+    panel(
+        content_tag(:span) do
+          concat 'Invitees'
+          concat(
+            content_tag(
+              :span,
+              link_to(
+                "<i class='mi'>file_download</i> Download Excel".html_safe,
+                download_invitees_admin_event_time_path(event, resource, format: :xlsx),
+                class: 'button small flat',
+                style: 'margin-left: 10px; vertical-align: middle;'
+              ),
+              class: 'panel-actions'
+            )
+          )
+        end
+      ) do
       form action: batch_action_admin_event_times_path, method: :post do
          input type: :hidden, name: :authenticity_token, value: form_authenticity_token
          input type: :hidden, name: :batch_action, value: "send_mass_emails"

@@ -113,7 +113,7 @@ class Event < ApplicationRecord
     attendees.tomorrow_reminder.each do |attendee|
         EmailContact.log(
           attendee.invitable_id, 
-          TemplateMailer.deliver(template.create_email_to(attendee)),
+          emplate.create_email_to(attendee).deliver_now,
           nil, nil,
           attendee
         )

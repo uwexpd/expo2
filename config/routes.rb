@@ -293,7 +293,7 @@ Rails.application.routes.draw do
 
       resources :courses do
         collection do
-          post :mass_add
+          match :mass_add, via: [:get, :post, :put]
           put  :mass_create
         end
       end

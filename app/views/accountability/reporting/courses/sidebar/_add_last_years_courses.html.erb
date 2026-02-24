@@ -1,50 +1,71 @@
-<h3><strong class="icon-left add">1. Add Courses From Last Year</strong></h3>
+<ul class="collection with-header">
+  <li class="collection-header">
+    <strong>1. Add Courses From Last Year</strong>
+  </li>
+  
+  <li id="last_years_links">    
+      <% @activity_types.each do |activity_type| %>
+        <% unless @accountability_reports[activity_type.id].finalized? %>
+            <%= link_to(
+                  "Add #{@year - 1} #{activity_type.title} courses (#{@last_years_activities[activity_type.id].uniq.size})",
+                  "#", 
+                  class: 'collection-item', 
+                  style: 'padding-left: 1rem', 
+                  onclick: "$('#last_years_courses_#{activity_type.id}').slideToggle(250); $('#last_years_links').hide(); return false;"
+                ) %>
+    
+        <% end %>
+      <% end %>    
+  </li>
 
-<ul class="link-list" id="last_years_links">
-	<% for activity_type in @activity_types %>
-		<% unless @accountability_reports[activity_type.id].finalized? %>
-			<li><%= link_to_function "Add #{@year-1} #{activity_type.title} courses (#{@last_years_activities[activity_type.id].uniq.size})", 
-				"Effect.toggle('last_years_courses_#{activity_type.id}', 'blind', {duration: 0.25}); $('last_years_links').hide()" %></li>
-		<% end -%>
-	<% end -%>
+  <% @activity_types.each do |activity_type| %>
+    <li style="padding: 1rem; display:none" id="last_years_courses_<%= activity_type.id %>">
+      
+        Shown below are last year's <%= activity_type.title %> courses.
+        Choose the ones you'd like to report again this year and click "Add courses."<br><br>
+
+      <%= form_with url: mass_add_accountability_reporting_courses_path(@year),
+                    scope: :activity,
+                    local: true do |course_form| %>
+
+        <table>
+          <tr class="rowset-header">
+            <td><%= activity_type.title %> Courses</td>
+          </tr>
+
+          <% @last_years_activities[activity_type.id].uniq.each do |course_abbrev| %>
+            <tr>
+              <td>
+                <%= check_box_tag "course_abbrevs[]",
+                                  course_abbrev,
+                                  false,
+                                  id: "course_abbrevs_#{course_abbrev.hash}" %>
+
+                <%= label_tag "course_abbrevs_#{course_abbrev.hash}", course_abbrev %>
+              </td>
+            </tr>
+          <% end %>
+
+          <% if @last_years_activities[activity_type.id].empty? %>
+            <tr class="empty">
+              <td>No courses</td>
+            </tr>
+          <% end %>
+        </table>
+
+        <%= hidden_field_tag :activity_type_id, activity_type.id %>
+        <p>
+          <% unless @last_years_activities[activity_type.id].uniq.empty? %>
+            <%= course_form.submit "Add Courses", class: 'btn small' %> <small class='light'>– or – </small>
+          <% end %>
+
+         <%= link_to "Cancel",
+                  "#",
+                  class: "cancel",
+                  onclick: "$('#last_years_courses_#{activity_type.id}').hide(); $('#last_years_links').show(); return false;" %>
+        </p>
+
+      <% end %>
+    </li>
+  <% end %>
 </ul>
-
-<% for activity_type in @activity_types %>
-<div id="last_years_courses_<%= activity_type.id %>" style="display:none">
-	Shown below are last year's <%= activity_type.title %> courses. Choose the ones you'd like to report again 
-	this year and click "Add courses."
-
-	<% form_for :activity, :url => mass_add_accountability_reporting_courses_path(@year) do |course_form| %>
-
-		<br>
-		<table>
-	
-			<tr class="rowset-header">
-				<td><%= activity_type.title %> Courses</td>
-			</tr>
-	
-			<% for course_abbrev in @last_years_activities[activity_type.id].uniq %>
-			<tr>
-				<td><%= check_box_tag "course_abbrevs[]", course_abbrev, false, :id => "course_abbrevs_#{course_abbrev.hash}" %>
-					<%= label_tag "course_abbrevs_#{course_abbrev.hash}", course_abbrev %>
-					</td>
-			</tr>
-			<% end -%>
-	
-			<% if @last_years_activities[activity_type.id].empty? %>
-			<tr class="empty">
-				<td>No courses</td>
-			</tr>
-			<% end -%>
-
-		</table>
-		<%= hidden_field_tag :activity_type_id, activity_type.id %>
-		<% unless @last_years_activities[activity_type.id].uniq.empty? %>
-			<%= course_form.submit "Add Courses" %>
-			<%= separator %>
-		<% end -%>
-		<%= link_to_function "Cancel", "$('last_years_courses_#{activity_type.id}').hide(); $('last_years_links').show()", :class => 'cancel button' %>
-
-	<% end -%>
-</div>
-<% end -%>

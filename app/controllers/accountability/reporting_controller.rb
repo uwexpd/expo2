@@ -1,11 +1,11 @@
 class Accountability::ReportingController < AccountabilityController
   before_action :login_required
-  before_action :add_reporting_breadcrumbs
-  
+    
   before_action :check_department_authorizations
   before_action :fetch_department, :except => [:choose_department]
   before_action :fetch_year_and_related, :except => [:choose_department]
-  before_action :fetch_service_learning_courses, :only => [:index]  
+  before_action :fetch_service_learning_courses, :only => [:index]
+  before_action :add_reporting_breadcrumbs
 
   def index
     #Rails.logger.debug "department: #{@department.inspect}"
@@ -40,23 +40,21 @@ class Accountability::ReportingController < AccountabilityController
         
         dept_coordinators = @department.accountability_coordinator_authorizations.collect(&:user).reject{|u| u.login =="acctblty"}.uniq
 
-        # dept_coordinators.each do |dept_coordinator|                    
-        #   unless dept_coordinator.person.email.blank?
-        #      @reportor_info[:dept_coordinator] = dept_coordinator.person             
-        #      if template
-        #         EmailContact.log(
-        #           dept_coordinator.person,
-        #           TemplateMailer.text_message(
-        #             template.create_email_to(
-        #             @reportor_info,
-        #             "http://#{Rails.configuration.constants['base_url_host']}/accountability/reporting/#{@year}",
-        #             dept_coordinator.person.email)
-        #           ).deliver_now
-        #         )
-        #       end
-        #   end
-        # end
-        TemplateMailer.admin_template.create_email_to(@reportor_info, "", "acctblty@uw.edu").deliver_now if admin_template
+        dept_coordinators.each do |dept_coordinator|                
+          unless dept_coordinator.person.email.blank?
+             @reportor_info[:dept_coordinator] = dept_coordinator.person             
+             if template
+                EmailContact.log(
+                  dept_coordinator.person,
+                    template.create_email_to(
+                    @reportor_info,
+                    "https://#{Rails.configuration.constants['base_url_host']}/accountability/reporting/#{@year}",
+                    dept_coordinator.person.email).deliver_now
+                )
+              end
+          end
+        end
+        admin_template.create_email_to(@reportor_info, "", "acctblty@uw.edu").deliver_now if admin_template
         flash[:notice] = "You've successfully submit the data. An email notification will be sent to all coordinators and our accountability administrator."
     else
       flash[:notice] = "You've saved the data. Please submit for your department after all accountability data has been entered."
@@ -138,8 +136,9 @@ class Accountability::ReportingController < AccountabilityController
   end
   
   def add_reporting_breadcrumbs
+    @year = params[:year].to_i.zero? ? Time.current.year : params[:year].to_i
     add_breadcrumb "Accountability", accountability_path
-    add_breadcrumb "Reporting", accountability_reporting_path(year: params[:year])
+    add_breadcrumb "Reporting", accountability_reporting_path(@year)
   end
   
 end

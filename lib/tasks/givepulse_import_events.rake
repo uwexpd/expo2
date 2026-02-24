@@ -21,15 +21,17 @@ namespace :givepulse do
     failed_titles = []
 
     # Map and create each event
-    events_data.first(5).each do |event|
+    events_data.each do |event|
       # puts "event data: #{event.inspect}"
       # Map fields from UW JSON to GivePulse API params
       full_params = {
         title: event['post_title'] || "No title",
         description: event['post_content'] || "",
-        group_id: "921813", # Connected Huskies Group ID
+        group_id: "2019650", # Connected Huskies Group ID: sandbox: "921813"
         event_type: "event",
         num_registrants_needed: 2,  # Adjust or map from event if available
+        start_date_time: DateTime.new(2026, 1, 1, 0, 0, 0, "-08:00"),
+        end_date_time:   DateTime.new(2026, 8, 21, 23, 59, 59, "-07:00"),
         first_name: "Sarah",
         last_name: "Verlinde-Azofeifa",
         email: "severlin@uw.edu",
