@@ -9,7 +9,7 @@ ActiveAdmin.register Appointment do
   scope 'Yesterday', :yesterday
   active_admin_import template: 'admin/appointments/import'
 
-  permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type
+  permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type, :drop_in, :contact_type_id, :follow_up_notes
   
   # controller do
   #   def scoped_collection
@@ -26,7 +26,7 @@ ActiveAdmin.register Appointment do
 
   index do
     column ('Time') {|appointment| link_to appointment.start_time.to_s(:long_time12), admin_appointment_path(appointment)}
-    column ('Type') {|appointment| status_tag appointment.contact_type.title, class: 'small' if appointment.contact_type}
+    column ('Type') {|appointment| status_tag appointment.contact_type.title, class: 'info small' if appointment.contact_type}
     column ('Staff Person') {|appointment| appointment.staff_person.firstname_first rescue "unknown" }
     column ('Student') {|appointment| link_to appointment.student.fullname, admin_student_path(appointment.student) rescue "unknown"}
     column ('Chick In Time') {|appointment| appointment.check_in_time.to_s(:time12) if appointment.check_in_time }
@@ -41,8 +41,9 @@ ActiveAdmin.register Appointment do
       row :staff_person
       row :drop_in
       row (:check_in_time) {|appointment| appointment.check_in_time.to_s(:date_pretty) if appointment.check_in_time}
+      row :contact_type
       row :front_desk_notes
-      row :notes
+      row :notes    
       row (:source) {|appointment| appointment.source.titleize if appointment.source}
     end
   end
