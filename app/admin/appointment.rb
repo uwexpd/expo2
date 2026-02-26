@@ -24,6 +24,15 @@ ActiveAdmin.register Appointment do
   #   end
   # end
 
+  controller do
+    def new
+      @appointment = Appointment.new
+      # Pre-populate student_id from params
+      @appointment.student_id = params[:student_id] if params[:student_id]
+      new!
+    end
+  end
+
   index do
     column ('Time') {|appointment| link_to appointment.start_time.to_s(:long_time12), admin_appointment_path(appointment)}
     column ('Type') {|appointment| status_tag appointment.contact_type.title, class: 'info small' if appointment.contact_type}
@@ -43,7 +52,8 @@ ActiveAdmin.register Appointment do
       row (:check_in_time) {|appointment| appointment.check_in_time.to_s(:date_pretty) if appointment.check_in_time}
       row :contact_type
       row :front_desk_notes
-      row :notes    
+      row :notes
+      row :follow_up_notes
       row (:source) {|appointment| appointment.source.titleize if appointment.source}
     end
   end
@@ -61,6 +71,18 @@ ActiveAdmin.register Appointment do
       f.input :staff_person_id, as: :select, required: true,
                collection: User.admin.reject{|u| u.person.firstname.nil?}.sort_by{|u| u.person.firstname}.map{|u| [u.fullname, u.person_id]}, 
                include_blank: false, input_html: { class: "select2", style: "width: 50%"}
+
+      # Student Number Search Field outside of f.inputs
+      li class: 'number input optional numeric stringish' do
+        raw %{
+          <label class="label">Student ID Search by Student Number</label>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="text" id="student_number_search" placeholder="Enter 7-digit student number" style="width: 25%;">
+            <a href="#" id="search_student_btn" class="button">Search</a>
+            <span id="student_search_result" style="margin-left: 5px; color: green;"></span>
+          </div>
+        }
+      end
       f.input :student_id, label: 'Student EXPO ID', hint: "Please use EXPO Person ID from #{link_to 'Find Student by Name or Email.', admin_students_path, target: '_blank'}".html_safe, input_html: { style: 'width: 25%'}
       f.input :check_in_time, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
       f.input :drop_in

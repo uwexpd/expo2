@@ -184,4 +184,51 @@ $(document).on('change', 'select[data-remote="true"]', function() {
   // });
 });
 
+$(document).ready(function() {
+  // Student Number Search for Appointments
+  $(document).on('click', '#search_student_btn', function(e) {
+    e.preventDefault();
+    var studentNumber = $('#student_number_search').val().trim();
+    
+    if (!studentNumber) {
+      alert('Please enter a student number');
+      return;
+    }
+    
+    // console.log('Searching for student number:', studentNumber);
+    $('#student_search_result').html('Searching...').css('color', 'blue');
+    
+    $.ajax({
+      url: '/expo/admin/students/search_by_number.json',
+      method: 'GET',
+      dataType: 'json',
+      data: { student_number: studentNumber },
+      success: function(response) {
+        console.log('Response:', response);
+        if (response.student_id) {
+          $('#appointment_student_id').val(response.student_id);
+          $('#student_search_result').html('✓ Found: ' + response.student_name + ' (Student #: ' + response.student_number + ', Student EXPO ID: ' + response.student_id + ')').css('color', 'green');
+        } else {
+          var errorMsg = response.error || 'Student not found';
+          $('#student_search_result').html('✗ ' + errorMsg).css('color', 'red');
+          $('#appointment_student_id').val('');
+        }
+      },
+      error: function(xhr, status, error) {
+        console.log('Error:', xhr, status, error);
+        console.log('Response text:', xhr.responseText);
+        $('#student_search_result').html('✗ Error searching for student: ' + error).css('color', 'red');
+      }
+    });
+  });
+  
+  // Allow Enter key to trigger search
+  $(document).on('keypress', '#student_number_search', function(e) {
+    if (e.which == 13) {
+      e.preventDefault();
+      $('#search_student_btn').click();
+    }
+  });
+});
+
 

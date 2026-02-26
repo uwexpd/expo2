@@ -17,6 +17,27 @@ menu parent: 'Groups', priority: 1, label: "<i class='mi padding_right'>person_s
       end    
   end
 
+  # Define the collection action BEFORE member actions
+  collection_action :search_by_number, method: :get do
+    student_number = params[:student_number]
+
+    if student_number.present?
+      student = Student.find_or_create_by_student_no(student_number)
+
+      if student
+        render json: {
+          student_id: student.id,
+          student_name: student.fullname,
+          student_number: student.student_no
+        }
+      else
+        render json: { student_id: nil }
+      end
+    else
+      render json: { student_id: nil, error: 'No student number provided' }
+    end
+  end
+
   controller do
     def scoped_collection
       if params[:q].present? && params[:q][:student_number_eq].present?
