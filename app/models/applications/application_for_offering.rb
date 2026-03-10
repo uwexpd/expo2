@@ -181,7 +181,7 @@ class ApplicationForOffering < ApplicationRecord
     person.fullname
   end
   
-  delegate :fullname, :lastname_first, :firstname_first, :to => :person
+  delegate :fullname, :lastname_first, :firstname_first, to: :person, allow_nil: true
   
   # Checks if the number of reviewers assigned to this application are enough to satisfy the +min_number_of_reviews_per_applicant+
   # flag in the Offering.

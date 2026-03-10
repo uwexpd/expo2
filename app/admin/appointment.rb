@@ -75,11 +75,13 @@ ActiveAdmin.register Appointment do
       # Student Number Search Field outside of f.inputs
       li class: 'number input optional numeric stringish' do
         raw %{
-          <label class="label">Student ID Search by Student Number</label>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <input type="text" id="student_number_search" placeholder="Enter 7-digit student number" style="width: 25%;">
-            <a href="#" id="search_student_btn" class="button">Search</a>
-            <span id="student_search_result" style="margin-left: 5px; color: green;"></span>
+          <div class="student-lookup" data-target="#appointment_student_id">
+            <label class="label">Student ID Search by Student Number</label>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <input type="text" class="student-number-search" placeholder="Enter 7-digit student number" style="width:25%;">
+              <a href="#" class="button student-search-btn">Search</a>
+              <span class="student-search-result" style="margin-left:5px;"></span>
+            </div>
           </div>
         }
       end

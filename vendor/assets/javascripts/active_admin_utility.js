@@ -185,50 +185,43 @@ $(document).on('change', 'select[data-remote="true"]', function() {
 });
 
 $(document).ready(function() {
-  // Student Number Search for Appointments
-  $(document).on('click', '#search_student_btn', function(e) {
+  $(document).on('click', '.student-search-btn', function(e) {
     e.preventDefault();
-    var studentNumber = $('#student_number_search').val().trim();
-    
-    if (!studentNumber) {
-      alert('Please enter a student number');
-      return;
-    }
-    
-    // console.log('Searching for student number:', studentNumber);
-    $('#student_search_result').html('Searching...').css('color', 'blue');
-    
+
+    var $wrap = $(this).closest('.student-lookup');
+    var studentNumber = $wrap.find('.student-number-search').val().trim();
+    var $result = $wrap.find('.student-search-result');
+    var targetSelector = $wrap.data('target'); // e.g. "#appointment_student_id"
+    var $target = targetSelector ? $(targetSelector) : $();
+
+    if (!studentNumber) { alert('Please enter a student number'); return; }
+
+    $result.text('Searching...').css('color', 'blue');
+
     $.ajax({
       url: '/expo/admin/students/search_by_number.json',
       method: 'GET',
       dataType: 'json',
       data: { student_number: studentNumber },
       success: function(response) {
-        console.log('Response:', response);
         if (response.student_id) {
-          $('#appointment_student_id').val(response.student_id);
-          $('#student_search_result').html('✓ Found: ' + response.student_name + ' (Student #: ' + response.student_number + ', Student EXPO ID: ' + response.student_id + ')').css('color', 'green');
+          if ($target.length) { $target.val(response.student_id); }
+          $result.text('✓ Found: ' + response.student_name + ' (Student #: ' + response.student_number + ', Student EXPO ID: ' + response.student_id + ')').css('color', 'green');
         } else {
-          var errorMsg = response.error || 'Student not found';
-          $('#student_search_result').html('✗ ' + errorMsg).css('color', 'red');
-          $('#appointment_student_id').val('');
+          if ($target.length) { $target.val(''); }
+          $result.text('✗ ' + (response.error || 'Student not found')).css('color', 'red');
         }
       },
       error: function(xhr, status, error) {
-        console.log('Error:', xhr, status, error);
-        console.log('Response text:', xhr.responseText);
-        $('#student_search_result').html('✗ Error searching for student: ' + error).css('color', 'red');
+        $result.text('✗ Error searching for student: ' + error).css('color', 'red');
       }
     });
   });
-  
-  // Allow Enter key to trigger search
-  $(document).on('keypress', '#student_number_search', function(e) {
+
+  $(document).on('keypress', '.student-number-search', function(e) {
     if (e.which == 13) {
       e.preventDefault();
-      $('#search_student_btn').click();
+      $(this).closest('.student-lookup').find('.student-search-btn').click();
     }
   });
 });
-
-

@@ -7,7 +7,7 @@ class EventStaffPositionShift < ApplicationRecord
   
   validates_presence_of :event_staff_position_id, :start_time
   
-  delegate :event, :title, :to => :position
+  delegate :title, to: :position, allow_nil: true
 
   PLACEHOLDER_CODES = %w( time_detail details )
   PLACEHOLDER_ASSOCIATIONS = %w( event position )

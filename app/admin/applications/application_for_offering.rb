@@ -1,7 +1,7 @@
 ActiveAdmin.register ApplicationForOffering, as: 'application' do
   belongs_to :offering, optional: true
   includes :person, :offering, :current_application_status
-  actions :all, :except => [:new, :destroy]
+  actions :all, :except => [:destroy]
   batch_action :destroy, false
   config.per_page = [20, 50, 100, 150, 200, 300, 500]
   menu parent: 'Databases', priority: 10, label: "<i class='mi padding_right'>feed</i> Applications".html_safe
@@ -19,6 +19,8 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   scope 'Reviewers Assigned', :reviewers_assigned, if: -> { params[:offering_id] && ApplicationForOffering.where(offering_id: params[:offering_id]).reviewers_assigned.count > 0 }
   scope 'Awarded', :awarded, if: -> { params[:offering_id] && ApplicationForOffering.where(offering_id: params[:offering_id]).awarded.count > 0 }
 
+  permit_params :offering_id, :person_id
+
   controller do
     before_action :fetch_application, :except => [ :new, :create ]
 
@@ -27,6 +29,18 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
         ApplicationForOffering.where(offering_id: params[:offering_id]).valid.includes(:person).order('people.lastname asc, people.firstname asc')
       else
         ApplicationForOffering.order('application_for_offerings.created_at desc')
+      end
+    end
+
+    def create
+      new_status = params.dig(:application_for_offering, :new_status).presence || 'new'
+
+      create! do |success, failure|
+        success.html do          
+          resource.set_status(new_status, false, force: false)          
+          redirect_to action: 'show', :id => resource.id,  notice: "Application created"
+        end
+        failure.html { render :new }
       end
     end
 
@@ -299,39 +313,78 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
   form do |f|
     semantic_errors *f.object.errors.keys
-    #"#{application.fullname unless object.new_record?} - #{application.id unless object.new_record?}"
-    @app_pages = []
+
     @app = f.object
-    @app.pages.each do |page|
-      question_types = page.offering_page.questions.collect(&:display_as).uniq.to_set
-      attribute_types = page.offering_page.questions.collect(&:attribute_to_update).uniq.to_set
-      unless (!question_types.include?("radio_logic_toggle") && ["files","mentors"].any? {|type| question_types.include?(type) })
-        @app_pages << page
+    @app_pages = []
+
+    # we only need typical pages after the record exists.
+    if @app.persisted?
+      @app.pages.each do |page|
+        question_types  = page.offering_page.questions.collect(&:display_as).uniq.to_set
+        attribute_types = page.offering_page.questions.collect(&:attribute_to_update).uniq.to_set
+
+        unless (!question_types.include?("radio_logic_toggle") &&
+                ["files","mentors"].any? { |type| question_types.include?(type) })
+          @app_pages << page
+        end
       end
     end
-    
+
     tabs do
-      @app_pages.each do |app_page|
-        page_title = app_page.offering_page.title
-        tab "#{page_title}" do
-          f.inputs "#{page_title}" do
-            render 'admin/applications/edit_application_details', { f: f, app_page: app_page, app: @app }
+      if @app.new_record?
+        tab "Create Application" do
+          f.inputs "Create Application" do            
+            f.input :offering, as: :select, collection: Offering.all.reverse, input_html: { class: "select2"}
+            # Student Number Search Field outside of f.inputs
+            li class: 'number input optional numeric stringish' do
+              raw %{
+                <div class="student-lookup" data-target="#application_person_id">
+                  <label class="label">Student Person ID Search by Student Number</label>
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="text" class="student-number-search" placeholder="Enter 7-digit student number" style="width:25%;">
+                    <a href="#" class="button student-search-btn">Search</a>
+                    <span class="student-search-result" style="margin-left:5px;"></span>
+                  </div>
+                </div>
+              }
+            end
+            f.input :person_id, label: 'Student EXPO ID', hint: "Please use EXPO Person ID from #{link_to 'Find Student by Name or Email.', admin_students_path, target: '_blank'}".html_safe, input_html: { style: 'width: 25%', id: 'application_person_id'}
+            if f.object.offering
+              f.input :new_status, as: :select,
+                          collection: (f.object.offering ? f.object.offering.statuses.order('sequence ASC').map { |s| [s.application_status_title, s.application_status_name] } : []),
+                          include_blank: true,
+                          label: 'Set Current Status',
+                          hint: "No status email willd be sent."
+            end
+          end
+        end
+      else
+        @app_pages.each do |app_page|
+          page_title = app_page.offering_page.title
+          tab page_title do
+            f.inputs page_title do
+              render "admin/applications/edit_application_details",
+                     f: f, app_page: app_page, app: @app
+            end
+          end
+        end
+
+        tab "Abstract Review" do
+          f.inputs "Abstract Review" do
+            f.input :review_comments,
+                    label: "Abstract Review Comments: <small class='light'>(Will be shared with the applicant)</small>".html_safe,
+                    input_html: { class: "autogrow", rows: 5, cols: 40 }
+            f.input :hide_proceeding_abstract,
+                    label: "Checking this will hide the presenter card, including all presenter information, from the schedule."
           end
         end
       end
-      tab "Abstract Review" do
-        f.inputs "Abstract Review" do
-          # render 'admin/applications/edit_abstract', { f: f, app: @app }
-          f.input :review_comments, label: "Abstract Review Comments: <small class='light'>(Will be shared with the applicant)</small>".html_safe, :input_html => { :class => 'autogrow', :rows => 5, :cols => 40  }
-          f.input :hide_proceeding_abstract, label: 'Checking this will hide the presenter card, including all presenter information, from the schedule.'
-        end
-      end
     end
-    f.actions do      
-      f.action :submit, label: 'Update Application', class: 'button'
-      f.cancel_link :back #admin_offering_application_path(offering, @app)
+
+    f.actions do
+      f.action :submit, label: (@app.new_record? ? "Create Application" : "Update Application"), class: "button"
+      f.cancel_link :back
     end
-    
   end
 
   # proc {"Applicant Search for #{application.offering.title}"} is not working
