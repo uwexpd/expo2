@@ -27,7 +27,7 @@
 
 	<%- else -%>
 
-		<% if !shift.overlapping_shifts.select{|s| s.signed_up?(@current_user.person)}.empty? %>			
+		<% if !shift.overlapping_shifts.select{|s| s.signed_up?(@current_user.person)}.empty? %>
 			<td><p class='gray'>Overlaps with other signed up shifts</p></td>
 			
 		<% elsif position.require_all_shifts && position.shifts.sort.first == shift %>

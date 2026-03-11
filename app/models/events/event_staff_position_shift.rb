@@ -2,6 +2,7 @@
 class EventStaffPositionShift < ApplicationRecord
   stampable
   belongs_to :position, :class_name => "EventStaffPosition", :foreign_key => "event_staff_position_id"
+  has_one :event, through: :position
   has_many :staffs, :class_name => "EventStaff"
   has_many :people, :through => :staffs, :source => :person
   
