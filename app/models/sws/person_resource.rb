@@ -89,7 +89,24 @@ class PersonResource < WebServiceResult
     employee_affiliation.dig('EmployeeWhitePages', 'EmailAddresses') || []
   end
 
+    # 4) EmployeeWhitePages Positions -> primary EWPTitle (fallback: first non-blank)
+  def employee_title
+    positions = employee_affiliation.dig('EmployeeWhitePages', 'Positions')
+    return nil unless positions.is_a?(Array) && positions.any?
 
+    primary = positions.find { |p| p.is_a?(Hash) && p['Primary'] == true }
+    title = primary&.dig('EWPTitle')
+
+    return title if title.present?
+
+    positions.each do |p|
+      next unless p.is_a?(Hash)
+      t = p['EWPTitle']
+      return t if t.present?
+    end
+
+    nil
+  end
 
 
 

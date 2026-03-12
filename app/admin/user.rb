@@ -18,7 +18,8 @@ ActiveAdmin.register User do
   end
 
   member_action :session_history, method: :get do
-    @requests = SessionHistory.where("session_id = ? ", params[:id]).order(:created_at)
+    SessionHistory.find_by!(session_id: params[:id])
+    @requests = SessionHistory.where(session_id: params[:id]).order(:created_at)
     @start_time = @requests.first.created_at
     @user = LoginHistory.find_by_session_id(params[:id]).user
   end
