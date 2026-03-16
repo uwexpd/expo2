@@ -17,8 +17,8 @@
       <i class="material-icons prefix">account_circle</i>
       <%= f.text_field :name, id: "contact_name", class: "validate", required:"", 'aria-required': "true" %>
       <label for="contact_name">Contact Name<abbr title="required">*</abbr></label>
-      
     </div>
+
     <div class="input-field col s6">
       <i class="material-icons prefix">email</i>
       <%= f.text_field :email, id: "contact_email", class: "validate", required:"", 'aria-required': "true" %>
@@ -104,19 +104,30 @@
 
     <div class="col s12">
 			<label>Research Area 1 <abbr title="required">*</abbr></label>
-    	<%= f.collection_select :research_area1, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'chosen-select'} %>        
+      <%= f.collection_select :research_area1, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'select2'} %>
 	  </div>
     <div class="col s12">
       <label>Research Area 2</label>
-      <%= f.collection_select :research_area2, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'chosen-select'} %>        
+      <%= f.collection_select :research_area2, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'select2'} %>
     </div>
     <div class="col s12">
       <label>Research Area 3</label>
-      <%= f.collection_select :research_area3, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'chosen-select'} %>        
+      <%= f.collection_select :research_area3, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'select2'} %>
     </div>
     <div class="col s12">
       <label>Research Area 4</label>
-      <%= f.collection_select :research_area4, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'chosen-select'} %>        
+      <%= f.collection_select :research_area4, ResearchArea.order(:name), :id, :name , {include_blank: 'Choose your option'}, {class: 'select2'} %>
+    </div>
+    <br>
+    <div class="input-field col s12">
+      <div class="label">
+      </div>
+      <p>
+        <label>
+          <%= check_box_tag :confirm, "1", false, required: true, class: 'filled-in' %>
+          <span>Please check this box to confirm that: you are the faculty member who will directly mentor or oversee the mentor for the position you are posting OR if you are not a faculty member, you have the approval of the faculty that supervises you to post this position. <abbr title="required">*</abbr></span>
+        </label>
+      </p>
     </div>
 
   </div>

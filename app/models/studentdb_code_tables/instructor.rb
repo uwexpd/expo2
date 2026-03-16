@@ -21,4 +21,10 @@ class Instructor < StudentInfo
     end
   end
 
+  def title
+    unless instr_netid.blank?
+      PersonResource.find_full_by_uw_netid(instr_netid.strip).employee_title
+    end
+  end
+
 end 

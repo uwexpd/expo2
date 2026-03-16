@@ -58,10 +58,10 @@ class OpportunitiesController < ApplicationController
           urp_template = EmailTemplate.find_by_name("research opportunity resubmitted notification")
           urp_template.create_email_to(@research_opportunity, "https://#{Rails.configuration.constants['base_app_url']}/admin/research_opportunities/#{@research_opportunity.id}", "undergradresearch@uw.edu").deliver_now
            else
-              flash[:error] = "Something went wrong. Unable to submit research opportunity. Please try again."
+              flash[:error] = "Something went wrong. Unable to submit your research opportunity. Please try again."
            end
          else
-            flash[:notice] = "Successfully save research opportunity and please make sure submit it."
+            flash[:notice] = "Your research opportunity has been saved successfully. Please remember to submit it to complete the process."
          end
          redirect_to :action => "submit", :id => @research_opportunity.id
       end

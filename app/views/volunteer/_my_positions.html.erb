@@ -6,9 +6,9 @@
 	
 		<% @current_user.person.event_staff_positions(@event).sort.each do |position| %>
 		<tr>
-			<td rowspan=<%= @current_user.person.event_staff_shifts.for(position).size %> width="30%">
+			<td rowspan=<%= @current_user.person.event_staff_shifts.for(position).size %> width="40%">
 				<big><%=h position.title %></big>
-				<%#= "<br>#{textilize(position.description)}".html_safe unless position.description.blank? %>
+				<%= "<br>#{textilize(position.instructions)}".html_safe unless position.instructions.blank? %>
 				</td>
 			
 			<%= render :partial => "shift", 

@@ -603,17 +603,52 @@ class AccountabilityReport < ApplicationRecord
     @log_step = :undergrads_only
     @overwrite_log = true
     puts "Removing non-undergraduates quarters", true
-    for system_key, quarter_hash in @results
-      student = StudentRecord.find(system_key)
-      for quarter_abbrev, activities in quarter_hash
-        quarter = Quarter.find_by_abbrev(quarter_abbrev)
-        next if quarter.quarter_code_id == 3 # skip if it's a summer quarter
-        if @quarters.include?(quarter) && !student.undergrad_during_quarter?(quarter)
+    quarter_cache = {}
+    total = @results.size
+    processed = 0
+    start = Time.now
+
+    @results.keys.each do |system_key|
+      processed += 1
+      if (processed % 200 == 0)
+        puts "Progress: #{processed}/#{total} (#{(Time.now - start).to_i}s elapsed)"
+      end
+
+      quarter_hash = @results[system_key]
+      begin
+        student = StudentRecord.find(system_key)
+      rescue => e
+        puts "ERROR StudentRecord.find(#{system_key}) #{e.class}: #{e.message}"
+        @results.delete(system_key)
+        next
+      end
+
+      quarter_hash.keys.each do |quarter_abbrev|
+        quarter = (quarter_cache[quarter_abbrev] ||= Quarter.find_by_abbrev(quarter_abbrev))
+
+        if quarter.nil?
+          puts "WARN missing Quarter #{quarter_abbrev} for student #{system_key} => deleting"
           quarter_hash.delete(quarter_abbrev)
-          puts "DELETE QUARTER   #{system_key} had class code #{student.class_standing(quarter)} in #{quarter.title}"
+          next
+        end
+
+        next if quarter.quarter_code_id == 3 # summer
+
+        begin
+          is_undergrad = student.undergrad_during_quarter?(quarter)
+        rescue => e
+          puts "ERROR undergrad_during_quarter? student=#{system_key} quarter=#{quarter_abbrev} #{e.class}: #{e.message}"
+          is_undergrad = false
+        end
+
+        if @quarters.include?(quarter) && !is_undergrad
+          activities = quarter_hash[quarter_abbrev]
+          quarter_hash.delete(quarter_abbrev)
+          puts "DELETE QUARTER   #{system_key} in #{quarter.title} (class code #{student.class_standing(quarter) rescue '??'})"
           puts "                 #{activities.collect{|x| x[:source]}.join(", ")}"
         end
       end
+
       if quarter_hash.empty?
         @results.delete(system_key)
         puts "DELETE STUDENT   #{system_key} has no more valid quarters of activity"
