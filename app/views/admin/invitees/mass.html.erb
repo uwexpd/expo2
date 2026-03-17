@@ -1,0 +1,43 @@
+<div class='panel'>
+<h3>Mass check-in</h3>
+
+<% if @event.nil? %>
+  <p>Missing event context. (event_id=<%= params[:event_id] %>)</p>
+<% else %>
+  <%= semantic_form_for :mass_checkin,
+        url: url_for(action: :mass_checkin, event_id: params[:event_id]),
+        method: :post do |f| %>
+
+    <%= f.inputs do %>
+      <%= f.input :event_time_id,
+            as: :select,
+            label: "Event time",
+            collection: @event.times.map { |t| [t.time_detail, t.id] },
+            selected: @event_time&.id,
+            input_html: { name: "event_time_id" } %>
+
+      <%= f.input :students,
+            as: :text,
+            label: "Student numbers / UW NetIDs (one per line)",
+            input_html: { name: "students", rows: 14, style: 'width: 35%' } %>
+    <% end %>
+
+    <%= f.actions do %>
+      <%= f.action :submit, label: "Mass check-in" %>
+    <% end %>
+
+  <% end %>
+</div>
+
+  <% if @not_found.present? %>
+    <div class="panel">
+      <h3>Not found</h3>
+      <ul>
+        <% @not_found.each do |x| %>
+          <li><%= x %></li>
+        <% end %>
+      </ul>
+      <br>
+    </div>
+  <% end %>
+<% end %>

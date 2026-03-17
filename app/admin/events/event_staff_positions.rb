@@ -42,8 +42,8 @@ ActiveAdmin.register EventStaffPosition, as: 'staff_position' do
     semantic_errors *f.object.errors.keys
     f.inputs do
       f.input :title
-      f.input :description, hint: "This brief description is shown on the page where volunteers choose which position to sign up for.", input_html: { class: "tinymce",  rows: 4}
-      f.input :instructions, hint: "These instructions are shown to the volunteer after they sign up.", input_html: { class: "tinymce",  rows: 4}
+      f.input :description, hint: "This brief description is shown on the page where volunteers choose which position to sign up for.", input_html: {class: 'tinymce', rows: 4}
+      f.input :instructions, hint: "These instructions are shown to the volunteer after they sign up.", input_html: { class: 'tinymce', rows: 4}
       f.input :training_session_event, input_html: {class: 'select2'}
       f.input :restrictions, input_html: {rows: 4}
       f.input :require_all_shifts, label: 'Require volunteers to signup for all shifts at once'    

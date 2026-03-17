@@ -25,7 +25,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
   permit_params :invitable_id, :invitable_type, :event_time_id, :attending, :rsvp_comments, :number_of_guests, :checkin_time, :checkin_notes, :sub_time_id, :person_id, :mobile_checkin
 
   controller do
-    before_action :fetch_event, only: :index
+    before_action :fetch_event, only: [:index, :mass, :mass_checkin]
     def scoped_collection
       # Check in attendees
       if params[:q].present? && params[:q][:student_number_eq].present?        
@@ -56,11 +56,76 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
     end
   end
 
+  action_item :mass_checkin, only: :index do
+    link_to "Mass check-in (paste list)",
+            url_for(action: :mass, event_id: params[:event_id])
+  end
+
+  collection_action :mass, method: :get do    
+    @event_time = @event.times.find_by(id: params[:event_time_id]) || @event.times.first
+    @not_found = []
+  end
+
+  collection_action :mass_checkin, method: :post do    
+    @event_time = @event.times.find(params[:event_time_id]) rescue @event.times.first
+
+    raw = params[:students].to_s
+    if raw.blank?
+      flash.now[:alert] = "You must provide a list of student numbers or NetID's."
+      @not_found = []
+      render :mass and return
+    end
+
+    tokens = raw.split(/\r?\n|,|\t|\s+/).map(&:strip).reject(&:blank?).uniq
+    now = Time.current
+
+    success = 0
+    already = 0
+    not_found = []
+
+    tokens.each do |t|
+      student =
+        if t.match?(/\A\d+\z/)
+          Student.find_by_student_no(t)
+        else
+          Student.find_by_uw_netid(t)
+        end
+
+      unless student
+        not_found << t
+        next
+      end
+
+      invitee = @event_time.invite!(student, checkin_time: now)
+
+      if invitee.nil?
+        # should not happen unless student nil, but safe
+        next
+      end
+
+      if invitee.previous_changes.key?("checkin_time")
+        success += 1
+      elsif invitee.checkin_time.present?
+        already += 1
+      end
+    end
+
+    flash[:notice] = "Checked in: #{success}. Already checked in: #{already}." if (success + already) > 0
+
+    if not_found.any?
+      flash.now[:alert] = "Not found: #{not_found.size}. See this page below."
+      @not_found = not_found
+      render :mass and return
+    end
+
+    redirect_to admin_event_time_path(@event, @event_time.id )
+  end
+
   member_action :update_invitee, :method => :patch do
     @invitee = EventInvitee.find(params[:id])
     if (params[:event_invitee][:attending].present? && @invitee.update(attending: params[:event_invitee][:attending]))
       render json: { success: true, message: "#{@invitee.person.firstname_first} expected attedning updated successfully" }
-    elsif params[:event_invitee][:checkin_time].present? && params[:event_invitee][:checkin_time]=="true" ? @invitee.update( checkin_time: Time.now) : @invitee.update( checkin_time: nil)
+    elsif params[:event_invitee][:checkin_time].present? && params[:event_invitee][:checkin_time]=="true" ? @invitee.update( checkin_time: Time.current) : @invitee.update( checkin_time: nil)
       render json: { success: true, message: "#{@invitee.person.firstname_first} attended status updated successfully" }
     else
       render json: { success: false, message: "Error updating this invitee" }, status: :unprocessable_entity
@@ -78,7 +143,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
 
   member_action :checkin, method: :patch do 
     @invitee = EventInvitee.find(params[:id])
-    if @invitee && @invitee.update(checkin_time: Time.now)
+    if @invitee && @invitee.update(checkin_time: Time.current)
       flash[:notice] = "#{@invitee.invitable.firstname_first} was successfully checked in."
       respond_to do |format|
         format.html { render :index }
@@ -99,6 +164,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
     end    
     redirect_to request.referer, notice: "Successfully checked in #{checkedin_invitees.size} " + "invitee".pluralize(checkedin_invitees.size)
   end
+
 
   index do
     selectable_column
