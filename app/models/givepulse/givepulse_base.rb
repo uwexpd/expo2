@@ -112,6 +112,29 @@ class GivepulseBase < ActiveResource::Base
     result.is_a?(Array) ? result.first : result
   end
 
+  # API call and return total and results
+  def self.fetch_records(endpoint, params = {})
+    response = request_api(endpoint, params, method: :get)
+
+    if response.is_a?(Hash) && response[:error]
+      Rails.logger.error("API Error: #{response[:error]}")
+      return []
+    end
+
+    if response.is_a?(Hash) && response[:code] && response[:code].to_i != 200
+      Rails.logger.error("Response code: #{response[:code]}, message: #{response[:message]}")
+      return []
+    end
+
+    response_body = JSON.parse(response.body)
+    # Rails.logger.debug("Json Parse Response body received: #{response_body}")
+
+    { results: (response_body["results"] || []), total: (response_body["total"] || 0).to_i }
+  rescue StandardError => e
+    Rails.logger.error("Error fetching records: #{e.class}: #{e.message}")
+    { results: [], total: 0 }
+  end
+
   def self.fetch_all_records(endpoint, params = {})
     all_results = []
     limit = 50 # Currently GivePUlse only allows to get 50 records

@@ -48,28 +48,53 @@ task :givepulse_roster_sync => :environment do
 end
 
 
-desc "Quarterly sync all users admin fields to UW Givepulse."
-task :givepulse_users_sync => :environment do
-  start_time = Time.now
-  puts "=== #{start_time.strftime("%Y-%m-%d %H:%M:%S")} : START User Sync ==="
-  Rails.logger.info("Starting Givepulse user sync at #{start_time}")
+desc "Quarterly sync all users admin fields to UW Givepulse in batches."
+task givepulse_users_sync: :environment do
+  started_at = Time.now
+  puts "=== #{started_at.strftime("%Y-%m-%d %H:%M:%S")} : START User Sync ==="
+  Rails.logger.info("Starting Givepulse user sync at #{started_at}")
 
-  group_id = Rails.env.production? ? "1246545" : "757578" # CCUW parent group id
+  group_id = Rails.env.production? ? "1246545" : "757578"
+  offset = (ENV["OFFSET"] || 0).to_i
+  limit  = (ENV["LIMIT"]  || 200).to_i
+  effective_limit = [limit.to_i, 50].min # Givepulse caps at 50 currently
+  
+  puts "Params: group_id=#{group_id} offset=#{offset} limit=#{limit} effective_limit=#{effective_limit}"
+  Rails.logger.info("Params: group_id=#{group_id} offset=#{offset} limit=#{limit} effective_limit=#{effective_limit}")
 
-  begin
-    message = GivepulseUser.sync_group_members(group_id)
-    puts message
-    Rails.logger.info(message)
-  rescue StandardError => e
-    error_message = "Error during Givepulse user sync: #{e.message}"
-    puts error_message
-    Rails.logger.error(error_message)
+  batch_num = 0
+  total_processed = 0
+  total_updated = 0
+
+  loop do
+    batch_num += 1
+    result = GivepulseUser.sync_group_members(group_id, offset: offset, limit: effective_limit)
+
+    puts "[batch #{batch_num}] #{result[:message]}"
+    Rails.logger.info("[batch #{batch_num}] #{result[:message]}")
+
+    processed = result[:processed].to_i
+    total     = result[:total].to_i
+
+    total_processed += processed
+    total_updated   += result[:updated].to_i
+
+    break if processed == 0
+    break if total > 0 && (offset + processed) >= total
+
+    offset += processed
   end
-
-  end_time = Time.now
-  puts "=== #{end_time.strftime("%Y-%m-%d %H:%M:%S")} : END User Sync ==="
-  Rails.logger.info("Completed Givepulse user sync at #{end_time}, duration: #{(end_time - start_time).round(2)} seconds")
+rescue StandardError => e
+  msg = "Error during Givepulse user sync: #{e.class}: #{e.message}"
+  puts msg
+  Rails.logger.error("#{msg}\n#{e.backtrace.join("\n")}")
+ensure
+  ended_at = Time.now
+  duration = (ended_at - started_at).round(2)
+  puts "=== #{ended_at.strftime("%Y-%m-%d %H:%M:%S")} : END User Sync ==="
+  puts "Completed Givepulse user sync at #{ended_at}, duration: #{duration}s processed=#{total_processed} updated=#{total_updated}"
 end
+
 
 desc 'Fetch courses from PROD and create them in DEV'
 task givepulse_import_courses: :environment do
