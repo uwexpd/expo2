@@ -11,6 +11,14 @@ class Course < StudentInfo
   has_many :extra_enrollees, through: :course_extra_enrollees, :source => :person
   has_many :course_meeting_times, foreign_key: [:ts_year, :ts_quarter, :course_branch, :course_no, :dept_abbrev, :section_id]
 
+  # https://registrar.washington.edu/classrooms/course-modes/
+  # A – Asynchronous Online courses will now be flagged as ‘A’
+  # O –Synchronous Online courses will now be flagged as ‘O’
+  # B – Hybrid courses will still be flagged as ‘B’
+  COURSE_MODE_ASYNC  = "A".freeze
+  COURSE_MODE_SYNC   = "O".freeze
+  COURSE_MODE_HYBRID = "B".freeze
+  COURSE_MODE_INPERSON = "IP".freeze # We made this code up to present the info, not from SDB codes
 
   def <=>(o)
     short_title <=> o.short_title
@@ -208,6 +216,28 @@ class Course < StudentInfo
      CoursePrerequisite.where(course_branch: self.course_branch, department_abbrev: self.dept_abbrev,course_number: self.course_no)
   end
 
+  # Returns: "A", "O", "B", or "IP"
+  # Course Modality
+  # A - Online Asynchronous - Students and instructors always interact with others and engage course materials asynchronously. While there are no regularly-scheduled, required synchronous class meetings, students are expected to meet all assignment deadlines and may be asked to schedule occasional, brief synchronous one-on-one check-in meetings with the instructors.
+  # B - Hybrid - Some, but not all, required class meetings occur in a physical classroom. When not meeting in the physical classroom, students and instructors will attend class online, either through required synchronous sessions or required asynchronous activities.
+  # O - Online - For UWB and UWS sections: Online. Students and instructors interact online using applications such as Zoom.
+  # O - Online - For UWT sections: Online Synchronous. Students and instructors interact online synchronously through regularly-scheduled, required meetings using applications such as Zoom. Students should also expect to interact with others and engage course materials asynchronously.
+  def course_mode
+    return COURSE_MODE_HYBRID if hybrid?
+
+    if online_section?
+      # ts_dl_cal_type: 1 = synchronous, 3 = asynchronous
+      return COURSE_MODE_ASYNC if ts_dl_cal_type.to_i == 3
+      return COURSE_MODE_SYNC  if ts_dl_cal_type.to_i == 1
+
+      # If marked online but missing/unknown calendar type:
+      # choose a policy. Defaulting to "O" matches “select O for all online” guidance.
+      return COURSE_MODE_SYNC
+    end
+
+    COURSE_MODE_INPERSON
+  end
+
   private
   
   # Parse an unformatted time into a valid time object. Accepts:
@@ -246,6 +276,16 @@ class Course < StudentInfo
       t = t + 1200
     end
     t
+  end
+
+  def hybrid?
+    online_learn_type.to_i == 20
+  end
+
+  # “Completely online” is accompanied by dist_learn_type=3 per your spec.
+  # Keep permissive to handle imperfect upstream data.
+  def online_section?
+    online_learn_type.to_i == 10 || dist_learn_type.to_i == 3
   end
   
 end

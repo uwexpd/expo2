@@ -61,7 +61,7 @@ class GivepulseUser < GivepulseBase
     api_offset = offset.to_i
 
     # Step 1: Fetch Givepulse users in the group
-    page = fetch_records("/users", { group_id: group_id, limit: api_limit, offset: api_offset })
+    page = fetch_records("/users", { group_id: group_id, limit: api_limit, offset: api_offset }) || { results: [], total: 0 }
     results = page[:results] || []
     total   = page[:total].to_i
     givepulse_users = results.map { |attrs| new(attrs.slice(*permitted_attrs)) }

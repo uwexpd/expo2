@@ -294,7 +294,7 @@ Rails.application.routes.draw do
       resources :courses do
         collection do
           match :mass_add, via: [:get, :post, :put]
-          put  :mass_create
+          match  :mass_create, via: [:post, :put]
         end
       end
 

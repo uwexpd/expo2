@@ -23,13 +23,9 @@
       <% else %>
 
         <%= form_tag(
-              url: mass_create_accountability_reporting_courses_path(@year),
-              method: :put,
-              remote: true,
-              html: {
-                 class: "mass-add-form",
-        		 data: { abbrev_hash: abbrev.hash }
-              }
+              mass_create_accountability_reporting_courses_path(@year),
+              method: :put,            
+              class: "mass-add-form"              
             ) do %>
 
           <table>
@@ -49,21 +45,20 @@
                     <% if quarters[quarter] %>
                       	<% checkbox_id = "course_ids_#{SecureRandom.hex(6)}" %>
 	                  	<label>
-						  <%= check_box_tag(
-						        "course_ids[]",
-						        quarters[quarter].id,
-						        true,
-						        id: checkbox_id,
-						        class: "filled-in"
-						      ) %>
-
-						  <span>
-						    <%= pluralize(
-						          quarters[quarter].registrants_count,
-						          "student"
-						        ) %>
-						  </span>
-						</label>
+          						  <%= check_box_tag(
+          						        "course_ids[]",
+          						        quarters[quarter].id.join(","),
+          						        true,
+          						        id: checkbox_id,
+          						        class: "filled-in") 
+                        %>
+          						  <span>
+          						    <%= pluralize(
+          						          quarters[quarter].registrants_count,
+          						          "student"
+          						        ) %>
+          						  </span>
+          						</label>
                     <% end %>
                   </td>
                 <% end %>

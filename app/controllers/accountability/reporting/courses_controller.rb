@@ -62,8 +62,20 @@ class Accountability::Reporting::CoursesController < Accountability::ReportingCo
     @errors  = []
     @dupes   = []
 
-    Array(params[:course_ids]).each do |course_id|
-      course = Course.find_by(id: course_id)
+    Array(params[:course_ids]).each do |token|
+      parts = token.to_s.split(",", 6)
+      next unless parts.length == 6
+
+      year_s, quarter_s, branch_s, course_no_s, dept, section = parts
+
+      course = Course.find_by(
+        ts_year: year_s.to_i,
+        ts_quarter: quarter_s.to_i,
+        course_branch: branch_s.to_i,
+        course_no: course_no_s.to_i,
+        dept_abbrev: dept.strip,
+        section_id: section.strip
+      )
       next unless course
 
       attributes = {
