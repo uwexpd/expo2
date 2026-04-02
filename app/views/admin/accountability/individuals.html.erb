@@ -1,0 +1,47 @@
+<div class='panel'> 
+  <div class='panel_contents'>
+	  <h1 class="big-icon people" style="margin-bottom: 0">
+	    <%= @year %> Individual Involvement
+	    <span class="light">&raquo; <%= @department.respond_to?(:name) ? @department.name : @department.to_s %></span>
+	  </h1>
+  </div>
+</div>
+
+<% @activity_types.each do |activity_type| %>
+  <div class="panel">
+    <div class='panel_contents'>
+      <div class='content-block'>
+        <h2><%= activity_type.title %> Individuals</h2>
+
+        <table class="borderless">
+          <tr class="table-header uw_light_bg_gold">
+            <th>Student</th>
+            <th>Project Title</th>
+            <th>Faculty</th>
+
+            <% @quarters.each do |q| %>
+              <th class="center number">
+                <div>
+                  <%= q.quarter_code.try(:name) %><br>
+                  <%= q.year %>
+                </div>
+              </th>
+            <% end %>
+          </tr>
+
+          <%= render partial: "accountability/reporting/individuals/individual",
+                     collection: (@activities[activity_type.id] || []),
+                     locals: { editable: false } %>
+
+          <% if (@activities[activity_type.id] || []).empty? %>
+            <tr class="empty" id="empty_<%= activity_type.id %>">
+              <td colspan="<%= @quarters.size + 4 %>">No individuals reported</td>
+            </tr>
+          <% end %>
+        </table>
+      </div>  
+    </div>
+  </div>
+<% end %>
+
+<%# sidebar :navigation, :department_navigation %>

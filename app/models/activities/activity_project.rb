@@ -7,9 +7,9 @@ class ActivityProject < Activity
 
   # Scopes
   # Returns records with quarters matching the requested quarter(s)
-  scope :for_quarters, ->(q) {
-    quarter_ids = q.is_a?(Array) ? q.map(&:id) : q.id
-    joins(:quarters).select('DISTINCT activities.*').where('activity_quarters.quarter_id IN (?)', quarter_ids)
+  scope :for_quarter, ->(q) {
+    quarter_ids = Array(q).map { |qq| qq.respond_to?(:id) ? qq.id : qq }.compact
+    joins(:quarters).where(activity_quarters: { quarter_id: quarter_ids }).distinct
   }
 
   # Returns records assigned to the specified department

@@ -1191,6 +1191,14 @@ td.input.boolean {
 	padding-top: 1.5rem;
 }
 
+tr.left th, th.left {
+	text-align: left;
+}
+
+td.center, th.center {
+	text-align: center;
+}
+
 .input.boolean > label > input, input[type="checkbox"] {
 	vertical-align: middle;
     width: 1rem;
@@ -1275,7 +1283,7 @@ dl.inline-definitions dt {
 	margin-left: 20px;
 	display: block;	
 	/*clear: left;*/
-	line-height: 2rem;
+	// line-height: 2rem;
 }
 
 dl.inline-definitions dd {
@@ -1284,6 +1292,13 @@ dl.inline-definitions dd {
 	font-size: 100%;
 	padding: 2px;
 	padding-left: 150px;
+}
+
+dl.inline-definitions dd.accountabilities {
+    border-bottom: 1px solid #efefef; 
+    font-size: 0.75rem; 
+    padding: 0px 16px 16px 150px;
+    margin-bottom: 1rem;
 }
 
 tr.rowset-header td {
@@ -1530,6 +1545,9 @@ table tr.table-header th {
 	background-color: #e8e3d3 !important;
 	border-top: 1px solid #efefef;
 	border-bottom: 1px solid #aaa;
+  	position: sticky;
+  	top: 0;
+  	z-index: 2;
 }
 
 table tbody tr.table-header:hover th {
@@ -1722,6 +1740,19 @@ button:disabled {
   transform: scale(1.1);
 }
 
-#index_table_accountability_reports {
+#index_table_accountability_reports, #index_table_accountabilities {
 	display: none;
+}
+
+.accountabilities.content-block {
+	padding: 0.25rem 1.25rem;
+}
+
+ul.inline {
+	margin: 0;
+	padding: 0;
+}
+
+ul.inline li {
+	display: inline;
 }

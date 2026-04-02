@@ -90,8 +90,8 @@ module AuthenticatedSystem
         end
         accepts.xml do
           headers["Status"]           = "Unauthorized"
-          headers["WWW-Authenticate"] = %(Basic realm="Web Password")
-          render :text => "Could't authenticate you", :status => '401 Unauthorized'
+          headers["WWW-Authenticate"] = %(Basic realm="Web Password")          
+          raise ExpoException, "Could't authenticate you."
         end
       end
       false

@@ -5,12 +5,16 @@
 	<td><%= content_tag :a, truncate(h(individual.title)), :title => h(individual.title) %></td>
 	<td><%=h individual.faculty_name %></td>
 
-	<% for quarter in @quarters %>
+	<% @quarters.each do |quarter| %>
 	<td class="center"><% if aq = individual.quarters.find_by_quarter_id(quarter) %>
 			<% hours_note = "<strong>#{pluralize(aq.hours_per_week, "hour")}</strong>
 			 				per week<br>" unless aq.hours_per_week.blank? %>
-			<%= tooltip aq.number_of_hours, 
-						"#{hours_note}<strong>#{pluralize(aq.number_of_hours, "hour")}</strong> total for quarter" %>
+			<span class="tooltip">
+			  <%= aq.number_of_hours %>
+			  <span class="tooltiptext">
+			    <%= hours_note.html_safe %><strong><%= pluralize(aq.number_of_hours, "hour") %></strong> total for quarter
+			  </span>
+			</span>
 		<%- else -%>
 			<span class="light">&ndash;</span>
 		<% end -%>

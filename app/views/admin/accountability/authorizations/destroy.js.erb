@@ -1,0 +1,16 @@
+// Move the overlay out of the way before we start deleting things
+if ($("#global_overlay").length) {
+  $("#add_user_success").insertAfter("#global_overlay");
+}
+
+// fade the authorization tag
+$("#authorization_<%= @authorization.id %>").fadeOut(function () {
+  $(this).remove();
+});
+
+//if that was the last one, fade the whole department row
+<% if @authorizations.empty? %>
+  $("#row_<%= @department.class.to_s %>_<%= @department.id.to_s %>").fadeOut(function () {
+    $(this).remove();
+  });
+<% end %>

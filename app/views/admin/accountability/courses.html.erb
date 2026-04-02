@@ -1,0 +1,42 @@
+<div class='panel'> 
+  <div class='panel_contents'>
+      <h1 class="big-icon presentation" style="margin-bottom: 0">
+        <%= @year %> Courses
+        <span class="light smaller">&raquo; <%= @department.respond_to?(:name) ? @department.name : @department.to_s %></span>
+      </h1>    
+  </div>
+</div>
+
+<% @activity_types.each do |activity_type| %>
+  <div class="panel">
+    <h3><b><%= activity_type.title %> Courses</b></h3>
+
+    <dl class="inline-definitions">
+      <% @quarters.each do |quarter| %>
+        <% courses = @activities.dig(activity_type.id, quarter.id) || [] %>
+
+        <dt>
+          <%= quarter.title %>
+          <br>
+          <small class="light"><%= pluralize(courses.size, "course") %></small>
+        </dt>
+
+        <dd class="accountabilities">
+          <table>
+            <%= render partial: "accountability/reporting/courses/course",
+                       collection: courses,
+                       locals: { editable: false } %>
+
+            <% if courses.empty? %>
+              <tr class="light" id="empty_<%= quarter.id %>">
+                <td colspan="5">No courses reported</td>
+              </tr>
+            <% end %>
+          </table>
+        </dd>
+      <% end %>
+    </dl>
+  </div>
+<% end %>
+<%# ActiveAdmin sidebars: only works if you have those sidebars defined somewhere %>
+<%# sidebar :navigation, :department_navigation %>

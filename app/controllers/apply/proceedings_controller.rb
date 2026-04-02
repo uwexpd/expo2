@@ -98,7 +98,7 @@ class Apply::ProceedingsController < ApplyController
   
   def check_if_uses_proceedings
     unless @offering.uses_proceedings?
-      render :text => "This offering process does not use the Online Proceedings feature." and return
+      raise ExpoException.new("This offering process does not use the Online Proceedings feature.")
     end
   end
   

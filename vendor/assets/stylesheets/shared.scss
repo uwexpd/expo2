@@ -239,6 +239,14 @@ table.paddingless td {
 	padding: 0px;
 }
 
+td.light-right-border, th.light-right-border {
+	border-right: 1px solid #dadada;
+}
+
+td.light-left-border, th.light-left-border {
+	border-left: 1px solid #dadada;
+}
+
 .session_identifier.tag {
     text-align: center;
     background-color: #b7a57a;
@@ -251,4 +259,14 @@ table.paddingless td {
 
 .sort-handle:active {
   cursor: grabbing; /* When dragging */
+}
+
+.deleteable.tag {
+	background: #DEE7F8;
+	border: 1px solid #CAD8F3;
+	font: inherit;
+	padding: 0px 4px;
+	color: inherit;
+	float: left;
+	margin: 2px 2px;
 }

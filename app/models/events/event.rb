@@ -6,9 +6,11 @@ class Event < ApplicationRecord
     def future; where("start_time > NOW()") ; end
   end
   has_many :invitees, :class_name => "EventInvitee", :through => :times
-  has_many :attendees, -> { where(attending: true) }, :class_name => "EventInvitee", :through => :times do
-    def tomorrow_reminder; where("TO_DAYS(start_time) = TO_DAYS(adddate(curdate(),1))"); end
-  end  
+  has_many :attendees, -> { where(attending: true) }, class_name: "EventInvitee", through: :times do
+    def tomorrow_reminder
+      where("event_times.start_time >= CURDATE() + INTERVAL 1 DAY AND event_times.start_time < CURDATE() + INTERVAL 2 DAY")
+    end
+  end
   has_many :attended, -> { where("checkin_time IS NOT NULL") }, :class_name => "EventInvitee", :through => :times
   has_many :staff_positions, :class_name => "EventStaffPosition", :dependent => :destroy
   has_many :staff_position_shifts, :class_name => "EventStaffPositionShift", :through => :staff_positions, :source => :shifts
@@ -108,12 +110,12 @@ class Event < ApplicationRecord
   
   # Send a reminder to user, a day before event time
   def send_attendee_reminder!
-    template = EmailTemplate.find(reminder_email_template_id)
-    return false if template.nil?
+    template = EmailTemplate.find_by(id: reminder_email_template_id)
+    return false unless template
     attendees.tomorrow_reminder.each do |attendee|
         EmailContact.log(
           attendee.invitable_id, 
-          emplate.create_email_to(attendee).deliver_now,
+          template.create_email_to(attendee).deliver_now,
           nil, nil,
           attendee
         )
