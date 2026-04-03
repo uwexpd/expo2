@@ -73,11 +73,13 @@ $(document).on("click", "input[data-link-toggle]", function(){
    }
 });
 
-$(document).on("click", "a[data-link-toggle]", function(){ 
-   let obj=$(this).attr('data-link-toggle');
-   if (Object.keys(obj).length > 0){
-      $(obj).toggle(400);
-   }
+$(document).on("click", "a[data-link-toggle]", function (e) {
+  e.preventDefault(); // stops jumping to top
+
+  const selector = $(this).attr("data-link-toggle"); // string like "#inline_add_form_..."
+  if (selector && selector.length > 0) {
+    $(selector).toggle(400);
+  }
 });
 
 $(document).on("click", "a[data-link-toggles]", function(){ 

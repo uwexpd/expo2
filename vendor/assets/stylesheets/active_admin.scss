@@ -115,6 +115,11 @@ For example, to change the default status-tag color: */
 	font-weight: bold;
 }
 
+.flash-highlight {
+  background-color: #fff3b0; /* pale yellow */
+  transition: background-color 2s ease;
+}
+
 .code {
 	// font-family: "Courier New", Courier, mono !important;
   font-family: 'Fira Code', 'Source Code Pro', Consolas, 'Courier New', monospace;
@@ -166,6 +171,10 @@ mark {
 	border: none;
 }
 
+.panel_contents table.edge-to-edge tr td {
+	padding-right: 0px;
+}
+
 .panel_contents table.mentor_letter tr td {
 	border: none;
 }
@@ -174,7 +183,7 @@ mark {
 	background-color: #fff;
 }
 
-.panel_contents table.mentor_letter tr:hover td {	
+.panel_contents table.mentor_letter tr:hover td {
 	box-shadow: none;
 	border-bottom: none;
 }
@@ -1502,6 +1511,14 @@ a.placeholder_text_link:hover {
 #phase_notes, #task_notes {
 	overflow: visible;
 	margin-top: 20px;
+}
+
+.overlay.box {
+	position: absolute;
+	background: #fff;
+	border: 1px solid #dadada;
+	padding: .5em;
+	z-index: 1000;
 }
 
 .box {

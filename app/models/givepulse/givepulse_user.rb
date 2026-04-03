@@ -90,10 +90,23 @@ class GivepulseUser < GivepulseBase
       end
 
       # Step 2: Find matching Student by email
-      # Extract UW NetID from email (string before '@')
-      uw_netid = gp_user.email.to_s.split("@").first
+      email = gp_user.email.to_s.strip.downcase
 
-      # Find Student by UW NetIDs
+      # Only sync UW emails; otherwise skip
+      uw_domains = %w[uw.edu u.washington.edu]
+      domain = email.split("@", 2).last
+
+      unless domain.present? && uw_domains.include?(domain)
+        Rails.logger.info("Skipping sync: non-UW email=#{email.inspect} givepulse_user_id=#{gp_user.id rescue 'unknown'}")
+        next
+      end
+
+      uw_netid = email.split("@", 2).first
+      if uw_netid.blank?
+        Rails.logger.warn("Skipping sync: blank UW NetID parsed from email=#{email.inspect}")
+        next
+      end
+
       student =
         begin
           Student.find_by_uw_netid(uw_netid)

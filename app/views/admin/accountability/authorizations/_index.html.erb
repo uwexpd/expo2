@@ -4,24 +4,24 @@
 
 			<h1>Accountability Department Coordinators</h1>
 
-			<div class="edge-to-edge">
-				<table class="borderless">
-					<thead>
-						<tr class='table-header uw_light_bg_gold'>
-							<th width="35%" class=""><div class="sort-icon">Department</div></th>
-							<th width="20%"><div>ID</div></th>
-							<th width="40%"><div>Authorized Users</div></th>
-							<th></th>
-						</tr>
-					</thead>
-					
-					<tbody id="department_authorizations_tbody">
-						<% departments.each do |dept, authorizations| %>
-						  <%= render partial: "admin/accountability/authorizations/department", locals: { department: dept, authorizations: authorizations } %>
-						<% end %>
-					</tbody>
-				</table>
-			</div>
+			
+			<table class="borderless edge-to-edge">
+				<thead>
+					<tr class='table-header uw_light_bg_gold'>
+						<th width="35%" class=""><div class="sort-icon">Department</div></th>
+						<th width="20%"><div>ID</div></th>
+						<th width="40%"><div>Authorized Users</div></th>
+						<th></th>
+					</tr>
+				</thead>
+				
+				<tbody id="department_authorizations_tbody">
+					<% departments.each do |dept, authorizations| %>
+					  <%= render partial: "admin/accountability/authorizations/department", locals: { department: dept, authorizations: authorizations } %>
+					<% end %>
+				</tbody>
+			</table>
+			
 
 	  </div>
   </div>

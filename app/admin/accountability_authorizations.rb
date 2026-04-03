@@ -5,6 +5,17 @@ ActiveAdmin.register_page "Accountability Authorizations" do
     before_action { check_permission("accountability_manager") }  
   end
 
+  sidebar "Navigation" do
+      ul class: 'link-list' do
+        li do
+          link_to "<i class='mi'>home</i>Accountability Home".html_safe, admin_accountabilities_path
+        end
+        li do
+          link_to "<i class='mi'>group</i>Authorized Users".html_safe, admin_accountability_authorizations_path
+        end
+      end
+  end
+
   # GET (this is the AA page “index”)
   content title: "Authorized Users" do
     role = Role.find_or_create_by(name: "accountability_department_coordinator")
