@@ -312,7 +312,7 @@ Rails.application.routes.draw do
           put  :upload_map
           put  :upload_create
           match :mass_add, via: :all
-          post :student_search
+          get :student_search
           get  :individual_reporting_template
         end
       end

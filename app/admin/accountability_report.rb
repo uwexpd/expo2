@@ -153,13 +153,33 @@ ActiveAdmin.register AccountabilityReport, as: 'accountabilities' do
         end
     end
 
-    sidebar "Navigation", except: [:reporting_status] do
+    sidebar "Navigation" do
       ul class: 'link-list' do
         li do
           link_to "<i class='mi'>home</i>Accountability Home".html_safe, admin_accountabilities_path
         end
         li do
           link_to "<i class='mi'>group</i>Authorized Users".html_safe, admin_accountability_authorizations_path
+        end
+      end
+    end
+
+    sidebar :department_nav, only: [:courses, :individuals] do
+      dept = assigns[:department]
+      year = params[:year] || assigns[:year]
+      department_key = params[:department_key]
+
+      # This is the visible header you want
+      h3(dept.respond_to?(:name) ? dept.name : dept.to_s, class: "dept-sidebar-title")
+
+      ul class: "link-list" do
+        li do
+          link_to "<i class='mi'>school</i> #{year} Courses".html_safe,
+                  courses_admin_accountabilities_path(year: year, department_key: department_key)
+        end
+        li do
+          link_to "<i class='mi'>person</i> #{year} Individuals".html_safe,
+                  individuals_admin_accountabilities_path(year: year, department_key: department_key)
         end
       end
     end

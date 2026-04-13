@@ -12,7 +12,7 @@ class GivepulseUser < GivepulseBase
                 :administrative_fields, :administrative_fields_detailed
 
   # Simulate ActiveRecord's where method
-  # Example: GivepulseUser.where(group_id: 1479596)
+  # Example: GivepulseUser.where(group_id: 1479596), GivepulseUser.where(user_id: 9790174)
   def self.where(attributes)
     begin
       results = fetch_all_records('/users', attributes)
@@ -24,7 +24,7 @@ class GivepulseUser < GivepulseBase
   end
     
   # params => {:user=>{:administrative_fields=>{"81445"=>"No"}}} 
-  # example: GivepulseUser.find_by(id: 4228632).update_user({user: {administrative_fields: {"81773" => "Yes" }}})
+  # example: GivepulseUser.where(user_id: 4228632).first.update_user({user: {administrative_fields: {"81773" => "Yes" }}})
   def update_user(params)
     return false unless id
       

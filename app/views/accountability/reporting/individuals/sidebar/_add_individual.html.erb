@@ -1,6 +1,15 @@
-<h3><strong class="icon-left add">Add Individual</strong></h3>
+<ul class="collection with-header">
+  <li class="collection-header">
+    <strong>Add Individual</strong>
+  </li>
 
-<ul class="link-list">
-	<li><%= link_to "Add a single record", new_accountability_reporting_individual_path(@year), :class => 'icon-left list' %></li>
-	<li><%= link_to "Upload completed Excel template", upload_accountability_reporting_individuals_path(@year), :class => 'icon-left xls' %></li>
+  <%= link_to "<i class='mi padding_right'>person_add</i> Add a single record".html_safe,
+              new_accountability_reporting_individual_path(@year),
+              class: "collection-item",
+              style: "padding-left: 1rem" %>
+
+  <%= link_to "<i class='mi padding_right'>upload_file</i> Upload completed Excel template".html_safe,
+              upload_accountability_reporting_individuals_path(@year),
+              class: "collection-item",
+              style: "padding-left: 1rem" %>
 </ul>

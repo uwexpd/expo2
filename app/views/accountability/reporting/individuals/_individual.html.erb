@@ -2,7 +2,8 @@
 
 <tr id="activity_<%= individual.id %>" class="<%= "green-background" if params[:success_ids] && params[:success_ids].include?(individual.id.to_s) %>">
 	<td><%=h individual.student.fullname %></td>
-	<td><%= content_tag :a, truncate(h(individual.title)), :title => h(individual.title) %></td>
+	<td title="<%= h(individual.title) %>"><span class='tooltip'><%= truncate(h(individual.title)) %></span>
+</td>
 	<td><%=h individual.faculty_name %></td>
 
 	<% @quarters.each do |quarter| %>
@@ -23,17 +24,14 @@
 	
 	<% if editable && !@accountability_reports[individual.activity_type_id].finalized? %>
 		<td align=center>
-		<%= link_to "<span>Edit</span>", 
-					edit_accountability_reporting_individual_url(@year, individual), 
-					:class => 'icon-left no-text edit' %></td>
+		<%= link_to "<i class='mi'>edit</i>".html_safe, 
+					edit_accountability_reporting_individual_path(@year, individual) %></td>
 		<td align=center>
-		<%= link_to_remote "<span>Remove</span>", 
-							{:url => accountability_reporting_individual_url(@year, individual), 
-							:method => :delete,
-							:confirm => "Are you sure you want to remove this individual?",
-							:indicator => 'global'},
-							:class => 'icon-left no-text trash' %>
+			<%= link_to "<i class='mi'>delete_forever</i>".html_safe, accountability_reporting_individual_path(@year, individual),
+			                method: :delete,
+			                remote: true,
+			                data: { confirm: "Are you sure you want to remove this individual?", disable_with: "Deleting..."} %>		
 		</td>
-	<% end -%>
+	<% end %>
 	
 </tr>

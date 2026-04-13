@@ -1,15 +1,39 @@
-<h1 class="big-icon people">Edit Individual Activity</h1>
+<% title "#{@activity.id} » Edit Individual Activity " %>
 
-<% form_for :activity, @activity, :url => accountability_reporting_individual_path(@year, @activity), :html => { :method => :put } do |f| %>
+<div class="card content">
+  <h5>
+    <i class="mi uw_purple">edit</i>
+    Edit Individual Activity
+  </h5>
 
-	<%= f.error_messages %>
+  <%= form_for @activity,
+               as: :activity,
+               url: accountability_reporting_individual_path(@year, @activity),
+               html: { method: :put } do |f| %>
 
-	<%= render :partial => "fields", :locals => { :f => f } %>
-	
-	<%= f.submit "Save", :disable_with => 'Saving...' %>
-	<%= separator "or" %>
-	<%= link_to 'Cancel', accountability_reporting_individual_path(@year, @activity), :class => "cancel button" %>
+    <%# Rails 5.2 doesn’t include f.error_messages by default %>
+    <% if @activity.errors.any? %>
+      <div class="card-panel red lighten-5">
+        <strong><%= pluralize(@activity.errors.count, "error") %> prohibited this record from being saved:</strong>
+        <ul>
+          <% @activity.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
+    <%= render partial: "fields", locals: { f: f } %>
+
+    <%= f.submit "Save", data: { disable_with: "Saving..." }, class: 'btn' %>
+    <span class='margin_left'>
+    <%= link_to "Cancel",
+                accountability_reporting_individuals_path(@year) %></span>
+  <% end %>
+</div>
+
+<% content_for(:sidebar) do %>
+  <div class="sideblock card sidebar_nav">
+    <%= render partial: "accountability/reporting/individuals/sidebar/faq" %>
+  </div>
 <% end %>
-
-<% sidebar :faq %>

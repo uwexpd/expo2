@@ -1660,7 +1660,6 @@ tr.details td {
 	padding: 0.75rem;
 }
 
-
 .select img.indicator.loading {
 	width: 2.3rem;
 }
@@ -1772,4 +1771,16 @@ ul.inline {
 
 ul.inline li {
 	display: inline;
+}
+
+/* Hide the built-in sidebar title */
+#department_nav_sidebar_section > h3 {
+  display: none;
+}
+
+/* Optional: spacing for your custom title */
+#sidebar h3.dept-sidebar-title {
+  margin-top: 0;
+  color: rgba(0, 0, 0, 0.54);
+  font-weight: 500;
 }

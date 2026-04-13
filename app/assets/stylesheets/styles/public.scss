@@ -1093,3 +1093,8 @@ tr.total td {
 .welcome-links li:hover {
 	background-color: #fdfbce;
 }
+
+#student_id_indicator.indicator.loading {
+	width: 1.5rem;
+	vertical-align: bottom;
+}

@@ -7,21 +7,30 @@
 
       <table class="borderless">
         <tr class="table-header uw_light_bg_gold">
-          <th style='width: 20%;'>Department</th>
-          <th colspan="2" style='width: 15%;'>Details</th>
+          <th style='width: 25%;'>Department</th>
+          <th colspan="2" style='width: 25%;'>Details</th>
 
           <% @activity_types.each do |activity_type| %>
-            <th class="light-left-border number" style='width: 10%;'>
-              <div class="sort-icon">Courses (<%= activity_type.abbreviation %>)</div>
+            <th class="light-left-border number" style='font-size:10px;'>
+              Courses<br>(<%= activity_type.abbreviation %>)
             </th>
-            <th class="number" style='width: 10%;'>
-              <div class="sort-icon">Individuals (<%= activity_type.abbreviation %>)</div>
+            <th class="number" style='font-size:10px;'>
+              Individuals<br>(<%= activity_type.abbreviation %>)
             </th>
           <% end %>
 
-          <th class="light-left-border center number" style='width: 5%;'><div class="sort-icon">Users</div></th>
+          <th class="light-left-border center number" style='font-size: 10px;'>Users</th>
         </tr>
 
+      <% if @departments.blank? %>
+        <tr>
+          <% # 3 fixed cols (Department + 2 Details) + 2 per activity type + 1 Users %>
+          <% colspan = 3 + (@activity_types.size * 2) + 1 %>
+          <td colspan="<%= colspan %>" class="empty center">
+            No accountability records found for <%= @year %>.
+          </td>
+        </tr>
+      <% else %>
         <% @departments.each do |department, activities| %>
           <tr>
             <td>
@@ -30,12 +39,12 @@
 
             <td>
               <%= link_to "Courses",
-                courses_admin_accountabilities_path(year: @year, department_key: department) %>
+                courses_admin_accountabilities_path(year: @year, department_key: department), class: 'smaller' %>
             </td>
 
             <td>
               <%= link_to "Individuals",
-                individuals_admin_accountabilities_path(year: @year, department_key: department) %>
+                individuals_admin_accountabilities_path(year: @year, department_key: department), class: 'smaller' %>
             </td>
 
             <% @activity_types.each do |activity_type| %>
@@ -66,6 +75,7 @@
             </td>
           </tr>
         <% end %>
+      <% end %>
       </table>
     </div>
   </div>

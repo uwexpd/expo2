@@ -10,7 +10,7 @@
 			<%= link_to "<i class='mi'>delete_forever</i>".html_safe, accountability_reporting_course_path(@year, course),
 			                method: :delete,
 			                remote: true,
-			                data: { confirm: "Are you sure you want to remove this course?", disable_with: "Deleting..."} %>			 
+			                data: { confirm: "Are you sure you want to remove this course?", disable_with: "Deleting..."} %>
 		<% else %>						
 			<span class="light">Reported by <%= course.full_reporting_department_name %></span>
 		<% end -%>

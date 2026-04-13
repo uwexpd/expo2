@@ -23,6 +23,7 @@
 //= require chartkick
 //= require select2
 //= require_tree ./application
+//= require_tree ./accountability
 //= require ./service_learning/service_learnings
 //= require leaflet
 //= require ./lib/leaflet_control_geocoder

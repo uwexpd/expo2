@@ -1,17 +1,40 @@
-<h1 class="big-icon people">New <%= @year %> Individual Activity</h1>
+<% title "New #{@year} Individual Activity " %>
+<div class="card content">
+  <h5>
+    <i class="mi uw_purple">person_add</i>
+    New <%= @year %> Individual Activity
+  </h5>
 
-<%= HelpText.caption :reporting_interface_report_courses_note, AccountabilityReport %>
+  <%= raw HelpText.caption :reporting_interface_report_courses_note, AccountabilityReport %>
+</div>
 
-<% form_for :activity, @activity, :url => accountability_reporting_individuals_path(@year) do |f| %>
+<div class="card content">
+  <%= form_for @activity,
+               as: :activity,
+               url: accountability_reporting_individuals_path(@year) do |f| %>
+    
+    <% if @activity.errors.any? %>
+      <div class="card-panel red lighten-5">
+        <strong><%= pluralize(@activity.errors.count, "error") %> prohibited this record from being saved:</strong>
+        <ul>
+          <% @activity.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-	<%= f.error_messages %>
+    <%= render partial: "fields", locals: { f: f } %>
 
-	<%= render :partial => "fields", :locals => { :f => f } %>
-	
-	<%= f.submit "Create", :disable_with => 'Creating...' %>
-	<%= separator "or" %>
-	<%= link_to 'Cancel', accountability_reporting_individuals_path(@year), :class => "cancel button" %>
+    <%= f.submit "Create", data: { disable_with: "Creating..." }, class: 'btn' %>
+    <span class='margin_left'>
+    <%= link_to "Cancel",
+                accountability_reporting_individuals_path(@year) %></span>
+  <% end %>
+</div>
 
+<% content_for(:sidebar) do %>
+  <div class="sideblock card sidebar_nav">
+    <%= render partial: "accountability/reporting/individuals/sidebar/faq" %>
+  </div>
 <% end %>
-
-<% sidebar :faq %>
