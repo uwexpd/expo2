@@ -1,55 +1,104 @@
-<h1 class="big-icon people">Upload <%= @year %> Individual Involvement File</h1>
+<% title "Upload and Map #{@year} Individual Activity File" %>
+<div class="card content">
+  <h5>
+    <i class="mi uw_purple">people</i>
+    Upload <%= @year %> Individual Involvement File
+  </h5>
 
-<%= HelpText.caption :reporting_interface_report_individual_upload_map, AccountabilityReport %>
+  <%= raw HelpText.caption :reporting_interface_report_individual_upload_map, AccountabilityReport %>
+</div>
 
-<% form_tag({:action => 'upload_create'}, :method => :put) do %>
-	<table>
-		<tr>
-			<th>Our Field Name</th>
-			<th>Matching Column in Your File</th>
-		</tr>
-	
-		<% for heading in @file.headings_options %>
-		<tr>
-			<td><%= heading.titleize %></td>
-			<td><%= select_tag "heading_map[#{heading}]", "<option value=\"\"></option>" +
-			 					options_from_collection_for_select(@file.headings, 
-									:to_s, :to_s, 
-									((params[:heading_map][heading] rescue nil) || @file.best_column_heading_match_for(heading).to_s)),
-								:class => ("fieldWithErrors" if @file.column_mapping_errors.include?(heading)) %>
-				<% if heading == "activity_type" %>
-					<%= separator %>
-					<%= link_to_function "Manually choose this", "Effect.toggle('activity_type_override_form', 'blind')" %>
-					<div id="activity_type_override_form" style="margin-top: 5px;<%= "display:none" if (params[:heading_map][:activity_type_override].blank? rescue true) %>">
-						Override Activity Type for all records:
-						<%= select_tag "heading_map[activity_type_override]", "<option value=\"\"></option>" + 
-						 				options_from_collection_for_select(@activity_types,
-											:id, :title,
-											(params[:heading_map][:activity_type_override].to_i rescue nil)) %>
-						<p class="caption" style="margin-top:0">If you didn't specify the activity type in your upload file, choose it here.</p>
-					</div>
-				<% end -%>
-				</td>
-		</tr>	
-		<% end -%>
+<div class="card content">
+  <%= form_tag upload_create_accountability_reporting_individuals_path(@year), method: :put do %>
+    <table>
+      <tr>
+        <th>Our Field Name</th>
+        <th>Matching Column in Your File</th>
+      </tr>
 
-	</table>
+      <% @file.headings_options.each do |heading| %>
+        <tr>
+          <td><%= heading.to_s.titleize %></td>
+          <td>
+            <% selected =
+			     params.dig(:heading_map, heading).presence ||
+			     @file.best_column_heading_match_for(heading).first.to_s %>
 
-	<small>
-		<p><span class="red">IMPORTANT!</span> By default, we expect your hours to be reported <strong>by week</strong>. If the activities 
-			you are reporting are the <strong>total number of hours</strong> for the quarter, check the box below:</p>
-	
-		<div class="left-indent">
-			<%= check_box_tag "hours_are_totals", true, params[:hours_are_totals] %>
-			<label for="hours_are_totals">This file reports hours as <strong>totals for the quarter</strong>.</label>
-		</div>
-	</small>
+            <% select_classes = ["browser-default"] %>
+            <% select_classes << "fieldWithErrors" if @file.column_mapping_errors.include?(heading) %>
 
-	<br />
-	<center>
-		<%= submit_tag "Upload", :disable_with => "Importing records... please be patient." %>
-	</center>
+            <%= select_tag "heading_map[#{heading}]",
+                           options_for_select([""] + @file.headings.map(&:to_s), selected),
+                           class: select_classes.join(" "),
+                           style: "width: 40%; border: 1px solid #ccc" %>
 
-	<%= hidden_field_tag :filename, @file.filename %>
+            <% if heading.to_s == "activity_type" %>
+              <span class="grey-text text-darken-1" style="margin: 0 8px;">- OR -</span>
 
-<% end -%>
+              <%= link_to "Manually choose this",
+                          "#",
+                          data: { link_toggle: "#activity_type_override_form" } %>
+
+              <% override_present = params.dig(:heading_map, :activity_type_override).present? ||
+                                    params.dig(:heading_map, "activity_type_override").present? %>
+
+              <div id="activity_type_override_form"
+                   style="margin-top: 5px;<%= 'display:none' unless override_present %>">
+                Override Activity Type for all records:
+
+                <% override_selected =
+                     params.dig(:heading_map, :activity_type_override).presence ||
+                     params.dig(:heading_map, "activity_type_override").presence %>
+
+                <%= select_tag "heading_map[activity_type_override]",
+                               options_from_collection_for_select(@activity_types, :id, :title, override_selected),
+                               include_blank: true,
+                               class: "browser-default" %>
+
+                <p class="caption" style="margin-top:0">
+                  If you didn't specify the activity type in your upload file, choose it here.
+                </p>
+              </div>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+
+    <div class='small'>
+      <p>
+        <strong class="red_color">IMPORTANT!</strong> By default, we expect your hours to be reported
+        <strong>by week</strong>. If the activities you are reporting are the
+        <strong>total number of hours</strong> for the quarter, check the box below:
+      </p>
+
+      <div>
+        <label for="hours_are_totals">
+          <%= check_box_tag "hours_are_totals", "1", params[:hours_are_totals].present? %>
+          <span>This file reports hours as <strong>totals for the quarter</strong>.</span>
+        </label>
+      </div>
+    </div>
+
+    <br>
+
+    <div style="text-align:center">
+      <%= submit_tag "Upload", data: { disable_with: "Importing records... please be patient." }, class: 'btn' %>
+    </div>
+
+    <%= hidden_field_tag :filename, @file.filename %>
+  <% end %>
+</div>
+
+<% unless @finalized %>
+  <% content_for(:sidebar) do %>
+    <div class="sideblock card sidebar_nav">
+      <%= render partial: "accountability/reporting/individuals/sidebar/add_individual" %>
+    </div>
+  <% end %>
+<% end %>
+<% content_for(:sidebar) do %>
+  <div class="sideblock card sidebar_nav">
+    <%= render partial: "accountability/reporting/individuals/sidebar/faq" %>
+  </div>
+<% end %>

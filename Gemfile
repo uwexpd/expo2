@@ -60,7 +60,6 @@ gem 'breadcrumbs_on_rails', '~> 4.0'
 gem 'json'
 # gem 'activesupport-json_encoder' TODO check if still needed this
 gem 'nokogiri'
-gem 'spreadsheet'
 
 # Error reporting
 gem 'sentry-ruby'
@@ -100,9 +99,12 @@ gem "select2-rails"
 gem 'leaflet-rails'
 
 # gem 'zip'
+gem 'spreadsheet'
 gem 'rubyzip'
 gem 'caxlsx'
 gem 'caxlsx_rails'
+gem "roo", "~> 2.10"
+gem "roo-xls"
 
 gem 'activeadmin_reorderable'
 gem 'acts_as_list'

@@ -9,7 +9,7 @@ class Accountability::Reporting::IndividualsController < Accountability::Reporti
 
     @activity_types.each do |activity_type|
       @activities[activity_type.id] =
-        ActivityProject.for_quarter(@quarters).for_department(@department).of_type(activity_type).includes(:quarters).to_a
+        ActivityProject.for_quarter(@quarters).for_department(@department).of_type(activity_type).includes(:quarters).to_a.sort_by { |a| a.student&.fullname.to_s.downcase }
     end
   end
 
@@ -28,11 +28,14 @@ class Accountability::Reporting::IndividualsController < Accountability::Reporti
     end
 
     @file = ActivityProjectUploadedFile.new(params[:upload][:file], @department, @year, @quarters)
-    @file.contents
+
+    # Trigger parsing so we fail here if unreadable
+    @file.headings
 
     add_breadcrumb "Upload"
-  rescue Ole::Storage::FormatError
-    flash[:error] = "Invalid file format. Please upload a Microsoft Excel file in 97-2003 format (.xls file extension)."
+  rescue StandardError => e
+    Rails.logger.error("Upload parse failed: #{e.class}: #{e.message}")
+    flash[:error] = "Invalid file format. Please upload a Microsoft Excel file (.xls or.xlsx)."
     redirect_to action: :upload
   end
 

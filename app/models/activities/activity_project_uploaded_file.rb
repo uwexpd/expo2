@@ -1,128 +1,156 @@
+require "roo"
+
 class ActivityProjectUploadedFile
-
-  require 'spreadsheet'
-
-  # Pass a CGI::File to upload a new file or a String of the filename to find an existing file.
   def initialize(upload_file, department, year, quarters)
     @department = department
     @year = year
     @quarters = quarters
+
     @column_mapping = {}
     @column_mapping_errors = []
     @hours_attribute_name = "hours_per_week"
-    
+
     if upload_file.is_a?(String)
       @filename = upload_file
-    else      
-      @filename = "individuals_#{Time.now.to_i.to_s}.xls"
+    else
+      ext = File.extname(upload_file.original_filename.to_s).downcase
+      ext = ".xls" unless [".xls", ".xlsx"].include?(ext)
+
+      @filename = "individuals_#{Time.current.to_i}#{ext}"
       @upload_file = upload_file
       save_to_file!
     end
   end
 
-  def inspect
-    "#<ActivityProjectUploadedFile:#{file_path}>"
-  end
-
-  # Takes the uploaded file and saves the contents to disk for later use.
   def save_to_file!
     File.open(file_path(true), "wb") { |f| f.write(@upload_file.read) }
   end
 
-  # These files are stored in RAILS_ROOT/files/activity_sources/:year/:department.hash()
   def file_path(create_if_needed = false)
-    path = File.join(RAILS_ROOT, 'files', 'activity_sources', @year.to_s, @department.hash.to_s, @filename)
-    FileUtils.mkdir_p(File.dirname(path)) if create_if_needed and !File.exists?(File.dirname(path))
+    path = Rails.root.join(
+      "files", "activity_sources", @year.to_s, @department.hash.to_s, @filename
+    ).to_s
+
+    FileUtils.mkdir_p(File.dirname(path)) if create_if_needed
     path
   end
 
   def filename
     @filename
   end
-  
-  # Getter method
+
+  def workbook
+    return @workbook if defined?(@workbook)
+
+    ext = File.extname(file_path).delete(".").downcase # "xls" or "xlsx"
+    ext = "xls" unless %w[xls xlsx].include?(ext)
+
+    @workbook = Roo::Spreadsheet.open(file_path, extension: ext)
+  end
+
+  def sheet
+    @sheet ||= workbook.sheet(0)
+  end
+
+  def headings
+    @headings ||= sheet.row(1).map { |v| v.to_s }
+  end
+
+  def column_mapping=(mapping)
+    h =
+      if mapping.respond_to?(:to_unsafe_h)
+        mapping.to_unsafe_h
+      elsif mapping.respond_to?(:to_h)
+        mapping.to_h
+      else
+        {}
+      end
+
+    # normalize keys + values to strings
+    @column_mapping = {}
+    h.each do |k, v|
+      @column_mapping[k.to_s] = v.to_s
+    end
+  end
+
+  def column_mapping_id(field_name)
+    headings.index(@column_mapping[field_name])
+  end
+
   def column_mapping_errors
     @column_mapping_errors
   end
 
-  # Contents of the user's upload file as a Spreadsheet::Worksheet object.
-  def contents
-    @contents ||= Spreadsheet.open(file_path).worksheet(0)
-  end
-
-  # The headings from the user's file as a Spreadsheet::Row object. Works like an array.
-  def headings
-    @headings ||= contents.row(0)
-  end
-  
-  # Pass in the Rails params hash from the headings mapping to save it.
-  def column_mapping=(mapping)
-    @column_mapping = mapping if mapping.is_a?(Hash)
-  end
-  
-  # Searches the user's file headings to get the index ID of the requested heading.
-  def column_mapping_id(field_name)
-    headings.index(@column_mapping[field_name])
-  end
-  
-  # Returns true if we have a valid column header for all of our required fields.
   def valid_column_mapping?
     @column_mapping_errors = []
-    if @column_mapping.empty?
-      headings_options.each{|h| @column_mapping_errors << h }
+
+    if @column_mapping.blank?
+      headings_options.each { |h| @column_mapping_errors << h }
       return false
-    else
-      headings_options.each do |h|
-        @column_mapping_errors << h if @column_mapping[h].blank?
-      end
     end
-    @column_mapping_errors.delete("activity_type") if !@column_mapping["activity_type_override"].blank?
+
+    headings_options.each { |h| @column_mapping_errors << h if @column_mapping[h].blank? }
+
+    @column_mapping_errors.delete("activity_type") if @column_mapping["activity_type_override"].present?
     @column_mapping_errors.empty?
   end
-  
+
   def import_records!
     raise "Invalid column mapping" unless valid_column_mapping?
+
     @success = []
-    @errors = []
-    puts "Importing records from #{file_path}"
+    @errors  = []
+
     Activity.transaction do
-      contents.each(1) do |row|
-        print "."
+      2.upto(sheet.last_row) do |row_num|
+        row = sheet.row(row_num)
+        next if row.compact.blank?
+
         attributes = {}
         quarter_columns = {}
+
         headings_options.each do |heading|
-          # Activity types
+          idx = column_mapping_id(heading)
+          cell_value = idx.nil? ? nil : row[idx]
+
           if heading == "activity_type" || heading == "activity_type_override"
-            unless @column_mapping[:activity_type_override].blank?
-              attributes[:activity_type_id] = @column_mapping[:activity_type_override].to_i
+            if @column_mapping["activity_type_override"].present?
+              attributes[:activity_type_id] = @column_mapping["activity_type_override"].to_i
             else
-              activity_type_value = row[column_mapping_id(heading)]
-              guess_activity_type = ActivityType.find(:first, 
-                                      :conditions => ["title LIKE ? OR abbreviation = ?",
-                                      "%#{activity_type_value}%", activity_type_value[0..0]]) unless activity_type_value.blank?
-              attributes[:activity_type_id] = guess_activity_type.try(:id)
+              v = cell_value
+              unless v.blank?
+                guess = ActivityType.where(
+                  "title LIKE ? OR abbreviation = ?",
+                  "%#{v}%",
+                  v.to_s[0..0]
+                ).first
+                attributes[:activity_type_id] = guess&.id
+              end
             end
 
-          # System key
           elsif heading == "student_id"
-            val = row[column_mapping_id(heading)]
+            val = cell_value.to_s.strip
             next if val.blank?
-            student = val.to_i != 0 ? StudentRecord.find_by_student_no("#{val}") : StudentRecord.find_by_uw_netid("#{val}")
-            attributes[:system_key] = student.try(:system_key)
-          
-          # Quarters
+
+            student =
+              if val.to_i != 0
+                StudentRecord.find_by(student_no: val)
+              else
+                StudentRecord.find_by(uw_netid: val)
+              end
+
+            attributes[:system_key] = student&.system_key
+
           elsif heading.start_with?("hours_per_week_")
-            quarter_columns[heading] = row[column_mapping_id(heading)]
-          
-          # All others
+            quarter_columns[heading] = cell_value
+
           else
-            attributes[heading] = row[column_mapping_id(heading)]
+            attributes[heading] = cell_value
           end
         end
-        # Preparer
-        attributes[:preparer_uw_netid] = User.current_user.try(:login)
-      
-        # Department
+
+        attributes[:preparer_uw_netid] = User.current_user&.login
+
         if @department.is_a?(Department)
           attributes[:department_id] = @department.id
         elsif @department.is_a?(DepartmentExtra)
@@ -132,16 +160,21 @@ class ActivityProjectUploadedFile
             attributes[:department_id] = @department.dept_code
           end
         end
-        
-        # Create it
+
         activity = ActivityProject.create(attributes)
+
         if activity.valid?
-          for heading,value in quarter_columns
-            unless value.blank?
-              quarter_abbrev = heading.match(/^hours_per_week_(\w{3}\d{4})/)[1]
-              quarter = Quarter.find_by_abbrev(quarter_abbrev)
-              activity.quarters.create(:quarter_id => quarter.id, @hours_attribute_name => value)
-            end
+          quarter_columns.each do |heading, value|
+            next if value.blank?
+
+            quarter_abbrev = heading.match(/^hours_per_week_(\w{3}\d{4})/)[1]
+            quarter = Quarter.find_by_abbrev(quarter_abbrev)
+            next if quarter.nil?
+
+            activity.quarters.create(
+              quarter_id: quarter.id,
+              @hours_attribute_name => value
+            )
           end
           @success << activity
         else
@@ -149,40 +182,49 @@ class ActivityProjectUploadedFile
         end
       end
     end
-    return @errors, @success
+
+    [@errors, @success]
   end
-  
+
   def hours_are_totals=(val)
-    @hours_attribute_name = val == "true" ? "number_of_hours" : "hours_per_week"
+    truthy = (val.to_s == "true" || val.to_s == "1")
+    @hours_attribute_name = truthy ? "number_of_hours" : "hours_per_week"
   end
-  
+
   def headings_options
-    rh = %w[ activity_type student_id title faculty_uw_netid faculty_name ]
-    @quarters.each{|q| rh << "hours_per_week_#{q.abbrev}" }
+    rh = %w[activity_type student_id title faculty_uw_netid faculty_name]
+    @quarters.each { |q| rh << "hours_per_week_#{q.abbrev}" }
     rh
   end
-  
+
   def best_guess_heading(heading)
-    case heading.to_s.downcase.gsub(" ","").gsub("_","")
-      when "studentnumber" then :student_id
-      when "studentno" then :student_id
-      when "uwnetid" then :student_id
-      when "netid" then :student_id
-      when "title" then :title
-      when "projecttitle" then :title
-      when "activitytype" then :activity_type
-      when "type" then :activity_type
-      when "facultyuwnetid" then :faculty_uw_netid
-      when "facultynetid" then :faculty_uw_netid
-      when "facultymentorname" then :faculty_name
-      when "facultymentor" then :faculty_name
-      when "facultyname" then :faculty_name
-      when "faculty" then :faculty_name
+    # normalized = heading.to_s.downcase.delete(" ").delete("_")
+    s = heading.to_s.strip
+
+    # Normalize for matching
+    normalized = s.downcase.gsub(/[\s_\/-]+/, "") # remove spaces, underscores, slashes, dashes
+
+    # Match hours-per-week quarter columns like:
+    # "hours per week sum 2024", "Hours_per_week_AUT2025", "hours/week-spr2026"
+    if normalized.start_with?("hoursperweek")
+      # try to extract something like SUM2024 / AUT2024 / WIN2025 / SPR2025
+      m = s.upcase.gsub(/[^A-Z0-9]/, "").match(/(SUM|AUT|WIN|SPR)\d{4}/)
+      if m
+        return "hours_per_week_#{m[0]}"
+      end
+    end
+    
+    case normalized
+    when "studentnumber", "studentno", "uwnetid", "netid" then :student_id
+    when "title", "projecttitle" then :title
+    when "activitytype", "type" then :activity_type
+    when "facultyuwnetid", "facultynetid" then :faculty_uw_netid
+    when "facultymentorname", "facultymentor", "facultyname", "faculty" then :faculty_name
     end
   end
-  
+
   def best_column_heading_match_for(heading_option)
-    headings.select{|h| heading_option.to_s == best_guess_heading(h).to_s }
+    headings.select { |h| heading_option.to_s == best_guess_heading(h).to_s }
   end
-  
+
 end
