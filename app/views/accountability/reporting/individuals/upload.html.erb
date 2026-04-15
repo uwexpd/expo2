@@ -13,9 +13,10 @@
     Use this page to upload a file containing all of your individual student involvement.
     You can use this page multiple times to upload multiple sets of data.<br>
     <strong>
+      <% ext = (@year.to_i >= 2026) ? "xlsx" : "xls" %>
       Start and follow an instruction below and <%= link_to "<i class='mi' style='width:24px;'>sim_card_download</i> Download Excel template".html_safe,
-                  "https://expd.uw.edu/expd/wp-content/uploads/individual_reporting_template_#{@year}.xls",
-                  class: 'btn small'  %>
+            "https://expd.uw.edu/expd/wp-content/uploads/individual_reporting_template_#{@year}.#{ext}",
+            class: "btn small" %>
     </strong>
   </p>
 

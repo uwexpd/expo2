@@ -1,4 +1,3 @@
-# app/controllers/accountability/reporting/individuals_controller.rb
 class Accountability::Reporting::IndividualsController < Accountability::ReportingController
   before_action :add_individuals_breadcrumbs
   before_action :check_finalized, :only => [:upload, :upload_map, :upload_create, :new, :create, :edit, :update, :destroy]

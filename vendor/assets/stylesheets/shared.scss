@@ -83,6 +83,18 @@
 	color: #F44336;
 }
 
+.gray, .grey {
+	color: gray;
+}
+
+.bg-light-gray {
+	background-color: #efefef;
+}
+
+.uw-bg-gray {
+    background-color: #d5d8de;
+}
+
 .uw_green{
 	color: #4CAF50;
 }
@@ -117,6 +129,14 @@
 
 .uw_metallic_bg_gold {
 	background-color: #85754d;
+}
+
+.uw_lavender {
+	color: #c5b4e3;
+}
+
+.uw_bg_lavender {
+	background-color: #c5b4e3;
 }
 
 /* Tooltip container */
@@ -245,6 +265,26 @@ td.light-right-border, th.light-right-border {
 
 td.light-left-border, th.light-left-border {
 	border-left: 1px solid #dadada;
+}
+
+/* both header rows */
+table tr.sticky th{
+  position: sticky;
+  background-color: #e8e3d3 !important;
+  border: 0;
+  box-shadow: inset 0 0 0 1px #bbb;
+  z-index: 4;
+}
+
+/* first header row sticks to top */
+table tr.sticky:first-child th{
+  top: 0;
+  z-index: 5; /* above the second row */
+}
+
+/* second header row sticks below the first row */
+table tr.sticky:nth-child(2) th{
+  top: 3.4rem; /* adjust to the actual rendered height of row 1 */  
 }
 
 .session_identifier.tag {

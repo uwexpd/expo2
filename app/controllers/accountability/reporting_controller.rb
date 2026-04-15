@@ -102,7 +102,7 @@ class Accountability::ReportingController < AccountabilityController
     end
     @finalized = @accountability_reports.values.any?(&:finalized) # just say everything's final, even if one isn't.
     # @finalized = @accountability_reports.values.collect(&:finalized).include?(true) # just say everything's final, even if one isn't.
-    add_breadcrumb @year.to_s, accountability_reporting_path(year: @year)
+    # add_breadcrumb @year.to_s, accountability_reporting_path(year: @year)
   end
 
   # Display the totals by courses for ServiceLearningPlacement in a specific department
@@ -138,7 +138,7 @@ class Accountability::ReportingController < AccountabilityController
   def add_reporting_breadcrumbs
     @year = params[:year].to_i.zero? ? Time.current.year : params[:year].to_i
     add_breadcrumb "Accountability", accountability_path
-    add_breadcrumb "Reporting", accountability_reporting_path(@year)
+    add_breadcrumb "Reporting #{@year}", accountability_reporting_path(@year)
   end
   
 end

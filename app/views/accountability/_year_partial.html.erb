@@ -34,7 +34,7 @@
     </tr>
   <% end %>
 
-  <tr>
+  <tr class='bg-light-gray'>
     <td class="light-right-border light-left-border"><strong>SubTotal:</strong></td>
     <% @activity_types.each do |activity_type| %>
       <td align="right"><strong><%= number_with_delimiter(college_total_students[activity_type]) rescue "" %></strong></td>
