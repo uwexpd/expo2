@@ -133,6 +133,7 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'
   gem 'capistrano-rake', require: false
+  gem "capistrano-sidekiq"
   gem 'annotate'  
   gem 'brakeman', :require => false
   gem 'uw_sws'

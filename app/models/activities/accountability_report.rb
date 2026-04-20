@@ -136,13 +136,13 @@ class AccountabilityReport < ApplicationRecord
   ACCOUNTABILITY_CACHE = FileStoreWithExpiration.new("tmp/cache/accountability")
   
   belongs_to :activity_type
-  validates_presence_of :quarter_abbrevs, :activity_type_id
-  validates_uniqueness_of :quarter_abbrevs, :scope => :activity_type_id
+  validates :quarter_abbrevs, :activity_type_id, presence: true
+  validates :quarter_abbrevs, uniqueness: { scope: :activity_type_id }
 
   after_initialize :initialize_defaults
 
   # Initializes a new AccountabilityReport. Specify an array or quarter abbreviations (e.g., "WIN2008") and an ActivityType
-    # abbreviation (e.g., "S" or "R").
+  # abbreviation (e.g., "S" or "R").
   def initialize_defaults    
     @quarters = quarters
     @activity_type = activity_type
@@ -169,7 +169,10 @@ class AccountabilityReport < ApplicationRecord
   end
   
   def quarters
-    @quarters ||= quarter_abbrevs.split.collect{|a| Quarter.find_by_abbrev(a.strip)} rescue nil
+    # @quarters ||= quarter_abbrevs.split.collect{|a| Quarter.find_by_abbrev(a.strip)} rescue nil
+    return @quarters if defined?(@quarters) && @quarters
+    return @quarters = [] if quarter_abbrevs.blank?
+    @quarters = quarter_abbrevs.split.map { |a| Quarter.find_by_abbrev(a.strip) }.compact
   end
   
   # Returns the location of YAML file that stores the student data hash based a key name.
@@ -263,9 +266,17 @@ class AccountabilityReport < ApplicationRecord
     path = Rails.root.join('files', 'activity_results', "status_#{id}.log")
     File.write(path, "Regenerating...")
   end
+
+  def failed?
+    status.to_s.start_with?("ERROR:")
+  end
+
+  def self.failed?(id)
+    status(id).to_s.start_with?("ERROR:")
+  end
   
   # Calculates the totals for all records in the data hash.
-  def final_statistics(force = false)
+  def final_statistics(force = false)    
     @log_step = nil
     load_results(:with_departments, force) if force ||  (@results && @results.empty?)
     update_status("Generated on #{generated_at.to_s(:date_at_time12)}") if generated_at
@@ -358,11 +369,14 @@ class AccountabilityReport < ApplicationRecord
       for system_key, quarter_hash in @results
         for quarter_abbrev, activities in quarter_hash
         
-          for activity in activities       
-              klass, id = activity[:activity].split("_")
-              a = klass.constantize.find(id) rescue nil
-            
-              department_id, department_name = activity[:department].split("_")
+          for activity in activities
+              # klass, id = activity[:activity].split("_")
+              # a = klass.constantize.find(id) rescue nil
+              klass, id = activity[:activity].to_s.split("_", 2)
+              model = klass.safe_constantize
+              a = (model.find(id) if model && id.present?) rescue nil
+                          
+              department_id, department_name = activity[:department].to_s.split("_", 2)
             
               if a.is_a?(ServiceLearningPlacement) && department_id.to_i == department.dept_code
                 unless stats[:department][activity[:department]]
@@ -382,7 +396,7 @@ class AccountabilityReport < ApplicationRecord
                                
               end                  
           end  
-                                               
+
         end
       end    
       stats
@@ -426,11 +440,14 @@ class AccountabilityReport < ApplicationRecord
     @results[system_key] = {} if @results[system_key].nil?
     h = @results[system_key]
     h[quarter.abbrev] = h[quarter.abbrev] || []
+    hours = Activity.number_of_hours(source)
+    hours = hours.to_f if hours.is_a?(BigDecimal) # normalize
     data = {
-      :activity =>        "#{activity.class.to_s}_#{activity.id}",
-      :source =>          "#{source.class.to_s}_#{source.id}",
-      :number_of_hours => Activity.number_of_hours(source)
+      activity: "#{activity.class}_#{activity.id}",
+      source: "#{source.class}_#{source.id}",
+      number_of_hours: hours
     }
+    
     h[quarter.abbrev] << data
     @results
   end
@@ -466,7 +483,8 @@ class AccountabilityReport < ApplicationRecord
   end
   
   def log_file_path
-    File.join(Rails.root, "files", "activity_results", "results_#{id.to_s}_#{@log_step.to_s}.log")
+    #File.join(Rails.root, "files", "activity_results", "results_#{id.to_s}_#{@log_step.to_s}.log")
+    Rails.root.join("files", "activity_results", "results_#{id}_#{@log_step}.log")
   end
   
   # Loads the results array from the YAML file cache produced by #dump_results!. If the cache file doesn't exist, this method
@@ -484,7 +502,7 @@ class AccountabilityReport < ApplicationRecord
       end
 
       File.open(file_path) do |file|
-        @results = YAML.safe_load(file, permitted_classes: [Date, Time, Symbol], aliases: true)
+        @results = YAML.safe_load(file.read, permitted_classes: [Date, Time, Symbol], aliases: true)
       end
 
       Rails.logger.info "Done."
@@ -516,7 +534,7 @@ class AccountabilityReport < ApplicationRecord
     puts "Saved results output to #{dump_results!(:raw)}"
     
     puts "Accumulating: ActivityProject... ", true
-    activity_projects = ActivityProject.of_type(@activity_type).for_quarters(@quarters)
+    activity_projects = ActivityProject.of_type(@activity_type).for_quarter(@quarters)
     for activity_project in activity_projects
       print "|"
       for activity_quarter in activity_project.quarters
@@ -557,8 +575,8 @@ class AccountabilityReport < ApplicationRecord
     puts "Accumulating: ApplicationForOfferings... ", true
     for quarter in @quarters
       print "  #{quarter.abbrev}: "
-      offerings_by_quarter = Offering.find_all_by_activity_type_id_and_quarter_offered_id(@activity_type, quarter)
-      offerings_by_acc_quarter = Offering.find_all_by_activity_type_id_and_accountability_quarter_id(@activity_type, quarter)
+      offerings_by_quarter = Offering.where(activity_type_id: @activity_type.id, quarter_offered_id: quarter.id)
+      offerings_by_acc_quarter = Offering.where(activity_type_id: @activity_type.id, accountability_quarter_id: quarter.id)
       offerings = (offerings_by_quarter + offerings_by_acc_quarter).flatten
       puts "#{offerings.size.to_s.ljust(4)}"
       for offering in offerings
@@ -763,8 +781,12 @@ class AccountabilityReport < ApplicationRecord
           course_identifier = nil
           service_learning_department_identifier = nil
           
-          klass, id = activity[:activity].split("_")
-          a = klass.constantize.find(id) rescue nil
+          # klass, id = activity[:activity].split("_")
+          # a = klass.constantize.find(id) rescue nil
+          klass, id = activity[:activity].to_s.split("_", 2)
+          model = klass.safe_constantize
+          a = (model.find(id) if model && id.present?) rescue nil
+
           print system_key.to_s.ljust(11)
           print "department: #{(a.department_name || a.department_id rescue nil).to_s[0..47]}".ljust(62, ".")          
           
@@ -881,7 +903,7 @@ class AccountabilityReport < ApplicationRecord
         sorted = @activities.sort_by{|a| a[:number_of_hours].to_f}.reverse
         # puts sorted.collect{|a| a[:number_of_hours]}.join(" > ")
         max_hours = sorted.first[:number_of_hours]
-        for activity in sorted[1..sorted.size]
+        sorted.drop(1).each do |activity|
           remove_activity(activity, false)
           report = "[MultipleActivities]: DUP #{activity[:source]} "
           report << "(#{activity[:number_of_hours]} hours <= #{max_hours} hours)"
@@ -892,8 +914,12 @@ class AccountabilityReport < ApplicationRecord
 
     # Removes an activity. Specify "false" as the second parameter to mark the item as a duplicate instead of deleting it from the hash.
     def remove_activity(activity, delete_from_hash = true)
+      return unless activity
       activity[:duplicate] = true
-      @activities_to_remove << activity && @activities.delete(activity) if delete_from_hash
+      if delete_from_hash
+        @activities.delete(activity)
+        @activities_to_remove << activity
+      end
     end
     
     def activities_to_remove
@@ -907,13 +933,18 @@ class AccountabilityReport < ApplicationRecord
     private    
 
     def source(activity)
-      klass, id = activity[:source].split("_")
-      klass.constantize.find(id) rescue nil
+      klass, id = activity[:activity].to_s.split("_", 2)
+      model = klass.safe_constantize
+      return nil unless model && id.present?
+
+      model.find(id)
+    rescue ActiveRecord::RecordNotFound
+      nil
     end
     
     def type(activity)
-      klass, id = activity[:source].split("_")
-      klass.constantize
+      klass, _id = activity[:source].split("_", 2)
+      klass.safe_constantize
     end
   
   end

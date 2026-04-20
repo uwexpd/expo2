@@ -58,3 +58,4 @@ __pycache__/
 
 # temp
 # /app/models/givepulse/
+dump.rdb

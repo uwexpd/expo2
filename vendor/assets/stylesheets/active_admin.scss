@@ -806,13 +806,18 @@ ul.sherlock-buttons{
 	border-bottom: 1px solid #efefef;
 }
 
+ul.no-list-style {
+	list-style: none;
+	padding-left: 0px;
+}
+
 ul.link-list {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-ul.link-list li {	
+ul.link-list li, ul.no-list-style li {	
 	font-size: 0.8125rem;
 	border-bottom: 1px solid #efefef;	
 	padding: 10px 16px;
@@ -838,7 +843,7 @@ ul.link-list li a small {
 	padding-right: 10px;
 }
 
-ul.link-list li a:hover,  ul.link-list li:hover {
+ul.link-list li a:hover,  ul.link-list li:hover, ul.no-list-style li:hover {
 	background-color: #F5F5DC;
 	text-decoration: none;
 }
@@ -1658,6 +1663,11 @@ tr.details td {
 
 .select img.indicator.loading {
 	width: 2.3rem;
+}
+
+.indicator img.loading {
+	width: 1.3rem;
+	vertical-align: middle;
 }
 
 #objects_indicator img.loading{

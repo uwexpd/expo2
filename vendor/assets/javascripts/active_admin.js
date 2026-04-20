@@ -13,3 +13,4 @@
 //= require insert_at_cursor
 //= require activeadmin_reorderable
 //= require population_output_fields
+//= require accountability_reports

@@ -1,0 +1,64 @@
+(function() {
+  var id = <%= @report.id %>;
+  var enqueueFailed = <%= @enqueue_failed ? "true" : "false" %>;
+
+  $("#regenerate_link_" + id).hide();
+  $("#regenerate_indicator_" + id + " img.loading").show();
+  $("#status_indicator_" + id).show();
+
+  if (enqueueFailed) {
+    $("#regenerate_indicator_" + id + " img.loading").hide();
+    $("#status_indicator_" + id).show();
+    $("#status_" + id).html(
+      "<span class='status_tag small error'>error</span> <%= j @report.status.to_s %> - " +
+      "<a data-remote='true' data-method='post' data-type='script' rel='nofollow' " +
+      "id='regenerate_link_" + id + "' href='<%= regenerate_admin_accountability_path(@report) %>'>Try again</a>"
+    );
+    return;
+  }
+
+  $("#status_" + id).text("<%= j(@report.status.to_s.presence ) %>");
+  
+  // We keep one polling timer per report id in a global object (window.AccountabilityPoller).
+  // This prevents multiple timers from stacking up if the user clicks "Regenerate" more than once
+  // or if the page re-renders the row and re-runs this JS.
+  window.AccountabilityPoller = window.AccountabilityPoller || {};
+  if (window.AccountabilityPoller[id]) clearInterval(window.AccountabilityPoller[id]);
+
+  // Record when polling started so we can enforce a hard timeout.
+  // If Sidekiq is down, the job may never run and the status file may stay forever.
+  // Without a timeout, the browser would poll indefinitely.
+  var startedAt = Date.now();
+  var timeoutMs = 60 * 60 * 1000; // 60 mins can adjust
+
+  // Poll every 5 seconds for updated status (regenerate_status action returns JS that updates the DOM).
+  window.AccountabilityPoller[id] = setInterval(function() {
+
+    // If we've been polling longer than timeoutMs, stop polling and show a "delayed" message.
+    // Note: an AJAX request could already be in-flight when this triggers; if so, its response
+    // might still arrive and overwrite the delayed message unless you guard against late responses.
+    if (Date.now() - startedAt > timeoutMs) {
+      clearInterval(window.AccountabilityPoller[id]);
+      window.AccountabilityPoller[id] = null;
+
+      // Stop showing the "working" spinner; show the status indicator area (if you want it visible).
+      $("#regenerate_indicator_" + id + " img.loading").hide();
+      $("#status_indicator_" + id).show();
+
+      // Replace the status text with a delayed warning and a retry link.
+      $("#status_" + id).html(
+        "<span class='status_tag small orange'>delayed</span> Taking long er than expected (Sidekiq may be down). - " +
+        "<a data-remote='true' data-method='post' data-type='script' rel='nofollow' " +
+        "id='regenerate_link_" + id + "' href='<%= regenerate_admin_accountability_path(@report) %>'>Try again</a>"
+      );
+      return;
+    }
+
+    // Normal polling path: ask the server for the latest status and let the returned JS update the row.
+    $.ajax({
+      url: "<%= regenerate_status_admin_accountability_path(@report) %>",
+      type: "GET",
+      dataType: "script"
+    });
+  }, 5000);
+})();

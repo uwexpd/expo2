@@ -13,9 +13,9 @@
   var rowSelector = "#row_<%= @department.class.to_s %>_<%= @department.id.to_s %>";
 
   if ($(rowSelector).length) {
-    $(rowSelector).replaceWith("<%= j(render partial: 'admin/accountability/authorizations/department', object: @department, locals: { authorizations: @authorizations }) %>");
+    $(rowSelector).replaceWith("<%= j(render partial: 'admin/accountabilities/authorizations/department', object: @department, locals: { authorizations: @authorizations }) %>");
   } else {
-    $("#department_authorizations_tbody").prepend("<%= j(render partial: 'admin/accountability/authorizations/department', object: @department, locals: { authorizations: @authorizations }) %>");
+    $("#department_authorizations_tbody").prepend("<%= j(render partial: 'admin/accountabilities/authorizations/department', object: @department, locals: { authorizations: @authorizations }) %>");
   }
 
   $("#uw_netid").val("");

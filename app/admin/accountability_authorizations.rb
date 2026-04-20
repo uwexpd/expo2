@@ -1,4 +1,4 @@
-ActiveAdmin.register_page "Accountability Authorizations" do
+ActiveAdmin.register_page "Accountabilities Authorizations" do
   menu false
 
   controller do
@@ -28,14 +28,14 @@ ActiveAdmin.register_page "Accountability Authorizations" do
     end
     departments = departments.sort_by { |dept, _| dept.name.to_s.downcase }.to_h
     
-    render partial: "admin/accountability/authorizations/index", locals: { departments: departments }
+    render partial: "admin/accountabilities/authorizations/index", locals: { departments: departments }
   end
 
   # POST /admin/accountability/authorizations (we’ll route alias to here)
   page_action :create, method: :post do
     if params[:uw_netid].blank? || params[:authorizable_key].blank?
       @error = "You must provide department and UW NetID."
-      return render "admin/accountability/authorizations/create", formats: :js
+      return render "admin/accountabilities/authorizations/create", formats: :js
     end
 
     role = Role.find_or_create_by(name: "accountability_department_coordinator")
@@ -49,7 +49,7 @@ ActiveAdmin.register_page "Accountability Authorizations" do
       @department = m[1].constantize.find(m[2])
     else
       @error = "Invalid department name format."
-      return render "admin/accountability/authorizations/create", formats: :js
+      return render "admin/accountabilities/authorizations/create", formats: :js
     end
 
     @authorization = user_role.authorize_for(@department)
@@ -61,7 +61,7 @@ ActiveAdmin.register_page "Accountability Authorizations" do
       authorizable_id: @department.id
     )
 
-    render "admin/accountability/authorizations/create", formats: :js
+    render "admin/accountabilities/authorizations/create", formats: :js
   end
 
   # DELETE /admin/accountability/authorizations/:id (alias route)
@@ -76,7 +76,7 @@ ActiveAdmin.register_page "Accountability Authorizations" do
       authorizable_id: @department.id
     )
 
-    render "admin/accountability/authorizations/destroy", formats: :js
+    render "admin/accountabilities/authorizations/destroy", formats: :js
   end
 
   # GET /admin/accountability/authorizations/auto_complete_for_department (alias route)
@@ -86,6 +86,6 @@ ActiveAdmin.register_page "Accountability Authorizations" do
     extras = DepartmentExtra.where("fixed_name LIKE ? AND dept_code IS NULL", "%#{@q}%").limit(10)
     @departments = depts.to_a + extras.to_a
 
-    render partial: "admin/accountability/authorizations/auto_complete_for_department"
+    render partial: "admin/accountabilities/authorizations/auto_complete_for_department"
   end
 end

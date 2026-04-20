@@ -17,7 +17,7 @@
 				
 				<tbody id="department_authorizations_tbody">
 					<% departments.each do |dept, authorizations| %>
-					  <%= render partial: "admin/accountability/authorizations/department", locals: { department: dept, authorizations: authorizations } %>
+					  <%= render partial: "admin/accountabilities/authorizations/department", locals: { department: dept, authorizations: authorizations } %>
 					<% end %>
 				</tbody>
 			</table>

@@ -1,0 +1,37 @@
+(function() {
+  var id = <%= @report.id %>;
+  var complete = <%= @complete ? "true" : "false" %>;
+  var failed = <%= @failed ? "true" : "false" %>;
+  var statusText = "<%= j @status %>";
+
+  if (!complete) {
+    $("#status_" + id).text(statusText);
+    $("#status_indicator_" + id).show();
+    return;
+  }
+
+  if (window.AccountabilityPoller && window.AccountabilityPoller[id]) {
+    clearInterval(window.AccountabilityPoller[id]);
+    window.AccountabilityPoller[id] = null;
+  }
+
+  $("#regenerate_indicator_" + id + " img.loading").hide();
+
+  if (failed) {
+    // keep indicator visible
+    $("#status_indicator_" + id).show();
+
+    $("#status_" + id).html(
+      "<span class='status_tag small error'>error</span> " + statusText +
+      " - " +
+      "<a data-remote='true' data-method='post' data-type='script' rel='nofollow' " +
+      "id='regenerate_link_" + id + "' href='<%= regenerate_admin_accountability_path(@report) %>'>" +
+      "Try again</a>"
+    );
+    return;
+  }
+
+  // success
+  $("#status_indicator_" + id).hide();
+  location.reload();
+})();

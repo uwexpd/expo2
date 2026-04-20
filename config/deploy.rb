@@ -1,4 +1,5 @@
 # require 'capistrano/rake'
+require "capistrano/sidekiq"
 set :stage, :production
 
 set :deploy_to, '/usr/local/apps/expo2'
@@ -9,7 +10,7 @@ set :bundle_flags, "--quiet"
 set :deploy_user, 'joshlin'
 server 'new.expo.uw.edu', user: 'joshlin', roles: %w{web app db}, primary: true
 set :rvm_ruby_version, '2.7.2' # set up which rvm ruby to use in server
-
+set :sidekiq_service_unit_name, "sidekiq-expo2"
 
 # for dev.expo.uw.edu
 set :default_env, {
@@ -50,3 +51,4 @@ namespace :deploy do
 end
 
 after 'deploy:assets:precompile', 'deploy:fix_absent_manifest_bug'
+after "deploy:published", "sidekiq:restart"

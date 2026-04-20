@@ -69,9 +69,9 @@ Rails.application.routes.draw do
     get 'invitees/event/:event_id', to: 'admin/invitees#index', as: 'admin_invitees_event'
     post 'admin/queries/:id/refresh_dropdowns', to: 'admin/queries#refresh_dropdowns', as: 'admin_query_refresh_dropdowns'
     match 'admin/queries/:query_id/conditions/:id/refresh_dropdowns', to: 'admin/conditions#refresh_dropdowns', as: 'admin_query_condition_refresh_dropdowns', via: [:get, :post, :patch]
-    get "admin/accountabilities/authorizations", to: "admin/accountability_authorizations#index", as: :admin_accountability_authorizations
-    post "admin/accountabilities/authorizations", to: "admin/accountability_authorizations#create"
-    delete "admin/accountabilies/authorizations/:id", to: "admin/accountability_authorizations#destroy", as: :admin_accountability_authorization
+    get "admin/accountabilities/authorizations", to: "admin/accountabilities_authorizations#index", as: :admin_accountability_authorizations
+    post "admin/accountabilities/authorizations", to: "admin/accountabilities_authorizations#create"
+    delete "admin/accountabilies/authorizations/:id", to: "admin/accountabilities_authorizations#destroy", as: :admin_accountability_authorization
     get "admin/authorizations/auto_complete_for_department",
              to: "admin/accountabilities_authorizations#auto_complete_for_department",
              as: :auto_complete_for_department_admin_accountability_authorizations
@@ -325,15 +325,26 @@ Rails.application.routes.draw do
 
 
     # Sidekiq admin routes
-    Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-      # Protect against timing attacks:
-      # - See https://codahale.com/a-lesson-in-timing-attacks/
-      # - See https://thisdata.com/blog/timing-attacks-against-string-comparison/
-      # - Use & (do not use &&) so that it doesn't short circuit.
-      # - Use digests to stop length information leaking (see also ActiveSupport::SecurityUtils.variable_size_secure_compare)
-      ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(username), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USERNAME"])) &
-        ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(password), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"]))
-    end if Rails.env.production?
+    Sidekiq::Web.use Rack::Auth::Basic, "Sidekiq" do |username, password|
+      expected_user = ENV["SIDEKIQ_USERNAME"].to_s
+      expected_pass = ENV["SIDEKIQ_PASSWORD"].to_s
+
+      # deny if not configured
+      next false if expected_user.empty? || expected_pass.empty?
+
+      u_ok = ActiveSupport::SecurityUtils.secure_compare(
+        Digest::SHA256.hexdigest(username.to_s),
+        Digest::SHA256.hexdigest(expected_user)
+      )
+
+      p_ok = ActiveSupport::SecurityUtils.secure_compare(
+        Digest::SHA256.hexdigest(password.to_s),
+        Digest::SHA256.hexdigest(expected_pass)
+      )
+
+      u_ok & p_ok
+    end
+    
     mount Sidekiq::Web, at: '/admin/sidekiq'
 
   end
