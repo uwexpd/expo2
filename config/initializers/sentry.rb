@@ -1,6 +1,7 @@
 if defined?(Dotenv)
-  dotenv_file = '/usr/local/apps/expo2/shared/.env'
-  Dotenv.load(dotenv_file) if File.exist?(dotenv_file)
+  # dotenv_file = '/usr/local/apps/expo2/shared/.env'
+  # Dotenv.load(dotenv_file) if File.exist?(dotenv_file)
+  Dotenv.overload(Rails.root.join(".env")) if File.exist?(Rails.root.join(".env"))
 end
 
 Sentry.init do |config|

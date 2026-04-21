@@ -70,7 +70,7 @@ Rails.application.routes.draw do
     post 'admin/queries/:id/refresh_dropdowns', to: 'admin/queries#refresh_dropdowns', as: 'admin_query_refresh_dropdowns'
     match 'admin/queries/:query_id/conditions/:id/refresh_dropdowns', to: 'admin/conditions#refresh_dropdowns', as: 'admin_query_condition_refresh_dropdowns', via: [:get, :post, :patch]
     get "admin/accountabilities/authorizations", to: "admin/accountabilities_authorizations#index", as: :admin_accountability_authorizations
-    post "admin/accountabilities/authorizations", to: "admin/accountabilities_authorizations#create"
+    post "admin/accountabilities/authorizations", to: "admin/accountabilities_authorizations#create", as: :create_admin_accountability_authorizations
     delete "admin/accountabilies/authorizations/:id", to: "admin/accountabilities_authorizations#destroy", as: :admin_accountability_authorization
     get "admin/authorizations/auto_complete_for_department",
              to: "admin/accountabilities_authorizations#auto_complete_for_department",

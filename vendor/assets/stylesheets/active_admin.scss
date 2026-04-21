@@ -1780,12 +1780,12 @@ ul.inline li {
 }
 
 /* Hide the built-in sidebar title */
-#department_nav_sidebar_section > h3 {
+#add_user_sidebar_section > h3, #department_nav_sidebar_section > h3 {
   display: none;
 }
 
 /* Optional: spacing for your custom title */
-#sidebar h3.dept-sidebar-title {
+#sidebar h3.dept-sidebar-title, #sidebar h3.sidebar-title {
   margin-top: 0;
   color: rgba(0, 0, 0, 0.54);
   font-weight: 500;

@@ -6,14 +6,17 @@ ActiveAdmin.register_page "Accountabilities Authorizations" do
   end
 
   sidebar "Navigation" do
-      ul class: 'link-list' do
-        li do
-          link_to "<i class='mi'>home</i>Accountability Home".html_safe, admin_accountabilities_path
-        end
-        li do
-          link_to "<i class='mi'>group</i>Authorized Users".html_safe, admin_accountability_authorizations_path
-        end
+    ul class: 'link-list' do
+      li do
+        link_to "<i class='mi'>home</i>Accountability Home".html_safe, admin_accountabilities_path
       end
+      li do
+        link_to "<i class='mi'>group</i>Authorized Users".html_safe, admin_accountability_authorizations_path
+      end
+    end
+  end
+  sidebar :add_user do
+    render partial: "admin/accountabilities/authorizations/sidebar/add_user"
   end
 
   # GET (this is the AA page “index”)
@@ -41,12 +44,14 @@ ActiveAdmin.register_page "Accountabilities Authorizations" do
     role = Role.find_or_create_by(name: "accountability_department_coordinator")
     user = PubcookieUser.authenticate(params[:uw_netid])
     user_role = user.assign_role(:accountability_department_coordinator)
+ 
+    key = params[:authorizable_key].to_s.strip
 
-    key = params[:authorizable_key].to_s
-    if (m = key.match(/^NEW_(.+)/))
-      @department = DepartmentExtra.find_or_create_by(fixed_name: CGI.unescape(m[1]))
-    elsif (m = key.match(/^(Department|DepartmentExtra)_(\d+)/))
-      @department = m[1].constantize.find(m[2])
+    case key
+    when /\A(Department|DepartmentExtra)[:_](\d+)\z/
+      @department = $1.constantize.find($2)    
+    # when /\ANEW_(.+)\z/
+    #   @department = DepartmentExtra.find_or_create_by(fixed_name: CGI.unescape($1))
     else
       @error = "Invalid department name format."
       return render "admin/accountabilities/authorizations/create", formats: :js
@@ -81,11 +86,29 @@ ActiveAdmin.register_page "Accountabilities Authorizations" do
 
   # GET /admin/accountability/authorizations/auto_complete_for_department (alias route)
   page_action :auto_complete_for_department, method: :get do
-    @q = params[:department_search].to_s
-    depts  = Department.where("dept_full_nm LIKE ? OR dept_abbr = ?", "%#{@q}%", @q).limit(10)
-    extras = DepartmentExtra.where("fixed_name LIKE ? AND dept_code IS NULL", "%#{@q}%").limit(10)
-    @departments = depts.to_a + extras.to_a
+    q = params[:q].to_s.strip
+    q = q[0, 60] # simple guard
 
-    render partial: "admin/accountabilities/authorizations/auto_complete_for_department"
-  end
+    depts = Department.where("dept_full_nm LIKE ? OR dept_abbr = ?", "%#{q}%", q).limit(10)
+
+    extras = DepartmentExtra.where("fixed_name LIKE ? AND dept_code IS NULL", "%#{q}%").limit(10)
+
+    results = (depts.to_a + extras.to_a).map do |d|
+      if d.is_a?(Department)
+        {
+          id: "Department:#{d.dept_code}",
+          text: d.name,
+          subtext: "Department ID: #{d.dept_code}"
+        }
+      else
+        {
+          id: "DepartmentExtra:#{d.id}",
+          text: d.fixed_name,
+          subtext: "DepartmentExtra ID: #{d.id}"
+        }
+      end
+    end
+
+    render json: results
+  end  
 end

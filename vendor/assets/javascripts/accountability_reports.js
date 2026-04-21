@@ -1,57 +1,62 @@
-// (function($) {
-//   function statusUrlFor(template, id) {
-//     return template.replace(":id", id);
-//   }
+$(document).ready(function () {
+  var $dept = $("#department_search");
+  if (!$dept.length) return;
 
-//   function pollOne(template, id) {
-//     var flagName = "do_checks_" + id;
-//     if (!window[flagName]) return;
+  function renderOption(item) {
+    if (!item.id) return item.text; // placeholder
+    var sub = item.subtext ? "<div class='smaller'>" + item.subtext + "</div>" : "";
+    return "<div>" + item.text + sub + "</div>";
+  }
 
-//     window[flagName] = false;
+  function renderSelection(item) {
+    // Keep selection compact and stable (usually just the main text)
+    return item.text || "";
+  }
 
-//     $.ajax({
-//       url: statusUrlFor(template, id),
-//       dataType: "script"
-//     });
-//   }
+  $dept.select2({
+    width: "100%",
+    placeholder: "Search department...",
+    allowClear: true,
+    minimumInputLength: 2,
 
-//   function setupAccountabilityPolling() {
-//     var $root = $("#aa-accountability-reports");
-//     if ($root.length === 0) return;
+    ajax: {
+      url: $dept.data("autocomplete-url"),
+      dataType: "json",
+      delay: 200,
+      data: function (params) { return { q: params.term }; },
+      processResults: function (data) { return { results: data }; }
+    },
 
-//     var template = $root.data("status-url-template");
-//     if (!template) return;
+    templateResult: function (item) { return $(renderOption(item)); }, // dropdown
+    templateSelection: function (item) { return renderSelection(item); }, // selected value
 
-//     // bootstrap flags from DOM
-//     $(".js-report-status").each(function() {
-//       var $el = $(this);
-//       var id = $el.data("report-id");
-//       var inProgress = String($el.data("in-progress")) === "true";
-//       window["do_checks_" + id] = inProgress;
-//     });
+    // allow HTML in dropdown + noResults link
+    escapeMarkup: function (markup) { return markup; },
 
-//     // bind once
-//     $(document).off("click.accountability", ".js-report-regenerate").on("click.accountability", ".js-report-regenerate", function() {
-//         var $link = $(this);
-//         var id = $link.data("report-id");
-//         console.log("regenerate clicked", id);
+    language: {
+      noResults: function () {
+        var term =
+          ($dept.data("select2") &&
+            $dept.data("select2").dropdown &&
+            $dept.data("select2").dropdown.$search)
+            ? $dept.data("select2").dropdown.$search.val()
+            : "";
 
-//         // immediate UI feedback (rails-ujs will still handle the remote POST)
-//         $link.hide();
-//         $("#regenerate_indicator_" + id + " img.loading").css("display", "inline");
+        var url = "/expo/admin/department_extras/new";
+        // optional prefill:
+        // url += "?fixed_name=" + encodeURIComponent(term);
 
-//         $("#status_indicator_" + id).show();
-//         $("#status_" + id).html("Regenerating...");
-//         window["do_checks_" + id] = true;
-//       });
+        return "No results. " +
+          "<a href='" + url + "' target='_blank' rel='noopener noreferrer'>Create extra department</a>";
+      }
+    }
+  });
 
-//     // poll every 5 seconds
-//     setInterval(function() {
-//       $(".js-report-status").each(function() {
-//         pollOne(template, $(this).data("report-id"));
-//       });
-//     }, 5000);
-//   }
+  $dept.on("select2:select", function (e) {
+    $("#authorizable_key").val(e.params.data.id);
+  });
 
-//   $(document).ready(setupAccountabilityPolling);
-// })(jQuery);
+  $dept.on("select2:clear", function () {
+    $("#authorizable_key").val("");
+  });
+});

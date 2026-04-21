@@ -3,7 +3,10 @@
   $("#add_user_success").html("");
 <% else %>
   $("#add_user_error").html("");
-  $("#add_user_success").html("Successfully authorized <%= j params[:uw_netid].to_s %>");
+  $("#add_user_success").html(
+    "Successfully authorized <strong><%= j params[:uw_netid].to_s %></strong> for " +
+    "<strong><%= j @department.name %></strong>."
+  );
 
   // Move the overlay out of the way before we start deleting things
   if ($("#global_overlay").length) {
@@ -18,13 +21,35 @@
     $("#department_authorizations_tbody").prepend("<%= j(render partial: 'admin/accountabilities/authorizations/department', object: @department, locals: { authorizations: @authorizations }) %>");
   }
 
+  // Clear inputs
   $("#uw_netid").val("");
+  $("#department_search").val(null).trigger("change");
+  $("#authorizable_key").val("");
 
-  // highlight effect (requires jQuery UI). If you don't have it, I can give a CSS-only alternative.
-  if ($(rowSelector).length) {
-    $(rowSelector).addClass("flash-highlight");
-    setTimeout(function () {
-      $(rowSelector).removeClass("flash-highlight");
-    }, 1500);
-  }
+  // Wait for DOM/layout, then scroll + focus + highlight
+  setTimeout(function () {
+    var $row = $(rowSelector);
+    if (!$row.length) return;
+
+    // highlight
+    $row.addClass("flash-highlight");
+    setTimeout(function () { $row.removeClass("flash-highlight"); }, 3000);
+
+    // scroll (use native if available, fallback to jQuery animate)
+    try {
+      $row[0].scrollIntoView({ behavior: "smooth", block: "center" });
+    } catch (e) {
+      var top = $row.offset().top - 120;
+      $("html, body").animate({ scrollTop: top }, 250);
+    }
+
+    // focus: prefer a real focusable element inside the row
+    var $focusTarget = $row.find("a, button, input, select, textarea").first();
+    if ($focusTarget.length) {
+      $focusTarget.focus();
+    } else {
+      $row.attr("tabindex", "-1").focus();
+    }
+  }, 0);
+
 <% end %>

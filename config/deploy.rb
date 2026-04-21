@@ -1,5 +1,3 @@
-# require 'capistrano/rake'
-require "capistrano/sidekiq"
 set :stage, :production
 
 set :deploy_to, '/usr/local/apps/expo2'
@@ -14,7 +12,8 @@ set :sidekiq_service_unit_name, "sidekiq-expo2"
 
 # for dev.expo.uw.edu
 set :default_env, {
-  'SSL_CERT_FILE' => '/etc/ssl/certs/ca-certificates.crt'
+  'SSL_CERT_FILE' => '/etc/ssl/certs/ca-certificates.crt',
+  "REDIS_URL"     => "redis://127.0.0.1:6379/0"
 }
 
 # Tell cap your own private keys for git and use agent forwarding with this command.
