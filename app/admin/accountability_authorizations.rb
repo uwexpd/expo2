@@ -42,7 +42,11 @@ ActiveAdmin.register_page "Accountabilities Authorizations" do
     end
 
     role = Role.find_or_create_by(name: "accountability_department_coordinator")
-    user = PubcookieUser.authenticate(params[:uw_netid])
+    user = PubcookieUser.authenticate(params[:uw_netid], nil, nil, fail_if_person_not_found: true)
+    unless user
+      @error = "UW NetID not found."
+      return render "admin/accountabilities/authorizations/create", formats: :js
+    end
     user_role = user.assign_role(:accountability_department_coordinator)
  
     key = params[:authorizable_key].to_s.strip
@@ -59,6 +63,25 @@ ActiveAdmin.register_page "Accountabilities Authorizations" do
 
     @authorization = user_role.authorize_for(@department)
     @error = "Error creating authorization record." unless @authorization
+
+    if @authorization
+      template = EmailTemplate.find_by_name("accountability department coordinator authorized notification")
+
+      if template && user.email.present?
+        info = {
+          authorized_user: user.person,
+          department: @department,
+          authorized_by: current_user.person # ActiveAdmin current_user
+        }
+
+        reporting_url = "https://expd.uw.edu/accountability/"
+
+        EmailContact.log(
+          user.person,
+          template.create_email_to(info, reporting_url, user.email).deliver_now
+        )
+      end
+    end
 
     @role = role
     @authorizations = role.authorizations.where(

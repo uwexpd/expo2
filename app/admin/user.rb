@@ -140,8 +140,10 @@ ActiveAdmin.register User do
   form do |f|
     f.semantic_errors *f.object.errors.keys
     if f.object.new_record?
-      f.input :login, label: 'Authenticate a new UW standard user', input_html: {style: 'width: 50%'}, hint: "Enter a UW NetID to create a new Standard User for that login."
-        f.actions
+      f.inputs do
+        f.input :login, label: 'Authenticate a new UW standard user', input_html: {style: 'width: 50%'}, hint: "Enter a UW NetID to create a new Standard User for that login."
+          f.actions
+      end
     else
       f.inputs "Edit #{user.login}" do
         f.input :email, as: :string

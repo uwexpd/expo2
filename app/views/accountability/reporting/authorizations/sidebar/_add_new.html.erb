@@ -7,6 +7,11 @@
 		    <%= text_field_tag :uw_netid, nil, class: 'browser-default' %>
 		    <br><br>
 		    <%= submit_tag "Authorize", class: 'btn' %>
+
+		    <div class="input" style="margin-top: 0.75rem;">
+		     <span class="error-message" id="add_user_error"></span>
+		     <span class="success-message" id="add_user_success"></span>
+		    </div>
 		<% end %>
 	</div>
 </ul>

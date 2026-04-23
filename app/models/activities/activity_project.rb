@@ -5,13 +5,6 @@ class ActivityProject < Activity
   # Associations
   belongs_to :student, class_name: 'StudentRecord', foreign_key: 'system_key', optional: true
 
-  # Scopes
-  # Returns records with quarters matching the requested quarter(s)
-  scope :for_quarter, ->(q) {
-    quarter_ids = Array(q).map { |qq| qq.respond_to?(:id) ? qq.id : qq }.compact
-    joins(:quarters).where(activity_quarters: { quarter_id: quarter_ids }).distinct
-  }
-
   # Returns records assigned to the specified department
   scope :for_department, ->(d) {
     case d
@@ -31,6 +24,13 @@ class ActivityProject < Activity
       none # returns an empty ActiveRecord::Relation if none of the above
     end
   }
+
+  # Returns records with quarters matching the requested quarter(s)
+  # Intentionally override Activity.for_quarter with "associated quarters" semantics
+  def self.for_quarter(q)
+    quarter_ids = Array(q).map { |qq| qq.respond_to?(:id) ? qq.id : qq }.compact
+    joins(:quarters).where(activity_quarters: { quarter_id: quarter_ids }).distinct
+  end
 
   private
 

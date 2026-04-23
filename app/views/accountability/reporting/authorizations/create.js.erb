@@ -1,4 +1,10 @@
-$("#authorizations_table").append("<%= j render partial: 'authorization', object: @authorization %>");
+<% if @error.present? %>
+  $("#add_user_error").html("<%= j @error %>");
+  $("#add_user_success").html("");
+<% else %>
+  $("#add_user_error").html("");
+  $("#add_user_success").html("Successfully authorized <%= j params[:uw_netid].to_s %>.");
 
-// Clear the input field with ID 'uw_netid'
-$("#uw_netid").val('');
+  $("#authorizations_table").append("<%= j render partial: 'authorization', object: @authorization %>");
+  $("#uw_netid").val('');
+<% end %>

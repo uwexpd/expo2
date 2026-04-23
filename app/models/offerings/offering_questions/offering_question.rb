@@ -136,43 +136,51 @@ class OfferingQuestion < ApplicationRecord
   end
 
   def add_character_limit_error(page)
-    begin      
-      unless character_limit.nil? || character_limit < 1         
-        if display_as == 'application_text'
-          character_count = page.application_for_offering.text(attribute_to_update).body.size rescue 0          
-        else
-          character_count = page.application_for_offering.instance_eval(attribute_to_update).size unless page.application_for_offering.instance_eval(attribute_to_update).nil?
-        end        
-        if character_count > character_limit
-          add_error_message page, " is #{character_count - character_limit} characters too long (maximum #{character_limit} characters)."
-        end
+    limit = character_limit.to_i
+    return if limit < 1
+
+    app = page.application_for_offering
+
+    text =
+      if display_as == 'application_text'
+        app.text(attribute_to_update)&.body
+      else
+        app.public_send(attribute_to_update)
       end
-    rescue
-      add_error_message page, " -- could not check character limit error (add_character_limit_error)"
+
+    character_count = text.to_s.length
+
+    if character_count > limit
+      add_error_message page,
+        " is #{character_count - limit} characters too long (maximum #{limit} characters)."
     end
+  rescue => e
+    Rails.logger.error("[add_character_limit_error] #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}")
+    add_error_message page, " -- could not check character limit error (add_character_limit_error): #{e.class}: #{e.message}"
   end
   
   
   def add_word_limit_error(page)
-    begin
+    return if word_limit.nil? || word_limit.to_i < 1
+
+    app = page.application_for_offering
+    limit    = word_limit.to_i
+
+    text =
       if display_as == 'application_text'
-        unless word_limit.nil? || word_limit < 1
-          word_count = page.application_for_offering.text(attribute_to_update).body.split(/\S+/).size rescue 0
-          if word_count > word_limit + 5
-            add_error_message page, " is #{word_count - word_limit} words too long (maximum #{word_limit} words)."
-          end
-        end
+        app.text(attribute_to_update)&.body
       else
-        unless word_limit.nil? || word_limit < 1 || page.application_for_offering.instance_eval(attribute_to_update).nil?
-          word_count = page.application_for_offering.instance_eval(attribute_to_update).split(/\S+/).size
-          if word_count > word_limit + 5
-            add_error_message page, " is #{word_count - word_limit} words too long (maximum #{word_limit} words)."
-          end
-        end
+        app.public_send(attribute_to_update)
       end
-    rescue
-      add_error_message page, " -- could not check word limit error (add_word_limit_error)"
+
+    word_count = text.to_s.scan(/\S+/).size
+
+    if word_count > limit + 5
+      add_error_message page, " is #{word_count - limit} words too long (maximum #{limit} words)."
     end
+  rescue => e
+    Rails.logger.error("[add_word_limit_error] #{e.class}: #{e.message}\n#{e.backtrace&.first(5)&.join("\n")}")
+    add_error_message page, " -- could not check word limit error (add_word_limit_error): #{e.class}: #{e.message}"
   end
   
   def add_phone_number_error(page)

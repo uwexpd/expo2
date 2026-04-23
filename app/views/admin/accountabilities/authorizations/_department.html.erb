@@ -16,8 +16,8 @@
 				<%= link_to "<i class='mi md-16'>close</i>".html_safe, admin_accountability_authorization_path(authorization),
 		                method: :delete,
 		                remote: true,
-		                data: { confirm: "Are you sure?", disable_with: "Deleting..."} %>				
-			</li>
+		                data: { confirm: "Are you sure?", disable_with: "Deleting..."} %>
+			</li>			
 		<% end %>
 		</ul>
 	</td>
@@ -28,12 +28,16 @@
 
 		<div class="overlay box" id="inline_add_form_<%= department.class.to_s %>_<%= department.id.to_s %>" style="display:none">
 			<%= form_tag admin_accountability_authorizations_path, method: :post, remote: true do %>
-				<strong>Authorize UW NetID:</strong><br>
+				<strong>Authorize UW NetID:</strong><br>				
+				
 				<%= text_field_tag "uw_netid", nil, 
 									id: "uw_netid_#{department.class.to_s}_#{department.id.to_s}", 
 									class: 'browser-default' %>
 				<%= hidden_field_tag :authorizable_key, "#{department.class.to_s}_#{department.id.to_s}", 
 									:id => "authorizable_key_#{rand(10000)}" %><br>
+				
+				<div class="error-message" id="auth_error_<%= department.class.to_s %>_<%= department.id.to_s %>" style="display:none"></div>
+
 			    <%= submit_tag "Authorize", class: 'btn small flat' %>
 			<% end %>			
 		</div>

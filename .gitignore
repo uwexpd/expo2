@@ -35,6 +35,7 @@ storage/
 /config/master.key
 
 # dotenv
+/.env
 /.env.*.local
 /.env.local
 /.env.*

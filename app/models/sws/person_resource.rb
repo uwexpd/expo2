@@ -63,15 +63,34 @@ class PersonResource < WebServiceResult
     end
   end
 
+  def email
+    netid = attrs['UWNetID'].to_s.strip
+    netid.present? ? "#{netid}@uw.edu" : nil
+  end
 
-  # 1) DisplayName (fallback to PreferredFirstName + PreferredSurname if needed)
+  def display_firstname
+    first = attrs['PreferredFirstName']
+    first = attrs['RegisteredFirstMiddleName'].to_s.split(/\s+/).first if first.blank?
+    first.presence
+  end
+
+  def display_middlename
+    mid = attrs['PreferredMiddleName']
+    return mid.presence if mid.present?
+
+    parts = attrs['RegisteredFirstMiddleName'].to_s.strip.split(/\s+/)
+    mid = parts.length > 1 ? parts[1..].join(' ') : nil
+    mid.presence
+  end
+
+  def display_lastname
+    last = attrs['PreferredSurname'] || attrs['RegisteredSurname']
+    last.presence
+  end
+
   def display_name
     attrs['DisplayName'] ||
-      begin
-        first = attrs['PreferredFirstName'] || attrs['RegisteredFirstMiddleName']
-        last  = attrs['PreferredSurname']   || attrs['RegisteredSurname']
-        [first, last].compact.join(' ').presence
-      end
+      [display_firstname, display_lastname].compact.join(' ').presence
   end
 
   # Convenience accessor for the EmployeePersonAffiliation blob
@@ -79,17 +98,16 @@ class PersonResource < WebServiceResult
     attrs.dig('PersonAffiliations', 'EmployeePersonAffiliation') || {}
   end
 
-  # 2) EmployeePersonAffiliation["HomeDepartment"]
   def employee_home_department
     employee_affiliation['HomeDepartment']
   end
 
-  # 3) EmployeePersonAffiliation["EmployeeWhitePages"]["EmailAddresses"]
+  # EmployeePersonAffiliation["EmployeeWhitePages"]["EmailAddresses"]
   def employee_email_addresses
     employee_affiliation.dig('EmployeeWhitePages', 'EmailAddresses') || []
   end
 
-    # 4) EmployeeWhitePages Positions -> primary EWPTitle (fallback: first non-blank)
+  # EmployeeWhitePages Positions -> primary EWPTitle (fallback: first non-blank)
   def employee_title
     positions = employee_affiliation.dig('EmployeeWhitePages', 'Positions')
     return nil unless positions.is_a?(Array) && positions.any?

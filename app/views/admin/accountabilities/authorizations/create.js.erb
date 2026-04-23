@@ -1,14 +1,29 @@
+<% key = params[:authorizable_key].to_s %>
+<% inline_error_sel = "#auth_error_#{key}" %>
+<% inline_overlay_sel = "#inline_add_form_#{key}" %>
+
 <% if @error.present? %>
-  $("#add_user_error").html("<%= j @error %>");
-  $("#add_user_success").html("");
+  // Inline form error (if this request came from an inline row)
+  if ($("<%= j inline_error_sel %>").length) {
+    $("<%= j inline_error_sel %>").html("<%= j @error %>").show();
+    $("<%= j inline_overlay_sel %>").show(); // keep it open so user sees the message
+  } else {
+    // Fallback to global error area (for the non-inline UI)
+    $("#add_user_error").html("<%= j @error %>");
+    $("#add_user_success").html("");
+  }
 <% else %>
+  // Clear inline error if present
+  if ($("<%= j inline_error_sel %>").length) {
+    $("<%= j inline_error_sel %>").html("").hide();
+  }
   $("#add_user_error").html("");
+
   $("#add_user_success").html(
     "Successfully authorized <strong><%= j params[:uw_netid].to_s %></strong> for " +
     "<strong><%= j @department.name %></strong>."
   );
 
-  // Move the overlay out of the way before we start deleting things
   if ($("#global_overlay").length) {
     $("#add_user_success").insertAfter("#global_overlay");
   }
@@ -21,21 +36,23 @@
     $("#department_authorizations_tbody").prepend("<%= j(render partial: 'admin/accountabilities/authorizations/department', object: @department, locals: { authorizations: @authorizations }) %>");
   }
 
-  // Clear inputs
-  $("#uw_netid").val("");
-  $("#department_search").val(null).trigger("change");
-  $("#authorizable_key").val("");
+  // Clear inputs: handle BOTH inline and global forms
+  var inlineNetid = "#uw_netid_<%= j key %>";
+  if ($(inlineNetid).length) {
+    $(inlineNetid).val("");
+  } else {
+    $("#uw_netid").val("");
+    $("#department_search").val(null).trigger("change");
+    $("#authorizable_key").val("");
+  }
 
-  // Wait for DOM/layout, then scroll + focus + highlight
   setTimeout(function () {
     var $row = $(rowSelector);
     if (!$row.length) return;
 
-    // highlight
     $row.addClass("flash-highlight");
     setTimeout(function () { $row.removeClass("flash-highlight"); }, 3000);
 
-    // scroll (use native if available, fallback to jQuery animate)
     try {
       $row[0].scrollIntoView({ behavior: "smooth", block: "center" });
     } catch (e) {
@@ -43,7 +60,6 @@
       $("html, body").animate({ scrollTop: top }, 250);
     }
 
-    // focus: prefer a real focusable element inside the row
     var $focusTarget = $row.find("a, button, input, select, textarea").first();
     if ($focusTarget.length) {
       $focusTarget.focus();
@@ -51,5 +67,4 @@
       $row.attr("tabindex", "-1").focus();
     }
   }, 0);
-
 <% end %>

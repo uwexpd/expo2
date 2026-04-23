@@ -7,18 +7,43 @@ class Accountability::Reporting::AuthorizationsController < Accountability::Repo
   end
 
   def create
-    user = PubcookieUser.authenticate(params[:uw_netid]) unless params[:uw_netid].blank?
+    if params[:uw_netid].blank?
+      @error = "You must provide a UW NetID."
+      return respond_to { |format| format.js }
+    end
+
+    user = PubcookieUser.authenticate(params[:uw_netid], nil, nil, fail_if_person_not_found: true)
+    unless user
+      @error = "UW NetID not found."
+      return respond_to { |format| format.js }
+    end
+
     role = user.assign_role(:accountability_department_coordinator)
     @authorization = role.authorize_for(@department)
+    unless @authorization
+      @error = "Error creating authorization record."
+      return respond_to { |format| format.js }
+    end
+
+    # Notify the person who was added
+    template = EmailTemplate.find_by_name("accountability department coordinator authorized notification")    
+
+    if template && user.email.present?
+      info = {
+        authorized_user: user.person,
+        department: @department,
+        authorized_by: @my.person
+      }
+
+      reporting_url = "https://#{Rails.configuration.constants['base_url_host']}/accountability/reporting/#{@year}"      
+
+      EmailContact.log(
+        user.person,
+        template.create_email_to(info, reporting_url, user.email).deliver_now
+      )
+    end
 
     respond_to do |format|
-      # if @authorization.save
-      #   # flash[:notice] = "@department.accountability_coordinator_authorizations was successfully created."
-      #   # format.html { redirect_to(accountability_reporting_authorizations_url(@year)) }
-      #   
-      # else
-      #   # format.html { render :action => "new" }
-      # end
       format.js
     end
   end
