@@ -77,7 +77,11 @@ ActiveAdmin.register Event do
       f.input :description, :input_html => { class: "tinymce", rows: 10 }
       #f.input :capacity, :input_html => { :style => 'width:25%;' }
       f.input :unit, label: 'Sponsor', as: :select, include_blank: false, required: true
-      f.input :event_type_id, as: :select, collection: EventType.all.sort
+      f.input :event_type_id,
+          as: :select,
+          collection: EventType.order(:title).pluck(:title, :id),
+          include_blank: "Select an event type",
+          hint: link_to("Add new event type", new_admin_event_type_path, target: "_blank", rel: "noopener")
       f.input :capacity, input_html: { style: 'width:10%;' }
       default_offering_id = params[:offering_id] if params[:offering_id].present?
       f.input :offering_id, as: :select, collection: Offering.order(id: :desc).map{|o| [o.title, o.id]}, selected: default_offering_id, input_html: { class: 'chosen-select' }

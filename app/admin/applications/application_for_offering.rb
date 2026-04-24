@@ -81,8 +81,12 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
           anchor = "group_members"
       end
 
+      # make sure define_dynamic_answer_setters! is called before mass assignment happens so this ensures that the dynamic setters exist at the time of assignment.
+      @app.define_dynamic_answer_setters!
+
       # update the application's attributes
       if application_params
+
          if @app.update(application_params)
             anchor = "application_review"
             flash[:notice] = "Successfully updated applicaiton."

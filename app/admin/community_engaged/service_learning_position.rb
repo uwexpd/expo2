@@ -2,7 +2,7 @@ ActiveAdmin.register ServiceLearningPosition do
   batch_action :destroy, false
   config.sort_order = 'title'
   config.per_page = [30, 50, 100, 200, 300]
-  menu parent: 'Tools'
+  menu parent: 'Tools', label: "Community Engaged Positions"
   
   scope "#{Quarter.current_quarter.title}", :current_quarter
   scope "All", :sorting, default: true

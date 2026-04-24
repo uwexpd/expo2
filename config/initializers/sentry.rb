@@ -1,6 +1,4 @@
-if defined?(Dotenv)
-  # dotenv_file = '/usr/local/apps/expo2/shared/.env'
-  # Dotenv.load(dotenv_file) if File.exist?(dotenv_file)
+if defined?(Dotenv)  
   Dotenv.overload(Rails.root.join(".env")) if File.exist?(Rails.root.join(".env"))
 end
 

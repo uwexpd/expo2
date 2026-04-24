@@ -288,7 +288,7 @@ table tr.sticky:first-child th{
 
 /* second header row sticks below the first row */
 table tr.sticky:nth-child(2) th{
-  top: 4.9rem; /* adjust to the actual rendered height of row 1 */  
+  top: 3.3rem; /* adjust to the actual rendered height of row 1 */  
 }
 
 .session_identifier.tag {
