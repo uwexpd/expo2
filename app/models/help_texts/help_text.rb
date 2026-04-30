@@ -12,4 +12,16 @@ class HelpText < ApplicationRecord
     ht = find_by(key: key.to_s, object_type: object_type.to_s)
     ht&.caption
   end
+
+  def display_name
+    base = object_type.presence || "Global"
+
+    if is_a?(ModelHelpText) || type == "ModelHelpText"
+      attr = attribute_name.presence || "(no attribute)"
+      "#{base}##{attr}"
+    else
+      k = key.presence || "(no key)"
+      "#{base}:#{k}"
+    end
+  end
 end

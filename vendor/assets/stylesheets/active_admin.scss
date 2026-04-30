@@ -1790,3 +1790,34 @@ ul.inline li {
   color: rgba(0, 0, 0, 0.54);
   font-weight: 500;
 }
+
+input.aa-readonly-disabled,
+textarea.aa-readonly-disabled,
+select.aa-readonly-disabled {
+  background-color: #f5f5f5 !important;
+  color: #777 !important;
+  border-color: #ddd !important;
+  cursor: not-allowed;
+}
+
+input.aa-readonly-disabled:focus,
+textarea.aa-readonly-disabled:focus,
+select.aa-readonly-disabled:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+// make the underlying select half width (helps when Select2 reads it)
+select.half-width-select {
+  width: 50% !important;
+}
+
+// Select2 container (AA/Select2 typically inserts this right after the select)
+select.half-width-select +.select2-container {
+  width: 50% !important;
+}
+
+// If AA wraps it differently, this also usually works:
+#help_text_object_type_input.select2-container {
+  width: 50% !important;
+}

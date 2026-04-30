@@ -104,17 +104,31 @@ class Population < ApplicationRecord
   # Finds all models that are defined and provides the model names as Strings in an array. This may take a moment
   # because it goes through and loads all files in the "/app/models" directory and subdirectories. The following models
   # are removed from the final array:
-  # 
+  #
   #  * Anything that is a subclass of StudentInfo
   #  * The StudentInfo model itself
   #  * Any "::Deleted" model
   def self.model_names
-    return @model_names if @model_names
-    all_models = Dir.glob( File.join( RAILS_ROOT, 'app', 'models', '**', '*.rb') ).map{|path| path[/.+\/(.+).rb/,1].camelize.constantize }
-    ar_models = all_models.select{|m| m < ActiveRecord::Base }
-	  lmodels = ar_models.reject{|m| StudentInfo.send(:subclasses).include?(m) || m==StudentInfo || m.to_s.include?("CGI::") }
-	  lmodels = lmodels.reject{|m| m.to_s.include?("::Deleted") }
-    @model_names = lmodels.collect(&:to_s)
+    return @model_names if defined?(@model_names) && @model_names
+
+    # Ensure all model files are loaded (Rails 5.2: Zeitwerk not default; don't rely on eager_load here)
+    Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).sort.each do |file|
+      require_dependency file
+    end
+
+    # Now that everything is loaded, ask AR for descendants (more reliable than guessing from filenames)
+    ar_models = ApplicationRecord.descendants
+    
+    excluded = StudentInfo.descendants + [StudentInfo]
+
+    models =
+      ar_models.reject do |m|
+        excluded.include?(m) ||
+          m.name.nil? ||
+          m.name.include?('::Deleted')
+      end
+
+    @model_names = models.map(&:name).sort
   end
 
   # Instead of returning *all* of the model names in existence (see #model_names), Just return a select list:

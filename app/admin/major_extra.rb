@@ -40,11 +40,11 @@ ActiveAdmin.register MajorExtra do
           input_html: {class: 'select2'}
       else
         li class: "string input" do
-          label "Major title in SDB"          
+          label "Major title in SDB"
           div class: 'gray' do
             resource.major ? resource.major.major_full_nm + " (#{resource.major.major_abbr.strip})"   : "could not find major"
           end
-        end        
+        end
       end
       f.input :fixed_name, :input_html => { :style => 'width:50%;' }
       f.input :chair_name
