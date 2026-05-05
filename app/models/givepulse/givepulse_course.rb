@@ -8,6 +8,11 @@ class GivepulseCourse < GivepulseBase
               :class_time, :class_type, :class_status, :sl_type, 
               :givepulse_organizer_id, :faculty_id, :faculty2_id, :faculty3_id
 
+  CAMPUS_IDS_BY_ENV = {
+    production: { 1479590 => 0, 1479577 => 1, 1480803 => 2 },
+    sandbox:      { 792610  => 0, 792620  => 1, 811201 => 2 }
+  }.freeze
+
   # Example Use: GivepulseCourse.where(term: 'Autumn 2025' , crn: 'BHS496A')
   # GivepulseCourse.find_by(group_id: 788279)
   def self.where(attributes)
@@ -284,14 +289,13 @@ class GivepulseCourse < GivepulseBase
   end
 
   # Use community engaged courses GP group id to define campus code
-  def branch_code
-    campus_ids =  if Rails.env.production?
-                    { 1479590 => 0, 1479577 => 1, 1480803 => 2 }
-                  else
-                    { 792610 => 0, 792620 => 1, 811201 => 2 }
-                  end
-
+  def branch_code    
     campus_ids[self.parent_givepulse_id]
+  end
+
+  def self.parent_givepulse_id_from_course_branch(code)
+    code = code.to_i
+    campus_ids.invert[code]
   end
 
   def instructors
@@ -339,36 +343,52 @@ class GivepulseCourse < GivepulseBase
     end
   end
 
+  def short_title
+    (crn + " " + term) rescue nil
+  end
+
   # Add course to GivePulse by SDB course object
-  def self.add_course(course, parent_givepulse_id = nil, crse_desc = nil)
+  def self.add_course(course)
     
+    # crn term subj_code crse_num crse_title crse_desc section cross_list_code 
+    # dept_code crse_dept_desc crse_coll_code crse_coll_desc
+    # class_time: class_type class_status sl_type 
+
     post_params = {
-      term: course.quarter.abbrev,
-      crn: course.abbrev,
+      term: course.quarter.title,
+      crn: course.short_title,
+      crse_title: course.course_title_long,
       crse_num: course.course_no,
-      subj_code: course.dept_abbrev,
-      crse_desc: crse_desc,
-      parent_givepulse_id: parent_givepulse_id,
-      section: course.section_id.strip
+      subj_code: course.dept_abbrev.strip,
+      crse_desc: course.course_description,
+      parent_givepulse_id: GivepulseCourse.parent_givepulse_id_from_course_branch(course.course_branch),
+      section: course.section_id.strip,
+      crse_dept_desc: course.department.name,
+      crse_coll_desc: course.course_college,
+      class_time: course.class_time,
+      class_type: course.class_type
     }
 
     begin
-        response = GivepulseCourse.request_api('/course', post_params, method: :post)
-        response_body = JSON.parse(response.body)
-        Rails.logger.debug("Debug response=> #{response}")
+      response = GivepulseCourse.request_api('/course', post_params, method: :post)
+      body = response.body.to_s
+      response_body = JSON.parse(body) rescue {}
+
+      Rails.logger.debug("GivePulse response class=#{response.class} code=#{response.code} body=#{body}")
 
       if response.code.to_i == 200 || response_body['total'].to_i > 0
-        Rails.logger.info("Successfully created course ID: #{response_body['results']['group_id']}")
+        group_id = response_body.dig('results', 'group_id') || response_body['group_id']
+        Rails.logger.info("Successfully created course#{group_id ? " ID: #{group_id}" : ""}")
       else
-        Rails.logger.error("Failed to add course. Response code: #{response.code}, Response body: #{response_body}")
+        Rails.logger.error("Failed to add course. Response code: #{response.code}, Response body: #{body}")
       end
     rescue StandardError => e
-        Rails.logger.error("Exception occurred while creating course: #{e.message}")
+      Rails.logger.error("Exception occurred while creating course: #{e.class}: #{e.message}")
     end
-  end
+  end  
 
-  def short_title
-    (crn + " " + term) rescue nil
+  private_class_method def self.campus_ids
+   Rails.env.production? ? CAMPUS_IDS_BY_ENV[:production] : CAMPUS_IDS_BY_ENV[:sandbox]
   end
 
 

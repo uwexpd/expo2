@@ -52,10 +52,32 @@ class Course < StudentInfo
   # Provides the full title of the course in titleized format, e.g. American Ethnic Studies 150.
   def full_title
     "#{curriculum.full_name rescue nil || dept_abbrev.to_s.strip} #{course_no.to_s.strip} #{section_id.to_s.strip}"
+  end.to_s
+
+  def course_resource
+    return @course_resource if defined?(@course_resource)
+
+    quarter = QuarterCode.find_by(id: ts_quarter)&.name&.upcase
+    dept    = dept_abbrev.to_s.strip
+    return @course_resource = nil if quarter.blank? || dept.blank? || ts_year.blank? || course_no.blank?
+
+    @course_resource = CourseResource.find_by_course(ts_year.to_s, quarter, dept, course_no.to_s)
+  end
+
+  def course_description
+      course_resource&.course_description
   end
   
   def course_title
-    read_attribute :course_title
+    read_attribute(:course_title)&.strip
+  end
+
+  def course_title_long
+    course_resource&.title_long
+  end
+
+  def course_college
+    course_resource&.course_college    
   end
 
   # Returns 'Graduate' if course_no >= 500, else 'Undergraduate'. For Collobratory use
@@ -238,6 +260,30 @@ class Course < StudentInfo
     COURSE_MODE_INPERSON
   end
 
+  def class_time
+    days = day_of_week.to_s.strip.gsub(/\s+/, " ")
+    start = display_time_from_sdb(starting_time)
+    finish = display_time_from_sdb(ending_time)
+
+    parts = []
+    parts << days if days.present?
+    parts << "#{start}–#{finish}" if start.present? && finish.present?
+    parts.join(" ")
+  end
+
+  def class_type
+    case course_mode
+    when "IP"
+      "Traditional"
+    when "A", "O"
+      "Online"
+    when "B"
+      "Hybrid"
+    else
+      nil
+    end
+  end
+
   private
   
   # Parse an unformatted time into a valid time object. Accepts:
@@ -276,6 +322,16 @@ class Course < StudentInfo
       t = t + 1200
     end
     t
+  end
+
+  def display_time_from_sdb(raw)
+    return nil if raw.blank?
+
+    converted = sdb_course_convert_time(raw)   # returns numeric-ish like 1330/1520
+    t = parse_to_time(converted)              # returns a Time
+    t.strftime("%-I:%M %p")                   # "1:30 PM"
+  rescue StandardError
+    nil
   end
 
   def hybrid?

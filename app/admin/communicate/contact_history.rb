@@ -31,9 +31,13 @@ ActiveAdmin.register ContactHistory do
   show do
     attributes_table do
        row ('From') {|contact| contact.email_from rescue "" }
-       # row ('Cc') {|contact| contact.email.creator.fullname rescue contact.creator.login rescue "(unknown)" }
-       row ('To') {|contact| contact.email_to rescue "" }
-       row ('Subject') {|contact| contact.email.subject  rescue "" }
+       row ('Cc') {|contact| contact.email.creator.fullname rescue contact.creator.login rescue "(unknown)" }
+       row ('To') {|contact| contact.email_to rescue "" }       
+       row('Subject') do |contact|
+        s = contact.email&.subject.to_s
+        s = s.dup.force_encoding(Encoding::UTF_8)
+        s.encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "")
+      end
        row ('Date') {|contact| contact.email.date rescue "" }       
        row ('Body') {|contact| simple_format(EmailBodyExtractor.extract(contact.email)[:text]) rescue simple_format(contact.email.body.to_s)}
     end

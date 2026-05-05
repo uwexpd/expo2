@@ -64,6 +64,20 @@ class WebServiceResult
     # puts "Missing method: #{method.to_s}"
     self[method] || super
   end
+
+  # Unified way to access the underlying parsed JSON hash.
+  # Works for:
+  # - normal.find(...) objects (attrs will be document hash)
+  # - wrapped-hash objects (attrs will be the hash you passed in)
+  def attrs
+    # If this instance was initialized with a Hash (e.g., new(data)),
+    # treat it as the attributes payload.
+    return @id if @id.is_a?(Hash)
+
+    # Otherwise, document should be the parsed JSON hash.
+    doc = document
+    doc.is_a?(Hash) ? doc : {}
+  end
   
 =begin :nodoc:
   # Do we need to define respond_to?

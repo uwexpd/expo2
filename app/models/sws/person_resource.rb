@@ -49,20 +49,6 @@ class PersonResource < WebServiceResult
     alias_method :find_full_by_netid, :find_full_by_uw_netid
   end
 
-
-  # Safely get the underlying attributes hash regardless of where it’s stored.
-  def attrs
-    if respond_to?(:attributes) && attributes.is_a?(Hash) && !attributes.empty?
-      attributes
-    elsif instance_variable_defined?(:@attributes) && @attributes.is_a?(Hash)
-      @attributes
-    elsif instance_variable_defined?(:@id) && @id.is_a?(Hash)
-      @id
-    else
-      {}
-    end
-  end
-
   def email
     netid = attrs['UWNetID'].to_s.strip
     netid.present? ? "#{netid}@uw.edu" : nil
