@@ -287,15 +287,19 @@ class GivepulseCourse < GivepulseBase
       user.email.present? && current_enrolled_student_emails.include?(user.email.downcase)
     end
   end
+  
+  def self.campus_ids
+    Rails.env.production? ? CAMPUS_IDS_BY_ENV[:production] : CAMPUS_IDS_BY_ENV[:sandbox]
+  end
 
   # Use community engaged courses GP group id to define campus code
-  def branch_code    
-    campus_ids[self.parent_givepulse_id]
+  def branch_code
+    self.class.campus_ids[parent_givepulse_id.to_i]
   end
 
   def self.parent_givepulse_id_from_course_branch(code)
     code = code.to_i
-    campus_ids.invert[code]
+    campus_ids.key(code) 
   end
 
   def instructors
@@ -386,10 +390,6 @@ class GivepulseCourse < GivepulseBase
       Rails.logger.error("Exception occurred while creating course: #{e.class}: #{e.message}")
     end
   end  
-
-  private_class_method def self.campus_ids
-   Rails.env.production? ? CAMPUS_IDS_BY_ENV[:production] : CAMPUS_IDS_BY_ENV[:sandbox]
-  end
 
 
 end
