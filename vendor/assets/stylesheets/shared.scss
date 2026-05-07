@@ -6,6 +6,10 @@
 	float: right;
 }
 
+.center {
+	text-align: center;
+}
+
 .inline {
 	dipslay: inline;
 }
@@ -317,4 +321,14 @@ table tr.sticky:nth-child(2) th{
 
 .green-background {
 	background-color: #bec;
+}
+
+.outlined-table {
+  border: 1px solid #e0e0e0;
+  border-collapse: collapse;
+}
+
+.outlined-table th,
+.outlined-table td {
+  border: 1px solid #e0e0e0;
 }

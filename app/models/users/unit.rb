@@ -4,8 +4,8 @@ class Unit < ApplicationRecord
   end
   has_many :users, -> { order(:login) }, :through => :user_unit_roles
   has_many :roles, :class_name => "UserUnitRole", :foreign_key => "unit_id"
-  #   has_many :events, :class_name => "Event", :foreign_key => "unit_id", :dependent => :nullify
-  #   has_many :event_times, :through => :events, :source => :times
+  has_many :events, class_name: "Event", foreign_key: "unit_id", dependent: :nullify
+  has_many :event_times, through: :events, source: :times
   has_many :offerings
   #   
   has_many :organization_quarters, :class_name => "OrganizationQuarter", :foreign_key => "unit_id"

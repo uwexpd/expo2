@@ -1,0 +1,36 @@
+<div class='panel'> 
+  <div class='panel_contents'>
+    <div class='content-block'>
+        <%= form_with url: admin_stats_overview_path, method: :get, local: true do %>
+          <h1>Participation Overview
+            <span class='small right'>
+              <strong>Date Range:</strong>
+              <%= select_tag :start_quarter_id,
+                options_from_collection_for_select(Quarter.past_quarters(16).reverse << Quarter.current_quarter, :id, :title, @start_quarter.id) %>
+              through
+              <%= select_tag :end_quarter_id,
+                options_from_collection_for_select(Quarter.past_quarters(16).reverse << Quarter.current_quarter, :id, :title, @end_quarter.id) %>
+
+              <label style="margin-left:10px">
+                <%= check_box_tag :students_only, "1", @students_only %>
+                Only count UW Students
+              </label>
+
+              <%= submit_tag "Reload", class: 'small' %>
+            </span>
+          </h1>
+        <% end %>
+        
+        <div class='padding_bottom'>
+          This chart shows the number of people who attended events or made contact with each unit.
+          A total of unique students for each category and unit is included.
+        </div>
+
+        <%= render partial: "admin/stats/overview/data_table", locals: { overview: @overview } %>
+
+        <p>Start Quarter: <%= @start_quarter.title %></p>
+        <p>End Quarter: <%= @end_quarter.title %></p>
+  
+    </div>
+  </div>
+</div>  

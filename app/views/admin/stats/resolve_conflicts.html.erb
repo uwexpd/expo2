@@ -1,0 +1,44 @@
+<div class='panel'> 
+  <div class='panel_contents'>
+    <div class='content-block'>
+      <h3>Resolve Conflicts</h3>
+
+      <% if @conflicts.present? %>
+        <p>Select the correct record for each ambiguous query, or remove it.</p>
+
+        <%= form_with url: admin_stats_resolve_conflicts_path, method: :post, local: true do %>
+          <%= hidden_field_tag :title, params[:title] %>
+          <%= hidden_field_tag :q, params[:q] %>
+
+          <%= hidden_field_tag :found, Array(@found).map(&:id).join(",") %>
+          <%= hidden_field_tag :not_found, Array(@not_found).join("\n") %>
+          <%= hidden_field_tag :conflicts, @conflicts.keys.join("\n") %>
+
+          <% @conflicts.each do |query_string, matches| %>
+            <fieldset class="inputs">
+              <legend><%= query_string %></legend>
+
+              <div class="input">
+                <label>Remove</label>
+                <%= check_box_tag "conflict_removals[]", query_string, false %>
+              </div>
+
+              <div class="input">
+                <label>Choose match</label>
+                <%= select_tag "conflict_resolutions[#{query_string}]",
+                      options_from_collection_for_select(matches, :id, :to_s),
+                      include_blank: true %>
+              </div>
+            </fieldset>
+          <% end %>
+
+          <div class="actions">
+            <%= submit_tag "Proceed", name: "commit" %>
+          </div>
+        <% end %>
+      <% else %>
+        <p>No conflicts remain.</p>
+      <% end %>
+    </div>
+  </div>
+</div>

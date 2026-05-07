@@ -14,7 +14,9 @@
 		  <div class="tab-content">
   	  	<div id="students_tab" class="tab-pane active">
   	  			<h2>Students (<%= @awardees.size %>)
-							<span class="right small"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, {format: 'xlsx'}, :class => 'button small flat' %></span>
+  	  				<% unless @awardees.empty? %>
+								<span class="right small padding_right"><%= link_to "<i class='mi'>file_download</i>Download in Excel".html_safe, {format: 'xlsx'}, :class => 'button small flat' %></span>
+							<% end %>
 						</h2>
 						<table class="borderless">
 							<tr class="table-header uw_light_bg_gold">

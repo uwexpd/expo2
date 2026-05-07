@@ -1,0 +1,30 @@
+<div class='panel'> 
+  <div class='panel_contents'>
+    <div class='content-block'>
+      <h1>New Manual Student Query</h1>
+
+      <%= form_with url: admin_stats_resolve_conflicts_path, method: :post, local: true do %>
+        <div class="inputs">
+          <div class="input">
+            <label>Query Title</label>
+            <%= text_field_tag :title, params[:title], size: 100 %>
+            <p class="inline-hints">
+              Enter a title to save this query for future use. Leave blank for temporary.
+            </p>
+          </div>
+
+          <div class="input">
+            <label>Search Items</label>
+            <p class="inline-hints">Enter one student number, UW NetID, or name per line:</p>
+            <%= text_area_tag :q, params[:q], rows: 20, cols: 40 %>
+          </div>
+        </div>
+
+        <div class="actions">
+          <%= submit_tag "Submit Query" %>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+</div>

@@ -66,7 +66,7 @@ gem 'sentry-ruby'
 gem "sentry-rails"
 
 gem 'chartkick'
-#gem 'groupdate'
+gem 'groupdate'
 
 gem 'sanitize'
 gem 'capitalize-names'

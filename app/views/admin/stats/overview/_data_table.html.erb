@@ -1,0 +1,89 @@
+<% event_types = overview[:event_types] %>
+<% rows = overview[:rows] %>
+<% totals = overview[:totals] %>
+
+<table class="borderless compact">
+  <thead>
+    <tr class='table-header'>
+      <th rowspan="2" class="light-right-border">Unit</th>
+      <th colspan="<%= event_types.size + 1 %>" class="center">Event Attendees</th>
+      <th colspan="2" class="center light-left-border">Contacts</th>
+      <th rowspan="2" class="center light-left-border">Unique<br />Students</th>
+    </tr>
+    <tr class="bg-light-gray">
+      <% event_types.each do |et| %>
+        <th class="small"><%= et.title %></th>
+      <% end %>
+      <th class="small">Other</th>
+      <th class="small light-left-border">Appointments</th>
+      <th class="small">Quick Contacts</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% rows.each do |r| %>
+      <% unit = r[:unit] %>
+      <tr class="center">
+        <td align="left" class="light-right-border"><%= unit.name %></td>
+
+        <% event_types.each do |et| %>
+          <% cell = r[:event_counts][et.id] %>
+          <% total = cell[:total] %>
+          <% detail = cell[:detail_items].map { |x| "<li>#{ERB::Util.html_escape(x)}</li>" }.join %>
+          <td>
+            <% if total.zero? %>
+              -
+            <% else %>
+              <span class="tooltip">
+                <%= total %>
+                <span class="tooltiptext">
+                  <%= render partial: "admin/stats/overview/tooltip_list",
+                   locals: { items: cell[:detail_items] } %>
+                </span>
+              </span>
+            <% end %>
+          </td>
+        <% end %>
+
+        <% other = r[:event_counts][0] %>
+        <% other_total = other[:total] %>
+        <% other_detail = other[:detail_items].map { |x| "<li>#{ERB::Util.html_escape(x)}</li>" }.join %>
+        <td><%= other_total.zero? ? "-" : tooltip(other_total, "<ul>#{other_detail}</ul>".html_safe) %></td>
+
+        <% appt = r[:appointments] %>
+        <% appt_detail = appt[:detail_items].map { |x| "<li>#{ERB::Util.html_escape(x)}</li>" }.join %>
+        <td class="light-left-border">
+          <% if appt[:total].zero? %>
+            -
+          <% else %>
+            <span class="tooltip">
+              <%= appt[:total] %>
+              <span class="tooltiptext">
+                <%= render partial: "admin/stats/overview/tooltip_list",
+                   locals: { items: appt[:detail_items] } %>
+              </span>
+            </span>
+          <% end %>
+        </td>
+
+        <td><%= r[:quick_contacts][:total].zero? ? "-" : r[:quick_contacts][:total] %></td>
+
+        <td class="light-left-border"><%= r[:unique_students].size %></td>
+      </tr>
+    <% end %>
+
+    <tr class="bg-light-gray center">
+      <td align="left">TOTAL</td>
+
+      <% event_types.each do |et| %>
+        <td><%= totals[:event_unique_by_type][et.id] || 0 %></td>
+      <% end %>
+      <td><%= totals[:event_unique_by_type][0] || 0 %></td>
+
+      <td><%= totals[:appointment_unique_students] %></td>
+      <td><%= totals[:quick_contact_total] %></td>
+
+      <td><%= totals[:all_unique_students] %></td>
+    </tr>
+  </tbody>
+</table>

@@ -167,6 +167,18 @@ mark {
 	border: none;
 }
 
+.panel_contents table th.small {
+	font-size: 80%;
+}
+
+.panel_contents table th.center {
+	text-align: center;
+}
+
+.panel_contents table.compact tr td, .panel_contents table.compact th {
+	padding: 4px;
+}
+
 .panel_contents table.edge-to-edge tr td {
 	padding-right: 0px;
 }
@@ -280,7 +292,7 @@ form fieldset.inputs ol li.text div.mce-tinymce {
 }
 
 #tabs {
-	padding-left: 10.5rem;
+	padding-left: 9rem;
 }
 
 #page_title {
@@ -720,13 +732,13 @@ ul.sherlock-buttons{
 }
 
 /* Top Navigation Menu */
-#dashboard a {
-	background-image: url(image-path('sprite-action-white.png'));
-	background-position: -31px -192px;
-	width: 32px;
-	height: 32px;
-	margin-right: 70px;
-}
+// #dashboard a {
+// 	background-image: url(image-path('sprite-action-white.png'));
+// 	background-position: -31px -192px;
+// 	width: 32px;
+// 	height: 32px;
+// 	margin-right: 70px;
+// }
 
 #modules a {
 	background-image: url(image-path('sprite-action-white.png'));
@@ -743,7 +755,7 @@ ul.sherlock-buttons{
 	// background-position: -159px -128px;
 	width: 32px;
 	height: 32px;
-	margin-right: 37px;
+	margin-right: 0.5rem;
 }
 
 #groups a {
@@ -843,7 +855,7 @@ ul.link-list li a small {
 	padding-right: 10px;
 }
 
-ul.link-list li a:hover,  ul.link-list li:hover, ul.no-list-style li:hover {
+ul.link-list li a:hover,  ul.link-list li:hover, #aa-accountability-reports ul.no-list-style li:hover {
 	background-color: #F5F5DC;
 	text-decoration: none;
 }
@@ -1205,7 +1217,7 @@ tr.left th, th.left {
 	text-align: left;
 }
 
-td.center, th.center {
+tr.center, td.center, th.center {
 	text-align: center;
 }
 

@@ -1,0 +1,70 @@
+<div class='panel'> 
+  <div class='panel_contents'>
+    <div class='content-block'>
+      <h3>
+        Stat Report
+        <% if @title.present? %>
+          <span class="quiet">» <%= @title %></span>
+        <% end %>
+      </h3>
+
+      <table class="index_table">
+        <tbody>
+          <tr>
+            <th>Students submitted (duplicates removed)</th>
+            <td><%= @students.size %></td>
+          </tr>
+          <tr>
+            <th>Errors (no student record found)</th>
+            <td><%= @errors.size %></td>
+          </tr>
+          <tr>
+            <th>Under-represented students</th>
+            <td><%= @under_rep_students.size %></td>
+          </tr>
+          <tr>
+            <th>EOP1 students</th>
+            <td><%= @eop_students.size %></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <% if @errors.any? %>
+        <h4>Error details</h4>
+        <pre><%= @errors.map { |e| e.respond_to?(:identifier_string) ? e.identifier_string : e.to_s }.join("\n") %></pre>
+      <% end %>
+
+      <h4>Ethnicities</h4>
+      <%= pie_chart @ethnicities, height: "300px" %>
+
+      <h4>Gender</h4>
+      <%= pie_chart @genders, height: "300px" %>
+
+      <h4>Majors by discipline category (top 10)</h4>
+      <%
+        sorted = @discipline_categories.sort_by { |_dc, (count, _majors)| -count }.first(10)
+        series = sorted.map { |dc, (count, _)| [dc.name, count] }.to_h
+      %>
+      <%= column_chart series, height: "350px" %>
+
+      <h4>Majors detail</h4>
+      <% sorted.each do |dc, (count, majors_hash)| %>
+        <h5><%= dc.name %> (<%= count %>)</h5>
+        <table class="index_table">
+          <thead>
+            <tr><th>Major</th><th>Count</th></tr>
+          </thead>
+          <tbody>
+            <% majors_hash.sort_by { |_m, c| -c }.each do |major, c| %>
+              <tr>
+                <td><%= major.respond_to?(:title) ? major.title : major.to_s %></td>
+                <td><%= c %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+      
+    </div>
+  </div>
+</div>      
