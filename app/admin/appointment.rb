@@ -1,4 +1,4 @@
-ActiveAdmin.register Appointment do  
+ActiveAdmin.register Appointment do
   actions :all
   batch_action :destroy, false
   config.sort_order = 'created_at_desc'
@@ -10,20 +10,31 @@ ActiveAdmin.register Appointment do
   active_admin_import template: 'admin/appointments/import'
 
   permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type, :drop_in, :contact_type_id, :follow_up_notes
-  
-  # controller do
-  #   def scoped_collection
-  #     if params[:q].present? && params[:q][:student_no_search].present?
-  #        students = Student.student_number_eq(params[:q][:student_no_search])
-  #        logger.debug "Debug: #{students.inspect}"
-  #        # Filter appointments by student IDs
-  #        super.where(student_id: students.pluck(:id)) if students
-  #     else
-  #       super
-  #     end
-  #   end
-  # end
 
+   member_action :checkin, method: :post do
+    @appointment = Appointment.find(params[:id])
+
+    if @appointment.checkin!
+      respond_to do |format|
+        format.html { redirect_to admin_appointment_path(@appointment) }        
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to admin_appointment_path(@appointment), alert: "Check-in failed." }        
+      end
+    end
+  end
+
+  member_action :followup_to, method: [:post, :patch] do
+    @appointment = Appointment.find(params[:id])
+    @appointment.update(previous_appointment_id: params[:previous_appointment_id])
+
+    respond_to do |format|
+      format.html { redirect_to admin_appointment_path(@appointment) }
+      format.js
+    end
+  end
+  
   controller do
     def new
       @appointment = Appointment.new
@@ -49,7 +60,10 @@ ActiveAdmin.register Appointment do
       row :unit
       row :staff_person
       row :drop_in
-      row (:check_in_time) {|appointment| appointment.check_in_time.to_s(:date_pretty) if appointment.check_in_time}
+      row(:check_in_time) do |appointment|
+        next unless appointment.check_in_time
+        content_tag(:span, appointment.check_in_time.to_s(:date_pretty), class: "uw_green")
+end
       row :contact_type
       row :front_desk_notes
       row :notes
@@ -58,8 +72,33 @@ ActiveAdmin.register Appointment do
     end
   end
 
+  sidebar "Actions", only: :show, if: proc { resource.check_in_time.blank? } do 
+      div class: 'padding_left' do
+        link_to "<i class='mi'>how_to_reg</i> Check in".html_safe,
+              checkin_admin_appointment_path(resource),
+              method: :post,
+              data: { confirm: "Check in this appointment?" },
+              class: 'button flat'
+      end
+  end
+
   sidebar "Other Appointments", only: :show do
+    other_appointments = Appointment.where(student_id: resource.student_id).where.not(id: resource.id).order(start_time: :desc) 
       
+    ul class: "link-list" do
+      if other_appointments.blank?
+        li class: "empty" do
+          "No other appointments"
+        end
+      else
+        other_appointments.each do |other_appointment|
+          li do
+            render partial: "admin/appointments/other_appointment",
+                   locals: { other_appointment: other_appointment, appointment: resource }
+          end
+        end
+      end
+    end
   end
   
   form do |f|
@@ -86,7 +125,7 @@ ActiveAdmin.register Appointment do
         }
       end
       f.input :student_id, label: 'Student EXPO ID', hint: "Please use EXPO Person ID from #{link_to 'Find Student by Name or Email.', admin_students_path, target: '_blank'}".html_safe, input_html: { style: 'width: 25%'}
-      f.input :check_in_time, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
+      f.input :check_in_time, as: :date_time_picker, :input_html => { style: 'width:50%;' }
       f.input :drop_in
       f.input :contact_type_id, as: :select, collection: ContactType.all
       f.input :front_desk_notes, :input_html => { :rows => 3, :style => 'width:50%;' }

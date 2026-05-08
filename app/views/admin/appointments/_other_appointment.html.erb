@@ -1,0 +1,23 @@
+<div>
+  <p><%= link_to "<i class='mi'>calendar_month</i> #{other_appointment.start_time.to_s(:date_with_day_of_week)}".html_safe, admin_appointment_path(other_appointment), target: '_blank' %></p>
+
+  <p>
+    <%= other_appointment.staff_person == current_user.person ? "<strong>You</strong>".html_safe : other_appointment.staff_person.fullname %>
+  </p>
+
+  <% unless other_appointment.front_desk_notes.blank? %>
+    <p class="light"><%= truncate(other_appointment.front_desk_notes) %></p>
+  <% end %>
+
+  <!--
+    <small>
+      <%# if appointment.previous_appointment == other_appointment %>
+        You are following up on this appointment.
+      <%# else %>
+        <%#= link_to "I am following up on this appointment",
+            followup_to_admin_appointment_path(appointment, previous_appointment_id: other_appointment.id),
+            method: :patch %>
+      <%# end %>
+    </small> -->
+  
+</div>

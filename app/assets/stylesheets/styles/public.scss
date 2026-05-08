@@ -1072,23 +1072,6 @@ tr.total td {
   overflow-x: hidden;
 }
 
-.welcome-links {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-}
-
-.welcome-links li {
-	padding: 2rem;
-	padding-left: 2rem;
-	margin: 0 10px;
-	border-bottom: 1px solid #f2f2f2;	
-}
-
-.welcome-links li:hover {
-	background-color: #fdfbce;
-}
-
 #student_id_indicator.indicator.loading {
 	width: 1.5rem;
 	vertical-align: bottom;
