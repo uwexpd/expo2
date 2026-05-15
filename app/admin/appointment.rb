@@ -34,6 +34,31 @@ ActiveAdmin.register Appointment do
       format.js
     end
   end
+
+  # GET /admin/appointments/staff_people_for_unit?unit_id=123
+  collection_action :staff_people_for_unit, method: :get do
+    unit_id = params[:unit_id].presence
+
+    users = User.admin
+                .joins(:person)
+                .where.not(people: { firstname: nil })
+
+    if unit_id.present?
+      # Uses your association: User has_many :units, through: :roles
+      users = users.joins(:units).where(units: { id: unit_id })
+    else
+      # If you prefer “no unit => no staff”, uncomment:
+      # users = users.none
+    end
+
+    payload = users
+      .distinct
+      .includes(:person)
+      .sort_by { |u| u.person.firstname.to_s }
+      .map { |u| { id: u.person_id, text: u.fullname } }
+
+    render json: payload
+  end
   
   controller do
     def new
@@ -106,10 +131,22 @@ end
     f.inputs do
       f.input :start_time, as: :date_time_picker, required: true, :input_html => { :style => 'width:50%;' }
       f.input :end_time, as: :date_time_picker, :input_html => { :style => 'width:50%;' }
-      f.input :unit, as: :select, include_blank: false, required: true
-      f.input :staff_person_id, as: :select, required: true,
-               collection: User.admin.reject{|u| u.person.firstname.nil?}.sort_by{|u| u.person.firstname}.map{|u| [u.fullname, u.person_id]}, 
-               include_blank: false, input_html: { class: "select2", style: "width: 50%"}
+      f.input :unit, as: :select, prompt: "Select a Unit", required: true
+      # f.input :staff_person_id, as: :select, required: true,
+      #          collection: User.admin.reject{|u| u.person.firstname.nil?}.sort_by{|u| u.person.firstname}.map{|u| [u.fullname, u.person_id]}, 
+      #          include_blank: false, input_html: { class: "select2 half-width-select"}
+      f.input :staff_person_id,
+            as: :select,
+            required: true,
+            collection: [],
+            include_blank: false,
+             input_html: {
+              id: 'appointment_staff_person_id',
+              class: 'select2 half-width-select',
+              'data-source' => staff_people_for_unit_admin_appointments_path,
+              'data-selected' => f.object.staff_person_id,
+              'data-prompt' => 'Select a unit first'
+            }
 
       # Student Number Search Field outside of f.inputs
       li class: 'number input optional numeric stringish' do
@@ -124,7 +161,7 @@ end
           </div>
         }
       end
-      f.input :student_id, label: 'Student EXPO ID', hint: "Please use EXPO Person ID from #{link_to 'Find Student by Name or Email.', admin_students_path, target: '_blank'}".html_safe, input_html: { style: 'width: 25%'}
+      f.input :student_id, label: 'Student EXPO ID', hint: "Please use EXPO Person ID from #{link_to 'Find Student by Name or Email.', admin_students_path, target: '_blank'}".html_safe, required: true, input_html: { style: 'width: 25%'}
       f.input :check_in_time, as: :date_time_picker, :input_html => { style: 'width:50%;' }
       f.input :drop_in
       f.input :contact_type_id, as: :select, collection: ContactType.all

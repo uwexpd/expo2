@@ -15,3 +15,4 @@
 //= require population_output_fields
 //= require accountability_reports
 //= require help_texts
+//= require appointment
