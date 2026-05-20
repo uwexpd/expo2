@@ -29,7 +29,7 @@ class MajorExtra < ApplicationRecord
   end
   
   def title
-	  return major.title
+	  major&.title
   end
   
 end

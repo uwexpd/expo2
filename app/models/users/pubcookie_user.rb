@@ -34,15 +34,15 @@ Authenticates a user by their login name without a password.  Returns the user i
       u.person = Student.find_by_uw_netid(uwnetid)
       return false if u.person.nil?
     else
-      pr = PersonResource.find_full_by_uw_netid(uwnetid)
+      pr = PersonResource.find_by_uw_netid(uwnetid)
 
       if pr.nil?
           return nil if fail_if_person_not_found
           u.create_person!(require_validations: false, email: "#{uwnetid}@uw.edu")
       else
         u.create_person!(
-          firstname: pr.firstname,
-          lastname:  pr.lastname,
+          firstname: pr.display_firstname,
+          lastname:  pr.display_lastname,
           email:     pr.email
         )
       end
