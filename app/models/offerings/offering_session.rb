@@ -6,7 +6,12 @@ class OfferingSession < ApplicationRecord
   has_many :presenters, -> { joins(:person).includes(:person).order("offering_session_order, people.lastname") }, :class_name => "ApplicationForOffering" do 
     def with_easel_numbers; where("easel_number IS NOT NULL AND easel_number != ''"); end
   end
-  has_many :group_members, :through => :presenters
+  has_many :group_members,
+    -> {
+      joins("INNER JOIN people ON people.id = application_for_offerings.person_id")
+        .order("application_for_offerings.offering_session_order, people.lastname")
+    },
+    through: :presenters
   belongs_to :application_type, :class_name => "OfferingApplicationType", :foreign_key => "offering_application_type_id"
   
   validates_presence_of :offering_id, :title
