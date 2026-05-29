@@ -34,14 +34,19 @@
           </tr>
 
           <% @last_years_activities[activity_type.id].uniq.each do |course_abbrev| %>
+            <% checkbox_id = "course_abbrevs_#{activity_type.id}_#{course_abbrev.parameterize}" %>
             <tr>
               <td>
-                <%= check_box_tag "course_abbrevs[]",
-                                  course_abbrev,
-                                  false,
-                                  id: "course_abbrevs_#{course_abbrev.hash}" %>
-
-                <%= label_tag "course_abbrevs_#{course_abbrev.hash}", course_abbrev %>
+                <p>
+                  <%= label_tag checkbox_id do %>
+                    <%= check_box_tag "course_abbrevs[]",
+                                      course_abbrev,
+                                      false,
+                                      id: checkbox_id,
+                                      class: "filled-in" %>
+                    <span><%= course_abbrev %></span>
+                  <% end %>
+                </p>
               </td>
             </tr>
           <% end %>

@@ -6,8 +6,10 @@ set :branch, 'master'
 set :rails_env, :production
 set :bundle_flags, "--quiet"
 set :deploy_user, 'joshlin'
-server 'new.expo.uw.edu', user: 'joshlin', roles: %w{web app db}, primary: true
+server 'new.expo.uw.edu', user: 'joshlin', roles: %w{web app db sidekiq}, primary: true
 set :rvm_ruby_version, '2.7.2' # set up which rvm ruby to use in server
+
+# sidekiq service config is at:/etc/systemd/system/sidekiq-expo2.service in server
 set :sidekiq_service_unit_name, "sidekiq-expo2"
 
 # for dev.expo.uw.edu
@@ -49,9 +51,24 @@ namespace :deploy do
     on roles(:app), in: :sequence, wait: 5 do
       execute :touch, release_path.join('tmp/restart.txt')
     end
+  end  
+end
+
+namespace :custom do
+  desc "Restart Sidekiq via systemd"
+  task :restart_sidekiq do
+    on roles(:sidekiq) do
+      execute :sudo, "-n", "/usr/bin/systemctl", :restart, "sidekiq-expo2"
+    end
   end
-  
+
+  desc "Show Sidekiq status via systemd"
+  task :sidekiq_status do
+    on roles(:sidekiq) do
+      execute :sudo, "-n", "/usr/bin/systemctl", :status, "sidekiq-expo2"
+    end
+  end
 end
 
 after 'deploy:assets:precompile', 'deploy:fix_absent_manifest_bug'
-after "deploy:published", "sidekiq:restart"
+after "deploy:published", "custom:restart_sidekiq"
