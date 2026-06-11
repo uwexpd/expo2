@@ -37,15 +37,23 @@ ActiveAdmin.register EmailQueue do
 
   batch_action :deliver, priority: 1, confirm: "Are you sure to deliver these email queues?" do |ids|
     total = 0
+    failed = 0
     batch_action_collection.find(ids).each do |email_queue|
       begin
         email_queue.release
         total += 1
       rescue Exception => e
+        failed += 1
+        # Log to Rails logger so it shows up in production logs
+        Rails.logger.error "[EmailQueue#deliver] Failed for id=#{email_queue.id}: #{e.class} - #{e.message}"
+        Rails.logger.error e.backtrace.first(5).join("\n")
         email_queue.update_attribute(:error_details, e.message)
       end
     end
-    redirect_to request.referer, notice: "Successfully deliver #{total} email " + "queue".pluralize(total) + "."
+    notice = "Successfully delivered #{total} #{"email queue".pluralize(total)}."
+    notice += " #{failed} failed — check error_details for details." if failed > 0
+
+    redirect_to request.referer, notice: notice
   end
 
   batch_action :destroy, confirm: "Are you sure you want to delete these email queues?" do |ids|

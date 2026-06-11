@@ -351,6 +351,9 @@ class GivepulseCourse < GivepulseBase
     (crn + " " + term) rescue nil
   end
 
+  # We can run this in console or setup a rails task to add quarter's E coruses (take away cross-listed course for now to simplyize)
+  # e.g. to add Bothell campus E courses for AUT 2026: b_courses = Quarter.find(414).service_courses.select{|sc|sc.course_branch==1 && sc.joint_listed_with.blank? }
+  # b_courses.each{|bc| GivepulseCourse.add_course(bc) }
   # Add course to GivePulse by SDB course object
   def self.add_course(course)
     

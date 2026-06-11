@@ -24,6 +24,7 @@
 //= require select2
 //= require_tree ./application
 //= require_tree ./accountability
-//= require ./service_learning/service_learnings
+//= require_tree ./service_learning
+//= require_tree ./scholarship
 //= require leaflet
 //= require ./lib/leaflet_control_geocoder

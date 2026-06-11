@@ -1,9 +1,14 @@
 
-<h5>Award Details</h5>
+<h6><b>Award Details</b></h6>
 <p>Number of Awards: <%= @scholarship.num_awards %></p>
 <p>Award Amount: <%= @scholarship.award_amount %></p>
 
-<h5>Deadlines</h5>
+<%
+  active_deadlines         = @scholarship.scholarship_deadlines.select(&:is_active?)
+  active_monthly_deadlines = @scholarship.scholarship_monthly_deadlines.select(&:is_active?)
+%>
+<% if active_deadlines.any? || active_monthly_deadlines.any? %>
+<h6><b>Deadlines</b></h6>
 <ul>
 	<% @scholarship.scholarship_deadlines.each do |d| %>
 		<% if d.is_active? %>
@@ -16,8 +21,9 @@
 		<% end %>
 	<% end %>
 </ul>
+<% end %>
 
 <% unless @scholarship.blurb.blank? %>
-	<h5>More Information</h5>
+	<h6><b>More Information</b></h6>
 	<p><p><%= raw @scholarship.blurb %></p>
 <% end %>

@@ -2,34 +2,54 @@
 
 <div class="card content scholarship_detail">
 
-	<h5><%= @scholarship.title %></h5>
+	<h5><%= @scholarship.title %>
+		<button class="right favorite-btn <%= 'favorited' if logged_in? && @is_favorited %>"
+	            data-scholarship-id="<%= @scholarship.id %>"
+	            data-favorited="<%= logged_in? && @is_favorited ? 'true' : 'false' %>"
+	            data-login-url="<%= login_path %>"
+	            data-create-url="<%= scholarship_favorites_path %>"
+	            data-destroy-url="<%= scholarship_favorite_path(@scholarship.id) %>"
+	            title="<%= logged_in? ? (@is_favorited ? 'Remove from favorites' : 'Add to favorites') : 'Sign in to save favorites' %>">
+	      <i class="material-icons">
+	        <%= (logged_in? && @is_favorited) ? 'favorite' : 'favorite_border' %>
+	      </i>
+	    </button>
+    </h5>
 
-	<p class="smaller">Website:  <%= @scholarship.website_name.blank? ? "N/A" : link_to(@scholarship.website_name, @scholarship.website_url) %></p>
-
-	<h6>Description</h6>
-	<div class="content"><%= raw @scholarship.description %></div>
+	<p>Website:
+	  <% if @scholarship.website_name.blank? %>
+	    N/A
+	  <% else %>
+	    <%= link_to @scholarship.website_url, target: "_blank", rel: "noopener noreferrer" do %>
+	      <%= @scholarship.website_name %> <i class="mi">open_in_new</i>
+	    <% end %>
+	  <% end %>
+	</p>
 
 	<h6>Eligibility</h6>
-		<div class="content"><%= raw @scholarship.eligibility %></div>
-		<div class="content">
-			<% unless @scholarship.class_standings.blank? %>
-				<strong>Student Type</strong>
-				<ul>
-					<% @scholarship.class_standings.each do |class_standing| %>
-						<li><%= class_standing %></li>
-					<% end %>
-				</ul>
-			<% end %>
-			
-			<% unless @scholarship.class_standings.blank? %>
-				<strong>Citizen Type</strong>
-				<ul>
-					<% @scholarship.citizen_types.each do |citizen_type| %>
-						<li><%= citizen_type %></li>
-					<% end %>
-				</ul>	
-			<% end %>
-		</div>
+	<div class="content"><%= raw @scholarship.eligibility %></div>
+	<div class="content">
+		<% unless @scholarship.class_standings.blank? %>
+			<strong>Student Type</strong>
+			<ul>
+				<% @scholarship.class_standings.each do |class_standing| %>
+					<li><%= class_standing %></li>
+				<% end %>
+			</ul>
+		<% end %>
+		
+		<% unless @scholarship.class_standings.blank? %>
+			<strong>Citizen Type</strong>
+			<ul>
+				<% @scholarship.citizen_types.each do |citizen_type| %>
+					<li><%= citizen_type %></li>
+				<% end %>
+			</ul>	
+		<% end %>
+	</div>
+
+	<h6>Description</h6>
+	<div class="content"><%= raw @scholarship.description %></div>	
 
 	<h6>Procedure</h6>
 	<div class="content"><%= raw @scholarship.procedure %></div>
@@ -50,4 +70,3 @@
 </div>
 
 <% sidebar :details_sidebar %>
-

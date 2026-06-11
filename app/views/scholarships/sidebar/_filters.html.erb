@@ -1,73 +1,118 @@
+<div id="scholarship-filters">
+
 <h5><i class="material-icons vertical_top">filter_list</i> Filters</h5>
 
-<%= search_form_for @search do |f| %>
-	<%= f.submit 'Filter', :class => 'btn' %>
-	<%= link_to "CLEAR FILTERS", scholarships_path, :class => 'clear_filter' %>
+<%= search_form_for @search, html: { id: 'scholarship-filter-form' } do |f| %>
+  <%#= f.submit 'Filter', class: 'btn' %>
+  <%#= link_to "CLEAR FILTERS", scholarships_path, class: 'clear_filter' %>
 
-	<p><strong>Academic Standing</strong></p>
-		<label>1st Year Undergraduate</label>
-		<%= f.select :freshman_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.freshman_true), {include_blank: "Any"}, {class: 'browser-default'} %>
-		<label>2nd Year Undergraduate</label>
-		<%= f.select :sophomore_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.sophomore_true), {include_blank: "Any"}, {class: 'browser-default'} %>
-		<label>3rd Year Undergraduate</label>
-		<%= f.select :junior_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.junior_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
-		<label>4th Year Undergraduate</label>
-		<%= f.select :senior_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.senior_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
-		<label>5th Year Undergraduate</label>
-		<%= f.select :fifth_year_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.fifth_year_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
-		<label>Alumni and/or graduate student</label>
-		<%= f.select :graduate_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_true), {include_blank: "Any"}, {class: 'browser-default'} %>
-	
-	<p><strong>Field(s) of Interest or Study</strong></p>
-		<%= f.collection_select :categories_category_id_in, Category.where(parent_id: 0).where.not(id: [188,189]), :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'}  %>
-		
-	<p><strong>Citizenship</strong></p>
-		<label>US Citizen</label>
-		<%= f.select :us_citizen_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.us_citizen_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
-		<label>Permanent Resident</label>
-		<%= f.select :permanent_resident_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.permanent_resident_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
-		<label>International or Other Visa Status</label>
-		<%= f.select :other_visa_status_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.other_visa_status_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
-		<label>Undocumented</label>
-		<%= f.select :hb_1079_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.hb_1079_true), {include_blank: "Any"}, {class: 'browser-default'}  %>		
-	
-	<p><strong>Financial Need</strong></p>
-		<label>Requiring financial need</label>
-		<%= f.select :need_based_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.need_based_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
-	
-	<p><strong>Residency</strong></p>
-		<label>Requiring Washington residency</label>
-		<%= f.select :resident_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.resident_true), {include_blank: "Any"}, {class: 'browser-default'} %>
+  <%# ── Deadline Month ─────────────────────────────────────────────────── %>
+  <%# Direct Ransack _in predicate — Select2 applied straight to this field %>
+  <p><strong>Deadline Month</strong></p>
+  <%= f.select :scholarship_monthly_deadlines_deadline_month_in,
+        (1..12).map { |m| [Date::MONTHNAMES[m], m] },
+        { include_blank: false },
+        { multiple: true,
+          id: 'deadline_month_select',
+          style: 'width:100%' } %>
 
-	<!--<p><strong>Additional Identity Categories</strong></p>
-	    <p><small>Use these categories to show only those scholarships that target students identifying with these communities. Please understand that you could also be a strong candidate for scholarships that don’t target these specific identities, and that this list is not exhaustive.</small></p>
-		<label>Disabilities</label>
-		<%#= f.collection_select :disabilities_disability_id_in, Disability.all.reject{|d|d.id==4}, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
-		<label>Ethnicities or racial groups</label>
-		<%#= f.collection_select :ethnicities_ethnicity_id_in, OmsfaEthnicity.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>				
-		<label>LGBTQI community</label>
-		<%#= f.select :lgbtqi_community_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.lgbtqi_community_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
-		<label>Veterans</label>
-		<%#= f.select :veteran_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.veteran_true), {include_blank: "Any"}, {class: 'browser-default'} %>
-	-->
-			
-		<!-- <label>Women</label> -->
-		<%#= f.select :female_true, options_for_select([['Yes', 'true' ]], @search.female_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
+  <%# ── Academic Standing ──────────────────────────────────────────────── %>
+  <%# Raw inputs reading from params[:q] directly — NOT from @search,      %>
+  <%# because @search is built from q_for_ransack (which has _true deleted) %>
+  <div id="standing-ransack-inputs" style="display:none">
+    <input type="checkbox" id="cb_freshman"   name="q[freshman_true]"   value="1" <%= 'checked' if params.dig(:q, 'freshman_true')   == '1' %>>
+    <input type="checkbox" id="cb_sophomore"  name="q[sophomore_true]"  value="1" <%= 'checked' if params.dig(:q, 'sophomore_true')  == '1' %>>
+    <input type="checkbox" id="cb_junior"     name="q[junior_true]"     value="1" <%= 'checked' if params.dig(:q, 'junior_true')     == '1' %>>
+    <input type="checkbox" id="cb_senior"     name="q[senior_true]"     value="1" <%= 'checked' if params.dig(:q, 'senior_true')     == '1' %>>
+    <input type="checkbox" id="cb_fifth_year" name="q[fifth_year_true]" value="1" <%= 'checked' if params.dig(:q, 'fifth_year_true') == '1' %>>
+    <input type="checkbox" id="cb_graduate"   name="q[graduate_true]"   value="1" <%= 'checked' if params.dig(:q, 'graduate_true')   == '1' %>>
+  </div>
 
-	<p><strong>Scholarship Type</strong></p>
-		<label>Are offered by UW</label>
-		<%= f.select :is_departmental_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.is_departmental_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
-		<label>Support activities
-			<%= f.collection_select :types_type_id_in, Type.all, :id, :name , {include_blank: 'Any'}, {multiple: true, class: 'chosen-select'} %>
-		</label>
-		<label>Support gap year experiences</label>
-		<%= f.select :gap_year_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.gap_year_true), {include_blank: "Any"}, {class: 'browser-default'} %>
-		<label>Support graduate studies</label>
-		<%= f.select :graduate_school_true, options_for_select([['Yes', 'true' ],[ 'No', 'false']], @search.graduate_school_true), {include_blank: "Any"}, {class: 'browser-default'}  %>
+  <p><strong>Academic Standing</strong></p>
+  <select id="academic_standing_select" multiple="multiple" style="width:100%">
+    <option value="freshman">1st Year Undergraduate</option>
+    <option value="sophomore">2nd Year Undergraduate</option>
+    <option value="junior">3rd Year Undergraduate</option>
+    <option value="senior">4th Year Undergraduate</option>
+    <option value="fifth_year">5th Year Undergraduate</option>
+    <option value="graduate">Alumni and/or Graduate Student</option>
+  </select>
 
-		
-	<br /><br />
-	<%= f.submit 'Filter', :class => 'btn' %>
-	<%= link_to "CLEAR FILTERS", scholarships_path, :class => 'clear_filter' %>	
+  <%# ── Citizenship ────────────────────────────────────────────────────── %>
+  <%# Ransack hidden inputs – synced by JS before submit %>
+  <div id="citizenship-ransack-inputs" style="display:none">
+    <input type="checkbox" id="cb_us_citizen"          name="q[us_citizen_true]"          value="1" <%= 'checked' if params.dig(:q, 'us_citizen_true')          == '1' %>>
+    <input type="checkbox" id="cb_permanent_resident"  name="q[permanent_resident_true]"  value="1" <%= 'checked' if params.dig(:q, 'permanent_resident_true')  == '1' %>>
+    <input type="checkbox" id="cb_other_visa_status"   name="q[other_visa_status_true]"   value="1" <%= 'checked' if params.dig(:q, 'other_visa_status_true')   == '1' %>>
+    <input type="checkbox" id="cb_hb_1079"             name="q[hb_1079_true]"             value="1" <%= 'checked' if params.dig(:q, 'hb_1079_true')             == '1' %>>
+  </div>
+
+  <p><strong>Citizenship</strong></p>
+  <select id="citizenship_select" multiple="multiple" style="width:100%">
+    <option value="us_citizen">US Citizen</option>
+    <option value="permanent_resident">Permanent Resident</option>
+    <option value="other_visa_status">International or Other Visa Status</option>
+    <option value="hb_1079">Undocumented</option>
+  </select>
+
+  <%# ── Financial Need ─────────────────────────────────────────────────── %>
+  <p><strong>Financial Need</strong></p>
+  <p>
+    <label>
+      <%= f.check_box :need_based_true, {class: 'filled-in'}, '1', '' %>
+      <span>Requiring Financial Need</span>
+    </label>
+  </p>
+
+  <%# ── Residency ───────────────────────────────────────────────────────── %>
+  <p><strong>Residency</strong></p>
+  <p>
+    <label>
+      <%= f.check_box :resident_true, {class: 'filled-in'}, '1', '' %>
+      <span>Requiring Washington Residency</span>
+    </label>
+  </p>
+
+  <%# ── Scholarship Type ────────────────────────────────────────────────── %>
+  <p><strong>Scholarship Type</strong></p>
+
+  <label>Field(s) of Interest or Study</label>
+  <%= f.collection_select :categories_category_id_in,
+        Category.where(parent_id: 0).where.not(id: [188, 189]),
+        :id, :name,
+        { include_blank: 'Any' },
+        { multiple: true, class: 'chosen-select' } %>
+
+  <label>Support Activities</label>
+  <%= f.collection_select :types_type_id_in,
+        Type.all,
+        :id, :name,
+        { include_blank: 'Any' },
+        { multiple: true, class: 'chosen-select' } %>
+
+  <p>
+    <label>
+      <%= f.check_box :is_departmental_true, {class: 'filled-in'}, '1', '' %>
+      <span>Offered by UW</span>
+    </label>
+  </p>
+
+  <p>
+    <label>
+      <%= f.check_box :gap_year_true, {class: 'filled-in'}, '1', '' %>
+      <span>Support Gap Year Experiences</span>
+    </label>
+  </p>
+  <p>
+    <label>
+      <%= f.check_box :graduate_school_true, {class: 'filled-in'}, '1', '' %>
+      <span>Support Graduate Studies</span>
+    </label>
+  </p>
+  
+  <%= f.submit 'Filter', class: 'btn' %>
+  <%= link_to "CLEAR FILTERS", scholarships_path, class: 'clear_filter' %>
 
 <% end %>
+
+</div><%# ── end #scholarship-filters ── %>

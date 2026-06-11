@@ -20,7 +20,23 @@ $(document).on('turbolinks:load', function() {
   $('.modal').modal();
   $('.datepicker').datepicker();
   $('.timepicker').timepicker();
-  $('.collapsible').collapsible();
+  
+  // $('.collapsible').collapsible();
+  // Collapsible with icon toggle (expand_more / expand_less)
+  document.querySelectorAll('.collapsible').forEach(function(el) {
+    M.Collapsible.init(el, {
+      onOpenStart: function(li) {
+        var icon = li.querySelector('.iconcollapse');
+        if (icon) icon.textContent = 'expand_less';
+      },
+      onCloseStart: function(li) {
+        var icon = li.querySelector('.iconcollapse');
+        if (icon) icon.textContent = 'expand_more';
+      }
+    });
+  });
+  // End collapsible
+
   $('select.material').formSelect();
   $('.input-field .charcounter').characterCounter();
   $('.sidenav').sidenav();

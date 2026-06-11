@@ -1,9 +1,14 @@
   <div class="card">
-	<div class="table-header">
+	<div class="scholarships table-header">
 		
 		<h5>Results<span class="page_info"><%= page_entries_info @scholarships %></span></h5>
 			<ul class="scopes right">
-				<li <%= 'class=selected' if params[:scope] %>><%= link_to "Upcoming (#{Scholarship.upcoming.size})", scholarships_path(scope: 'upcoming') %></li>
+				<% if logged_in? && @favorites_count > 0 %>
+			        <li <%= 'class=selected' if params[:scope] == 'favorites' %>>
+			          <%= link_to "<i class='mi md-16'>favorite</i> Favorites (#{@favorites_count})".html_safe, scholarships_path(scope: 'favorites') %>
+			        </li>
+			    <% end %>
+				<li <%= 'class=selected' if params[:scope] == 'upcoming' %>><%= link_to "Upcoming (#{Scholarship.upcoming.size})", scholarships_path(scope: 'upcoming') %></li>
 				<li <%= 'class=selected' unless params[:scope] %>><%= link_to "All (#{Scholarship.active.size})", scholarships_path %></li>
 			</ul>			
 	</div>	

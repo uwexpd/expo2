@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_11_05_182934) do
+ActiveRecord::Schema.define(version: 2026_06_08_194211) do
 
   create_table "academic_departments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
     t.string "name"
@@ -2537,6 +2537,15 @@ ActiveRecord::Schema.define(version: 2025_11_05_182934) do
     t.text "description"
   end
 
+  create_table "scholarship_favorites", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "scholarship_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["scholarship_id"], name: "index_scholarship_favorites_on_scholarship_id"
+    t.index ["user_id", "scholarship_id"], name: "index_scholarship_favorites_on_user_id_and_scholarship_id", unique: true
+  end
+
   create_table "school_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
     t.string "name"
   end
@@ -2982,4 +2991,5 @@ ActiveRecord::Schema.define(version: 2025_11_05_182934) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "scholarship_favorites", "users"
 end

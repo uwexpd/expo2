@@ -266,6 +266,7 @@ Rails.application.routes.draw do
 
     # OMSFA Scholarship Sesarch
     resources :scholarships, only: [:show, :index], param: :page_stub
+    resources :scholarship_favorites, only: [:create, :destroy]
 
     # MGE Scholars Search
     resources :mge_scholars, only: [:show, :index]

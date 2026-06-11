@@ -21,6 +21,8 @@ class User < ApplicationRecord
   has_many :offerings_with_financial_aid_approval_access, :class_name => "Offering", :foreign_key => "financial_aid_approver_id"
   has_many :offerings_with_disbersement_approval_access, :class_name => "Offering", :foreign_key => "disbersement_approver_id"
   
+  has_many :scholarship_favorites
+
   MAX_TOKEN_AGE = 1.day
   
   # Returns the actual token from this User's +token_object+ or generates a new one if:

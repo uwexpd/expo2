@@ -21,7 +21,7 @@ class OpportunitiesController < ApplicationController
 		@research_opportunity = ResearchOpportunity.find(params[:id])
 		if @research_opportunity
       		if !@research_opportunity.active? || (@research_opportunity.end_date && @research_opportunity.end_date < Date.today)
-       			 flash[:error] = "The opportunity, #{@research_opportunity.title}, is inactive. You are not able to see more details."
+       			 flash[:error] = "#{@research_opportunity.title} is no longer available. It has either been deactivated or its auto removal date has passed."
         		redirect_to :action => "index"
       		end
       		add_breadcrumb @research_opportunity.title

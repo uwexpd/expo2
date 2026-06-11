@@ -6,7 +6,7 @@
 	<div class="row">
 	  <%= search_form_for @search do |f| %>
 			<div class="input-field col s5">
-				<%= f.search_field :title_or_description_or_history_or_eligibility_cont, :placeholder => "Type keywords" %>			
+				<%= f.search_field :title_or_description_or_history_or_eligibility_cont, :placeholder => "Type keywords (one keyword at a time)" %>			
 			</div>
 			<div class="input-field col s3">
 				<%= f.button type: :submit, :class => 'btn waves-effect waves-light' do %>
@@ -15,25 +15,32 @@
 			</div>			
 	  <% end %>
 	</div>
-	<div class="row text-indent">
-		<p>•  Not sure what keywords to use? Check out our <a href='https://expd.uw.edu/scholarships/getting-started/start-your-scholarship-search/' target="_blank">tips for preparing your search</a>.</p>
- 		<p>•  Want a starting point list to jumpstart your search? Try our <a href='https://expd.uw.edu/scholarships/getting-started/lists/' target="_blank">scholarship guides</a>.</p>		 	 		<p>•  Search in multiple databases to find a wider range of scholarships. <a href='https://expd.uw.edu/scholarships/getting-started/tools/' target="_blank">Additional scholarship search tools to try</a>.</p>
-	</div>
+	
 </div>
 
 <ul class="collapsible">	
   <li>
-		<div class="collapsible-header"><i class="material-icons iconcollapse">expand_more</i>First time searching for scholarships in our database? </div>
-	    <div class="collapsible-body">
+		<div class="collapsible-header"><span class='mi uw_purple'>info</span> Tips for Searching for Scholarships in Our Database <i class="mi iconcollapse">expand_more</i></div>
+	    <div class="collapsible-body">	    	
+				<p>•  Not sure what keywords to use? Check out our <a href='https://scholarships.uw.edu/get-started/planning/' target="_blank">tips for preparing your search</a>.</p>
+		 		<p>•  Want a starting point list to jumpstart your search? Try our <a href='https://scholarships.uw.edu/search/guides/' target="_blank">scholarship guides</a>.</p>		 	 		
+		 		<p>•  Search in multiple databases to find a wider range of scholarships. <a href='https://scholarships.uw.edu/search/searching-for-scholarships-tools-strategies/' target="_blank">Additional scholarship search tools to try</a>.</p>
+
 			<i>Using keywords:</i> Each scholarship you apply for might be a good fit for you in a different way. We recommend searching for one keyword at a time. Consider keywords related to your: academic and professional fields of interest, future goals, activities you enjoy, issues you care about, communities you are part of, and identities you hold.
 
 			<p><i>Using filters:</i> The filters will restrict your results to show only scholarships that include ALL the criteria you selected. </p>
 
 			<p>If you want to exclude scholarships in a given category to avoid results for which you will NOT be eligible (i.e. you are not a Washington resident), then make that selection and leave it on for all searches. </p>
 
-			<p>In addition to searching by keywords, if you want to check for scholarships that might specifically apply to you based on the communities you identify with, then select one identity category per search (i.e. LGBTQI community) to see all scholarships related to that identity. You may want to leave the keyword blank or use broad keywords. </p>
+			<p>As you search, also look for additional search resources/websites/databases based on:</p>
+					<p>•  identities you hold,</p>
+					<p>•  communities you belong to,</p>
+					<p>•  values you have, and</p>
+					<p>•  campus resources that provide you specific guidance.</p>
 
-			<p>Found all the relevant scholarships on our database? Check out other databases! We can’t list every scholarship out there, so it’s good to check out a few different <a href="https://expd.uw.edu/scholarships/getting-started/tools/" target="_blank">search platforms</a>.</p>
+					<p>Although we're not able to list those resources here, there are many excellent databases and search sites available that you can do a targeted search for based on those identities, communities, etc. relevant for you.</p>
+
+			<p>Found all the relevant scholarships on our database? Check out other databases! We can’t list every scholarship out there, so it’s good to check out a few different <a href="https://scholarships.uw.edu/search/searching-for-scholarships-tools-strategies/" target="_blank">search platforms</a>.</p>
 	    </div>
   </li>
 </ul>
