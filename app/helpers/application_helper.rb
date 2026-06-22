@@ -46,10 +46,10 @@ module ApplicationHelper
     if collection.total_pages < 2
       case collection.size
       when 0; "No #{entry_name.pluralize} found"
-      else; "Displaying #{collection.size} #{entry_name.pluralize}"
+      else; "Showing #{collection.size} #{entry_name.pluralize}"
       end
     else
-      %{Displaying %d - %d of %d #{entry_name.pluralize}} % [
+      %{Showing %d - %d of %d #{entry_name.pluralize}} % [
         collection.offset + 1,
         collection.offset + collection.length,
         collection.total_entries

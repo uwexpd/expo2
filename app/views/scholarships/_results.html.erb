@@ -1,7 +1,7 @@
   <div class="card">
 	<div class="scholarships table-header">
 		
-		<h5>Results<span class="page_info"><%= page_entries_info @scholarships %></span></h5>
+		<h5>Scholarships <span class="page_info"><%= page_entries_info @scholarships %></span></h5>
 			<ul class="scopes right">
 				<% if logged_in? && @favorites_count > 0 %>
 			        <li <%= 'class=selected' if params[:scope] == 'favorites' %>>

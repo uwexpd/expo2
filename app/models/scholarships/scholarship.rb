@@ -17,29 +17,34 @@ class Scholarship < ScholarshipRecord
   
   validates :title, presence: true
   
+  STANDINGS = [
+    [:freshman,   "1st Year"],
+    [:sophomore,  "2nd Year"],
+    [:junior,     "3rd Year"],
+    [:senior,     "4th Year"],
+    [:fifth_year, "5th Year"],
+    [:graduate,   "Graduate"]
+  ].freeze
+
+  CITIZEN_TYPES = [
+    [:us_citizen,          "US Citizen"],
+    [:permanent_resident,  "Permanent Resident"],
+    [:other_visa_status,   "International or Other Visa Status"],
+    [:hb_1079,             "Undocumented"]
+  ].freeze
+
   def scholarship_type_name
     scholarship_type.collect{|t|t.type.title}
   end
 
   def class_standings(separator = nil)
-     class_standings = []      
-     class_standings << "freshman"  if freshman  == 1
-     class_standings << "sophomore" if sophomore == 1
-     class_standings << "junior"    if junior    == 1
-     class_standings << "senior"    if senior    == 1
-     class_standings << "graduate"  if graduate  == 1
-     class_standings = class_standings.join(separator) if separator
-     class_standings
+    standings = STANDINGS.select { |field, _| [1, true].include?(send(field)) }.map(&:last)
+    separator ? standings.join(separator) : standings
   end
   
   def citizen_types(separator = nil)
-    citizen_types = []
-    citizen_types << "US Citizen" if us_citizen == 1
-    citizen_types << "Permanent Resident" if permanent_resident == 1
-    citizen_types << "International or Other Visa Status" if other_visa_status == 1
-    citizen_types << "Undocumented" if hb_1079 == 1
-    citizen_types = citizen_types.join(separator) if separator
-    citizen_types    
+    types = CITIZEN_TYPES.select { |field, _| send(field) == 1 }.map(&:last)
+    separator ? types.join(separator) : types
   end
   
   def deadlines(separator = ", ")
