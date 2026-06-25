@@ -14,7 +14,7 @@ class ServiceLearningOrientation < ApplicationRecord
       new_location = create_orientation_location(location_attributes)
       self.update_attribute(:location_id, new_location.id)
     elsif new_location_id.to_i == location_id.to_i && needs_update == "true"
-      orientation_location.update_attributes(location_attributes)
+      orientation_location.update(location_attributes)
     end
   end
 

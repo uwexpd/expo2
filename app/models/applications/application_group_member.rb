@@ -150,7 +150,8 @@ class ApplicationGroupMember < ApplicationRecord
   # Update the person details
   def person_attributes=(person_attributes)
     if person
-      person.update_attributes(person_attributes.reject{|k,v| k == :id})
+      # person.update_attributes(person_attributes.reject{|k,v| k == :id})
+      person.update(person_attributes.except(:id))
     end
   end
 

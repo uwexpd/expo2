@@ -3,14 +3,36 @@ class Offering < ApplicationRecord
   # include StringHelper #[TODO] It does not work with Tinymce format. 
   stampable  
     
+  # Rails 6.1+ treats raw SQL passed to order(...) as unsafe unless explicitly marked.
+  # Only use Arel.sql for static SQL that does not include user input.
+
+  QUARTER_SORT_SQL = <<~SQL.squish.freeze
+    IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC,
+    IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC
+  SQL
+
   scope :sorting, -> {
-    left_outer_joins(:quarter_offered).
-    where(unit_id: current_user.blank? ? Unit.all.collect(&:id) : current_user.units.collect(&:id)).
-    order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC")
+    left_outer_joins(:quarter_offered)
+      .where(unit_id: current_user.blank? ? Unit.pluck(:id) : current_user.units.pluck(:id))
+      .order(Arel.sql(QUARTER_SORT_SQL))
   }
-  scope :current, -> { left_outer_joins(:quarter_offered).where("quarters.first_day >= ? OR (quarter_offered_id is null and year_offered >= ?)", Quarter.current_quarter.first_day, Time.now.year)}
-  scope :sorting_current, -> { sorting.current }
-  scope :sorting_past, -> { where(id: (sorting - sorting_current).map(&:id)).left_outer_joins(:quarter_offered).order("IF(`quarter_offered_id` IS NULL, `year_offered`, `quarters`.`year`) DESC, IF(`quarter_offered_id` IS NULL, 0, `quarters`.`quarter_code_id`) DESC") }
+
+  scope :current, -> {
+    left_outer_joins(:quarter_offered)
+      .where(
+        "quarters.first_day >= ? OR (quarter_offered_id IS NULL AND year_offered >= ?)",
+        Quarter.current_quarter.first_day,
+        Time.current.year
+      )
+  }
+
+  scope :sorting_current, -> {
+    sorting.current
+  }
+
+  scope :sorting_past, -> {
+    sorting.where.not(id: sorting_current.unscope(:order).select(:id))
+  }
 
   belongs_to :unit
   has_many :applications, :class_name => "ApplicationForOffering"

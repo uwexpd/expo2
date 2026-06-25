@@ -353,7 +353,7 @@ class ServiceLearningPosition < ApplicationRecord
       new_location = create_location(location_attributes)
       self.update_attribute(:location_id, new_location.id) if new_location.valid?
     elsif new_location_id.to_i == location_id.to_i && needs_update == "true"
-      location.update_attributes(location_attributes)
+      location.update(location_attributes)
     end
   end
   
@@ -361,7 +361,7 @@ class ServiceLearningPosition < ApplicationRecord
     if orientation.nil?
       create_orientation(orientation_attributes)
     else
-      orientation.update_attributes(orientation_attributes)
+      orientation.update(orientation_attributes)
     end
   end
 
@@ -586,7 +586,7 @@ class ServiceLearningPosition < ApplicationRecord
       :unallocated_placements_count => placements.unallocated.count
     }
     
-    self.update_attributes(counts)
+    self.update(counts)
   end
 
   def education_sector?

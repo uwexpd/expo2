@@ -485,7 +485,7 @@ class ApplicationForOffering < ApplicationRecord
   # Text_attributes should use the title of the text as the key.
   def texts_attributes=(texts_attributes)
     texts_attributes.each do |text_title, attributes|
-      text(text_title).update_attributes(attributes)
+      text(text_title).update(attributes)
     end
   end
 
@@ -498,7 +498,7 @@ class ApplicationForOffering < ApplicationRecord
     other_award_attributes.each do |offering_other_award_type_id, ow_attributes|
       if ow_attributes[:secured] == "1"
         n = other_awards.find_or_create_by(offering_other_award_type_id: offering_other_award_type_id)
-        n.update_attributes(ow_attributes)
+        n.update(ow_attributes)
       else
         d = other_awards.find_by(offering_other_award_type_id: offering_other_award_type_id)
         other_awards.delete(d) if d

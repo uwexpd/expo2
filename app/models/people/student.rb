@@ -179,7 +179,7 @@ class Student < Person
       return [] 
     elsif !@registrations[quarter].nil?
       # @enrolled_courses ||= r.courses.enrolled.collect(&:course)
-      @enrolled_courses[quarter] ||= @registrations[quarter].courses.includes(:course).where("request_status IN ('A','C','R')").collect(&:course)
+      @enrolled_courses[quarter] ||= @registrations[quarter].courses.eager_load(:course).where("request_status IN ('A','C','R')").collect(&:course)
     end
     if options[:include_extra_enrollees]
       

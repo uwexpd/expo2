@@ -81,7 +81,7 @@ class User < ApplicationRecord
     if person.nil?
       self.person = Person.new(person_attributes)
     else
-      self.person.update_attributes(person_attributes)
+      self.person.update(person_attributes)
     end
   end
 

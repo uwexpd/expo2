@@ -68,7 +68,10 @@ class ApplyController < ApplicationController
     @user_application.start_page(@page)
     
     # stop this method if the application has already been submitted
-    redirect_to :action => 'page', :page => page and return unless @user_application.user_editable?
+    unless @user_application.user_editable?
+      redirect_to :action => "review" and return if params[:review_button]
+      redirect_to :action => 'page', :page => page and return
+    end
 
     # mark this application as in progress
     @user_application.set_status('in_progress')
@@ -129,16 +132,16 @@ class ApplyController < ApplicationController
     unless @user_application.skip_validations
     
       # check if the page passes validation
-      if @user_application.page_passes_validations?(@page.id) && !(@group_member && @group_member.errors.any?)
-        @user_application.current_page.update_attribute :complete, true #mark page as complete
-        passes_validations = true
+      if @user_application.page_passes_validations?(@page.id) && !(@group_member && @group_member.errors.any?)        
+        @user_application.current_page.update_attribute :complete, true #mark page as complete        
+        passes_validations = true        
       end
     
       # move on to the next page if it's ok
-      if passes_validations || params[:continue_anyway]
+      if passes_validations || params[:continue_anyway]        
         flash[:notice] = "Application data saved."
         redirect_to :action => "review" and return if params[:review_button]
-        redirect_to :action => "index" and return if params[:welcome_button]        
+        redirect_to :action => "index" and return if params[:welcome_button]
         redirect_to :action => 'page', :page => page and return
       end
     

@@ -1,6 +1,6 @@
 set :stage, :production
 
-set :deploy_to, '/usr/local/apps/expo2'
+set :deploy_to, '/usr/local/apps/expo'
 set :repo_url,  'git@github.com:uwexpd/expo2.git'
 set :branch, 'master'
 set :rails_env, :production

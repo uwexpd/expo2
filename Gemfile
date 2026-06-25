@@ -1,8 +1,10 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem 'rails', '~> 5.2', '>= 5.2.4.3'
-gem 'sass-rails'
+# gem 'rails', '~> 5.2', '>= 5.2.4.3'
+# gem 'sass-rails'
+gem 'rails', '~> 6.1.7'
+gem 'sass-rails', '>= 6'
 gem 'coffee-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 4.2'
@@ -25,29 +27,35 @@ gem 'activeadmin', '~> 2.7'
 gem 'ransack', '~> 2.3', '>= 2.3.2'
 gem 'active_material', '~> 1.5', '>= 1.5.2'
 gem 'activeadmin_addons'
-gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
+# gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
+gem "active_admin_import", "~> 5.1"
 # gem 'activeadmin_dynamic_fields'
 
 # hardens your app against XSS attack
 gem 'secure_headers'
 
 # handle multiple primary keys in UWSDB tables: Since many UWSDB tables have multiple primary keys and Rails doesn't really "do" composite PK's
-gem 'composite_primary_keys', '~> 11.3', '>= 11.3.1'
+# gem 'composite_primary_keys', '~> 11.3', '>= 11.3.1'
+gem 'composite_primary_keys', '~> 13.0'
 
 # adapter for ms sql server 2012
 gem 'tiny_tds'
-gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
+# gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
+gem 'activerecord-sqlserver-adapter', '~> 6.1'
 
 # Connect to UW Student Web Service
 gem 'activeresource', '~> 5.1', '>= 5.1.1'
 
-gem 'mysql2', '0.5.3' # [TODO] 0.5.4 is not working, needed to be installed manually
-gem 'mimemagic', '~> 0.4.3'
-gem 'activerecord-userstamp', github: 'lowjoel/activerecord-userstamp'
+# gem 'mysql2', '0.5.3' # [TODO] 0.5.4 is not working, needed to be installed manually
+gem 'mysql2', '~> 0.5.5'
+#gem 'mimemagic', '~> 0.4.3'
+gem 'mimemagic', '~> 0.3.10'
+# gem 'activerecord-userstamp', github: 'lowjoel/activerecord-userstamp'
+gem 'activerecord-userstamp', github: 'Coursemology/activerecord-userstamp'
 gem 'tinymce-rails', '5.10.7' # [TODO] not working with verson 6+
-gem 'will_paginate', '~> 3.1.6'
-# gem 'will_paginate-materialize', github: 'harrybournis/will_paginate-materialize'
-gem 'will_paginate-materialize', git: 'https://github.com/mldoscar/will_paginate-materialize', branch: 'master'
+# gem 'will_paginate', '~> 3.1.6'
+gem 'will_paginate', '~> 4.0'
+# gem 'will_paginate-materialize', git: 'https://github.com/mldoscar/will_paginate-materialize', branch: 'master'
 
 # For smoothing the upgrade since auto_link and textilize are deprecated
 gem 'rails_autolink'
@@ -112,6 +120,13 @@ gem 'icalendar', '~> 2.7'
 gem 'premailer-rails'
 gem 'faraday'
 
+# Upgrading to ruby 3
+gem 'mutex_m'
+gem 'concurrent-ruby', '1.3.4'
+# Apple Silicon ARM64 compatibility fixes
+gem 'nio4r', '>= 2.5.9'
+gem 'ffi',   '>= 1.15.6'
+
 group :production do  
   gem 'omniauth-shibboleth'
 end
@@ -120,12 +135,15 @@ group :development, :test do
   gem 'awesome_print'
   gem 'rspec-rails'
   gem 'byebug'
-  gem 'pry', '~> 0.14.2'
+  # gem 'pry', '~> 0.14.2'
+  # Locking Psych < 4 to avoid `aliases: true` YAML error in Rails 5.2
+  gem 'psych', '< 4'
 end
 
 group :development do
   gem 'puma'
-  gem 'web-console', '~> 2.0'
+  # gem 'web-console', '~> 2.0'
+  gem 'web-console', '~> 4.0'  
   gem 'spring', '~> 3.1', '>= 3.1.1'
   gem 'capistrano', '~> 3.1'
   gem 'capistrano-rails', '~> 1.1'
@@ -136,7 +154,7 @@ group :development do
   gem "capistrano-sidekiq"
   gem 'annotate'  
   gem 'brakeman', :require => false
-  gem 'uw_sws'
+  # gem 'uw_sws'
   gem 'rack-mini-profiler', require: false
   gem 'spring-commands-rspec'  
   # gem 'gas_load_tester'

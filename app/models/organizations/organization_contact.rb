@@ -46,7 +46,7 @@ class OrganizationContact < ApplicationRecord
     if person.nil?
       create_person(person_attributes)
     else
-      person.update_attributes(person_attributes)
+      person.update(person_attributes)
     end
   end
 

@@ -21,7 +21,7 @@ class Apply::Confirmation::GuestsController < Apply::ConfirmationController
     @guest = @confirmer.guests.find(params[:id])
 
     respond_to do |format|
-      if @guest.update_attributes(params[:guest])
+      if @guest.update(params[:guest])
         flash[:notice] = "#{@guest.fullname}'s details were successfully updated."
         format.html { redirect_to(apply_confirmation_guests_url(@offering)) }
       else

@@ -28,13 +28,13 @@ class ServiceLearningCourseInstructor < ApplicationRecord
     person_attributes.merge!({:require_validations => true})
     if !person_attributes[:id].blank?
       update_attribute(:person_id, person_attributes[:id])
-      person.update_attributes(person_attributes)
+      person.update(person_attributes)
     elsif person.nil?
       build_person(person_attributes)
       person.save
       # update_attribute(:person_id, person.id)
     else
-      person.update_attributes(person_attributes)
+      person.update(person_attributes)
     end
   end
   

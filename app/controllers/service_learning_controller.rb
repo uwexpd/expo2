@@ -135,7 +135,7 @@ class ServiceLearningController < ApplicationController
 
         params[:self_placement_attributes][:organization_id] = params[:organization_id] unless params[:self_placement_attributes][:new_organization] == "1"
          
-        @self_placement.update_attributes(params[:self_placement_attributes])
+        @self_placement.update(params[:self_placement_attributes])
 
         # validate new organization contact fields
         if params[:self_placement_attributes][:new_organization] == "1"
@@ -153,7 +153,7 @@ class ServiceLearningController < ApplicationController
         @position.in_progress = true
         @position.require_validations = false
         
-        if @position.save && @position.update_attributes(params[:service_learning_position])
+        if @position.save && @position.update(params[:service_learning_position])
                                   
             @self_placement.update_attribute :service_learning_position_id, @position.id                        
             

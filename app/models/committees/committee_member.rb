@@ -205,13 +205,13 @@ class CommitteeMember < ApplicationRecord
 
   def committee_member_quarter_attributes=(quarter_attributes)
     quarter_attributes.each do |id, attributes|
-      committee_member_quarters.find(id.to_i).update_attributes(attributes)
+      committee_member_quarters.find(id.to_i).update(attributes)
     end
   end
 
   def committee_member_meeting_attributes=(meeting_attributes)
     meeting_attributes.each do |id, attributes|
-      committee_member_meetings.find(id.to_i).update_attributes(attributes)
+      committee_member_meetings.find(id.to_i).update(attributes)
     end
   end
 
@@ -221,7 +221,7 @@ class CommitteeMember < ApplicationRecord
   #   quarters_hash.each do |id, h|
   #     if q = CommitteeQuarter.find_by_quarter_id(id)
   #       cmq = committee_member_quarters.find_or_create_by_committee_quarter_id(q.id)
-  #       cmq.update_attributes(h)
+  #       cmq.update(h)
   #     end
   #   end
   # end
@@ -230,7 +230,7 @@ class CommitteeMember < ApplicationRecord
   #   comments_hash.each do |id, h|
   #     if q = CommitteeQuarter.find_by_quarter_id(id)
   #       cmq = committee_member_quarters.find_or_create_by_committee_quarter_id(q.id)
-  #       cmq.update_attributes(h)
+  #       cmq.update(h)
   #     end
   #   end
   # end
@@ -250,11 +250,11 @@ class CommitteeMember < ApplicationRecord
   # Create a new person record through mass update.
   def new_person_attributes=(new_person_attributes)
     if new_person_attributes[:id] == "-1"
-      build_person(new_person_attributes.reject{|k,v| k == :id})
+      build_person(new_person_attributes.except(:id))
     elsif person
-      person.update_attributes(new_person_attributes.reject{|k,v| k == :id}) if person_is_valid
-    elsif person = (Person.find(new_person_attributes[:id]) rescue nil)
-      person.update_attributes(new_person_attributes.reject{|k,v| k == :id})
+      person.update(new_person_attributes.except(:id)) if person_is_valid
+    elsif (found = Person.find_by(id: new_person_attributes[:id]))
+      found.update(new_person_attributes.except(:id))
     end
   end
 

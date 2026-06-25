@@ -198,7 +198,7 @@ class OrganizationQuarter < ApplicationRecord
       :approved_positions_count => positions.approved.count
     }
     
-    self.update_attributes(counts)
+    self.update(counts)
   end  
   
   # Called when a community partner submits a evaluation.
