@@ -7,11 +7,9 @@ set :rails_env, :production
 set :bundle_flags, "--quiet"
 set :deploy_user, 'joshlin'
 server 'new.expo.uw.edu', user: 'joshlin', roles: %w{web app db sidekiq}, primary: true
-#set :rvm_ruby_version, '2.7.2' # set up which rvm ruby to use in server
 set :rvm_ruby_version, '3.0.6'  # ← update this to your Ruby 3 version
-
-# sidekiq service config is at:/etc/systemd/system/sidekiq-expo2.service in server
-set :sidekiq_service_unit_name, "sidekiq-expo2"
+# sidekiq service config is at:/etc/systemd/system/sidekiq-expo.service in server
+set :sidekiq_service_unit_name, "sidekiq-expo"
 
 # for dev.expo.uw.edu
 set :default_env, {
