@@ -1,16 +1,11 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# gem 'rails', '~> 5.2', '>= 5.2.4.3'
-# gem 'sass-rails'
 gem 'rails', '~> 6.1.7'
 gem 'sass-rails', '>= 6'
 gem 'coffee-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 4.2'
-
-# See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -27,7 +22,6 @@ gem 'activeadmin', '~> 2.7'
 gem 'ransack', '~> 2.3', '>= 2.3.2'
 gem 'active_material', '~> 1.5', '>= 1.5.2'
 gem 'activeadmin_addons'
-# gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
 gem "active_admin_import", "~> 5.1"
 # gem 'activeadmin_dynamic_fields'
 
@@ -35,12 +29,10 @@ gem "active_admin_import", "~> 5.1"
 gem 'secure_headers'
 
 # handle multiple primary keys in UWSDB tables: Since many UWSDB tables have multiple primary keys and Rails doesn't really "do" composite PK's
-# gem 'composite_primary_keys', '~> 11.3', '>= 11.3.1'
 gem 'composite_primary_keys', '~> 13.0'
 
 # adapter for ms sql server 2012
 gem 'tiny_tds'
-# gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
 gem 'activerecord-sqlserver-adapter', '~> 6.1'
 
 # Connect to UW Student Web Service
@@ -48,12 +40,9 @@ gem 'activeresource', '~> 5.1', '>= 5.1.1'
 
 # gem 'mysql2', '0.5.3' # [TODO] 0.5.4 is not working, needed to be installed manually
 gem 'mysql2', '~> 0.5.5'
-#gem 'mimemagic', '~> 0.4.3'
 gem 'mimemagic', '~> 0.3.10'
-# gem 'activerecord-userstamp', github: 'lowjoel/activerecord-userstamp'
 gem 'activerecord-userstamp', github: 'Coursemology/activerecord-userstamp'
 gem 'tinymce-rails', '5.10.7' # [TODO] not working with verson 6+
-# gem 'will_paginate', '~> 3.1.6'
 gem 'will_paginate', '~> 4.0'
 # gem 'will_paginate-materialize', git: 'https://github.com/mldoscar/will_paginate-materialize', branch: 'master'
 

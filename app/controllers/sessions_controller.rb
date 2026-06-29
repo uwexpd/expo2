@@ -2,6 +2,7 @@
 class SessionsController < ApplicationController
   
   skip_before_action :login_required, :add_to_session_history, raise: false
+  skip_before_action :set_stamper, only: [:forgot]
   
   layout 'active_admin_logged_out'
 

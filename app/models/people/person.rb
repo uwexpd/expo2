@@ -158,8 +158,9 @@ class Person < ApplicationRecord
     "#{fullname} (Expo Person ID: #{id})"
   end
   
-  def <=>(o)
-    lastname_first <=> o.lastname_first
+  def <=>(other)
+    return nil unless other.is_a?(self.class)
+    lastname_first <=> other.lastname_first
   end
   
   def fullname

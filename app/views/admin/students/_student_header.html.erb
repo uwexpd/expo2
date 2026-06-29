@@ -4,7 +4,7 @@
 <div class="panel">
   <div class="panel_contents">	
 	<div class="content-block student_header">
-		<%= image_tag photo_admin_student_path(:reg_id => student.reg_id), :class => 'student_photo', :size => "96x120", :alt => "" %>
+		<%= image_tag photo_admin_student_path(:reg_id => student&.reg_id), :class => 'student_photo', :size => "96x120", :alt => "" %>
 
 		<% if mode == :info %>
 			<dl class="id_numbers">

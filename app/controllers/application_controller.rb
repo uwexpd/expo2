@@ -128,7 +128,7 @@ class ApplicationController < ActionController::Base
   # changed current_user to instance variable because otherwise student_login_required breaks
   def set_stamper    
     @_userstamp_stamper = ActiveRecord::Userstamp.config.default_stamper_class.stamper
-    ActiveRecord::Userstamp.config.default_stamper_class.stamper = @current_user # current_user
+    ActiveRecord::Userstamp.config.default_stamper_class.stamper = @current_user if @current_user # current_user
   end
 
   def expo_exception(exception)
