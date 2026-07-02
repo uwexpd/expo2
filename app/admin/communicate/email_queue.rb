@@ -14,25 +14,72 @@ ActiveAdmin.register EmailQueue do
     end
 
     def update
-      @email = EmailQueue.find(params[:id])
-      @email.email.to = params[:email_queue][:email][:to]
-      @email.email.from = params[:email_queue][:email][:from]
-      @email.email.subject = params[:email_queue][:email][:subject]
-      @email.email.cc = params[:email_queue][:email][:cc]
-      @email.email.bcc = params[:email_queue][:email][:bcc]
-      @email.email.body = params[:email_queue][:email][:body]
+      email_queue = EmailQueue.find(params[:id])
+      attrs = params.require(:email_queue).require(:email)
+
+      old_mail = email_queue.email
+
+      message_delivery  = TemplateMailer.text_message(
+        template_object_for(email_queue),
+        attrs[:from].to_s,
+        attrs[:subject].to_s,
+        attrs[:body].to_s,
+        '', # link intentionally ignored for admin-edited queued emails
+        recipients_from(attrs[:to])
+      )
+      
+      # TemplateMailer.text_message returns ActionMailer::MessageDelivery in Rails 4+.
+      # EmailQueue#email serializes a Mail::Message, so unwrap the real message.
+      new_mail = message_delivery.respond_to?(:message) ? message_delivery.message : message_delivery
+
+      # TemplateMailer sets to/from/subject/body. Preserve/edit optional headers too.
+      new_mail.cc  = recipients_from(attrs[:cc]) if attrs.key?(:cc)
+      new_mail.bcc = recipients_from(attrs[:bcc]) if attrs.key?(:bcc)
+
+      # If you need to preserve delivery behavior from the queued message, copy it.
+      # This is useful in development if the original queued message used letter_opener
+      # or a specific delivery method.
+      copy_delivery_settings!(from: old_mail, to: new_mail)
+
+      # Reassign the serialized Mail::Message and mark it dirty so Rails saves the
+      # regenerated multipart message back into email_queues.email.
+      email_queue.email = new_mail
+      email_queue.email_will_change!
 
       respond_to do |format|
-        if @email.save
-          flash[:notice] = "E-mail was successfully updated and re-queued."
-          format.html { redirect_to :action => "show" }
+        if email_queue.save
+          flash[:notice] = 'E-mail was successfully updated and re-queued.'
+          format.html { redirect_to action: 'show' }
           format.xml  { head :ok }
         else
-          format.html { render :action => "edit" }
-          format.xml  { render :xml => @email.errors, :status => :unprocessable_entity }
+          format.html { render action: 'edit' }
+          format.xml  { render xml: email_queue.errors, status: :unprocessable_entity }
         end
       end
     end
+
+    private
+
+    def template_object_for(email_queue)
+      email_queue.contactable || email_queue.person
+    end
+
+    # ActiveAdmin form fields may submit comma-separated strings for cc/bcc/to.
+    # Mail accepts strings, but normalizing blank values avoids empty Cc/Bcc headers.
+    def recipients_from(value)
+      value.to_s.split(',').map(&:strip).reject(&:blank?)
+    end
+
+    def copy_delivery_settings!(from:, to:)
+      to.delivery_method(from.delivery_method.class, from.delivery_method.settings) if from.delivery_method
+      to.perform_deliveries = from.perform_deliveries
+      to.raise_delivery_errors = from.raise_delivery_errors
+    rescue NoMethodError
+      # Some delivery methods may not expose settings. In that case, use the
+      # default ActionMailer delivery configuration for the regenerated message.
+      true
+    end
+    
   end
 
   batch_action :deliver, priority: 1, confirm: "Are you sure to deliver these email queues?" do |ids|
