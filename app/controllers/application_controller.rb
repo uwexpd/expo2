@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
         session[:user] = @current_user.id
         flash[:notice] = "You are now logged in as #{user.fullname} with the role of a student."
       else
-        flash[:alert] = "No student role account associated with the provided NetID was found."
+        flash[:error] = "No student role account associated with the provided NetID was found."
       end
       redirect_back(fallback_location: :login)
   end

@@ -1132,3 +1132,13 @@ tr.total td {
 .scholarships.table-header {
 	background-color: #e8e3d3;
 }
+
+#reviewer_welcome ul{
+	padding-left: 1rem;	
+}
+#reviewer_welcome ul li{
+	list-style-type: circle;
+}
+#reviewer_welcome ul li ul li{
+	list-style-type: square;
+}
