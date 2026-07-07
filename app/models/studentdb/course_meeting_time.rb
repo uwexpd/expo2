@@ -3,7 +3,7 @@
 # Get Instructor of Record via CourseMeetingTime: https://metadata.uw.edu/catalog/viewitem/Term/b9ee44fc-f86c-42cd-9169-bcd6c674dc59
 
 class CourseMeetingTime < StudentInfo
-  self.table_name = "time_sched_meeting_times"
+  self.table_name = "sec.time_sched_meeting_times"
   self.primary_keys = :ts_year, :ts_quarter, :course_branch, :course_no, :dept_abbrev, :section_id  
   belongs_to :course
   

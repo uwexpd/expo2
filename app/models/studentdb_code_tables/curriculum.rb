@@ -1,7 +1,7 @@
 # Curriculum Codes.
 # Note that when looking up classes, this is what we use as the key for the first part of a course code (e.g., the "AES" in "AES 150 A").
 class Curriculum < StudentInfo
-  self.table_name = "sr_curric_code"
+  self.table_name = "sec.sr_curric_code"
   self.primary_keys = :curric_branch, :curric_last_yr, :curric_last_qtr, :curric_abbr
   
   belongs_to :department, :class_name => "Department", :foreign_key => "curric_dept"

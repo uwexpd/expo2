@@ -1,6 +1,6 @@
 # (No description in UWSDB Data Warehouse.)  Contains one record per quarter that a student completed (or simply enrolled in?) courses at the UW.  Contains information about credits attempted, grade points earned, etc.  A collection of StudentTranscript objects makes up a student's full transcript.  Transcript information is sequential and must be displayed in proper order so that calculations (e.g., cumulative GPA) make sense.
 class StudentTranscript < StudentInfo
-  self.table_name = "transcript"
+  self.table_name = "sec.transcript"
   self.primary_keys = :system_key, :tran_yr, :tran_qtr
   belongs_to :student_record, :class_name => "StudentRecord", :foreign_key => "system_key"
   has_many :courses, :class_name => "StudentTranscriptCourse", :foreign_key => ["system_key", "tran_yr", "tran_qtr"]

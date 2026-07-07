@@ -1,6 +1,6 @@
 # The StudentRecord entity (UWSDB.student_1_v) contains attributes of the student (person) pursuing an officially recognized course of learning at the University of Washington. Student_1 displays the SDB's most current information on a student. The student_1 entity is SDB's closest approximation of a "person." [Unified Definition of Student here, 2001] -- Anyone with a system_key-bearing record in SDB has a student_1 record.
 class StudentRecord < StudentInfo
-  self.table_name = "student_1_v"
+  self.table_name = "sec.student_1"
   self.primary_key = "system_key"
   has_one :student_person, :class_name => "Student", :foreign_key => "system_key"
   has_one :record2, :class_name => "StudentRecord2", :foreign_key => "system_key"

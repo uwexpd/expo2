@@ -1,6 +1,6 @@
 # Department Codes
 class Department < StudentInfo
-  self.table_name = "sr_dept_code"
+  self.table_name = "sec.sr_dept_code"
   self.primary_key = :dept_code
   
   has_many :majors, :class_name => "Major", :foreign_key => "major_dept"
