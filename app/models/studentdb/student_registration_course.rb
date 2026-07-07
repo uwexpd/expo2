@@ -1,4 +1,4 @@
-sec.# registration_pro is the portion of registration that occurs for each of a student's courses. It is a record of all courses that a student has added for a particular quarter. (Occurs clause max is 27.) registration_pro presents one entry per unique registration (sln plus dup_enroll). request_status shows the current status of that unique registration.
+# registration_pro is the portion of registration that occurs for each of a student's courses. It is a record of all courses that a student has added for a particular quarter. (Occurs clause max is 27.) registration_pro presents one entry per unique registration (sln plus dup_enroll). request_status shows the current status of that unique registration.
 class StudentRegistrationCourse < StudentInfo
   self.table_name = "sec.registration_courses"
   self.primary_keys = :system_key, :regis_yr, :regis_qtr, :index1
