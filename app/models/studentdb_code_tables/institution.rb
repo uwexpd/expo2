@@ -1,6 +1,6 @@
 # Institution Codes
 class Institution < StudentInfo
-  self.table_name = "sys_tbl_02_ed_inst_info"
+  self.table_name = "sec.sys_tbl_02_ed_inst_info"
   self.primary_key = :table_key
 
   def <=>(o)
