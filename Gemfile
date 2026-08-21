@@ -143,7 +143,6 @@ group :development do
   gem "capistrano-sidekiq"
   gem 'annotate'  
   gem 'brakeman', :require => false
-  # gem 'uw_sws'
   gem 'rack-mini-profiler', require: false
   gem 'spring-commands-rspec'  
   # gem 'gas_load_tester'

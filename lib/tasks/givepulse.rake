@@ -32,7 +32,7 @@ task :givepulse_roster_sync => :environment do
           ce_courses.each do |gp_course|
 
             if gp_course.course.blank?
-              puts "Skipping #{gp_course.crn}: no associated SDB course found."
+              puts "Skipping #{gp_course.crn} (group id: #{gp_course.group_id}): no associated SDB course found."
               next
             end
             gp_course.sync_course_students

@@ -3,6 +3,15 @@ class ApplyController < ApplicationController
   before_action :fetch_offering, :except => :list
   before_action :student_login_required_if_possible, unless: -> { @offering&.non_student? }
   before_action :login_required, if: -> { @offering&.non_student? }
+  #   Must run BEFORE fetch_user_applications and choose_application so that
+  #   all downstream callbacks (and MustBeStudentRestriction#allows?) see the
+  #   already-promoted Student user and load the correct person + applications.
+  #   Must run BEFORE check_must_be_student_restriction so that if the user can be
+  #   silently promoted, the restriction check never fires in the first place.
+  before_action :auto_switch_uw_netid_to_student_role,
+                :except => [:restricted, :cancelled, :list, :which, :enter_code, :group_member_validation, :group_member],
+                unless: -> { @offering&.non_student? }
+
   before_action :apply_alternate_stylesheet, :except => :list
   before_action :fetch_user_applications, :except => [:cancelled, :list]
   before_action :choose_application, :except => [:which, :cancelled, :list, :group_member_validation]
@@ -513,5 +522,51 @@ class ApplyController < ApplicationController
   def group_member_params
       params.require(:group_member).permit(:firstname, :lastname, :uw_student, :email)
   end
+
+  # If a UW Standard user (PubcookieUser with identity_type != "Student") arrives
+  # at an apply action, check whether a Student-typed User record exists for the
+  # same login. If so, silently swap the session to that Student record and let
+  # the before_action chain continue — no redirect, no extra round-trip.
+  #
+  # NOTE: non_student? offerings are already excluded via the `unless` guard on
+  # the before_action declaration above, so no need to repeat it here.
+  #
+  # Guard chain:
+  #   1. Skip if not logged in        — login callbacks own that case.
+  #   2. Skip if already a Student    — nothing to do.
+  #   3. Skip if not a PubcookieUser  — external users are unaffected.
+  #   4. Find the Student record for the same login.
+  #      Found  → swap @current_user + session; chain continues as a student.
+  #      Missing → do nothing; check_must_be_student_restriction shows the wall.
+  def auto_switch_uw_netid_to_student_role
+    # 1. Nobody logged in yet
+    return unless @current_user.present?
+
+    # 2. Already in the Student identity — happy path
+    return if @current_user.identity_type == "Student"
+
+    # 3. Only act on PubcookieUsers (UW NetID logins); leave external users alone
+    return unless @current_user.is_a?(PubcookieUser)
+
+    # 4. Look for a Student-typed record sharing the same UW login
+    student_user = User.find_by_login_and_identity_type(@current_user.login, "Student")
+    return unless student_user
+
+    # Mirror what force_login_as_student does, but without the redirect:
+    # clean up any vicarious session that was set under the old role
+    if vicariously_logged_in?
+      session[:original_user]   = nil
+      session[:vicarious_token] = nil
+      session[:vicarious_user]  = nil
+    end
+
+    # Promote the session to the student role in place
+    @current_user  = student_user
+    session[:user] = @current_user.id
+
+    flash[:notice] = "You have been automatically switched to your student role to apply for #{@offering&.name}."
+    # No redirect — the before_action chain continues with @current_user now a Student
+  end
+
 
 end

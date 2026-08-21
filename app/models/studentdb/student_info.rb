@@ -16,7 +16,28 @@ class StudentInfo < ActiveRecord::Base
       return true if method_name == 'class'
       super
     end
+
+    # Override first/last to avoid a SQL Server bug where the sqlserver adapter
+    # duplicates ORDER BY columns when a composite primary key is present,
+    # causing: "A column has been specified more than once in the order by list."
+    # Using reorder() clears any existing order before applying ours, preventing duplication.
+
+    def first(limit = nil)
+      limit ? reorder(pk_order(:asc)).limit(limit).to_a : reorder(pk_order(:asc)).limit(1).first
+    end
+
+    def last(limit = nil)
+      limit ? reorder(pk_order(:desc)).first(limit) : reorder(pk_order(:desc)).first
+    end
+
+    private
+
+    # Builds an ordered hash from the model's primary key columns.
+    # Works for both single and composite primary keys.
+    # direction: :asc for first, :desc for last
+    def pk_order(direction)
+      Array(primary_key).each_with_object({}) { |col, h| h[col.to_sym] = direction }
+    end
   end
 
-  
 end

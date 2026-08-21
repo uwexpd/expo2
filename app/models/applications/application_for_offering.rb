@@ -1225,16 +1225,12 @@ class ApplicationForOffering < ApplicationRecord
 
   def self.mge_awardees
     Rails.cache.fetch('mge_awardees', :expires_in => 2.weeks) do
-      # TODO: active relation [OR] doesn't work here. See if rails 6 fix this: https://github.com/rails/rails/issues/24055
-      # mge_awarded_ids = ApplicationForOffering.joins(:offering).where("unit_id=2").awardees.pluck(:id)
-      # siah_awarded_ids = ApplicationForOffering.joins(:offering).where("offerings.name = 'Summer Institute in the Arts and Humanities'").current_status_awardees.pluck(:id)
-      # awarded_ids = mge_awarded_ids + siah_awarded_ids
-      # ApplicationForOffering.where(id: awarded_ids)
       ApplicationForOffering
         .joins(offering: :quarter_offered)
         .where("TRIM(offerings.name) IN (?)", [
           'Mary Gates Research Scholarship',
-          'Mary Gates Leadership Scholarship'
+          'Mary Gates Leadership Scholarship',
+          'Mary Gates Community Investment Scholarship'
         ])
         .where("quarters.year >= ?", 3.years.ago.year).awardees
     end
