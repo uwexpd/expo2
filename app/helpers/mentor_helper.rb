@@ -10,7 +10,7 @@ module MentorHelper
     when true
       "</b>Please note that #{@mentee.firstname} has waived #{@mentee.his_her} right to view the letter that you provide here and #{@mentee.he_she} will not be able to read your letter once submitted.</b>"
     else
-      "<b>Please note that #{@mentee.firstname} has <strong>not</strong> waived #{@mentee.his_her} right to view the letter that your provide here and #{@mentee.he_she} will be able to view a copy of this letter if #{@mentee.he_she} desires.</b>"
+      "<b>Please note that #{@mentee.firstname} has <strong>not</strong> waived #{@mentee.his_her} right to view the letter that you provide here and #{@mentee.he_she} will be able to view a copy of this letter if #{@mentee.he_she} request.</b>"
     end
     
     released_access_note = case @mentee_application.mentor_access_ok
