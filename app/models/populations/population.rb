@@ -208,7 +208,7 @@ class Population < ApplicationRecord
     # Use update_columns to update multiple attributes in one DB query without callbacks
     update_columns(
       objects_generated_at: Time.current,
-      objects_count: objects.size
+      objects_count: results.size
     )
 
     results

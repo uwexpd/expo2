@@ -9,8 +9,10 @@ class GivepulseCourse < GivepulseBase
               :givepulse_organizer_id, :faculty_id, :faculty2_id, :faculty3_id
 
   CAMPUS_IDS_BY_ENV = {
-    production: { 1479590 => 0, 1479577 => 1, 1479583 => 1, 1480803 => 2, 1968908 => 2},
-    sandbox:      { 792610  => 0, 792620  => 1, 788280 => 1, 811201 => 2,  921544 => 2}
+    # production: { 1479590 => 0, 1479577 => 1, 1480803 => 2 },
+    # sandbox:      { 792610  => 0, 792620  => 1, 811201 => 2 }
+    production: { 1479590 => 0, 1479577 => 1, 1479583 => 1, 2172600 => 1, 1480803 => 2, 1968908 => 2 },
+    sandbox:      { 792610  => 0, 792620  => 1, 788280 => 1, 945067 => 1, 811201 => 2,  921544 => 2}
   }.freeze
 
   # Example Use: GivepulseCourse.where(term: 'Autumn 2025' , crn: 'BHS496A')
@@ -61,8 +63,8 @@ class GivepulseCourse < GivepulseBase
         { "81445" => admin_minor, "81773" => admin_dir_release, "82030" => course_section, "82591" => admin_campus, "82592" => admin_class_standing, "82593" => admin_student_major, "82641" => Date.current.to_s }
       end
 
-  	  post_params = {
-  	  	user: {
+      post_params = {
+        user: {
          first_name: student.firstname,
          last_name: student.lastname,
          email: student.email,
@@ -70,27 +72,27 @@ class GivepulseCourse < GivepulseBase
          administrative_fields: admin_fields,
          group_id: self.group_id,         
         }
-  	  }
+      }
 
       # Set is_private only if not in GivePulse
       unless givepulse_emails.include?(email)
         post_params[:user][:is_private] = 1
       end
 
-  	  # Rails.logger.debug("Debug post_params => #{post_params}")
-  	  begin  	  	
+      # Rails.logger.debug("Debug post_params => #{post_params}")
+      begin
         response = GivepulseCourse.request_api("/users", post_params, method: :post)
-  	  	response_body = JSON.parse(response.body)
-  	  	# Rails.logger.debug("Sync Students Debug response=> #{response}")
-    		if response.code.to_i == 200 || response_body["updated"] == true
-    			Rails.logger.info("Successfully synced student with ID: #{response_body['user_id']}")
-    		else
-    			Rails.logger.error("Failed to sync student #{student.email}. Response code: #{response.code}, Response body: #{response.body}")
-    		end
-  	  rescue StandardError => e
-  	    Rails.logger.error("Exception occurred while syncing student #{student.email}: #{e.message}")
-  	  end      
-	  end
+        response_body = JSON.parse(response.body)
+        # Rails.logger.debug("Sync Students Debug response => #{response}")
+        if response.code.to_i == 200 || response_body["updated"] == true
+          Rails.logger.info("Successfully synced student with ID: #{response_body['user_id']}")
+        else
+          Rails.logger.error("Failed to sync student #{student.email}. Response code: #{response.code}, Response body: #{response.body}")
+        end
+      rescue StandardError => e
+        Rails.logger.error("Exception occurred while syncing student #{student.email}: #{e.message}")
+      end
+    end
 
     # 2. Find and remove droppers
     droppers = givepulse_students.reject do |gp_user|
@@ -174,8 +176,104 @@ class GivepulseCourse < GivepulseBase
     end
   end
 
+  # Add an entire course roster to GivePulse.
+  #
+  # For each student, create or update the user via POST /users.
+  # Passing group_id is sufficient to add the student to the course group —
+  # a separate /courseStudent call is not needed.
+  #
+  # Students missing an email are skipped and logged.
+  # crn and term are taken from the course instance.
+  #
+  # @param students [Array<Student>] roster from sdb_course.all_enrollees
+  # @param course_section [String, nil] optional cross-list section label
+  # @return [Hash] { added: Integer, skipped: Integer }
+  #
+  # Example:
+  #   course = GivepulseCourse.where(term: 'Spring 2026', crn: 'B ENGR 496 B').first
+  #   course.add_students(sdb_course.all_enrollees, "B")
+  def add_students(students, course_section = nil)
+    added   = 0
+    skipped = 0
+
+    # Fetch existing GivePulse members once to determine is_private
+    givepulse_students = self.givepulse_course_students || []
+    givepulse_emails   = givepulse_students.map { |u| u.email&.downcase }.compact
+
+    Array(students).each do |student|
+      if student.email.blank?
+        Rails.logger.warn("Skipping student (student_no: #{student.student_no}) — no email on file.")
+        skipped += 1
+        next
+      end
+
+      begin
+        admin_minor          = student.sdb.age < 18 ? "Yes" : "No"
+        admin_dir_release    = student.dir_release ? "Yes" : "No"
+        admin_campus         = student.major_branch_list rescue ''
+        admin_class_standing = student.sdb.class_standing_description(show_upcoming_graduation: true) rescue ''
+        admin_student_major  = student.sdb.majors_list(true, ", ") rescue ''
+
+        admin_fields = if Rails.env.production?
+          { "236072" => admin_minor, "236073" => admin_dir_release, "239467" => course_section,
+            "268083" => admin_campus, "268084" => admin_class_standing, "268085" => admin_student_major,
+            "276190" => Date.current.to_s }
+        else
+          { "81445" => admin_minor, "81773" => admin_dir_release, "82030" => course_section,
+            "82591" => admin_campus, "82592" => admin_class_standing, "82593" => admin_student_major,
+            "82641" => Date.current.to_s }
+        end
+
+        user_params = {
+          user: {
+            first_name:            student.firstname,
+            last_name:             student.lastname,
+            email:                 student.email,
+            administrative_fields: admin_fields,
+            group_id:              self.group_id
+          }
+        }
+
+        email = student.email.downcase
+
+        # Only mark as private if the user doesn't already exist in GivePulse
+        unless givepulse_emails.include?(email)
+          user_params[:user][:is_private] = 1
+        end
+
+        user_response = GivepulseCourse.request_api("/users", user_params, method: :post)
+
+        if user_response.is_a?(Hash)
+          Rails.logger.error("Failed to add student #{student.email}. Error: #{user_response[:error] || user_response}")
+          skipped += 1
+          next
+        end
+
+        user_response_body = JSON.parse(user_response.body)
+
+        unless user_response.code.to_i == 200 || user_response_body["updated"] == true
+          Rails.logger.error("Failed to add student #{student.email}. Code: #{user_response.code}, Body: #{user_response.body}")
+          skipped += 1
+          next
+        end
+
+        Rails.logger.info("Successfully added #{student.email} to course #{self.crn} (user_id: #{user_response_body['user_id']})")
+        added += 1
+
+      rescue StandardError => e
+        Rails.logger.error("Exception adding student #{student.email}: #{e.message}")
+        skipped += 1
+      end
+    end
+
+    Rails.logger.info("add_students complete for #{self.crn} — added: #{added}, skipped: #{skipped}")
+    { added: added, skipped: skipped }
+  end
+
+
+
   def quarter
-  	# Quarter.find_by_abbrev(self.term)
+    # Quarter.find_by_abbrev(self.term)
     # To be compatiable with Canvas: Term: "Summer 2025"
     Quarter.find_by_title(self.term)
   end
@@ -355,20 +453,18 @@ class GivepulseCourse < GivepulseBase
   # e.g. to add Bothell campus E courses for AUT 2026: b_courses = Quarter.find(414).service_courses.select{|sc|sc.course_branch==1 && sc.joint_listed_with.blank? }
   # b_courses.each{|bc| GivepulseCourse.add_course(bc) }
   # Add course to GivePulse by SDB course object
-  def self.add_course(course)
-    
-    # crn term subj_code crse_num crse_title crse_desc section cross_list_code 
-    # dept_code crse_dept_desc crse_coll_code crse_coll_desc
-    # class_time: class_type class_status sl_type 
+  def self.add_course(course, parent_givepulse_id = nil)
+
+    parent_givepulse_id ||= GivepulseCourse.parent_givepulse_id_from_course_branch(course.course_branch)
 
     post_params = {
       term: course.quarter.title,
       crn: course.short_title,
-      crse_title: course.course_title_long,
+      crse_title: [course.short_title, course.course_title_long, course.quarter.title].join(" "),
       crse_num: course.course_no,
       subj_code: course.dept_abbrev.strip,
       crse_desc: course.course_description,
-      parent_givepulse_id: GivepulseCourse.parent_givepulse_id_from_course_branch(course.course_branch),
+      parent_givepulse_id: parent_givepulse_id,
       section: course.section_id.strip,
       crse_dept_desc: course.department.name,
       crse_coll_desc: course.course_college,
@@ -386,13 +482,44 @@ class GivepulseCourse < GivepulseBase
       if response.code.to_i == 200 || response_body['total'].to_i > 0
         group_id = response_body.dig('results', 'group_id') || response_body['group_id']
         Rails.logger.info("Successfully created course#{group_id ? " ID: #{group_id}" : ""}")
+        true
       else
         Rails.logger.error("Failed to add course. Response code: #{response.code}, Response body: #{body}")
       end
     rescue StandardError => e
       Rails.logger.error("Exception occurred while creating course: #{e.class}: #{e.message}")
     end
-  end  
+  end
+
+  # Updates this GivePulse course using PUT /course/:id.
+  # Example: givepulse_course.update(crse_title: "Machine Learning")
+  def update(attributes)
+    unless id.present?
+      Rails.logger.error("Cannot update GivePulse course without a course ID.")
+      return false
+    end
+
+    response = self.class.request_api("/course/#{id}", attributes, method: :put)
+    body = response.body.to_s
+    response_body = JSON.parse(body)
+
+    if response['updated']==1 || (response.code.to_i == 200 && response_body["error"].to_i.zero?)
+      attributes.each do |key, value|
+        public_send("#{key}=", value) if respond_to?("#{key}=")
+      end
+      Rails.logger.info("Successfully updated GivePulse course #{id}.")
+      true
+    else
+      Rails.logger.error("Failed to update GivePulse course #{id}. Code: #{response.code}, Body: #{body}")
+      false
+    end
+  rescue JSON::ParserError => e
+    Rails.logger.error("Invalid JSON returned while updating GivePulse course #{id}: #{e.message}")
+    false
+  rescue StandardError => e
+    Rails.logger.error("Exception occurred while updating GivePulse course #{id}: #{e.class}: #{e.message}")
+    false
+  end
 
 
 end
