@@ -3,7 +3,7 @@ ActiveAdmin.register ResearchOpportunity do
   config.sort_order = 'submitted_at_desc'
   menu parent: 'Databases', priority: 30, label: "<i class='mi padding_right'>school</i> Research Opportunities".html_safe
 
-  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit, :availability, :social, :social_if_yes, :eligible_for_credit
+  permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit, :availability, :social, :social_if_yes, :eligible_for_credit, :how_to_apply
   
   member_action :email_queue, :method => :put do
     @opportunity = ResearchOpportunity.find(params[:id])
@@ -51,7 +51,8 @@ ActiveAdmin.register ResearchOpportunity do
           row ('Department/Other Affiliation'){|opportunity| opportunity.department}
           row ('Description'){|opportunity| raw(opportunity.description)}
           row ('Student Learning Benefit'){|opportunity| raw(opportunity.learning_benefit)}
-          row ('Minimum Requirements'){|opportunity| raw(opportunity.requirements) } 
+          row ('Minimum Requirements'){|opportunity| raw(opportunity.requirements) }
+          row ('How To Apply'){|opportunity| raw(opportunity.how_to_apply) }
         end
       end
       tab 'Area & More' do
@@ -96,7 +97,8 @@ ActiveAdmin.register ResearchOpportunity do
           f.input :department, label: 'Department/Other Affiliation', required: true    
           f.input :description, label: 'Description', required: true, :input_html => { class: "tinymce", rows: 15}
           f.input :learning_benefit, label: 'Student Learning Benefit', required: true, :input_html => { class: "tinymce", rows: 15}
-          f.input :requirements, label: 'Minimum Requirements', required: true, :input_html => { class: "tinymce", rows: 15 }          
+          f.input :requirements, label: 'Minimum Requirements', required: true, :input_html => { class: "tinymce", rows: 15 }
+          f.input :how_to_apply, label: 'How To Apply', required: true, :input_html => { class: "tinymce", rows: 15 }, hint: "Indicate how students can apply for the position if interested (e.g. by contacting you via email, by filling out a form). Also include any required materials (CV or resume, for example)."
         end
       end
       tab 'area & more' do

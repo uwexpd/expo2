@@ -47,6 +47,11 @@
     	<label for="requirements">Minimum Requirements<abbr title="required">*</abbr></label>
     </div>
     <div class="input-field col s12">
+      <%= f.text_area :how_to_apply, id: "how_to_apply", class: "materialize-textarea validate", required:"", 'aria-required': "true" %>
+      <label for="description">How To Apply<abbr title="required">*</abbr></label>
+      <span class="helper-text">Indicate how students can apply for the position if interested (e.g. by contacting you via email, by filling out a form). Also include any required materials (CV or resume, for example).</span>
+    </div>
+    <div class="input-field col s12">
     	<%= f.text_field :end_date, id: "end_date", class: "datepicker validate", required:"", 'aria-required': "true" %>
     	<label for="end_date">Auto-remove Date<abbr title="required">*</abbr></label>
       <span class="helper-text" data-error="Auto-remove date needs to be input or can't be in the past" data-success=""></span>

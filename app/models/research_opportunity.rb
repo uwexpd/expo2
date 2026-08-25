@@ -6,6 +6,7 @@ class ResearchOpportunity < ApplicationRecord
   validates_format_of   :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i  
   validates_presence_of :end_date, :message => "(auto-remove date) can't be blank."
   validate :end_date_cannot_be_in_the_past, if: :require_validations?
+  validates :how_to_apply, presence: true, unless: :active?
   
   scope :active, -> { where('active = 1 AND (ISNULL(end_date) OR end_date > CURDATE())')}
   scope :expired, -> { where('active = 1 AND (ISNULL(end_date) OR end_date <= CURDATE())') }

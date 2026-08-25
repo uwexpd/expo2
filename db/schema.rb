@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_06_08_194211) do
+ActiveRecord::Schema.define(version: 2026_08_24_222914) do
 
   create_table "academic_departments", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
     t.string "name"
@@ -2510,6 +2510,7 @@ ActiveRecord::Schema.define(version: 2026_06_08_194211) do
     t.boolean "social"
     t.string "social_if_yes"
     t.boolean "eligible_for_credit"
+    t.text "how_to_apply"
   end
 
   create_table "rights", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
