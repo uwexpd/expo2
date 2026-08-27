@@ -2,7 +2,7 @@
 
 set :stage,    :production
 set :deploy_to, '/usr/local/apps/expo'
-set :branch,   'upgrade/ruby3.0.6-rails6.1'
+set :branch, 'master' #'upgrade/ruby3.0.6-rails6.1'
 
 set :keep_releases, 10
 
