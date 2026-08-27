@@ -9,10 +9,11 @@ class GivepulseCourse < GivepulseBase
               :givepulse_organizer_id, :faculty_id, :faculty2_id, :faculty3_id
 
   CAMPUS_IDS_BY_ENV = {
-    # production: { 1479590 => 0, 1479577 => 1, 1480803 => 2 },
-    # sandbox:      { 792610  => 0, 792620  => 1, 811201 => 2 }
-    production: { 1479590 => 0, 1479577 => 1, 1479583 => 1, 2172600 => 1, 1480803 => 2, 1968908 => 2 },
-    sandbox:      { 792610  => 0, 792620  => 1, 788280 => 1, 945067 => 1, 811201 => 2,  921544 => 2}
+    # Seattle Sync groups: Seattle CEC, E Designated Courses
+    # Bothell Sync groups: Bothell CEC, School of Nursing & Health Studies, School of Educational Studies - Bothell
+    # Tacoma  Sync gorups: Tacoma CEC, School of Education
+    production: { 1479590 => 0, 2173735 => 0, 1479577 => 1, 1479583 => 1, 2172600 => 1, 1480803 => 2, 1968908 => 2 },
+    sandbox:      { 792610  => 0, 948128 => 0, 792620  => 1, 788280 => 1, 945067 => 1, 811201 => 2,  921544 => 2}
   }.freeze
 
   # Example Use: GivepulseCourse.where(term: 'Autumn 2025' , crn: 'BHS496A')
@@ -477,7 +478,7 @@ class GivepulseCourse < GivepulseBase
       body = response.body.to_s
       response_body = JSON.parse(body) rescue {}
 
-      Rails.logger.debug("GivePulse response class=#{response.class} code=#{response.code} body=#{body}")
+      # Rails.logger.debug("GivePulse response class=#{response.class} code=#{response.code} body=#{body}")
 
       if response.code.to_i == 200 || response_body['total'].to_i > 0
         group_id = response_body.dig('results', 'group_id') || response_body['group_id']
@@ -485,6 +486,7 @@ class GivepulseCourse < GivepulseBase
         true
       else
         Rails.logger.error("Failed to add course. Response code: #{response.code}, Response body: #{body}")
+        false
       end
     rescue StandardError => e
       Rails.logger.error("Exception occurred while creating course: #{e.class}: #{e.message}")
