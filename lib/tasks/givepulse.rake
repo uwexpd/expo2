@@ -1,9 +1,14 @@
+require "timeout"
+
 desc "Daily sync Community Engaged course roster to UW GivePuse."
 task :givepulse_roster_sync => :environment do
   start_time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
   puts "=== #{start_time} : START givepulse_roster_sync ==="
   
   sync_quarters = [Quarter.current_quarter, Quarter.current_quarter.next]
+  # E Designated Courses are tracking-only and are imported once, not daily.
+  excluded_group_ids = Rails.env.production? ? ["2173735"] : ["948128"]
+
 
   puts "#{sync_quarters.collect(&:title)} Course roster sync starts..."
 
@@ -14,9 +19,9 @@ task :givepulse_roster_sync => :environment do
   if token.blank?
     puts "Missing #{token_key} in ENV. Aborting."
     exit 1
-  else
-    token_preview = token[0..8] + "..."
-    puts "#{token_key} is present: #{token_preview} (length=#{token.length})"
+  # else
+  #   token_preview = token[0..8] + "..."
+  #   puts "#{token_key} is present: #{token_preview} (length=#{token.length})"
   end
   
   # Get GP CE courses with sync quarters:
@@ -24,28 +29,59 @@ task :givepulse_roster_sync => :environment do
       puts "Running GivepulseCourse.where(term: #{quarter.title.inspect})"
       ce_courses = GivepulseCourse.where(term: quarter.title)
 
-      if ce_courses.blank?
-          puts "No courses found for #{quarter.title}"
-      else
-          puts "Found #{ce_courses.size} courses: #{ce_courses.collect(&:crn).join(', ')} in #{quarter.title}"
-
-          ce_courses.each do |gp_course|
-
-            if gp_course.course.blank?
-              puts "Skipping #{gp_course.crn} (group id: #{gp_course.group_id}): no associated SDB course found."
-              next
-            end
-            gp_course.sync_course_students
-            gp_course.sync_course_instructors
-            puts "Sucessfully synced #{gp_course.crn} #{gp_course.course_students.size} students, " \
-            "instructors: #{gp_course.instructors.flatten.collect(&:fullname).uniq}"
-          end
+      if ce_courses.none?
+        puts "No courses found for #{quarter.title}"
+        next
       end
-  end
 
-  end_time = Time.now.strftime("%Y-%m-%d %H:%M:%S")
-  puts "=== #{end_time} : END givepulse_roster_sync ==="
+      puts "Found #{ce_courses.count} courses in #{quarter.title}:  #{ce_courses.collect(&:crn).join(', ')}"
+
+      ce_courses.each do |gp_course|
+        crn = gp_course.crn.presence || "(blank CRN)"        
+        
+        if excluded_group_ids.include?(gp_course.parent_givepulse_id.to_s)
+          puts "Skipping #{crn} (group id: #{gp_course.group_id}): E Designated Courses tracking-only group."
+          next
+        end
+
+        unless gp_course.course.present?
+          puts "Skipping #{crn} (group id: #{gp_course.group_id}): no associated SDB course found."
+          next
+        end
+
+        begin
+          puts "Sync starting #{crn} (group id: #{gp_course.group_id}): students"
+          Timeout.timeout(120, GivepulseSyncTimeout) do
+            gp_course.sync_course_students
+          end
+
+          puts "Sync finished #{crn} (group id: #{gp_course.group_id}): students; starting instructors"
+          Timeout.timeout(120, GivepulseSyncTimeout) do
+            gp_course.sync_course_instructors
+          end
+
+          student_count = gp_course.course_students.count
+          instructors = gp_course.instructors.flatten.filter_map(&:fullname).uniq
+          puts "Successfully synced #{crn}: #{student_count} students, instructors: #{instructors}"
+          #puts "Successfully synced #{crn}: students and instructors"
+        rescue GivepulseSyncTimeout => e
+          Rails.logger.error("GivePulse sync timed out for #{crn} (group id: #{gp_course.group_id}): #{e.message}")
+          puts "ERROR: timed out syncing #{crn} (group id: #{gp_course.group_id}); continuing."
+        rescue StandardError => e
+          Rails.logger.error(
+            "GivePulse sync failed for #{crn} (group id: #{gp_course.group_id}): " \
+            "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
+          )
+          puts "ERROR: failed syncing #{crn} (group id: #{gp_course.group_id}): #{e.class}: #{e.message}; continuing."
+        end
+      end
+    end
+
+  puts "=== #{Time.current.strftime('%Y-%m-%d %H:%M:%S')} : END givepulse_roster_sync ==="
+
 end
+
+class GivepulseSyncTimeout < Timeout::Error; end
 
 
 desc "Quarterly sync all users admin fields to UW Givepulse in batches."

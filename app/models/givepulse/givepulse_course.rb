@@ -13,7 +13,7 @@ class GivepulseCourse < GivepulseBase
     # Bothell Sync groups: Bothell CEC, School of Nursing & Health Studies, School of Educational Studies - Bothell
     # Tacoma  Sync gorups: Tacoma CEC, School of Education
     production: { 1479590 => 0, 2173735 => 0, 1479577 => 1, 1479583 => 1, 2172600 => 1, 1480803 => 2, 1968908 => 2 },
-    sandbox:      { 792610  => 0, 948128 => 0, 792620  => 1, 788280 => 1, 945067 => 1, 811201 => 2,  921544 => 2}
+    sandbox:      { 792610 => 0, 948128 => 0, 792620  => 1, 788280 => 1, 945067 => 1, 811201 => 2,  921544 => 2}
   }.freeze
 
   # Example Use: GivepulseCourse.where(term: 'Autumn 2025' , crn: 'BHS496A')
@@ -33,7 +33,8 @@ class GivepulseCourse < GivepulseBase
   # Handle course droppers and mismatch. 
   def sync_course_students
     # Normalize for roster email comparison
-    sdb_emails = self.course_students.to_a.map do |entry|
+    roster_entries = self.course_students.to_a
+    sdb_emails = roster_entries.map do |entry|
       student = entry.is_a?(Array) ? entry.first : entry
       student.email&.downcase
     end.compact
@@ -41,7 +42,7 @@ class GivepulseCourse < GivepulseBase
     givepulse_emails = givepulse_students.map { |u| u.email&.downcase }.compact
     
     # 1. Sync current students
-    self.course_students.each do |entry|
+    roster_entries.each do |entry|
       if entry.is_a?(Array)
         student, source_course = entry
         course_section = "#{source_course.short_title}"
@@ -53,11 +54,12 @@ class GivepulseCourse < GivepulseBase
       email = student.email&.downcase
       next unless email
 
-      admin_minor = student.sdb.age < 18 ? "Yes" : "No"
+      sdb_student = student.sdb
+      admin_minor = sdb_student.age < 18 ? "Yes" : "No"
       admin_dir_release = student.dir_release ? "Yes" : "No"
       admin_campus = student.major_branch_list rescue ''
-      admin_class_standing = student.sdb.class_standing_description(show_upcoming_graduation: true) rescue ''
-      admin_student_major = student.sdb.majors_list(true, ", ") rescue ''
+      admin_class_standing = sdb_student.class_standing_description(show_upcoming_graduation: true) rescue ''
+      admin_student_major = sdb_student.majors_list(true, ", ") rescue ''
       admin_fields = if Rails.env.production?
         { "236072" => admin_minor, "236073" => admin_dir_release, "239467" => course_section, "268083" => admin_campus, "268084" => admin_class_standing, "268085" => admin_student_major, "276190" => Date.current.to_s }
       else
@@ -209,11 +211,12 @@ class GivepulseCourse < GivepulseBase
       end
 
       begin
-        admin_minor          = student.sdb.age < 18 ? "Yes" : "No"
+        sdb_student          = student.sdb
+        admin_minor          = sdb_student.age < 18 ? "Yes" : "No"
         admin_dir_release    = student.dir_release ? "Yes" : "No"
         admin_campus         = student.major_branch_list rescue ''
-        admin_class_standing = student.sdb.class_standing_description(show_upcoming_graduation: true) rescue ''
-        admin_student_major  = student.sdb.majors_list(true, ", ") rescue ''
+        admin_class_standing = sdb_student.class_standing_description(show_upcoming_graduation: true) rescue ''
+        admin_student_major  = sdb_student.majors_list(true, ", ") rescue ''
 
         admin_fields = if Rails.env.production?
           { "236072" => admin_minor, "236073" => admin_dir_release, "239467" => course_section,
