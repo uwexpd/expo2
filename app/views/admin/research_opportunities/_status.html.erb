@@ -1,25 +1,28 @@
 <div class="information">
-	<span class="smaller light"><i class="mi uw_purple">info_outline</i> Switching active/inactive will queue an email notification to faculty</span>
+  <span class="smaller light">
+    <i class="mi uw_purple">info_outline</i>
+    Switching active/inactive will queue an email notification to faculty
+  </span>
 </div>
 
-<table class='borderless'>
-	<tr>
-		<th>Active</th>
-		<td>
-			<div class="toggle-bool-switches-container">
-				<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
-				<%= link_to({:action => :email_queue, :id => opportunity.id}, method: :put) do %>
-					<span id="toggle-research_opportunity-<%= opportunity.id %>-active" 
-						class="toggle-bool-switch <%= "on" if opportunity.active? %> notify-success" data-model="research_opportunity" 
-						data-object_id="<%= opportunity.id %>" 
-						data-field="active" <%= "data-value=true" if opportunity.active? %> 
-						data-url="/expo/admin/research_opportunities/<%= opportunity.id %>" 
-						data-success_message="Update research opportunity status successfully!">
-				</span>
-				<% end %>
-			</div>
-		</td>
-	</tr>	
-</table>  
-    
+<table class="borderless">
+  <tr>
+    <th>Active</th>
+    <td>
+      <div class="toggle-bool-switches-container">
+        <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
+        <span id="toggle-research_opportunity-<%= opportunity.id %>-active"
+              class="toggle-bool-switch <%= 'on' if opportunity.active? %>"
+              data-email-queue-toggle="true"
+              data-model="research_opportunity"
+              data-object_id="<%= opportunity.id %>"
+              data-field="active"
+              data-value="<%= opportunity.active? %>"
+              data-url="<%= email_queue_admin_research_opportunity_path(opportunity) %>"
+              data-success_message="Status updated and email queued.">
+        </span>
+      </div>
+    </td>
+  </tr>
+</table>

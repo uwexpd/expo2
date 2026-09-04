@@ -455,11 +455,21 @@ class GivepulseCourse < GivepulseBase
 
   # We can run this in console or setup a rails task to add quarter's E coruses (take away cross-listed course for now to simplyize)
   # e.g. to add Bothell campus E courses for AUT 2026: b_courses = Quarter.find(414).service_courses.select{|sc|sc.course_branch==1 && sc.joint_listed_with.blank? }
-  # b_courses.each{|bc| GivepulseCourse.add_course(bc) }
+  # b_courses.each{|c| GivepulseCourse.add_course(c) }
   # Add course to GivePulse by SDB course object
+
+  ### E.g. This is the list from Seattle campus, created manually ###
+  # seattle_e_designated_courses = [
+  #   "D HYG 595 A", "ENGL 471 A", "ENGL 491 B", "FISH 498 A",
+  #   "GEN ST 170 A", "GEOG 331 A", "L ARCH 404 A", "L ARCH 499 A",
+  #   "NCLIN 418 A", "NCLIN 418 AD", "NCLIN 418 AE", "NCLIN 418 AF",
+  #   "NCLIN 418 AG", "NCLIN 418 AH", "NCLIN 418 AI", "NCLIN 418 AJ",
+  #   "TRAIN 202 E" ]
+  # ce_courses = Quarter.find(414).service_courses.select { |sc| sc.course_branch == 0 && seattle_e_designated_courses.include?(sc.short_title)}
+
   def self.add_course(course, parent_givepulse_id = nil)
 
-    parent_givepulse_id ||= GivepulseCourse.parent_givepulse_id_from_course_branch(course.course_branch)
+    parent_givepulse_id ||= self.class.parent_givepulse_id_from_course_branch(course.course_branch)
 
     post_params = {
       term: course.quarter.title,
@@ -477,7 +487,7 @@ class GivepulseCourse < GivepulseBase
     }
 
     begin
-      response = GivepulseCourse.request_api('/course', post_params, method: :post)
+      response = self.class.request_api('/course', post_params, method: :post)
       body = response.body.to_s
       response_body = JSON.parse(body) rescue {}
 
@@ -523,6 +533,34 @@ class GivepulseCourse < GivepulseBase
     false
   rescue StandardError => e
     Rails.logger.error("Exception occurred while updating GivePulse course #{id}: #{e.class}: #{e.message}")
+    false
+  end
+
+  # Deletes this GivePulse course using DELETE /course.
+  # GivePulse requires both the course ID and delete: "yes" to confirm deletion.
+  # Example: givepulse_course.delete
+  def delete
+    unless id.present?
+      Rails.logger.error("Cannot delete GivePulse course without a course ID.")
+      return false
+    end
+
+    response = self.class.request_api("/course", { id: id, delete: "yes" }, method: :delete)
+    body = response.body.to_s
+    response_body = JSON.parse(body)
+
+    if response.code.to_i == 200 && response_body["error"].to_i.zero?
+      Rails.logger.info("Successfully deleted GivePulse course #{id}.")
+      true
+    else
+      Rails.logger.error("Failed to delete GivePulse course #{id}. Code: #{response.code}, Body: #{body}")
+      false
+    end
+  rescue JSON::ParserError => e
+    Rails.logger.error("Invalid JSON returned while deleting GivePulse course #{id}: #{e.message}")
+    false
+  rescue StandardError => e
+    Rails.logger.error("Exception occurred while deleting GivePulse course #{id}: #{e.class}: #{e.message}")
     false
   end
 

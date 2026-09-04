@@ -5,22 +5,37 @@ ActiveAdmin.register ResearchOpportunity do
 
   permit_params :name, :email, :department, :title, :description, :requirements, :research_area1, :research_area2, :research_area3, :research_area4, :end_date, :active, :removed, :submitted, :submitted_at, :submitted_person_id, :paid, :work_study, :location, :learning_benefit, :availability, :social, :social_if_yes, :eligible_for_credit, :how_to_apply
   
-  member_action :email_queue, :method => :put do
-    @opportunity = ResearchOpportunity.find(params[:id])
-    @opportunity.reload
-    # logger.debug "Debug active => #{@opportunity.active?}"
-    template_name = @opportunity.active? ? "research opportunity activate notification for faulty" : "research opportunity deactivate notification for faulty"
-    faculty_template = EmailTemplate.find_by_name(template_name)
-    link = "https://#{Rails.configuration.constants['base_app_url']}/opportunities/submit/#{@opportunity.id}"
+  member_action :email_queue, method: [:put, :patch] do
+    opportunity = ResearchOpportunity.find(params[:id])
 
-    if faculty_template
-      EmailQueue.queue(nil, faculty_template.create_email_to(@opportunity, link, @opportunity.email).message)
-    else
-      redirect_to admin_research_opportunity_path(@opportunity.id), notice: "Something went wrong and not able to queue email to faculty"
+    # The toggle sends: research_opportunity[active]=true/false
+    active_value = params.dig(:research_opportunity, :active)
+    opportunity.active = ActiveModel::Type::Boolean.new.cast(active_value)
+    opportunity.require_validations = true
+
+    unless opportunity.save
+      render json: { success: false, error: opportunity.errors.full_messages.to_sentence },
+             status: :unprocessable_entity
+      next
     end
 
-    redirect_to admin_research_opportunity_path(@opportunity.id), notice: "Successfully queued an e-mail to  #{@opportunity.name}"
-  end  
+    template_name = opportunity.active? ?
+      "research opportunity activate notification for faulty" :
+      "research opportunity deactivate notification for faulty"
+    faculty_template = EmailTemplate.find_by_name(template_name)
+
+    unless faculty_template
+      render json: { success: false, error: "Status was updated, but the email template was not found." },
+             status: :unprocessable_entity
+      next
+    end
+
+    link = "https://#{Rails.configuration.constants['base_app_url']}/opportunities/submit/#{opportunity.id}"
+    message = faculty_template.create_email_to(opportunity, link, opportunity.email).message
+    EmailQueue.queue(nil, message)
+
+    render json: { success: true, message: "Status updated and email queued." }
+  end
 
   index do
      column ('Title') do |opportunity| 
@@ -65,6 +80,7 @@ ActiveAdmin.register ResearchOpportunity do
             row :submitted
             row ('Submitted At'){|opportunity| opportunity.submitted_at}
             row ('Submitted Person'){|opportunity| opportunity.submitted_person}
+            row ('End Date (auto-remove)'){|opportunity|opportunity.end_date }
             row :paid
             row :work_study
             row :eligible_for_credit

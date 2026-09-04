@@ -227,3 +227,45 @@ $(document).ready(function() {
     }
   });
 });
+
+document.addEventListener('click', function (event) {
+  const toggle = event.target.closest('[data-email-queue-toggle]');
+  if (!toggle) return;
+
+  // Runs before the plugin's normal jQuery click handler.
+  event.preventDefault();
+  event.stopImmediatePropagation();
+
+  if (toggle.dataset.saving === 'true') return;
+  toggle.dataset.saving = 'true';
+
+  const active = !toggle.classList.contains('on');
+  const token = document.querySelector('meta[name="csrf-token"]')?.content;
+  const body = new URLSearchParams({
+    'research_opportunity[active]': String(active)
+  });
+
+  fetch(toggle.dataset.url, {
+    method: 'PATCH',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      'X-CSRF-Token': token
+    },
+    body: body.toString()
+  })
+    .then(async function (response) {
+      const data = await response.json();
+      if (!response.ok || !data.success) throw data;
+
+      toggle.classList.toggle('on', active);
+      toggle.dataset.value = String(active);
+      alert(data.message || 'Status updated and email queued.');
+    })
+    .catch(function (data) {
+      alert(data.error || 'The research opportunity was not updated.');
+    })
+    .finally(function () {
+      delete toggle.dataset.saving;
+    });
+}, true); // capture phase: intercept before the existing toggle plugin
