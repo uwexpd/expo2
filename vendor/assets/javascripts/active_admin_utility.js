@@ -229,7 +229,7 @@ $(document).ready(function() {
 });
 
 document.addEventListener('click', function (event) {
-  const toggle = event.target.closest('[data-email-queue-toggle]');
+  var toggle = event.target.closest('[data-email-queue-toggle]');
   if (!toggle) return;
 
   // Runs before the plugin's normal jQuery click handler.
@@ -239,9 +239,10 @@ document.addEventListener('click', function (event) {
   if (toggle.dataset.saving === 'true') return;
   toggle.dataset.saving = 'true';
 
-  const active = !toggle.classList.contains('on');
-  const token = document.querySelector('meta[name="csrf-token"]')?.content;
-  const body = new URLSearchParams({
+  var active = !toggle.classList.contains('on');
+  var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+  var token = csrfMeta ? csrfMeta.getAttribute('content') : '';
+  var body = new URLSearchParams({
     'research_opportunity[active]': String(active)
   });
 
@@ -254,10 +255,13 @@ document.addEventListener('click', function (event) {
     },
     body: body.toString()
   })
-    .then(async function (response) {
-      const data = await response.json();
-      if (!response.ok || !data.success) throw data;
-
+    .then(function (response) {
+      return response.json().then(function (data) {
+        if (!response.ok || !data.success) throw data;
+        return data;
+      });
+    })
+    .then(function (data) {
       toggle.classList.toggle('on', active);
       toggle.dataset.value = String(active);
       alert(data.message || 'Status updated and email queued.');
@@ -269,3 +273,4 @@ document.addEventListener('click', function (event) {
       delete toggle.dataset.saving;
     });
 }, true); // capture phase: intercept before the existing toggle plugin
+

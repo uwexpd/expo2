@@ -1,6 +1,10 @@
 (function($) {
+  var DEBUG = false;
+
   function log() {
-    if (window.console && console.log) console.log.apply(console, arguments);
+    if (DEBUG && window.console && console.log) {
+      console.log.apply(console, arguments);
+    }
   }
 
   function setStaffPrompt($staff, text) {
