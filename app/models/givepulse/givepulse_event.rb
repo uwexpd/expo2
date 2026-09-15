@@ -5,7 +5,8 @@ class GivepulseEvent < GivepulseBase
 
   PERMITTED_ATTRS = instance_methods(false).grep(/=$/).map { |m| m.to_s.chomp('=') }
 
-   # Simulate ActiveRecord's where method. e.g.: GivepulseEvent.where(group_id: 1479596)
+  # Simulate ActiveRecord's where method. e.g.: GivepulseEvent.where(group_id: 1479596)
+  # We can use find_by to find specific event: GivepulseEvent.find_by(id: 228245)
   def self.where(attributes)
     begin
       results = fetch_all_records('/events', attributes)

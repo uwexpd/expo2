@@ -16,7 +16,7 @@ class GivepulseCourse < GivepulseBase
     sandbox:      { 792610 => 0, 948128 => 0, 792620  => 1, 788280 => 1, 945067 => 1, 811201 => 2,  921544 => 2}
   }.freeze
 
-  # Example Use: GivepulseCourse.where(term: 'Autumn 2025' , crn: 'BHS496A')
+  # Example Use: GivepulseCourse.where(term: 'Autumn 2025' , crn: 'T BIOL 362 A')
   # GivepulseCourse.find_by(group_id: 788279)
   def self.where(attributes)
     begin
@@ -469,7 +469,7 @@ class GivepulseCourse < GivepulseBase
 
   def self.add_course(course, parent_givepulse_id = nil)
 
-    parent_givepulse_id ||= self.class.parent_givepulse_id_from_course_branch(course.course_branch)
+    parent_givepulse_id ||= GivepulseCourse.parent_givepulse_id_from_course_branch(course.course_branch)
 
     post_params = {
       term: course.quarter.title,
@@ -487,7 +487,7 @@ class GivepulseCourse < GivepulseBase
     }
 
     begin
-      response = self.class.request_api('/course', post_params, method: :post)
+      response = GivepulseCourse.request_api('/course', post_params, method: :post)
       body = response.body.to_s
       response_body = JSON.parse(body) rescue {}
 
