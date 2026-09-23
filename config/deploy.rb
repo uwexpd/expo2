@@ -24,7 +24,7 @@ set :linked_files, %w{
 }
 
 # Dirs we want symlinking to shared
-set :linked_dirs, %w{bin log files tmp/pids tmp/cache tmp/sockets vendor/bundle public/system config/certs public/expo/error_images}
+set :linked_dirs, %w{log files tmp/pids tmp/cache tmp/sockets vendor/bundle public/system config/certs public/expo/error_images}
 
 namespace :deploy do
   # Workaround for missing asset manifest bug in Rails assets pipeline

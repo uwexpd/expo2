@@ -179,7 +179,7 @@ class GivepulseCourse < GivepulseBase
     end
   end
 
-  # Add an entire course roster to GivePulse.
+  # Add an entire course roster to GivePulse. Eespecially for mutliple sections
   #
   # For each student, create or update the user via POST /users.
   # Passing group_id is sufficient to add the student to the course group —
@@ -193,8 +193,15 @@ class GivepulseCourse < GivepulseBase
   # @return [Hash] { added: Integer, skipped: Integer }
   #
   # Example:
-  #   course = GivepulseCourse.where(term: 'Spring 2026', crn: 'B ENGR 496 B').first
-  #   course.add_students(sdb_course.all_enrollees, "B")
+  #  sdb_course_a = Course.find_by(
+  #.      ts_year: 2026,
+  #       ts_quarter: 4,
+  #       course_branch: 1,
+  #       course_no: '494',
+  #       dept_abbrev: 'B ENGR',
+  #       section_id: 'A')
+  #   course = GivepulseCourse.find_by(term: 'Spring 2026', crn: 'B ENGR 496 B')
+  #   course.add_students(sdb_course_a.all_enrollees, "B")
   def add_students(students, course_section = nil)
     added   = 0
     skipped = 0
@@ -283,8 +290,15 @@ class GivepulseCourse < GivepulseBase
   end
 
 
-  # Branch/campus code: 0: Seattle, 1: Bothell, 2: Tacoma  
+  # Branch/campus code: 0: Seattle, 1: Bothell, 2: Tacoma
   # [TODO] We should add a custom field for this. There is external_id in GP we could use but it can be updated by admin users so not doing with that.
+  # c = Course.find_by(
+  #   ts_year: 2026,
+  #   ts_quarter: 1,
+  #   course_branch: 2,
+  #   course_no: '320',
+  #   dept_abbrev: 'TGID',
+  #   section_id: 'A')
   def course
     return unless quarter
     

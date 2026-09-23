@@ -2,10 +2,10 @@ development:
     host: ws.api.uw.edu
     cert: expo.uaa.washington.edu.uwca.crt
     key: expo.uaa.washington.edu.key
-    ca_file: uwca.pem
+    ca_file: /etc/ssl/cert.pem
 
 production:
     host: ws.api.uw.edu
     cert: expo.uaa.washington.edu.uwca.crt
     key: expo.uaa.washington.edu.key
-    ca_file: uwca.pem
+    ca_file: <%= File.exist?("/etc/ssl/certs/ca-certificates.crt") ? "/etc/ssl/certs/ca-certificates.crt" : "/etc/ssl/cert.pem" %>

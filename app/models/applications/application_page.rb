@@ -3,7 +3,7 @@ class ApplicationPage < ApplicationRecord
   belongs_to :application_for_offering
   belongs_to :offering_page
   
-  attr_accessor :ordering
+  attr_accessor :ordering, :validation_configuration_errors
   
   delegate :title, :hide_in_admin_view?, :hide_in_reviewer_view?, :to => :offering_page
   
@@ -16,10 +16,19 @@ class ApplicationPage < ApplicationRecord
   end
 
   def passes_validations?
+    errors.clear
+    self.validation_configuration_errors = []
+
     offering_page.questions.each do |question|
       question.add_errors(self)
+    rescue StandardError => e
+      exception_message = e.message.to_s.sub(/\s+for\s+#<.*\z/, "")
+      message = "This page has a configuration error: #{exception_message}"
+      validation_configuration_errors << message
+      errors.add(:base, message)
     end
-    self.errors.empty?
+
+    errors.empty?
   end
 
   def next

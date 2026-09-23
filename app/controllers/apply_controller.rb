@@ -22,7 +22,16 @@ class ApplyController < ApplicationController
   before_action :check_if_contact_info_blank
   before_action :fetch_breadcrumb, except: [:list]
 
-  def index    
+  def index
+    @user_application.errors.clear
+
+    @user_application.pages.each do |page|
+      page.passes_validations?
+
+      page.validation_configuration_errors.each do |message|
+        @user_application.errors.add(:base, "#{page.title}: #{message}")
+      end
+    end
   end
 
   def list

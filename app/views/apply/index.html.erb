@@ -1,5 +1,7 @@
 <% title(@offering.name, (@offering.quarter_offered.title rescue nil)) %>
 
+<%= render "shared/error_messages", target: @user_application %>
+
 <div class="card content">
 	<h5>		
 		<%= link_to @offering.name, apply_path %>

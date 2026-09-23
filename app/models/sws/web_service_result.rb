@@ -184,14 +184,18 @@ class WebServiceResult
       end
     end
   
+    def credential_path(value)
+      File.expand_path(value, Rails.root.join("config/certs"))
+    end
+
     # Attaches our cert, key, and CA file based on the config options in web_services.yml.
     def ssl_options
       check_cert_paths!
       @ssl_options ||= {
-        :cert         => OpenSSL::X509::Certificate.new(File.open("#{Rails.root}/config/certs/#{config_options[:cert]}")),
-        :key          => OpenSSL::PKey::RSA.new(File.open("#{Rails.root}/config/certs/#{config_options[:key]}")),
-        :ca_file      => "#{Rails.root}/config/certs/#{config_options[:ca_file]}",
-        :verify_mode  => OpenSSL::SSL::VERIFY_PEER
+        cert:        OpenSSL::X509::Certificate.new(File.open(credential_path(config_options[:cert]))),
+        key:         OpenSSL::PKey::RSA.new(File.open(credential_path(config_options[:key]))),
+        ca_file:     credential_path(config_options[:ca_file]),
+        verify_mode: OpenSSL::SSL::VERIFY_PEER
       }
     end
   
@@ -241,9 +245,15 @@ class WebServiceResult
 
   # Raises an error if the cert, key, or CA file does not exist.
   def self.check_cert_paths!
-    raise ActiveResource::SSLError, "Could not find cert file" unless File.exist?("#{Rails.root}/config/certs/#{config_options[:cert]}")
-    raise ActiveResource::SSLError, "Could not find key file" unless File.exist?("#{Rails.root}/config/certs/#{config_options[:key]}")
-    raise ActiveResource::SSLError, "Could not find CA file" unless File.exist?("#{Rails.root}/config/certs/#{config_options[:ca_file]}")
+    {
+      cert: "cert file",
+      key: "key file",
+      ca_file: "CA file"
+    }.each do |option, label|
+      unless File.file?(credential_path(config_options[option]))
+        raise ActiveResource::SSLError, "Could not find #{label}"
+      end
+    end
   end
   
   def self.clean_bools(raw_data)
