@@ -281,6 +281,7 @@ class AccountabilityReport < ApplicationRecord
     load_results(:with_departments, force) if force ||  (@results && @results.empty?)
     update_status("Generated on #{generated_at.to_s(:date_at_time12)}") if generated_at
     puts "Calculating final statistics."
+
     stats = {:department => {}}
     default_quarter_hash = {}
     stats[:total] = {
@@ -301,7 +302,7 @@ class AccountabilityReport < ApplicationRecord
     for system_key, quarter_hash in @results
       for quarter_abbrev, activities in quarter_hash
         stats[:total][:quarters][quarter_abbrev][:number_of_students] += 1
-        hours_to_add = activities.collect{|a| a[:number_of_hours] unless a[:duplicate]==true}.compact.sum.to_i
+        hours_to_add = activities.collect{|a| a[:number_of_hours] unless a[:duplicate]==true}.compact.sum { |hours| hours.to_f.finite? ? hours.to_f : 0 }.to_i
         stats[:total][:quarters][quarter_abbrev][:number_of_hours] += hours_to_add
 
         # Add in department info
@@ -323,7 +324,11 @@ class AccountabilityReport < ApplicationRecord
             end 
           end
           stats[:department][activity[:department]][:quarters][quarter_abbrev][:number_of_students] += 1
-          stats[:department][activity[:department]][:quarters][quarter_abbrev][:number_of_hours] += activity[:number_of_hours].to_f
+          
+          hours = activity[:number_of_hours].to_f
+          hours = 0 unless hours.finite?
+          stats[:department][activity[:department]][:quarters][quarter_abbrev][:number_of_hours] += hours
+
           
           stats[:department][activity[:department]][:total] ||= { :students => [] }
           stats[:department][activity[:department]][:total][:students] << system_key
@@ -355,7 +360,7 @@ class AccountabilityReport < ApplicationRecord
         end
       end
     end
-    stats[:total][:number_of_hours] = stats[:total][:quarters].collect{|k,v| v[:number_of_hours]}.sum.to_i
+    stats[:total][:number_of_hours] = stats[:total][:quarters].collect{|k,v| v[:number_of_hours]}.sum { |hours| hours.to_f.finite? ? hours.to_f : 0 }.to_i
     stats[:total][:average_hours_per_student] = stats[:total][:number_of_hours] / stats[:total][:number_of_students].to_f
     stats
   end

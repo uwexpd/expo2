@@ -7,8 +7,8 @@
 #   bundle exec rake givepulse:import_activity_events FILE=tmp/Collab_Data_Test.xlsx
 #
 # Preview or import one spreadsheet row (the header is row 1):
-#   bundle exec rake givepulse:import_activity_events FILE=tmp/Collab_Data_Test.xlsx ROW=2 DRY_RUN=true
-#   bundle exec rake givepulse:import_activity_events FILE=tmp/Collab_Data_Test.xlsx ROW=2
+#   rake givepulse:import_activity_events FILE=tmp/Collab_Data_Test.xlsx ROW=2 DRY_RUN=true
+#   rake givepulse:import_activity_events FILE=tmp/Collab_Data_Test.xlsx SHEET=2 ROW=2 DRY_RUN=true
 #
 # Optional fallback only for rows where `courses` is blank:
 #   bundle exec rake givepulse:import_activity_events FILE=tmp/Collab_Data_Test.xlsx GROUP_ID=2019650
@@ -36,7 +36,8 @@ namespace :givepulse do
 
     abort "Spreadsheet not found: #{file_path}" unless File.file?(file_path)
 
-    rows = CollabActivityImport.load_rows(file_path)
+    sheet = ENV.fetch("SHEET", "1").to_i
+    rows = CollabActivityImport.load_rows(file_path, sheet: sheet)
     if ENV["ROW"].present?
       spreadsheet_row = ENV["ROW"].to_i
       rows = [rows.fetch(spreadsheet_row - 2)]
@@ -56,20 +57,26 @@ namespace :givepulse do
       begin
         description = CollabActivityImport.value_for(row, "description")
         term = CollabActivityImport.value_for(row, "quarter")
+        spreadsheet_group_id = CollabActivityImport.integer_for(row, "group_id").presence
+        course_codes = CollabActivityImport.course_codes(row)
         missing = []
         missing << "activity_name" if title.blank?
         missing << "description" if description.blank?
         missing << "start_date" if CollabActivityImport.value_for(row, "start_date").blank?
         missing << "end_date" if CollabActivityImport.value_for(row, "end_date").blank?
-        missing << "quarter" if term.blank?
+        # Quarter is needed only when courses must be looked up for their group IDs.
+        missing << "quarter" if spreadsheet_group_id.blank? && course_codes.any? && term.blank?
         raise ArgumentError, "missing #{missing.join(", ")}" if missing.any?
 
         start_time = CollabActivityImport.datetime_for(row, "start_date")
         end_time = CollabActivityImport.datetime_for(row, "end_date")
         raise ArgumentError, "end_date must be after start_date" if end_time <= start_time
 
-        course_codes = CollabActivityImport.course_codes(row)
-        targets = if course_codes.any?
+        # A row-level group_id takes precedence over course codes. This creates
+        # exactly one event in the supplied GivePulse group for that row.
+        targets = if spreadsheet_group_id.present?
+                    [{ code: nil, group_id: spreadsheet_group_id }]
+                  elsif course_codes.any?
                     course_codes.map do |course_code|
                       course = GivepulseCourse.find_by(term: term, crn: course_code)
                       raise "GivePulse course not found for term '#{term}', CRN '#{course_code}'" unless course
@@ -80,7 +87,7 @@ namespace :givepulse do
                   elsif fallback_group_id.present?
                     [{ code: nil, group_id: fallback_group_id }]
                   else
-                    raise ArgumentError, "courses is blank (supply GROUP_ID only if a fallback is intended)"
+                    raise ArgumentError, "group_id and courses are blank (supply GROUP_ID only if a fallback is intended)"
                   end
 
         targets.each do |target|
@@ -109,7 +116,8 @@ namespace :givepulse do
 
           if dry_run
             succeeded += 1
-            puts "[DRY RUN] Row #{row_number}: #{title} -> #{target[:code] || "GROUP_ID fallback"} (group #{target[:group_id]})"
+            target_name = target[:code] || (spreadsheet_group_id.present? ? "spreadsheet group_id" : "GROUP_ID fallback")
+            puts "[DRY RUN] Row #{row_number}: #{title} -> #{target_name} (group #{target[:group_id]})"
             next
           end
 
@@ -118,7 +126,8 @@ namespace :givepulse do
 
           succeeded += 1
           event_id = result["event_id"] || result["id"] || "unknown"
-          puts "Created row #{row_number}: #{title} -> #{target[:code] || "GROUP_ID fallback"} (event #{event_id})"
+           target_name = target[:code] || (spreadsheet_group_id.present? ? "spreadsheet group_id" : "GROUP_ID fallback")
+          puts "Created row #{row_number}: #{title} -> #{target_name} (event #{event_id})"
         end
       rescue StandardError => e
         message = "Row #{row_number} (#{title || "untitled"}): #{e.message}"
@@ -202,7 +211,9 @@ end # end givepulse namespace
 module CollabActivityImport
   module_function
 
-  def load_rows(file_path)
+  # sheet is 1-based for command-line use: SHEET=2 selects the second tab.
+  # CSV and TSV files have no worksheets, so they always load as a single sheet.
+  def load_rows(file_path, sheet: 1)
     case File.extname(file_path).downcase
     when ".csv", ".tsv"
       content = File.read(file_path, encoding: "bom|utf-8")
@@ -210,10 +221,20 @@ module CollabActivityImport
       CSV.parse(content, headers: true, col_sep: separator).map(&:to_h)
     when ".xlsx", ".xls"
       require "roo"
-      sheet = Roo::Spreadsheet.open(file_path).sheet(0)
-      headers = sheet.row(1)
-      (2..sheet.last_row).filter_map do |row_number|
-        values = sheet.row(row_number)
+
+      sheet_number = Integer(sheet)
+      raise ArgumentError, "SHEET must be 1 or greater" if sheet_number < 1
+
+      workbook = Roo::Spreadsheet.open(file_path)
+      if sheet_number > workbook.sheets.size
+        raise ArgumentError,
+              "Spreadsheet has only #{workbook.sheets.size} worksheet(s); SHEET=#{sheet_number} does not exist"
+      end
+
+      worksheet = workbook.sheet(sheet_number - 1)
+      headers = worksheet.row(1)
+      (2..worksheet.last_row).filter_map do |row_number|
+        values = worksheet.row(row_number)
         next if values.all?(&:blank?)
 
         headers.zip(values).to_h
@@ -294,20 +315,20 @@ module CollabActivityImport
       # "Activity Owner" => value_for(row, "activity_owner"),
       # "Activity Owner Email" => value_for(row, "activity_owner_email"),
       "Populations" => value_for(row, "populations"),
-      "Student Participation" => value_for(row, "student_members_student_participation"),
-      "Student Participation Hours" => value_for(row, "student_hours_student_participation_hours"),
+      # "Student Participation" => value_for(row, "student_members_student_participation"),
+      # "Student Participation Hours" => value_for(row, "student_hours_student_participation_hours"),
       # "Faculty Participation" => value_for(row, "faculty_members_faculty_participation"),
       # "Section" => value_for(row, "section"),
       "Campus Partner" => value_for(row, "campus_partners"),
       "Community Organization Roles" => value_for(row, "community_org_roles_community_organization_roles"),
-      "Individuals Served" => value_for(row, "individuals_served"),
-      "Community Insight" => value_for(row, "community_insight"),
+      # "Individuals Served" => value_for(row, "individuals_served"),
+      # "Community Insight" => value_for(row, "community_insight"),
       # "Enrolled Student Participation" => value_for(row, "enrolled_student_participation_student_enrollment"),
       # "Enrolled Student Hours" => value_for(row, "enrolled_student_hours")
-    }#.filter_map { |label, value| "#{label}: #{value}" if value.present? }
-    
+    } # .filter_map { |label, value| "#{label}: #{value}" if value.present? }
+
     # [description, ("Activity Details:\n#{metadata.join("\n")}" if metadata.any?)].compact.join("\n\n")
-    
+
     detail_lines = metadata.filter_map do |label, value|
       next if value.blank?
 
@@ -335,6 +356,4 @@ module CollabActivityImport
   rescue ArgumentError, TypeError
     ERB::Util.html_escape(text)
   end
-
-
 end

@@ -33,14 +33,23 @@ class StudentRecord < StudentInfo
   PLACEHOLDER_ASSOCIATIONS = %w(special_program ethnicity)
 
   RESIDENT_CODES = {
-  0 => 'Unknown',
-  1 => 'Resident',
-  2 => 'Resident Immigrant',
-  3 => 'Nonresident Citizen',
-  4 => 'Nonresident Immigrant',
-  5 => 'Nonresident Student Visa',
-  6 => 'Noncitizen Other'
-}
+    0 => 'Unknown',
+    1 => 'Resident',
+    2 => 'Resident Immigrant',
+    3 => 'Nonresident Citizen',
+    4 => 'Nonresident Immigrant',
+    5 => 'Nonresident Student Visa',
+    6 => 'Noncitizen Other'
+  }
+
+  # Get current enrolled students by campus as today
+  def self.current_enrolled(campus = :all)
+    where(
+      system_key: StudentRegistration
+        .current_enrolled(campus)
+        .reselect("sec.registration.system_key")
+    )
+  end
 
   # Returns the Student object that is associated with this StudentRecord. If a Student object does not exist for this student yet, it
   # will automatically be created unless +false+ is passed as the only variable.

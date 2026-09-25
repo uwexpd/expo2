@@ -11,5 +11,60 @@ class StudentRegistration < StudentInfo
       find(:first, :conditions => ['course_branch = ? and crs_number = ? and crs_curric_abbr = ? and crs_section_id = ?', course.course_branch, course.course_no, course.dept_abbrev.strip, course.section_id.strip]).credits.to_i
     end
   end
+
+  REGISTERED_ENROLLMENT_STATUS = 12
+  CAMPUS_BRANCHES = [0, 1, 2].freeze  
+
+  scope :registered, -> { where(enroll_status: REGISTERED_ENROLLMENT_STATUS) }
+
+  # Registrations in the academic quarter that contains today's date.
+  scope :in_current_academic_quarter, lambda {
+    where(<<~SQL.squish)
+      sec.registration.regis_yr * 10 + sec.registration.regis_qtr = (
+        SELECT d.AcademicContigYrQtrCode
+        FROM EDWPresentation.sec.dimDate AS d
+        WHERE d.CalendarDate = CONVERT(date, GETDATE())
+      )
+    SQL
+  }
+
+  scope :registered, lambda {
+    where("sec.registration.enroll_status = ?", REGISTERED_ENROLLMENT_STATUS)
+  }
+
+  # campus: 0 = Seattle, 1 = Bothell, 2 = Tacoma, :all or "ALL" = all campuses.
+  # Returns StudentRegistration records, one per qualifying registration.
+  def self.current_enrolled(campus = :all)
+    campus = normalize_campus_branch(campus)
+
+    relation = joins(<<~SQL.squish)
+      INNER JOIN sec.student_1 AS student
+        ON student.system_key = sec.registration.system_key
+      INNER JOIN sec.student_1_college_major AS major
+        ON major.system_key = student.system_key
+       AND major.index1 = 1
+    SQL
+      .in_current_academic_quarter
+      .registered
+      .where("student.student_no > 0")
+      .where("student.test_student = 0")
+      .where("ISNULL(student.deceased_dt, 0) <= 0")
+      .select("sec.registration.*")
+      .distinct
+
+    campus == :all ? relation : relation.where("major.branch = ?", campus)
+  end
+
+  def self.normalize_campus_branch(campus)
+    return :all if campus.nil? || campus.to_s.casecmp("all").zero?
+
+    branch = Integer(campus)
+    return branch if CAMPUS_BRANCHES.include?(branch)
+
+    raise ArgumentError, "campus must be 0 (Seattle), 1 (Bothell), 2 (Tacoma), or :all"
+  rescue ArgumentError, TypeError
+    raise ArgumentError, "campus must be 0 (Seattle), 1 (Bothell), 2 (Tacoma), or :all"
+  end
+
   
 end
