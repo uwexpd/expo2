@@ -121,6 +121,10 @@ class Person < ApplicationRecord
 
   attr_accessor :require_validations, :require_name_validations, :require_address_validations, :require_student_validations
 
+  def pws
+    @pws ||= PersonResource.find_full(reg_id)
+  end
+
   # Fullname search with ransack where firstname + lastname in People model
   ransacker :full_name do |parent|
      Arel::Nodes::NamedFunction.new('CONCAT_WS', [Arel::Nodes.build_quoted(' '), parent.table[:firstname], parent.table[:lastname]])

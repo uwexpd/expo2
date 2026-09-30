@@ -1,8 +1,8 @@
 class StudentPhoto < WebServiceResult
   
-  SWS_VERSION = "v1"
+  IDCARD_VERSION = "v1"
 
-  self.element_path = "idcard/#{SWS_VERSION}/photo"  
+  self.element_path = "idcard/#{IDCARD_VERSION}/photo"
   self.cache_lifetime = 1.month
   
   # Overrite encapsulate_data to use subclass

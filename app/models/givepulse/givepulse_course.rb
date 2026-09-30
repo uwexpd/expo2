@@ -179,8 +179,8 @@ class GivepulseCourse < GivepulseBase
     end
   end
 
-  # Add an entire course roster to GivePulse. Eespecially for mutliple sections
-  #
+  # Add an entire course roster to GivePulse, especially for multiple sections.
+  #  
   # For each student, create or update the user via POST /users.
   # Passing group_id is sufficient to add the student to the course group —
   # a separate /courseStudent call is not needed.
@@ -190,6 +190,8 @@ class GivepulseCourse < GivepulseBase
   #
   # @param students [Array<Student>] roster from sdb_course.all_enrollees
   # @param course_section [String, nil] optional cross-list section label
+  # @param dry_run [Boolean] when true, logs what would happen without calling
+  #   the GivePulse API or mutating group membership.
   # @return [Hash] { added: Integer, skipped: Integer }
   #
   # Example:
@@ -202,85 +204,31 @@ class GivepulseCourse < GivepulseBase
   #       section_id: 'A')
   #   course = GivepulseCourse.find_by(term: 'Spring 2026', crn: 'B ENGR 496 B')
   #   course.add_students(sdb_course_a.all_enrollees, "B")
-  def add_students(students, course_section = nil)
+  #   course.add_students(sdb_course_a.all_enrollees, "B", dry_run: true)
+  def add_students(students, course_section = nil, dry_run: false)
     added   = 0
     skipped = 0
 
-    # Fetch existing GivePulse members once to determine is_private
+    # Fetch existing GivePulse members once so add_student can decide is_private
+    # without re-fetching per student.
     givepulse_students = self.givepulse_course_students || []
-    givepulse_emails   = givepulse_students.map { |u| u.email&.downcase }.compact
+    existing_emails = givepulse_students.map { |u| u.email&.downcase }.compact.to_set
 
     Array(students).each do |student|
-      if student.email.blank?
-        Rails.logger.warn("Skipping student (student_no: #{student.student_no}) — no email on file.")
-        skipped += 1
-        next
-      end
+      result = GivepulseUser.add_student(
+        student,
+        group_id: self.group_id,
+        existing_emails: existing_emails,
+        course_section: course_section,
+        dry_run: dry_run
+      )
 
-      begin
-        sdb_student          = student.sdb
-        admin_minor          = sdb_student.age < 18 ? "Yes" : "No"
-        admin_dir_release    = student.dir_release ? "Yes" : "No"
-        admin_campus         = student.major_branch_list rescue ''
-        admin_class_standing = sdb_student.class_standing_description(show_upcoming_graduation: true) rescue ''
-        admin_student_major  = sdb_student.majors_list(true, ", ") rescue ''
-
-        admin_fields = if Rails.env.production?
-          { "236072" => admin_minor, "236073" => admin_dir_release, "239467" => course_section,
-            "268083" => admin_campus, "268084" => admin_class_standing, "268085" => admin_student_major,
-            "276190" => Date.current.to_s }
-        else
-          { "81445" => admin_minor, "81773" => admin_dir_release, "82030" => course_section,
-            "82591" => admin_campus, "82592" => admin_class_standing, "82593" => admin_student_major,
-            "82641" => Date.current.to_s }
-        end
-
-        user_params = {
-          user: {
-            first_name:            student.firstname,
-            last_name:             student.lastname,
-            email:                 student.email,
-            administrative_fields: admin_fields,
-            group_id:              self.group_id
-          }
-        }
-
-        email = student.email.downcase
-
-        # Only mark as private if the user doesn't already exist in GivePulse
-        unless givepulse_emails.include?(email)
-          user_params[:user][:is_private] = 1
-        end
-
-        user_response = GivepulseCourse.request_api("/users", user_params, method: :post)
-
-        if user_response.is_a?(Hash)
-          Rails.logger.error("Failed to add student #{student.email}. Error: #{user_response[:error] || user_response}")
-          skipped += 1
-          next
-        end
-
-        user_response_body = JSON.parse(user_response.body)
-
-        unless user_response.code.to_i == 200 || user_response_body["updated"] == true
-          Rails.logger.error("Failed to add student #{student.email}. Code: #{user_response.code}, Body: #{user_response.body}")
-          skipped += 1
-          next
-        end
-
-        Rails.logger.info("Successfully added #{student.email} to course #{self.crn} (user_id: #{user_response_body['user_id']})")
-        added += 1
-
-      rescue StandardError => e
-        Rails.logger.error("Exception adding student #{student.email}: #{e.message}")
-        skipped += 1
-      end
+      [:added, :would_add].include?(result[:status]) ? added += 1 : skipped += 1
     end
 
-    Rails.logger.info("add_students complete for #{self.crn} — added: #{added}, skipped: #{skipped}")
+    Rails.logger.info("add_students complete for #{self.crn} — added: #{added}, skipped: #{skipped}#{' [DRY RUN]' if dry_run}")
     { added: added, skipped: skipped }
   end
-
 
 
   def quarter
@@ -288,7 +236,6 @@ class GivepulseCourse < GivepulseBase
     # To be compatiable with Canvas: Term: "Summer 2025"
     Quarter.find_by_title(self.term)
   end
-
 
   # Branch/campus code: 0: Seattle, 1: Bothell, 2: Tacoma
   # [TODO] We should add a custom field for this. There is external_id in GP we could use but it can be updated by admin users so not doing with that.

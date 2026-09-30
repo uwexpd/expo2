@@ -1,9 +1,9 @@
 # Person Web Service (PWS): https://ws.admin.washington.edu/identity/swagger/index.html
 class PersonResource < WebServiceResult
   
-  SWS_VERSION = "v2"
+  PWS_VERSION = "v2"
 
-  self.element_path = "identity/#{SWS_VERSION}/person"
+  self.element_path = "identity/#{PWS_VERSION}/person"
   self.cache_lifetime = 1.day
 
   def self.method_missing(method, *args)

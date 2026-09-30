@@ -1,41 +1,92 @@
 <% title "Faculty/Mentor Research Opportunity Posting | University of Washington" %>
+<% selected_tab = %w[active submitted deactivated all].include?(params[:tab]) ? params[:tab] : "active" %>
 
 <div class="card content">
-	<h5 class="uw_purple">
-		<i class="material-icons top_align">assignment</i> UW Faculty/Mentor Research Opportunity Posting 
-		<span class="right smaller"><%= link_to 'Add New Post', opportunity_form_path, class: 'waves-effect waves-light btn' %>
-		</span>
-	</h5>	
-	<p class="gray smaller">Any problems or questions about this research opportunities posting should be sent to <%= auto_link(Unit.find_by_abbreviation('urp').email) %>.</p>
+  <h5 class="uw_purple">
+    <i class="material-icons top_align">assignment</i> UW Faculty/Mentor Research Opportunity Posting
+    <span class="right smaller">
+      <%= link_to '<i class="mi top_align">add</i> New Post'.html_safe, opportunity_form_path, class: "waves-effect waves-light btn" %>
+    </span>
+  </h5>
+  <p class="gray smaller">Any problems or questions about this research opportunities posting should be sent to <%= auto_link(Unit.find_by_abbreviation("urp").email) %>.</p>
+
+  <%= form_tag opportunity_research_path, method: :get, class: "row", id: "opportunity-search-form" do %>
+    <%= hidden_field_tag :tab, selected_tab, id: "selected-tab" %>
+    <div class="input-field col s6">
+      <input id="q" name="q" type="text" value="<%= params[:q] %>" placeholder="Search by title or department">
+    </div>
+    <div class="input-field col s3">
+      <button type="submit" class="waves-effect waves-light btn"><i class="material-icons">search</i></button>    
+      <%= link_to "Clear", opportunity_research_path(tab: selected_tab), class: "btn-flat" if params[:q].present? %>
+    </div>
+  <% end %>
 </div>
 
-<% @research_postings.reverse.each do |posting| %>	
-	<ul class="collection hoverable">
-	    <li class="collection-item avatar">
-	      <i class="material-icons circle green">school</i>
-	      <div class="title">	      	
-	        <%= link_to posting.title,{:action => "submit", :id => posting.id}, {style: "padding-right:6px"} %>
-			<% if posting.active? %>
-				<span class="status_tag green">Active listing</span>
-			<% else %>
-				<% if posting.submitted? %>
-					<span class="status_tag info">Submitted</span>
-			<% else %>
-					<span class="status_tag warning">Deactivated</span>
-				<% end %>
-	        <% end %>
-	      </div>
-	      <div style="width: 80%; padding-top: 0.5rem" class="smaller">            
-            <ul>
-            	<li>Department: <%= posting.department %></li>
-            	<li>Contact name: <%= posting.name %></li>
-				<li>Submitted at: <%= posting.submitted_at.to_date rescue "No submitted date" %></li>
-            </ul>            
-            <p style="border-top: 1px dotted #999; margin-top: 5px; padding: 5px 0;"><%= truncate(posting.description, length: 250, escape: false) %></p>
-      	  </div>
-	      <div class="secondary-content smaller">
-	        <%= link_to "Manage posting", { :action => 'submit', :id => posting.id }, class: 'waves-effect waves-light btn small' %>
-	      </div>            
-	    </li>
-	</ul>
-<% end %>
+<div class="card uw-tabs-card">
+  <div class="card-content" style="padding-bottom: 0;">
+    <div class="row">
+      <div class="col s12">
+        <ul class="tabs">
+          <li class="tab col s3"><a href="#active" class="<%= "active" if selected_tab == "active" %>">Active (<%= @active_count %>)</a></li>
+          <li class="tab col s3"><a href="#submitted" class="<%= "active" if selected_tab == "submitted" %>">Submitted (<%= @submitted_count %>)</a></li>
+          <li class="tab col s3"><a href="#deactivated" class="<%= "active" if selected_tab == "deactivated" %>">Deactivated (<%= @deactivated_count %>)</a></li>
+          <li class="tab col s3"><a href="#all" class="<%= "active" if selected_tab == "all" %>">All (<%= @total_count %>)</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="active" class="tab-panel">
+      <%= render "opportunity_list", opportunities: @active_opportunities %>
+      <% unless @active_opportunities.empty? %>
+        <div class="center gray smaller pagination-summary"><%= page_entries_info @active_opportunities, entry_name: "posting" %>
+        <%= will_paginate @active_opportunities, param_name: "active_page", params: { tab: "active" }, renderer: MaterializePaginationRenderer %></div>
+      <% end %>
+    </div>
+
+    <div id="submitted" class="tab-panel">
+      <%= render "opportunity_list", opportunities: @submitted_opportunities %>
+      <% unless @submitted_opportunities.empty? %>
+        <div class="center gray smaller pagination-summary"><%= page_entries_info @submitted_opportunities, entry_name: "posting" %>
+        <%= will_paginate @submitted_opportunities, param_name: "submitted_page", params: { tab: "submitted" }, renderer: MaterializePaginationRenderer %></div>
+      <% end %>
+    </div>
+
+    <div id="deactivated" class="tab-panel">
+      <%= render "opportunity_list", opportunities: @deactivated_opportunities %>
+      <% unless @deactivated_opportunities.empty? %>
+        <div class="center gray smaller pagination-summary"><%= page_entries_info @deactivated_opportunities, entry_name: "posting" %>
+        <%= will_paginate @deactivated_opportunities, param_name: "deactivated_page", params: { tab: "deactivated" }, renderer: MaterializePaginationRenderer %></div>
+      <% end %>
+    </div>
+
+    <div id="all" class="tab-panel">
+      <%= render "opportunity_list", opportunities: @all_opportunities %>
+      <% unless @all_opportunities.empty? %>
+        <div class="center gray smaller pagination-summary"><%= page_entries_info @all_opportunities, entry_name: "posting" %>
+        <%= will_paginate @all_opportunities, param_name: "all_page", params: { tab: "all" }, renderer: MaterializePaginationRenderer %></div>
+      <% end %>
+    </div>
+    <br>
+  </div>
+</div>
+
+<script>
+  (function($) {
+    function bindResearchTabSearch() {
+      var $tabs = $(".uw-tabs-card .tabs");
+      var $selectedTabInput = $("#selected-tab");
+
+      if (!$tabs.length) return;
+
+      // utility.js initializes Materialize tabs on turbolinks:load.
+      // The server-rendered .active class above restores params[:tab]; do not
+      // initialize or programmatically select the component a second time.
+      $tabs.off("click.researchTabs").on("click.researchTabs", "a", function() {
+        $selectedTabInput.val($(this).attr("href").replace("#", ""));
+      });
+    }
+
+    $(document).off("turbolinks:load.researchTabs").on("turbolinks:load.researchTabs", bindResearchTabSearch);
+    if (!window.Turbolinks) $(bindResearchTabSearch);
+  })(jQuery);
+</script>

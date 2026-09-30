@@ -83,6 +83,121 @@ end
 
 class GivepulseSyncTimeout < Timeout::Error; end
 
+# Bulk-import currently enrolled students into a GivePulse group.
+#
+# Usage:
+#   rake givepulse:import_enrolled_students[765297,1,09-30-2026]
+#   rake givepulse:import_enrolled_students[765297,1,09-30-2026,true]   # dry run
+#
+# Args:
+#   group_id     - GivePulse group id (required)
+#   branch       - campus branch, defaults to 1 (Bothell)
+#   enrolled_on  - date passed to StudentRecord.current_enrolled, defaults to today
+#   dry_run      - "true"/"1" to simulate the import without calling the
+#                  GivePulse API or changing any group membership. Every
+#                  student is evaluated (email/domain checks, admin field
+#                  building) and logged as [DRY RUN] would_add / would_skip,
+#                  but no POST /users request is made. Defaults to false.
+#   limit        - optional Integer. When present, only the first N enrolled
+#                  students (after fetch) are processed. Intended for quick
+#                  smoke-testing (e.g. limit=25) before running against the
+#                  full 6,000+ roster. Defaults to no limit (process all).
+#
+# Note: StudentRecord.current_enrolled(branch, enrolled_on) returns a plain
+# Array<StudentRecord> (not an ActiveRecord::Relation), so this task loads
+# the full set into memory (fine for ~6,000+ rows) and processes it in
+# slices purely for progress logging / potential future throttling.
+#
+# Duplication safety: GivePulse's POST /users is a create-or-update keyed on
+# email, so re-running this task never creates duplicate accounts — existing
+# users just get their admin fields refreshed and group membership confirmed.
+# GivepulseUser.add_student also rejects any non-uw.edu email before calling
+# the API, so this import can never touch a non-UW GivePulse member (e.g. a
+# community partner) even if bad SDB data slipped through.
+desc "Import currently enrolled students into a GivePulse group"
+task :givepulse_import_enrolled_students, [:group_id, :branch, :enrolled_on, :dry_run, :limit] => :environment do |_t, args|
+  group_id    = args[:group_id]&.to_i
+  branch      = (args[:branch] || 1).to_i
+  enrolled_on = args[:enrolled_on] || Date.current.strftime('%m-%d-%Y')
+  dry_run     = %w[true 1 yes].include?(args[:dry_run].to_s.strip.downcase)
+  limit       = args[:limit].present? ? args[:limit].to_i : nil
+  batch_size  = 200
+
+  if group_id.blank?
+    abort("Usage: rake givepulse:import_enrolled_students[group_id,branch,enrolled_on,dry_run]")
+  end
+
+  started_at   = Time.current
+  added        = 0
+  skipped      = 0
+  non_uw_email = 0
+  errored      = 0
+  processed    = 0
+
+  puts "Starting import for group_id=#{group_id} branch=#{branch} enrolled_on=#{enrolled_on}" \
+         "#{' [DRY RUN — no changes will be made]' if dry_run}#{" [LIMIT #{limit}]" if limit}"
+
+  # Fetch existing GivePulse group members once so we don't flip existing
+  # users to private, and don't refetch per student. Also gives us an
+  # up-front count of how many members are already in the group.
+  existing_members = GivepulseUser.where(group_id: group_id)
+  existing_emails   = existing_members.filter_map { |u| u.email.to_s.strip.downcase.presence }.to_set
+
+  puts "Existing members currently in group #{group_id}: #{existing_members.size} (#{existing_emails.size} with usable emails)"
+
+  student_records = Array(StudentRecord.current_enrolled(branch, enrolled_on))
+  puts "Fetched #{student_records.size} enrolled StudentRecords."
+
+  if limit
+      student_records = student_records.last(limit)
+      puts "Limiting run to last #{student_records.size} records."
+  end
+
+  student_records.each_slice(batch_size) do |slice|
+    slice.each do |record|
+      if record.nil? || record.email.blank?
+        Rails.logger.warn("Skipping StudentRecord (id: #{record.try(:id)}) — no email on file.")
+        skipped += 1
+        processed += 1
+        next
+      end
+
+      # StudentRecord already has everything add_student needs (firstname,
+      # lastname, email, dir_release, major_branch_list, and #sdb returning
+      # self), so it's passed directly — no need to resolve a separate
+      # Student association here.
+      result = GivepulseUser.add_student(
+        record,
+        group_id: group_id,
+        existing_emails: existing_emails,
+        dry_run: dry_run
+      )
+
+      case result[:status]
+      when :added, :would_add
+        added += 1
+      when :skipped, :would_skip
+        result[:reason] == 'non_uw_email' ? non_uw_email += 1 : skipped += 1
+      when :error
+        errored += 1
+      end
+
+      processed += 1
+    end
+
+    puts "  ...processed=#{processed}/#{student_records.size} added=#{added} skipped=#{skipped} non_uw_email=#{non_uw_email} errored=#{errored}"
+  end
+
+  duration = (Time.current - started_at).round(2)
+   summary = "Import complete for group_id=#{group_id}, branch=#{branch}, enrolled_on=#{enrolled_on}" \
+              "#{' [DRY RUN — no changes were made]' if dry_run}#{" [LIMIT #{limit}]" if limit} — " \
+              "existing_members_before_import: #{existing_members.size}, processed: #{processed}, added: #{added}, " \
+              "skipped: #{skipped}, non_uw_email: #{non_uw_email}, errored: #{errored}, duration: #{duration}s"
+
+  Rails.logger.info(summary)
+  puts summary
+end
+
 
 desc "Quarterly sync all users admin fields to UW Givepulse in batches."
 task givepulse_users_sync: :environment do

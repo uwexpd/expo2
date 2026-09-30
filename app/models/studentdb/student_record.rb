@@ -43,10 +43,12 @@ class StudentRecord < StudentInfo
   }
 
   # Get current enrolled students by campus as today
-  def self.current_enrolled(campus = :all)
+  # campus: 0 = Seattle, 1 = Bothell, 2 = Tacoma, :all or "ALL" = all campuses.
+  # date: a Date/Time or an "MM-DD-YYYY" string; defaults to today.
+  def self.current_enrolled(campus = :all, date = Date.current)
     where(
       system_key: StudentRegistration
-        .current_enrolled(campus)
+        .current_enrolled(campus, date)
         .reselect("sec.registration.system_key")
     )
   end
@@ -166,7 +168,7 @@ class StudentRecord < StudentInfo
   
   def email
     return "" if uw_netid.blank?
-    address.e_mail_ucs.blank? ? "#{uw_netid.strip}@u.washington.edu" : address.e_mail_ucs.strip rescue "#{uw_netid.strip}@u.washington.edu"
+    address.e_mail_ucs.blank? ? "#{uw_netid.strip}@uw.edu" : address.e_mail_ucs.strip rescue "#{uw_netid.strip}@uw.edu"
   end
 
   # Returns the student's GPA as a string of a number to 2 decimal places, e.g., "3.34". Any problems return "unknown".
@@ -230,6 +232,10 @@ class StudentRecord < StudentInfo
   # CURRENTLY, this will always only show abbreviations because titles aren't in the student database.
   def minors_list(show_full_names = false, join_string = ", ")
     minors.collect { |m| m.minor_abbr.strip }.join(join_string)
+  end
+
+  def major_branch_list(join_string = ", ")
+    majors.collect(&:major_branch_name).uniq.join(join_string)
   end
   
   # Default ethnic_code for a Student with a "0" ethnic code (this is a very rare situation).

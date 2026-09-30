@@ -13,29 +13,32 @@ class StudentRegistration < StudentInfo
   end
 
   REGISTERED_ENROLLMENT_STATUS = 12
-  CAMPUS_BRANCHES = [0, 1, 2].freeze  
+  CAMPUS_BRANCHES = [0, 1, 2].freeze
 
-  scope :registered, -> { where(enroll_status: REGISTERED_ENROLLMENT_STATUS) }
-
-  # Registrations in the academic quarter that contains today's date.
-  scope :in_current_academic_quarter, lambda {
-    where(<<~SQL.squish)
+  # Registrations in the academic quarter assigned by dimDate to the supplied date.
+  scope :in_academic_quarter_on, lambda { |date|
+    where(<<~SQL.squish, date)
       sec.registration.regis_yr * 10 + sec.registration.regis_qtr = (
         SELECT d.AcademicContigYrQtrCode
         FROM EDWPresentation.sec.dimDate AS d
-        WHERE d.CalendarDate = CONVERT(date, GETDATE())
+        WHERE d.CalendarDate = CONVERT(date, ?)
       )
     SQL
   }
 
-  scope :registered, lambda {
+  # Retained for callers that need today's academic quarter.
+  scope :in_current_academic_quarter, -> { in_academic_quarter_on(Date.current) }
+
+  scope :registered, -> {
     where("sec.registration.enroll_status = ?", REGISTERED_ENROLLMENT_STATUS)
   }
 
   # campus: 0 = Seattle, 1 = Bothell, 2 = Tacoma, :all or "ALL" = all campuses.
+  # date: a Date/Time or an "MM-DD-YYYY" string; defaults to today.
   # Returns StudentRegistration records, one per qualifying registration.
-  def self.current_enrolled(campus = :all)
+  def self.current_enrolled(campus = :all, date = Date.current)
     campus = normalize_campus_branch(campus)
+    date = normalize_enrollment_date(date)
 
     relation = joins(<<~SQL.squish)
       INNER JOIN sec.student_1 AS student
@@ -44,13 +47,11 @@ class StudentRegistration < StudentInfo
         ON major.system_key = student.system_key
        AND major.index1 = 1
     SQL
-      .in_current_academic_quarter
+      .in_academic_quarter_on(date)
       .registered
       .where("student.student_no > 0")
       .where("student.test_student = 0")
       .where("ISNULL(student.deceased_dt, 0) <= 0")
-      .select("sec.registration.*")
-      .distinct
 
     campus == :all ? relation : relation.where("major.branch = ?", campus)
   end
@@ -64,6 +65,15 @@ class StudentRegistration < StudentInfo
     raise ArgumentError, "campus must be 0 (Seattle), 1 (Bothell), 2 (Tacoma), or :all"
   rescue ArgumentError, TypeError
     raise ArgumentError, "campus must be 0 (Seattle), 1 (Bothell), 2 (Tacoma), or :all"
+  end
+
+  def self.normalize_enrollment_date(date)
+    return Date.strptime(date, "%m-%d-%Y") if date.is_a?(String)
+    return date.to_date if date.respond_to?(:to_date)
+
+    raise ArgumentError, "date must be a Date/Time or an MM-DD-YYYY string"
+  rescue Date::Error
+    raise ArgumentError, "date must be an MM-DD-YYYY string, for example 09-30-2026"
   end
 
   

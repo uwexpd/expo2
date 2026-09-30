@@ -50,6 +50,10 @@ class Student < Person
    def sws
      @sws ||= StudentResource.find_by_system_key(system_key, true)
    end
+
+   def pws
+    @pws ||= PersonResource.find_full(reg_id)
+   end
    
    def reg_id
     if read_attribute(:reg_id).blank?

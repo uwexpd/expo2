@@ -332,3 +332,37 @@ table tr.sticky:nth-child(2) th{
 .outlined-table td {
   border: 1px solid #e0e0e0;
 }
+
+.uw-tabs-card .tabs {
+  background-color: #f4f2f8 !important; /* faint purple tint instead of default pink */
+}
+
+.uw-tabs-card .collection{
+	margin: 0.5rem 0 2rem 0 !important;
+}
+
+.uw-tabs-card .tabs .tab a {
+  color: #4b2e83;
+  background-color: #f4f2f8 !important;
+  opacity: 0.65;
+}
+
+.uw-tabs-card .tabs .tab a:hover,
+.uw-tabs-card .tabs .tab a:focus {
+  background-color: #f4f2f8 !important;
+  color: #4b2e83;
+  opacity: 1;
+}
+
+/* Current Materialize tab: requested light UW purple. */
+.uw-tabs-card .tabs .tab a.active,
+.uw-tabs-card .tabs .tab a.active:focus {
+  background-color: #c5b4e3 !important;
+  color: #4b2e83;
+  opacity: 1;
+}
+
+.uw-tabs-card .tabs .indicator {
+  background-color: #4b2e83; /* UW gold underline instead of pink */
+  height: 3px;
+}

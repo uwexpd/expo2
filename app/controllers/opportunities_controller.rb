@@ -34,9 +34,32 @@ class OpportunitiesController < ApplicationController
   def research
     add_breadcrumb "Research Opportunities Posting", opportunity_research_path
 
-    @research_postings = ResearchOpportunity.where( submitted_person_id: current_user.person.id).order(:active)
-    redirect_to :action => 'form' if @research_postings.blank?
+    base_scope = ResearchOpportunity
+                   .where(submitted_person_id: current_user.person.id)
+                   .order('submitted_at DESC, name ASC')
+                   
+    if params[:q].present?
+      base_scope = base_scope.where(
+        "title LIKE :q OR department LIKE :q",
+        q: "%#{params[:q]}%"
+      )
+    end
 
+    active_scope      = base_scope.where(active: true)
+    submitted_scope   = base_scope.where(submitted: true, active: [nil, false])
+    deactivated_scope = base_scope.where(submitted: nil, active: nil)
+
+    @active_opportunities      = active_scope.paginate(page: params[:active_page], per_page: 10)
+    @submitted_opportunities   = submitted_scope.paginate(page: params[:submitted_page], per_page: 10)
+    @deactivated_opportunities = deactivated_scope.paginate(page: params[:deactivated_page], per_page: 10)
+    @all_opportunities         = base_scope.paginate(page: params[:all_page], per_page: 10)
+
+    @active_count      = active_scope.count
+    @submitted_count   = submitted_scope.count
+    @deactivated_count = deactivated_scope.count
+    @total_count       = base_scope.count
+
+    redirect_to :action => 'form' and return if @total_count.zero?
   end
 
   def form

@@ -1,0 +1,34 @@
+<% if opportunities.blank? %>
+  <p class="gray center" style="padding: 2rem 0;">No postings in this category.</p>
+<% else %>
+  <% opportunities.each do |opportunity| %>
+    <ul class="collection hoverable">
+      <li class="collection-item avatar">
+        <i class="material-icons circle green">school</i>
+        <div class="title">
+          <%= link_to opportunity.title, { action: "submit", id: opportunity.id }, style: "padding-right:6px" %>
+          <% if opportunity.active? %>
+            <span class="status_tag green">Active listing</span>
+          <% elsif opportunity.submitted? %>
+            <span class="status_tag info">Submitted</span>
+          <% else %>
+            <span class="status_tag red">Deactivated</span>
+          <% end %>
+        </div>
+        <div style="width: 80%; padding-top: 0.5rem" class="smaller">
+          <ul>
+            <li>Department: <%= opportunity.department %></li>
+            <li>Contact name: <%= opportunity.name %></li>
+            <li>Submitted at: <%= opportunity.submitted_at.to_date rescue "No submitted date" %></li>
+          </ul>
+          <p style="border-top: 1px dotted #999; margin-top: 5px; padding: 5px 0;">
+            <%= truncate(opportunity.description, length: 250, escape: false) %>
+          </p>
+        </div>
+        <div class="secondary-content smaller">
+          <%= link_to "Manage posting", { action: 'submit', id: opportunity.id }, class: 'waves-effect waves-light btn small' %>
+        </div>
+      </li>
+    </ul>
+  <% end %>
+<% end %>
