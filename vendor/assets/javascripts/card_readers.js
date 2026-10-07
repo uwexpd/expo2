@@ -1,17 +1,17 @@
-(() => {
-  const FILTER_SELECTOR = 'form.filter_form input[name="q[student_number_eq]"]';
-  const UID_PATTERN = /^[0-9a-f]{14}$/i;
-  const SCAN_GAP_MS = 75;
-  const NOTICE_KEY = 'event_invitee_rfid_lookup_notice';
-  let buffer = '';
-  let lastKeyAt = 0;
+(function () {
+  var FILTER_SELECTOR = 'form.filter_form input[name="q[student_number_eq]"]';
+  var UID_PATTERN = /^[0-9a-f]{14}$/i;
+  var SCAN_GAP_MS = 75;
+  var NOTICE_KEY = 'event_invitee_rfid_lookup_notice';
+  var buffer = '';
+  var lastKeyAt = 0;
 
   function lookupUrl() {
-    const path = window.location.pathname.replace(/\/$/, '');
-    const nestedInvitees = path.match(/^(.*\/times\/\d+\/invitees)$/);
+    var path = window.location.pathname.replace(/\/$/, '');
+    var nestedInvitees = path.match(/^(.*\/times\/\d+\/invitees)$/);
 
     return nestedInvitees
-      ? `${nestedInvitees[1]}/lookup_rfid`
+      ? nestedInvitees[1] + '/lookup_rfid'
       : '/expo/admin/invitees/lookup_rfid';
   }
 
@@ -20,70 +20,90 @@
     return meta ? meta.content : null;
   }
 
-  function showStatus(message, isError = false) {
-    let status = document.querySelector('#rfid-reader-status');
+  function showStatus(message, isError) {
+    var status = document.querySelector('#rfid-reader-status');
     if (!status) {
+      var input = document.querySelector(FILTER_SELECTOR);
+      if (!input || !input.form) return;
+
       status = document.createElement('span');
       status.id = 'rfid-reader-status';
       status.style.marginLeft = '8px';
-      document.querySelector(FILTER_SELECTOR)?.closest('form')?.append(status);
+      input.form.appendChild(status);
     }
     status.textContent = message;
     status.style.color = isError ? '#b91c1c' : '#166534';
   }
 
   function showSavedNotice() {
-    const studentNumber = sessionStorage.getItem(NOTICE_KEY);
+    var studentNumber = sessionStorage.getItem(NOTICE_KEY);
     if (!studentNumber) return;
     sessionStorage.removeItem(NOTICE_KEY);
 
-    const currentNumber = new URLSearchParams(window.location.search).get('q[student_number_eq]');
+    var currentNumber = new URLSearchParams(window.location.search).get('q[student_number_eq]');
     if (currentNumber !== studentNumber) return;
 
-    const notice = document.createElement('div');
+    var notice = document.createElement('div');
     notice.id = 'rfid-lookup-notice';
     notice.className = 'flash flash_notice';
     notice.setAttribute('role', 'status');
-    notice.textContent = `Found student with student number: ${studentNumber}. Student-number filter applied. Select Check in to check them in.`;    
+    notice.textContent = 'Found student with number: ' + studentNumber +
+      '. Student-number filter applied. Select Check in to check them in.';
 
-    const content = document.querySelector('#active_admin_content');
+    var content = document.querySelector('#active_admin_content');
     if (content) {
-      content.before(notice);
+      content.parentNode.insertBefore(notice, content);
     } else {
-      document.querySelector('#wrapper')?.prepend(notice);
+      var wrapper = document.querySelector('#wrapper');
+      if (wrapper) wrapper.insertBefore(notice, wrapper.firstChild);
     }
   }
 
   function submitStudentNumber(studentNumber) {
-    const input = document.querySelector(FILTER_SELECTOR);
+    var input = document.querySelector(FILTER_SELECTOR);
     if (!input) return;
 
-    const value = String(studentNumber);
+    var value = String(studentNumber);
     input.value = value;
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
     sessionStorage.setItem(NOTICE_KEY, value);
-    input.closest('form')?.requestSubmit();
+
+    var form = input.form;
+    if (!form) return;
+    if (form.requestSubmit) {
+      form.requestSubmit();
+    } else {
+      var submitButton = form.querySelector('[type="submit"]');
+      if (submitButton) {
+        submitButton.click();
+      } else {
+        form.submit();
+      }
+    }
   }
 
-  async function lookUpUid(uid) {
+  function lookUpUid(uid) {
     showStatus('Looking up card…');
 
-    const response = await fetch(lookupUrl(), {
+    var headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    };
+    var token = csrfToken();
+    if (token) headers['X-CSRF-Token'] = token;
+
+    return fetch(lookupUrl(), {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken()
-      },
+      headers: headers,
       body: JSON.stringify({ rfid_uid: uid })
+    }).then(function (response) {
+      return response.json().then(function (data) {
+        if (!response.ok) throw new Error(data.error || 'Unable to look up this card.');
+        showStatus('Student found. Applying filter…');
+        submitStudentNumber(data.student_number);
+      });
     });
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Unable to look up this card.');
-
-    showStatus('Student found. Applying filter…');
-    submitStudentNumber(data.student_number);
   }
 
   function initializeRfidReader() {
@@ -91,10 +111,10 @@
 
     showSavedNotice();
     console.info('[RFID] UID reader enabled on Event Invitee check-in.');
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', function (event) {
       if (event.ctrlKey || event.altKey || event.metaKey) return;
 
-      const now = Date.now();
+      var now = Date.now();
       if (now - lastKeyAt > SCAN_GAP_MS) buffer = '';
       lastKeyAt = now;
 
@@ -105,9 +125,9 @@
         }
 
         event.preventDefault();
-        const uid = buffer;
+        var uid = buffer;
         buffer = '';
-        lookUpUid(uid).catch((error) => {
+        lookUpUid(uid).catch(function (error) {
           console.error('[RFID] Lookup failed:', error);
           showStatus(error.message, true);
         });
@@ -123,7 +143,9 @@
     });
   }
 
-  document.readyState === 'loading'
-    ? document.addEventListener('DOMContentLoaded', initializeRfidReader)
-    : initializeRfidReader();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeRfidReader);
+  } else {
+    initializeRfidReader();
+  }
 })();
