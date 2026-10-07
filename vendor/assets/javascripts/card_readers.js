@@ -16,7 +16,8 @@
   }
 
   function csrfToken() {
-    return document.querySelector('meta[name="csrf-token"]')?.content;
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.content : null;
   }
 
   function showStatus(message, isError = false) {
