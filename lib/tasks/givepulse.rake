@@ -7,7 +7,7 @@ task :givepulse_roster_sync => :environment do
   
   sync_quarters = [Quarter.current_quarter, Quarter.current_quarter.next]
   # E Designated Courses are tracking-only and are imported once, not daily.
-  excluded_group_ids = Rails.env.production? ? ["2173735"] : ["948128"]
+  excluded_group_ids = Rails.env.production? ? ["2173735", "2185382"] : ["948128", "948241"]
 
 
   puts "#{sync_quarters.collect(&:title)} Course roster sync starts..."
@@ -86,8 +86,8 @@ class GivepulseSyncTimeout < Timeout::Error; end
 # Bulk-import currently enrolled students into a GivePulse group.
 #
 # Usage:
-#   rake givepulse:import_enrolled_students[765297,1,09-30-2026]
-#   rake givepulse:import_enrolled_students[765297,1,09-30-2026,true]   # dry run
+#   rake "givepulse_import_enrolled_students[921813,1,09-30-2026]"
+#   rake "givepulse_import_enrolled_students[921813,1,09-30-2026,true, 200]"  # dry run
 #
 # Args:
 #   group_id     - GivePulse group id (required)
@@ -140,10 +140,16 @@ task :givepulse_import_enrolled_students, [:group_id, :branch, :enrolled_on, :dr
   # Fetch existing GivePulse group members once so we don't flip existing
   # users to private, and don't refetch per student. Also gives us an
   # up-front count of how many members are already in the group.
-  existing_members = GivepulseUser.where(group_id: group_id)
+  group = GivepulseGroup.find_by(group_id: group_id)
+  raise "GivePulse group #{group_id} not found" unless group
+
+  parent_group_id = group.parent_id
+  raise "GivePulse group #{group_id} has no parent" unless parent_group_id
+
+  existing_members = GivepulseUser.where(group_id: parent_group_id)
   existing_emails   = existing_members.filter_map { |u| u.email.to_s.strip.downcase.presence }.to_set
 
-  puts "Existing members currently in group #{group_id}: #{existing_members.size} (#{existing_emails.size} with usable emails)"
+  puts "Existing members currently in group #{parent_group_id}: #{existing_members.size} (#{existing_emails.size} with usable emails)"
 
   student_records = Array(StudentRecord.current_enrolled(branch, enrolled_on))
   puts "Fetched #{student_records.size} enrolled StudentRecords."

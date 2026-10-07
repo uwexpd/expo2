@@ -16,3 +16,4 @@
 //= require accountability_reports
 //= require help_texts
 //= require appointment
+//= require card_readers

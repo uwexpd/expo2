@@ -69,7 +69,7 @@ class GivepulseUser < GivepulseBase
   #   group/GivePulse. When provided:
   #     - used to decide is_private (only new users are marked private)
   #     - mutated in place to include the newly added email (so callers can
-  #       reuse the same Set across a loop without re-fetching)
+  #       reuse the same Set across a loop without re-fetching with API call)
   # @param course_section [String, nil] optional cross-list section label
   #   (only relevant for course roster imports)
   # @param dry_run [Boolean] when true, builds the full request payload and
@@ -112,9 +112,14 @@ class GivepulseUser < GivepulseBase
       # StudentRecord#sdb either returns self or triggers a redundant lookup.
       # Only Student instances need the extra hop to get to the SDB data.
       sdb_student           = student.is_a?(StudentRecord) ? student : student.sdb
+
+      unless sdb_student
+        Rails.logger.warn("Skipping student #{email} — no SDB record found.")
+        return { status: :skipped, email: email, reason: "missing_sdb_record" }
+      end
       admin_minor           = sdb_student.age < 18 ? "Yes" : "No"
-      admin_dir_release     = student.dir_release ? "Yes" : "No"
-      admin_campus          = (student.major_branch_list rescue '')
+      admin_dir_release     = sdb_student.dir_release ? "Yes" : "No"
+      admin_campus          = (sdb_student.major_branch_list rescue '')
       admin_class_standing  = (sdb_student.class_standing_description(show_upcoming_graduation: true) rescue '')
       admin_student_major   = (sdb_student.majors_list(true, ", ") rescue '')
 

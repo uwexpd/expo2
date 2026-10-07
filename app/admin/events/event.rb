@@ -113,14 +113,14 @@ ActiveAdmin.register Event do
   sidebar "Event Management", only: [:show, :attendees] do
     ul class: 'link-list' do
       li do        
-        span link_to "<i class='mi'>how_to_reg</i> Check-in".html_safe, admin_invitees_event_path(event)
+        span link_to "<i class='mi'>how_to_reg</i> Check-in <span class='caption' style='padding-left:0.75rem'>#{event.checked_in.size} checked in</span>".html_safe, admin_invitees_event_path(event)
       end
       li do        
-        span link_to "<i class='mi'>people_alt</i> Attendees <span class='caption' style='padding-left:0.75rem'>#{event.attendees.size} expected, #{event.attended.size} attended </span>".html_safe, attendees_admin_event_path(event)
+        span link_to "<i class='mi'>people_alt</i> Attendees <span class='caption' style='padding-left:0.75rem'>#{event.attendees.size} expected, #{event.attended.size} attended</span>".html_safe, attendees_admin_event_path(event)
       end
-      li do        
-        span link_to "<i class='mi'>badge</i> Nametags".html_safe, admin_event_path(event)
-      end      
+      # li do        
+      #   span link_to "<i class='mi'>badge</i> Nametags".html_safe, admin_event_path(event)
+      # end
     end
   end
 

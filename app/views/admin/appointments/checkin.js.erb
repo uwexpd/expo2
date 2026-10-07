@@ -1,0 +1,14 @@
+<% if @checkin_succeeded %>
+  $(".checkin_button_<%= @appointment.id %>").fadeOut(400, function() {
+    $(this).closest("td").html(
+      $("<span>", { class: "uw_green" }).text(
+        "Checked in <%= j @appointment.check_in_time.to_s(:time12) %>"
+      )
+    );
+  });
+  $(".flashes").append(
+    $("<div>", { class: "flash flash_notice" }).text("<%= j flash.now[:notice] %>")
+  );
+<% else %>
+  alert("<%= j flash.now[:alert] %>");
+<% end %>

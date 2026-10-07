@@ -190,7 +190,7 @@ ActiveAdmin.register Scholarship do
               f.input :other_visa_status, as: :boolean
               f.input :hb_1079, label: "Undocumented", as: :boolean
            end
-           f.inputs 'Redisent Type' do
+           f.inputs 'Resident Type' do
               hr
               f.input :resident , as: :boolean
               f.input :non_resident, as: :boolean

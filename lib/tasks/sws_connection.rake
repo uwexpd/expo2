@@ -66,11 +66,19 @@ end
 # ruby -ropenssl -e "puts OpenSSL::OPENSSL_VERSION" 
 # OpenSSL 1.1.1m  14 Dec 2021
 
-# Use curl to test
-#curl --cert /Users/joshlin/Sites/expo2/config/certs/expo.uaa.washington.edu.ic.crt --key /Users/joshlin/Sites/expo2/config/certs/expo.uw.edu.key https://ws.api.uw.edu/student/v5/person/<reg_id>.json
+# Use curl to test in Dev
+#curl --cert /Users/joshlin/Sites/expo/config/certs/expo.uaa.washington.edu.uwca.crt --key /Users/joshlin/Sites/expo/config/certs/expo.uaa.washington.edu.key https://ws.api.uw.edu/student/v5/person/<reg_id>.json
+
+# IdCard Service
+# curl -v --fail-with-body \
+#   --cert config/certs/expo.uaa.washington.edu.uwca.crt \
+#   --key config/certs/expo.uaa.washington.edu.key \
+#   --cacert /etc/ssl/cert.pem \
+#   -H 'x-uw-act-as: expo' \
+#   -H 'Accept: application/json' \
+#   'https://ws.api.uw.edu/idcard/v1/card?prox_rfid=[16 digitals number]'
+
 # Production server:
-#curl --cert /usr/local/apps/expo2/current/config/certs/expo.uaa.washington.edu.ic.crt --key /usr/local/apps/expo2/current/config/certs/expo.uw.edu.key https://ws.api.uw.edu/student/v5/person/<reg_id>.json
+#curl --cert /usr/local/apps/expo/current/config/certs/expo.uaa.washington.edu.uwca.crt --key /usr/local/apps/expo/current/config/certs/expo.uaa.washington.edu.key https://ws.api.uw.edu/student/v5/person/<reg_id>.json
 #=> Successfully get the search result
 
-# Local use curl to get person
-#curl --cert /Users/joshlin/Sites/expo2/config/certs/expo.uaa.washington.edu.ic.crt --key /Users/joshlin/Sites/expo2/config/certs/expo.uw.edu.key https://ws.api.uw.edu/identity/v2/person/<net_id>.json

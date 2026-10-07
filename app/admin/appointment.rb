@@ -11,16 +11,21 @@ ActiveAdmin.register Appointment do
 
   permit_params :start_time, :end_time, :unit_id, :staff_person_id, :student_id, :check_in_time, :notes, :front_desk_notes, :type, :drop_in, :contact_type_id, :follow_up_notes
 
-   member_action :checkin, method: :post do
+  member_action :checkin, method: :post do
     @appointment = Appointment.find(params[:id])
+    @checkin_succeeded = @appointment.checkin!
 
-    if @appointment.checkin!
-      respond_to do |format|
-        format.html { redirect_to admin_appointment_path(@appointment) }        
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to admin_appointment_path(@appointment), alert: "Check-in failed." }        
+    respond_to do |format|
+      if @checkin_succeeded
+        format.html do
+          redirect_to admin_appointment_path(@appointment), notice: "Appointment with student (#{@appointment.student.fullname}) checked in."
+        end
+        format.js { flash.now[:notice] = "Appointment with studetn (#{@appointment.student.fullname}) checked in." }
+      else
+        format.html do
+          redirect_to admin_appointment_path(@appointment), alert: 'Check-in failed.'
+        end
+        format.js { flash.now[:alert] = 'Check-in failed.' }
       end
     end
   end
@@ -74,7 +79,17 @@ ActiveAdmin.register Appointment do
     column ('Type') {|appointment| status_tag appointment.contact_type.title, class: 'info small' if appointment.contact_type}
     column ('Staff Person') {|appointment| appointment.staff_person.firstname_first rescue "unknown" }
     column ('Student') {|appointment| link_to appointment.student.fullname, admin_student_path(appointment.student) rescue "unknown"}
-    column ('Chick In Time') {|appointment| appointment.check_in_time.to_s(:time12) if appointment.check_in_time }
+    column 'Check-in' do |appointment|
+      if appointment.check_in_time.present?
+        span "Checked in #{appointment.check_in_time.to_s(:time12)}", class: 'uw_green'
+      else
+        link_to 'Check in', checkin_admin_appointment_path(appointment),
+                remote: true,
+                method: :post,
+                data: { confirm: "Check in this appointment with #{appointment.student.fullname}?" },
+                class: "button small checkin_button_#{appointment.id}"
+      end
+    end
     actions
   end
   

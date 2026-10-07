@@ -27,16 +27,16 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
   controller do
     before_action :fetch_event, only: [:index, :mass, :mass_checkin]
     def scoped_collection
-      # Check in attendees
+      # Check in invitees
       if params[:q].present? && params[:q][:student_number_eq].present?        
-        @event.attendees.student_number_eq(params[:q][:student_number_eq])
+        @event.invitees.student_number_eq(params[:q][:student_number_eq])
       else
-        @event.attendees rescue super
+        @event.invitees rescue super
       end
     end
 
     def index
-      @page_title = "Check in #{@event.attendees.size} attendees"      
+      @page_title = "Check in #{@event.attendees.size} invitees"      
       super
     end
       
@@ -121,6 +121,42 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
     redirect_to admin_event_time_path(@event, @event_time.id )
   end
 
+  collection_action :lookup_rfid, method: :post do
+    hex_uid = params[:rfid_uid].to_s.strip
+
+    unless hex_uid.match?(/\A[0-9a-f]{14}\z/i)
+      render json: { error: "RFID UID must be 14 hexadecimal characters." }, status: :unprocessable_entity
+      return
+    end
+
+    # IdcardResource converts the hexadecimal UID to decimal for IDCARD SWS.
+    card_response = IdcardResource.find_by_prox_rfid(hex_uid)
+    regid = card_response.dig("Cards", 0, "RegID")
+
+    if regid.blank?
+      Rails.logger.warn("[RFID] IDCARD returned no RegID")
+      render json: { error: "No cardholder was found for this RFID card." }, status: :not_found
+      return
+    end
+
+    student = StudentResource.find_by_reg_id(regid)
+    student_number = student&.student_no
+
+    if student_number.blank?
+      Rails.logger.info("[RFID] No student record found for cardholder")
+      render json: { error: "This card is not associated with a student record." }, status: :not_found
+      return
+    end
+
+    render json: { student_number: student_number }
+  rescue IdcardResource::ForbiddenError => error
+    Rails.logger.error("[RFID] IDCARD access denied: #{error.class}: #{error.message}")
+    render json: { error: "The check-in application is not authorized to use IDCARD SWS." }, status: :forbidden
+  rescue StandardError => error
+    Rails.logger.error("[RFID] Card lookup failed: #{error.class}: #{error.message}")
+    render json: { error: "The card lookup service is unavailable." }, status: :bad_gateway
+  end
+
   member_action :update_invitee, :method => :patch do
     @invitee = EventInvitee.find(params[:id])
     if (params[:event_invitee][:attending].present? && @invitee.update(attending: params[:event_invitee][:attending]))
@@ -168,7 +204,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
 
   index do
     selectable_column
-    column ('Attendees/Person'), sortable: 'people.firstname' do |invitee|
+    column ('Invitees / Person'), sortable: 'people.firstname' do |invitee|
       if invitee.person.is_a? Student 
         link_to invitee.person.firstname_first, [:admin, invitee.person], target: '_blank'
       else

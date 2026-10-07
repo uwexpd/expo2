@@ -153,10 +153,19 @@ class MentorController < ApplicationController
 
   def view_file
     file = ApplicationFile.find(params[:file_id]).file
-    file_path = "#{Rails.root}/files/application_file/file/#{params[:id]}/#{file.filename}"
-    unless file_path.nil?
+    file_path = Rails.root.join(
+      "files/application_file/file/#{params[:id]}/#{file.filename}"
+    )
+
+    if file.present? && File.exist?(file_path)
       send_file file_path, x_sendfile: true
+    else
+      flash[:error] = "File does not exist or has been removed."
+      redirect_to :action => "index"
     end
+  rescue ActiveRecord::RecordNotFound
+    flash[:error] = "File record was not found."
+    redirect_to :action => "index"
   end
 
   def ferpa_reminder

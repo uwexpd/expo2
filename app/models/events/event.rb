@@ -12,6 +12,8 @@ class Event < ApplicationRecord
     end
   end
   has_many :attended, -> { where("checkin_time IS NOT NULL") }, :class_name => "EventInvitee", :through => :times
+   has_many :checked_in, -> { where.not(checkin_time: nil) },
+           class_name: "EventInvitee", through: :times, source: :invitees
   has_many :staff_positions, :class_name => "EventStaffPosition", :dependent => :destroy
   has_many :staff_position_shifts, :class_name => "EventStaffPositionShift", :through => :staff_positions, :source => :shifts
   

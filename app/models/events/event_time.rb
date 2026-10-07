@@ -7,6 +7,8 @@ class EventTime < ApplicationRecord
   has_many :attendees, -> { where(attending: true) }, :class_name => "EventInvitee", :dependent => :destroy
   has_many :attended, -> { where("checkin_time IS NOT NULL") }, :class_name => "EventInvitee"
   has_many :sub_times, :class_name => "EventSubTime", :foreign_key => "parent_time_id"
+  has_many :checked_in, -> { where.not(checkin_time: nil) },
+         class_name: "EventInvitee"
   
   validates_presence_of :event_id, :start_time
 

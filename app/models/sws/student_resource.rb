@@ -11,7 +11,7 @@ class StudentResource < WebServiceResult
     if method.to_s =~ /find_by_system_key/
       attribute = :student_system_key
     elsif method.to_s =~ /find_by_reg_id/      
-      return StudentResource.find(args)
+      return StudentResource.find(args.first)
     elsif method.to_s =~ /find_by_(net_id|uw_netid)/
       attribute = :net_id
     elsif method.to_s =~ /find_by_(student_number|student_no)/
@@ -38,6 +38,11 @@ class StudentResource < WebServiceResult
   def photo
     @photo ||= StudentPhoto.new(@id)
   end
+
+  def student_number
+    self.StudentNumber
+  end
+  alias_method :student_no, :student_number
     
   def lastname
     #self.LastName.try(:titleize)
