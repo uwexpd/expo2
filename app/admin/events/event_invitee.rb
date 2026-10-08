@@ -36,7 +36,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
     end
 
     def index
-      @page_title = "Check in #{@event.attendees.size} invitees"      
+      @page_title = "Check in #{@event.invitees.size} invitees"
       super
     end
       

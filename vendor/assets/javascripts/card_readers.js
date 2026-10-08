@@ -1,15 +1,17 @@
 (function () {
   var FILTER_SELECTOR = 'form.filter_form input[name="q[student_number_eq]"]';
   var UID_PATTERN = /^[0-9a-f]{14}$/i;
-  var SCAN_GAP_MS = 75;
+  var STUDENT_NUMBER_PATTERN = /^\d{7}$/;
+  var SCAN_GAP_MS = 500;
   var NOTICE_KEY = 'event_invitee_rfid_lookup_notice';
   var buffer = '';
   var lastKeyAt = 0;
+  var lookupPending = false;
+  var suppressSuffixUntil = 0;
 
   function lookupUrl() {
     var path = window.location.pathname.replace(/\/$/, '');
     var nestedInvitees = path.match(/^(.*\/times\/\d+\/invitees)$/);
-
     return nestedInvitees
       ? nestedInvitees[1] + '/lookup_rfid'
       : '/expo/admin/invitees/lookup_rfid';
@@ -25,7 +27,6 @@
     if (!status) {
       var input = document.querySelector(FILTER_SELECTOR);
       if (!input || !input.form) return;
-
       status = document.createElement('span');
       status.id = 'rfid-reader-status';
       status.style.marginLeft = '8px';
@@ -62,34 +63,29 @@
   function submitStudentNumber(studentNumber) {
     var input = document.querySelector(FILTER_SELECTOR);
     if (!input) return;
-
     var value = String(studentNumber);
+    if (!STUDENT_NUMBER_PATTERN.test(value)) {
+      throw new Error('Card lookup returned an invalid student number.');
+    }
+
     input.value = value;
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
     sessionStorage.setItem(NOTICE_KEY, value);
 
     var form = input.form;
-    if (!form) return;
     if (form.requestSubmit) {
       form.requestSubmit();
     } else {
       var submitButton = form.querySelector('[type="submit"]');
-      if (submitButton) {
-        submitButton.click();
-      } else {
-        form.submit();
-      }
+      if (submitButton) submitButton.click();
+      else form.submit();
     }
   }
 
   function lookUpUid(uid) {
     showStatus('Looking up card…');
-
-    var headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    };
+    var headers = { Accept: 'application/json', 'Content-Type': 'application/json' };
     var token = csrfToken();
     if (token) headers['X-CSRF-Token'] = token;
 
@@ -107,40 +103,77 @@
   }
 
   function initializeRfidReader() {
-    if (!document.querySelector(FILTER_SELECTOR)) return;
+    var input = document.querySelector(FILTER_SELECTOR);
+    if (!input) return;
 
     showSavedNotice();
-    console.info('[RFID] UID reader enabled on Event Invitee check-in.');
     document.addEventListener('keydown', function (event) {
-      if (event.ctrlKey || event.altKey || event.metaKey) return;
+      if (event.ctrlKey || event.altKey || event.metaKey || event.repeat) return;
+      if (event.key === 'Shift') return;
+
+      // Leave other editable fields alone; a scan can still start on the page or in this filter.
+      var target = event.target;
+      if (target !== input && target.isContentEditable) return;
+      if (target !== input && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
 
       var now = Date.now();
       if (now - lastKeyAt > SCAN_GAP_MS) buffer = '';
       lastKeyAt = now;
 
-      if (event.key === 'Enter') {
-        if (!UID_PATTERN.test(buffer)) {
-          buffer = '';
+      if (now < suppressSuffixUntil && (event.key === ' ' || event.key === 'Spacebar')) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+
+      if (event.key === 'Enter' || event.key === 'Tab') {
+        // The reader may send Enter after the 14th digit already started the lookup.
+        if (now < suppressSuffixUntil) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
           return;
         }
-
-        event.preventDefault();
-        var uid = buffer;
+        var uid = buffer.replace(/\s+/g, '');
         buffer = '';
-        lookUpUid(uid).catch(function (error) {
-          console.error('[RFID] Lookup failed:', error);
-          showStatus(error.message, true);
-        });
+        if (!UID_PATTERN.test(uid) || lookupPending) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        startLookup(uid);
         return;
       }
 
       if (/^[0-9a-f]$/i.test(event.key)) {
         buffer += event.key;
+      } else if (event.key === ' ' || event.key === 'Spacebar') {
+        buffer += ' ';
+      } else {
+        buffer = '';
         return;
       }
 
-      buffer = '';
-    });
+      var normalized = buffer.replace(/\s+/g, '');
+      if (UID_PATTERN.test(normalized) && !lookupPending) {
+        // Complete scan: don't let the final key or the reader's Enter submit raw UID.
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        buffer = '';
+        startLookup(normalized);
+      } else if (normalized.length > 14) {
+        buffer = '';
+      }
+    }, true);
+
+    function startLookup(uid) {
+      input.value = ''; // Earlier scan keystrokes may have landed in the focused filter.
+      lookupPending = true;
+      suppressSuffixUntil = Date.now() + 1000;
+      lookUpUid(uid).catch(function (error) {
+        console.error('[RFID] Lookup failed:', error);
+        showStatus(error.message, true);
+      }).then(function () {
+        lookupPending = false;
+      });
+    }
   }
 
   if (document.readyState === 'loading') {
