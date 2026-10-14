@@ -56,6 +56,12 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
     end
   end
 
+  action_item :rfid_event_context, only: :index do
+    current_event = controller.instance_variable_get(:@event)
+    span '', id: 'rfid-event-context', 'data-rfid-event-id' => current_event.id,
+         style: 'display:none' if current_event
+  end
+
   action_item :mass_checkin, only: :index do
     link_to "Mass check-in (paste list)",
             url_for(action: :mass, event_id: params[:event_id])
@@ -120,41 +126,88 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
 
     redirect_to admin_event_time_path(@event, @event_time.id )
   end
-
+  
   collection_action :lookup_rfid, method: :post do
     hex_uid = params[:rfid_uid].to_s.strip
-
     unless hex_uid.match?(/\A[0-9a-f]{14}\z/i)
-      render json: { error: "RFID UID must be 14 hexadecimal characters." }, status: :unprocessable_entity
+      render json: { error: 'RFID UID must be 14 hexadecimal characters.' }, status: :unprocessable_entity
       return
     end
 
-    # IdcardResource converts the hexadecimal UID to decimal for IDCARD SWS.
+    # On the nested route :time_id is the EventTime ID, not the Event ID.
+    nested_time = EventTime.find_by(id: params[:time_id]) if params[:time_id].present?
+    event = nested_time&.event || Event.find_by(id: params[:event_id])
+    unless event && (params[:time_id].blank? || nested_time) &&
+           (params[:event_id].blank? || event.id.to_s == params[:event_id].to_s)
+      render json: { error: 'Open check-in for a specific event before scanning.' }, status: :unprocessable_entity
+      return
+    end
+
+    selected_time_id = params[:event_time_id].presence || nested_time&.id
+    selected_time = event.times.find_by(id: selected_time_id) if selected_time_id.present?
+    if selected_time_id.present? && !selected_time
+      render json: { error: 'The selected event time does not belong to this event.' }, status: :unprocessable_entity
+      return
+    end
+
     card_response = IdcardResource.find_by_prox_rfid(hex_uid)
-    regid = card_response.dig("Cards", 0, "RegID")
-
+    regid = card_response.dig('Cards', 0, 'RegID')
     if regid.blank?
-      Rails.logger.warn("[RFID] IDCARD returned no RegID")
-      render json: { error: "No cardholder was found for this RFID card." }, status: :not_found
+      render json: { error: 'No cardholder was found for this RFID card.' }, status: :not_found
       return
     end
 
-    student = StudentResource.find_by_reg_id(regid)
-    student_number = student&.student_no
-
-    if student_number.blank?
-      Rails.logger.info("[RFID] No student record found for cardholder")
-      render json: { error: "This card is not associated with a student record." }, status: :not_found
+    sws_student = StudentResource.find_by_reg_id(regid)
+    student_number = sws_student&.student_no.to_s
+    student = Student.find_by_student_no(student_number) if student_number.present?
+    unless student
+      render json: { error: 'No EXPO student record was found for this card.' }, status: :not_found
       return
     end
 
-    render json: { student_number: student_number }
+    # Preserve an existing event invitation, even when its time differs from the
+    # selected time. Never silently pick among multiple invitations.
+    invitees = event.invitees.where(person_id: student.id).to_a
+    invitee = invitees.find { |item| item.event_time_id == selected_time.id } if selected_time
+    invitee ||= invitees.first if invitees.one?
+    if !invitee && invitees.any?
+      render json: { error: 'This student has multiple invitations. Select the correct event time.' }, status: :conflict
+      return
+    end
+
+    if !invitee && !selected_time
+      times = event.times.to_a
+      selected_time = times.first if times.one?
+    end
+    unless invitee || selected_time
+      render json: { error: 'Select a check-in event time before scanning an uninvited student.' }, status: :unprocessable_entity
+      return
+    end
+
+    already_checked_in = invitee&.checked_in?
+    unless already_checked_in
+      EventInvitee.transaction do
+        invitee ||= selected_time.invite!(student)
+        raise ActiveRecord::RecordInvalid.new(invitee) unless invitee&.persisted?
+        raise ActiveRecord::RecordInvalid.new(invitee) unless invitee.checkin!
+      end
+    end
+
+    render json: {
+      status: already_checked_in ? 'already_checked_in' : 'checked_in',
+      student_number: student_number,
+      event_time_id: invitee.event_time_id,
+      message: already_checked_in ? 'Student already checked in.' : 'Student successfully checked in.'
+    }
   rescue IdcardResource::ForbiddenError => error
     Rails.logger.error("[RFID] IDCARD access denied: #{error.class}: #{error.message}")
-    render json: { error: "The check-in application is not authorized to use IDCARD SWS." }, status: :forbidden
+    render json: { error: 'The check-in application is not authorized to use IDCARD SWS.' }, status: :forbidden
+  rescue ActiveRecord::RecordInvalid => error
+    Rails.logger.error("[RFID] Event check-in failed: #{error.class}: #{error.message}")
+    render json: { error: 'Could not check in this student.' }, status: :unprocessable_entity
   rescue StandardError => error
-    Rails.logger.error("[RFID] Card lookup failed: #{error.class}: #{error.message}")
-    render json: { error: "The card lookup service is unavailable." }, status: :bad_gateway
+    Rails.logger.error("[RFID] Event check-in failed: #{error.class}: #{error.message}")
+    render json: { error: 'Card lookup or event check-in failed.' }, status: :bad_gateway
   end
 
   member_action :update_invitee, :method => :patch do
@@ -280,6 +333,35 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
     end
     #column ('Note') {|invitee| invitee.checkin_notes}
     # actions
+  end
+
+  # A separate check-in choice; the existing "Event times" filter only filters rows.
+  sidebar 'Check-in time', only: :index do
+    current_event = controller.instance_variable_get(:@event)
+    if current_event
+      times = current_event.times.order(:start_time).to_a
+      nested_time_id = params[:time_id].presence
+      selected_id = nested_time_id || params[:event_time_id].presence || (times.first.id if times.one?)
+
+      if nested_time_id
+        selected_time = times.find { |time| time.id.to_s == nested_time_id.to_s }
+        div class: 'content-block' do
+          label 'Check in for :'
+          span selected_time ? selected_time.time_detail : 'Invalid event time'
+        end
+      else
+        div class: 'content-block' do
+          label 'Check in for :', for: 'rfid_event_time_id'
+          text_node select_tag(
+            :rfid_event_time_id,
+            options_from_collection_for_select(times, :id, :time_detail, selected_id.to_s),
+            include_blank: (times.size > 1 ? 'Select an event time' : false),
+            id: 'rfid_event_time_id',
+            class: 'select2'
+          )
+        end
+      end
+    end
   end
 
   filter :person_firstname, as: :string

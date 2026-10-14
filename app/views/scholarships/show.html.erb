@@ -27,8 +27,8 @@
 	</p>
 
 	<h6>Eligibility</h6>
-	<div class="content"><%= raw @scholarship.eligibility %></div>
 	<div class="content">
+		<%= raw @scholarship.eligibility %>
 		<% unless @scholarship.class_standings.blank? %>
 			<strong>Student Type</strong>
 			<ul>

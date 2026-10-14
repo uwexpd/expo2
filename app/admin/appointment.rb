@@ -64,6 +64,67 @@ ActiveAdmin.register Appointment do
 
     render json: payload
   end
+
+  # Retain the existing route name; scanning locates an appointment but does not check it in.
+  collection_action :checkin_rfid, method: :post do
+    hex_uid = params[:rfid_uid].to_s.strip
+    unless hex_uid.match?(/\A[0-9a-f]{14}\z/i)
+      render json: { error: 'RFID UID must be 14 hexadecimal characters.' }, status: :unprocessable_entity
+      return
+    end
+
+    card_response = IdcardResource.find_by_prox_rfid(hex_uid)
+    regid = card_response.dig('Cards', 0, 'RegID')
+    if regid.blank?
+      render json: { error: 'No cardholder was found for this RFID card.' }, status: :not_found
+      return
+    end
+
+    sws_student = StudentResource.find_by_reg_id(regid)
+    student_number = sws_student&.student_no.to_s
+    student = Student.find_by_student_no(student_number) if student_number.present?
+    unless student
+      render json: { error: 'No EXPO student record was found for this card.' }, status: :not_found
+      return
+    end
+
+    # Do not check in QuickContact records or guess among multiple appointments.
+    appointments = Appointment.without_quick_contacts
+                              .where(student_id: student.id, start_time: Time.zone.today.all_day)
+                              .order(:start_time).to_a
+    if appointments.empty?
+      # Return the resolved student number so the browser can show today's empty result.
+      render json: {
+        status: 'no_appointment',
+        student_number: student_number,
+        message: 'No appointment scheduled for this student today.'
+      }
+      return
+    end
+    if appointments.size > 1
+      render json: {
+        status: 'multiple_appointments',
+        student_number: student_number,
+        message: 'Multiple appointments found today. Choose the intended appointment to check in.'
+      }
+      return
+    end
+
+    appointment = appointments.first
+    render json: {
+      status: appointment.checked_in? ? 'already_checked_in' : 'appointment_found',
+      appointment_id: appointment.id,
+      student_number: student_number,
+      message: appointment.checked_in? ? 'Appointment already checked in.' : 'Appointment found. Review it and select Check in.'
+    }
+  rescue IdcardResource::ForbiddenError => error
+    Rails.logger.error("[RFID] IDCARD access denied: #{error.class}: #{error.message}")
+    render json: { error: 'The check-in application is not authorized to use IDCARD SWS.' }, status: :forbidden
+  rescue StandardError => error
+    Rails.logger.error("[RFID] Appointment lookup failed: #{error.class}: #{error.message}")
+    render json: { error: 'Card or appointment lookup failed.' }, status: :bad_gateway
+  end
+
   
   controller do
     def new
