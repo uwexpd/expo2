@@ -1,6 +1,7 @@
 (function () {
   var EVENT_FILTER_SELECTOR = 'form.filter_form input[name="q[student_number_eq]"]';
   var APPOINTMENT_FILTER_SELECTOR = 'form.filter_form input[name="q[student_no_search_eq]"]';
+  var NEW_APPOINTMENT_SELECTOR = 'form#new_appointment .student-lookup .student-number-search';
   var UID_PATTERN = /^[0-9a-f]{14}$/i;
   var STUDENT_NUMBER_PATTERN = /^\d{7}$/;
   var SCAN_GAP_MS = 500;
@@ -11,12 +12,14 @@
 
   function mode() {
     var path = window.location.pathname.replace(/\/$/, '');
+    if (path === '/expo/admin/appointments/new' && document.querySelector(NEW_APPOINTMENT_SELECTOR)) return 'appointment_new';
     if (path === '/expo/admin/appointments' && document.querySelector(APPOINTMENT_FILTER_SELECTOR)) return 'appointment';
     if (document.querySelector(EVENT_FILTER_SELECTOR) && document.querySelector('[data-rfid-event-id]')) return 'event';
     return null;
   }
 
   function filterSelector() {
+    if (mode() === 'appointment_new') return NEW_APPOINTMENT_SELECTOR;
     return mode() === 'appointment' ? APPOINTMENT_FILTER_SELECTOR : EVENT_FILTER_SELECTOR;
   }
 
@@ -25,6 +28,7 @@
   }
 
   function lookupUrl() {
+    if (mode() === 'appointment_new') return '/expo/admin/appointments/prefill_rfid';
     if (mode() === 'appointment') return '/expo/admin/appointments/checkin_rfid';
     var path = window.location.pathname.replace(/\/$/, '');
     var nestedInvitees = path.match(/^(.*\/times\/\d+\/invitees)$/);
@@ -65,6 +69,21 @@
     content.parentNode.insertBefore(alert, content);
   }
 
+  function showFlashNotice(message) {
+    var oldNotice = document.getElementById('rfid-lookup-notice');
+    if (oldNotice) oldNotice.remove();
+    var status = document.getElementById('rfid-reader-status');
+    if (status) status.textContent = '';
+    var content = document.getElementById('active_admin_content');
+    if (!content) return;
+    var notice = document.createElement('div');
+    notice.id = 'rfid-lookup-notice';
+    notice.className = 'flash flash_notice';
+    notice.setAttribute('role', 'status');
+    notice.textContent = message;
+    content.parentNode.insertBefore(notice, content);
+  }
+
   function eventId() {
     var context = document.querySelector('[data-rfid-event-id]');
     return context ? context.getAttribute('data-rfid-event-id') : null;
@@ -99,6 +118,11 @@
     syncSelection();
   }
 
+  function studentLabel(result) {
+    var name = String(result.student_name || '').trim();
+    return (name ? name + ' ' : 'Student ') + '(' + result.student_number + ')';
+  }
+
   function showAppointmentDetailNotice() {
     var match = window.location.pathname.match(/^\/expo\/admin\/appointments\/(\d+)\/?$/);
     if (!match) return;
@@ -116,8 +140,8 @@
     notice.className = 'flash flash_notice';
     notice.setAttribute('role', 'status');
     notice.textContent = result.status === 'already_checked_in'
-      ? 'Appointment already checked in.'
-      : 'Appointment found for student ' + result.student_number + '. Review it and select Check in.';
+      ? 'Appointment for ' + studentLabel(result) + ' already checked in.'
+      : 'Appointment found for ' + studentLabel(result) + '. Review it and select Check in.';
     content.parentNode.insertBefore(notice, content);
   }
 
@@ -131,8 +155,8 @@
     if (mode() === 'appointment' && (result.status === 'no_appointment' || result.status === 'multiple_appointments')) {
       if (new URLSearchParams(window.location.search).get('scope') === 'today') {
         showFlashAlert(result.status === 'no_appointment'
-          ? 'No appointment scheduled for student ' + result.student_number + ' today. No check-in was made.'
-          : 'Multiple appointments found for student ' + result.student_number + ' today. Choose one to check in.');
+          ? 'No appointment scheduled for ' + studentLabel(result) + ' today. No check-in was made.'
+          : 'Multiple appointments found for ' + studentLabel(result) + ' today. Choose one to check in.');
       }
       return;
     }
@@ -141,8 +165,8 @@
     notice.className = 'flash flash_notice';
     notice.setAttribute('role', 'status');
     notice.textContent = result.status === 'already_checked_in'
-      ? 'Student ' + result.student_number + ' was already checked in.'
-      : 'Student ' + result.student_number + ' successfully checked in.';
+      ? studentLabel(result) + ' was already checked in.'
+      : studentLabel(result) + ' successfully checked in.';
     var content = document.getElementById('active_admin_content');
     if (content) content.parentNode.insertBefore(notice, content);
   }
@@ -154,7 +178,8 @@
     if (!STUDENT_NUMBER_PATTERN.test(value)) throw new Error('Card lookup returned an invalid student number.');
     if (mode() === 'appointment') {
       sessionStorage.setItem(noticeKey(), JSON.stringify({
-        student_number: value, status: result.status, appointment_id: result.appointment_id
+        student_number: value, student_name: result.student_name,
+        status: result.status, appointment_id: result.appointment_id
       }));
       if (result.status === 'appointment_found' || result.status === 'already_checked_in') {
         if (!/^\d+$/.test(String(result.appointment_id))) throw new Error('Card lookup returned an invalid appointment.');
@@ -175,7 +200,8 @@
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
     sessionStorage.setItem(noticeKey(), JSON.stringify({
-      student_number: value, status: result.status, appointment_id: result.appointment_id
+      student_number: value, student_name: result.student_name,
+      status: result.status, appointment_id: result.appointment_id
     }));
     var form = input.form;
     if (form.requestSubmit) form.requestSubmit();
@@ -186,10 +212,46 @@
     }
   }
 
+  function setFormValue(element, value) {
+    element.value = String(value);
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+    element.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function prefillAppointment(data) {
+    var number = String(data.student_number || '');
+    var studentId = String(data.student_id || '');
+    var form = document.querySelector('form#new_appointment');
+    if (!form || !STUDENT_NUMBER_PATTERN.test(number) || !/^\d+$/.test(studentId)) {
+      throw new Error('Card lookup returned an invalid student record.');
+    }
+    var numberInput = form.querySelector('.student-lookup .student-number-search');
+    var studentInput = form.querySelector('#appointment_student_id');
+    var startInput = form.querySelector('#appointment_start_time');
+    var checkinInput = form.querySelector('#appointment_check_in_time');
+    var contactInput = form.querySelector('#appointment_contact_type_id');
+    if (!numberInput || !studentInput || !startInput || !checkinInput || !contactInput) {
+      throw new Error('Could not find all appointment fields to fill.');
+    }
+    if (!Array.prototype.some.call(contactInput.options, function (option) {
+      return option.value === String(data.contact_type_id);
+    })) throw new Error('In-person contact type is not available in this form.');
+
+    setFormValue(numberInput, number);
+    setFormValue(studentInput, studentId);
+    setFormValue(startInput, data.start_time);
+    setFormValue(checkinInput, data.check_in_time);
+    setFormValue(contactInput, data.contact_type_id);
+    if (window.jQuery) window.jQuery(contactInput).trigger('chosen:updated').trigger('change.select2');
+    showFlashNotice(studentLabel({ student_name: data.student_name, student_number: number }) +
+      ' and appointment details filled. Review and save the form.');
+  }
+
   function lookUpUid(uid) {
     var currentMode = mode();
     if (currentMode === 'event' && !eventId()) return Promise.reject(new Error('Open an event check-in page before scanning.'));
-    showStatus(currentMode === 'appointment' ? 'Looking up appointment…' : 'Checking in card…');
+    showStatus(currentMode === 'appointment_new' ? 'Looking up student…' :
+      currentMode === 'appointment' ? 'Looking up appointment…' : 'Checking in card…');
     var headers = { Accept: 'application/json', 'Content-Type': 'application/json' };
     var token = csrfToken();
     if (token) headers['X-CSRF-Token'] = token;
@@ -205,9 +267,13 @@
       body: JSON.stringify(payload)
     }).then(function (response) {
       return response.json().then(function (data) {
-        if (!response.ok) throw new Error(data.error || (currentMode === 'appointment' ? 'Unable to find an appointment.' : 'Unable to check in this card.'));
-        showStatus(data.message);
-        submitStudentNumber(data.student_number, data);
+        if (!response.ok) throw new Error(data.error || (currentMode === 'event' ? 'Unable to check in this card.' : 'Unable to look up this card.'));
+        if (currentMode === 'appointment_new') {
+          prefillAppointment(data);
+        } else {
+          showStatus(data.message);
+          submitStudentNumber(data.student_number, data);
+        }
       });
     });
   }

@@ -196,6 +196,7 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
     render json: {
       status: already_checked_in ? 'already_checked_in' : 'checked_in',
       student_number: student_number,
+      student_name: sws_student.fullname.to_s.strip.presence,
       event_time_id: invitee.event_time_id,
       message: already_checked_in ? 'Student already checked in.' : 'Student successfully checked in.'
     }
@@ -319,7 +320,10 @@ ActiveAdmin.register EventInvitee, as: 'invitee' do
 
     end
 
-    column ('Time'){|invitee| invitee.event_time.time_detail} if event.times.size > 1
+    column('Time') do |invitee|
+      link_to invitee.event_time.time_detail,
+              admin_event_time_path(event, invitee.event_time)
+    end
     column ('Check-in'), sortable: :checkin_time do |invitee| 
       if invitee.checked_in?
         span "Checked in #{relative_timestamp(invitee.checkin_time) rescue invitee.checkin_time.to_s(:time12)}", class: 'uw_green'
