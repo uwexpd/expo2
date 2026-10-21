@@ -1,6 +1,7 @@
 class CourseResource < WebServiceResult
   SWS_VERSION = "v5"
   self.element_path = "student/#{SWS_VERSION}/course"
+  self.cache_lifetime = 1.day
 
   def self.find_by_course(year, quarter, dept_abbrev, course_no)
     dept_abbrev = URI::DEFAULT_PARSER.escape(dept_abbrev)
