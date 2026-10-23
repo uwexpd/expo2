@@ -1,111 +1,109 @@
-<div class='panel'>	
+<div class='panel'>
   <div class='panel_contents email write recipients'>
-		<h1>Compose Message</h1>
-	   <h2><i class='mi uw_purple'>view_list</i> Recipient List - sending to <%= pluralize @recipients.size, "recipient" %>. <%= link_to "View recipient list <i class='mi md-20'>visibility</i>".html_safe, 'javascript:;', data: { link_toggle: "#recipient_list" }, class: 'button small' %></h2>
-		  <div class='content-block'>
-				<table id='recipient_list' class='borderless' style="display:none">
-					<% @recipients.each_with_index do |recipient, i| %>
-					<tr <%= "class=current_sample_row" if i == @recipient_sample_num %> id="recipient_<%= i %>">
-						<td class="light"><%= i+1 %></td>
-						<td><%= recipient.respond_to?(:fullname) ? recipient.fullname : recipient.person.fullname rescue "#err" %></td>
-						<td><%= auto_link recipient.respond_to?(:email) ? recipient.email : recipient.person.email rescue "#err" %></td>
-						<td class="light"><%= recipient.class %> <%= recipient.id unless recipient.nil? %></td>
-						<td><span class="current_sample_row_note">Current sample <i class='mi md-16'>done_outline</i></span>
-							<%= link_to "Use as sample <i class='mi md-20'>forward</i>".html_safe, admin_email_resample_path(new_sample_num: i), class: "use_as_sample_link" %>
-							</td>
-					</tr>
-					<% end %>
-				</table>
-			</div>
+    <h1>Compose Message</h1>
+    <h2><i class='mi uw_purple'>view_list</i> Recipient List - sending to <%= pluralize @recipients.size, "recipient" %>. <%= link_to "View recipient list <i class='mi md-20'>visibility</i>".html_safe, 'javascript:;', data: { link_toggle: "#recipient_list" }, class: 'button small' %></h2>
+    <div class='content-block'>
+      <table id='recipient_list' class='borderless' style="display:none">
+        <% @recipients.each_with_index do |recipient, i| %>
+          <tr <%= "class=current_sample_row" if i == @recipient_sample_num %> id="recipient_<%= i %>">
+            <td class="light"><%= i + 1 %></td>
+            <td><%= recipient.respond_to?(:fullname) ? recipient.fullname : recipient.person.fullname rescue "#err" %></td>
+            <td><%= auto_link recipient.respond_to?(:email) ? recipient.email : recipient.person.email rescue "#err" %></td>
+            <td class="light"><%= recipient.class %> <%= recipient.id unless recipient.nil? %></td>
+            <td><span class="current_sample_row_note">Current sample <i class='mi md-16'>done_outline</i></span>
+              <%= link_to "Use as sample <i class='mi md-20'>forward</i>".html_safe,
+                          admin_email_resample_path(new_sample_num: i, email_selection_token: @email_selection_token),
+                          class: "use_as_sample_link" %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
   </div>
 </div>
 <br>
 
 <%= form_for :email, url: { action: "queue" }, html: { id: "email_write_form" } do |f| %>
-<% select_params = "select[#{@recipients.first.class.to_s}]"
-	 recipients_id_json = @recipients.pluck(:id).to_json
-%>
-<div class='panel'>
+  <div class='panel'>
+    <div class='panel_contents email write' id="message_contents">
+      <h2><i class='mi uw_purple'>edit</i> Message Contents
+        <%= link_to "Preview Sample <i class='mi md-20'>preview</i>".html_safe,
+                    admin_email_sample_preview_path(email_selection_token: @email_selection_token),
+                    class: 'button small', id: 'preview_sample_button' %>
+      </h2>
 
-  <div class='panel_contents email write' id="message_contents">
-  	<h2><i class='mi uw_purple'>edit</i> Message Contents
-  			<%#= link_to "<i class='mi md-20'>preview</i> Preview Sample".html_safe, admin_email_sample_preview_path(select_params => recipients_id_json), remote: true, method: :post, class: 'button small' %>
-  			<%= link_to "Preview Sample <i class='mi md-20'>preview</i>".html_safe, admin_email_sample_preview_path, class: 'button small', id: 'preview_sample_button' %>
-  	</h2>
+      <fieldset class="inputs">
+        <div class="email_preview string input">
+          <table class='borderless highlightless'>
+            <tbody>
+              <tr>
+                <th>To</th>
+                <td><%= text_field_tag "email[to]", pluralize(@recipients.size, "recipient"), disabled: true %></td>
+              </tr>
+              <tr>
+                <th>From</th>
+                <td><%= text_field_tag "email[from]" %></td>
+              </tr>
+              <tr>
+                <th>Subject</th>
+                <td><%= text_field_tag "email[subject]", (params[:email][:subject] rescue nil), id: 'email_subject' %></td>
+              </tr>
+              <tr class="text input">
+                <th>Body</th>
+                <td><%= text_area_tag "email[body]", (params[:email][:body] rescue nil), rows: 25, cols: 100, id: 'email_body' %></td>
+              </tr>
+              <tr class="select input">
+                <th>Apply a template</th>
+                <td><%= f.collection_select(:template_id,
+                                            EmailTemplate.order(:name),
+                                            :id, :title,
+                                            { include_blank: 'Please select a template', selected: params[:email_template_id].to_i },
+                                            { class: 'select2', style: 'width: 100%' }) %></td>
+              </tr>
+              <tr id="update_email_template_form" style="display:none">
+                <th></th>
+                <td class="input boolean">
+                  <label for="update_email_template">
+                    <%= check_box_tag :update_email_template, true %>Update this template with my changes above.
+                  </label>
+                </td>
+              </tr>
+              <tr>
+                <th></th>
+                <td class="input boolean">
+                  <label for="create_email_template">
+                    <%= check_box_tag :create_email_template, true %>Create a new template with the text above
+                    <div id="new_email_template_name" <%= "style=display:none" if @email_template.nil? %>>Template name: <%= text_field_tag "new_email_template_name", (@email_template ? @email_template.name : nil), size: 50 %></div>
+                  </label>
+                </td>
+              </tr>
+              <tr>
+                <th></th>
+                <td class="input boolean">
+                  <label for="html_format">
+                    <%= check_box_tag :html_format, true %>Send email template with HTML format
+                  </label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </fieldset>
 
-	  <fieldset class="inputs">
-		<div class="email_preview string input">
-			<table class='borderless highlightless'>
-				<tbody>
-					<tr>
-						<th>To</th>
-						<td><%= text_field_tag "email[to]", "#{pluralize(@recipients.size, "recipient")}", disabled: true %></td>
-					</tr>
-					<tr>
-						<th>From</th>
-						<td><%= text_field_tag "email[from]" %></td>
-					</tr>
-					<tr>
-						<th>Subject</th>
-						<td><%= text_field_tag "email[subject]", (params[:email][:subject] rescue nil), :id => 'email_subject' %></td>
-					</tr>
-					
-					<tr class="text input">
-						<th>Body</th>
-						<td><%= text_area_tag "email[body]", (params[:email][:body] rescue nil), :rows => 25, :cols => 100, :id => 'email_body' %></td>
-					</tr>
-					<tr class="select input">
-						<th>Apply a template</th>
-						<td>
-							<%= f.collection_select(:template_id, 
-										EmailTemplate.order(:name), 
-										:id, :title,
-										{include_blank: 'Please select a template', selected: (params[:email_template_id].to_i)},
-										{class: 'select2', style: 'width: 100%'}) %>
-						</td>
-					</tr>
-					<tr id="update_email_template_form" style="display:none">
-						<th></th>
-						<td class="input boolean">
-							<label for="update_email_template">
-								<%= check_box_tag :update_email_template, true %>Update this template with my changes above.</label>
-						</td>
-					</tr>
-					<tr>
-						<th></th>
-						<td class="input boolean">
-							<label for="create_email_template">
-								<%= check_box_tag :create_email_template, true %>Create a new template with the text above
-								<div id="new_email_template_name" <%= "style=display:none" if @email_template.nil? %>>Template name: <%= text_field_tag "new_email_template_name", (@email_template ? @email_template.name : nil), size: 50 %>
-								</div>
-							</label>								
-						</td>
+      <fieldset class="actions">
+        <ol>
+          <li class="action input_action" id="email_queue_submit_action"><%= f.submit "Queue E-mails" %></li>
+          <li class="cancel"><%= link_to 'Cancel', :back %></li>
+        </ol>
+      </fieldset>
 
-					</tr>
-					<tr>
-						<th></th>
-						<td class="input boolean">
-							<label for="html_format">
-								<%= check_box_tag :html_format, true %>Send email template with HTML format</label>
-						</td>
-					</tr>
-				</tbody>				
-			</table>
-		</div>	
-	  </fieldset>
-
-	  <fieldset class="actions">
-		<ol><li class="action input_action " id="email_queue_submit_action">
-				<%= f.submit "Queue E-mails" %>
-			</li>
-			<li class="cancel"><%= link_to 'Cancel', :back %></li>
-		</ol>
-	  </fieldset>	  
-		<%= hidden_field_tag select_params, recipients_id_json %>	
-		<%= hidden_field_tag "current_sample_num", @recipient_sample_num %>
-
+      <% if @email_selection_token.present? %>
+        <%= hidden_field_tag :email_selection_token, @email_selection_token %>
+      <% elsif @recipients.present? %>
+        <%= hidden_field_tag "select[#{@recipients.first.class}]", @recipients.map(&:id).to_json %>
+      <% end %>
+      <%= hidden_field_tag "current_sample_num", @recipient_sample_num %>
+    </div>
+    <div class="panel_contents email write" id="sample_preview" style="display:none"></div>
   </div>
-
-  <div class="panel_contents email write" id="sample_preview" style="display:none"></div>
-</div>
 <% end %>

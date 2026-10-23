@@ -22,6 +22,8 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
   permit_params :offering_id, :person_id
 
   controller do
+    include AdminEmailCompose
+
     before_action :fetch_application, :except => [ :new, :create ]
 
     def scoped_collection
@@ -165,28 +167,19 @@ ActiveAdmin.register ApplicationForOffering, as: 'application' do
 
   end
 
-  batch_action :email_primary_applicants, confirm: "Are you sure to send mass emails to primary applicants?" do |ids|
-    applicants = []
-    batch_action_collection.find(ids).each do |app|
-      applicants << app if app
-    end
-    redirect_to admin_email_write_path("select[#{applicants.first.class.to_s}]": applicants)
+  batch_action :email_primary_applicants, confirm: "Email selected primary applicants?" do |ids|
+    applicants = batch_action_collection.where(id: ids).to_a
+    redirect_to_email_write(applicants, fallback_location: collection_path)
   end
 
-  batch_action :email_mentors, confirm: "Are you sure to send mass emails to mentors" do |ids|
-    mentors = []
-    batch_action_collection.find(ids).each do |app|
-      app.mentors.each{|mentor| mentors << mentor } if app
-    end
-    redirect_to admin_email_write_path("select[#{mentors.first.class.to_s}]": mentors)
+  batch_action :email_mentors, confirm: "Email mentors of selected applications?" do |ids|
+    mentors = batch_action_collection.where(id: ids).flat_map(&:mentors)
+    redirect_to_email_write(mentors, fallback_location: collection_path)
   end
 
-  batch_action :email_group_members, confirm: "Are you sure to send mass emails to mentors" do |ids|
-    group_members = []
-    batch_action_collection.find(ids).each do |app|
-      app.group_members.each{|member| group_members << member } if app      
-    end
-    redirect_to admin_email_write_path("select[#{group_members.first.class.to_s}]": group_members)
+  batch_action :email_group_members, confirm: "Email group members of selected applications?" do |ids|
+    members = batch_action_collection.where(id: ids).flat_map(&:group_members)
+    redirect_to_email_write(members, fallback_location: collection_path)
   end
 
   index do

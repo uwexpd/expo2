@@ -2,6 +2,7 @@ ActiveAdmin.register_page "Email" do
   menu false
 
   controller do
+    prepend_before_action :restore_batch_email_selection, except: :apply_template
   	before_action :get_recipients, :except => [ :apply_template ]
   	
   	def write
@@ -39,6 +40,10 @@ ActiveAdmin.register_page "Email" do
         end        
         EmailQueue.queue(person_id, template, nil, command_after_delivery, nil, recipient)
       end
+
+      # Preserve the token on validation/render failures; consume it only after
+      # the entire queue action finishes without raising.
+      AdminEmailSelection.delete(token: @email_selection_token) if @email_selection_token
       flash[:notice] = "Successfully queued #{@recipients.size} messages."
       return redirect_to admin_email_queues_path if EmailQueue.messages_waiting?
       redirect_to request.referer
@@ -70,6 +75,29 @@ ActiveAdmin.register_page "Email" do
     end
 
   	protected
+
+    def restore_batch_email_selection
+      token = params[:email_selection_token]
+      return if token.blank? # Keep existing non-batch email entry points working.
+
+      selection = AdminEmailSelection.fetch(user: current_user, token: token)
+      unless selection
+        redirect_to admin_applications_path,
+                    alert: "Email selection expired or is unavailable; please select the applications again."
+        return
+      end
+
+      # Recreate the existing select shape: { "ApplicationForOffering" => { "123" => "1" } }.
+      # The stored selection is { "ApplicationForOffering" => [123, ...] }.
+      params[:select] = selection.each_with_object({}) do |(type, ids), result|
+        result[type] = ids.each_with_object({}) { |id, selected| selected[id.to_s] = "1" }
+      end
+      @email_selection_token = token
+      # Batch actions select the actual recipients; do not let request parameters
+      # reinterpret that fixed selection as another recipient group.
+      params.delete(:group_variant)
+      params.delete(:recipient_variant)
+    end
 
     # Extracts an array of recipient objects. These objects MUST have a "person" attribute or be a Person, otherwise they won't be added.
     # Format:  "select"=>{"ApplicationForOffering"=>{"127114"=>"1", "122739"=>"1", "124292"=>"1"}}

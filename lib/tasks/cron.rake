@@ -63,9 +63,12 @@ namespace :cron do
     desc "Remove old session history"
     task remove_old_session_history: :environment do
       STDOUT.sync = true
-      puts "Removing session history older than one month..."
-      deleted = SessionHistory.where("created_at < ?", 1.month.ago).delete_all
-      puts "Deleted #{deleted} rows."
+      cutoff = 1.month.ago
+      puts "[users:remove_old_session_history] START | Deleting session history created before #{cutoff.iso8601}"
+
+      deleted = SessionHistory.where("created_at < ?", cutoff).delete_all
+
+      puts "[users:remove_old_session_history] DONE  | Deleted #{deleted} session history row(s)"
     end
   end
 
@@ -73,9 +76,11 @@ namespace :cron do
     desc "Remove expired sessions"
     task remove_expired_sessions: :environment do
       STDOUT.sync = true
-      puts "Removing sessions that are not updated within one day or are created older than two days ago.."
+      puts "[sessions:remove_expired_sessions] START | Sweeping expired sessions (not updated in 1 day or created over 2 days ago)"
+
       deleted = Session.sweep
-      puts "Deleted #{deleted} rows."
+
+      puts "[sessions:remove_expired_sessions] DONE  | Deleted #{deleted} session row(s)"
     end
   end
 
@@ -83,8 +88,16 @@ namespace :cron do
     desc "Send reminder to users who RSVP the events"
     task send_reminders: :environment do
       STDOUT.sync = true
-      puts "Sending reminders to users..."
-      Event.send_reminders.find_each { |e| e.send_attendee_reminder! }
+      puts "[events:send_reminders] START | Sending reminders for RSVP events"
+
+      processed = 0
+      Event.send_reminders.find_each do |event|
+        event.send_attendee_reminder!
+        processed += 1
+      end
+
+      puts "[events:send_reminders] DONE  | Processed #{processed} event(s)"
     end
   end
+
 end

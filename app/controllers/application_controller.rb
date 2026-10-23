@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
   
   include AuthenticatedSystem
+  include AdminEmailCompose
+  helper_method :email_write_path_for
 
   rescue_from ::ExpoException, :with => :expo_exception
   # rescue_from ::ActionController::RedirectBackError, :with => :redirect_exception # this has been deprecated in Rails 5
