@@ -2,13 +2,16 @@ ActiveAdmin.register EventStaffPosition, as: 'staff_position' do
   belongs_to :event
   batch_action :destroy, false
   config.filters = false
-  config.sort_order = 'id_asc'
+  config.sort_order = 'ordering_asc'
+  reorderable
   
-  permit_params :title, :description, :instructions, :training_session_event_id, :restrictions, :require_all_shifts
+  permit_params :title, :description, :instructions, :training_session_event_id, :restrictions, :require_all_shifts, :capacity, :ordering
 
-  index do
+  index as: :reorderable_table do
+    column ('Order') {|staff_position| staff_position.ordering}
     column ('Title') {|staff_position| link_to staff_position.title, admin_event_staff_position_path(event, staff_position) }
     column ('Shifts') {|staff_position| staff_position.shifts.size }
+    # column ('Capacity') {|staff_position| staff_position.capacity }
     column :require_all_shifts
     actions
   end
@@ -17,15 +20,18 @@ ActiveAdmin.register EventStaffPosition, as: 'staff_position' do
     attributes_table do
        row :title
        row (:description) {|staff_position| staff_position.description.html_safe }
-       row (:instructions) {|staff_position| staff_position.instructions.html_safe }       
+       row (:instructions) {|staff_position| staff_position.instructions.html_safe } 
        row :training_session_event_id
        row :restrictions
        row :require_all_shifts
+       row :ordering
+       #row :capacity
     end
     panel 'Shifts' do
        table_for staff_position.shifts do
          column ('Times') {|shift| link_to shift.time_detail, admin_event_staff_position_shift_path(staff_position.event, staff_position, shift) }
          column ('Volunteers') {|shift| shift.staffs.size }
+         column ('Capacity') {|shift| shift.capacity }
          column ('Functions'){|shift|
             span link_to '<span class="mi">visibility</span>'.html_safe, admin_event_staff_position_shift_path(event, staff_position, shift), class: 'action_icon'
             span link_to '<span class="mi">edit</span>'.html_safe, edit_admin_event_staff_position_shift_path(event, staff_position, shift), class: 'action_icon'
@@ -47,6 +53,8 @@ ActiveAdmin.register EventStaffPosition, as: 'staff_position' do
       f.input :training_session_event, input_html: {class: 'select2'}
       f.input :restrictions, input_html: {rows: 4}
       f.input :require_all_shifts, label: 'Require volunteers to signup for all shifts at once'    
+      f.input :ordering, input_html: { style: 'width:10%;' }
+      # f.input :capacity, input_html: { style: 'width:10%;' }
     end
     f.actions
   end

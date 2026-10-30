@@ -7,6 +7,7 @@ class EventStaffPositionShift < ApplicationRecord
   has_many :people, :through => :staffs, :source => :person
   
   validates_presence_of :event_staff_position_id, :start_time
+  validates :capacity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
   
   delegate :title, to: :position, allow_nil: true
 
@@ -40,14 +41,19 @@ class EventStaffPositionShift < ApplicationRecord
 
   # Signs up a person for this shift. Specify false for the second parameter to not send an email.
   def signup!(person, send_email = true)
-    new_staff = staffs.create(:person_id => person.id)
-    new_staff.send_staff_signup_email if new_staff.valid? && send_email
+    new_staff = nil
+
+    with_lock do
+      new_staff = staffs.create(person_id: person.id)
+    end
+
+    new_staff.send_staff_signup_email if new_staff.persisted? && send_email
     new_staff
   end
   
   # Un-signs up a person for this shift.
   def unsignup!(person)
-    staffs.find_by_person_id(person.id).delete
+    staffs.find_by(person_id: person.id)&.destroy
   end
   
   # Returns true if the person is signed up for this shift.
@@ -62,10 +68,13 @@ class EventStaffPositionShift < ApplicationRecord
     overlaps = []
     for other in event.staff_position_shifts.reject{|s| s == self}
       if start_time && end_time && other.start_time && other.end_time
-        range = start_time..end_time-1.second
-        if range.include?(other.start_time) || range.include?(other.end_time-1.second)
+        if start_time < other.end_time && other.start_time < end_time
           overlaps << other
         end
+        # range = start_time..end_time-1.second
+        # if range.cover?(other.start_time) || range.cover?(other.end_time-1.second)
+        #   overlaps << other
+        # end
       end
     end
     overlaps
@@ -74,6 +83,16 @@ class EventStaffPositionShift < ApplicationRecord
   # Returns true if +overlapping_shifts+ is not empty.
   def overlaps_other_shifts?
     !overlapping_shifts.empty?
+  end
+
+  def remaining_capacity
+    return nil if capacity.nil?
+
+    [capacity - staffs.count, 0].max
+  end
+
+  def full?
+    !capacity.nil? && staffs.count >= capacity
   end
 
 end

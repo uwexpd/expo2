@@ -130,7 +130,8 @@ ActiveAdmin.register User do
       render "search_user"
   end
 
-  sidebar 'Authenticate a New UW standard User', if: proc { collection.empty? } do
+  # Can add this condition if only not found => if: proc { collection.empty? }
+  sidebar 'Authenticate a New UW standard User' do
     # render "create_uw_standard.html"
     div class: 'content-block' do
       link_to "Create New User", new_admin_user_path, class: 'button'

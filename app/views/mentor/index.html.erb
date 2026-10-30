@@ -1,7 +1,7 @@
 <% title @offering.nil? ? "Mentor Review" : "#{@offering.mentor_title.pluralize} Review", @person.fullname %>
 <div class="card content">
 <h5>Mentor Review: <small class='gray'>Your Contact Information</small>
-	<span class="heading_inline"><%= link_to "Edit", {action: "update"}, class: 'btn smaller' %></span>
+	<span class="heading_inline"><%= link_to "<i class='mi md-16'>edit</i> Edit".html_safe, {action: "update"}, class: 'btn smaller' %></span>
 </h5>
 	<%= render :partial => "contact_info" %>
 <br>

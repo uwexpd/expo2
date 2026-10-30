@@ -21,12 +21,7 @@
 	<% end -%>
 	</p>
 
-	<p> Are you interested in supporting this year's UW Undergraduate Research Symposium? We encourage individuals from across the UW to participate– from student to faculty and alumni– to our further participating partner universities, and families and friends.<p>
-
-	<p>Opportunities range from a few days before, to the day-of, and span Mary Gates Hall and surrounding buildings. <b>For those interested in supporting the College of Engineering sessions only:</b> please sign-up for volunteer opportunities starting with [College of Engineering], as those roles will be placed in the CSE building. </p>
-
-	<p>If you have any questions, please reach out to the Office of Undergraduate Research (<%= auto_link "undergradresearch@uw.edu" %>).	
-	 </p>
+	<%= raw(HelpText.caption :public_welcome, EventStaffPosition) %>
 
 <table style="margin: 2rem 0" class="highlightless">
 	
@@ -36,7 +31,7 @@
 		<th>Time</th>
 	</tr>
 
-	<% for position in @event.staff_positions.sort %>
+	<% for position in @event.staff_positions.order(:ordering, :title, :id) %>
 	<tr>
 		<td rowspan=<%= position.shifts.size %> width="30%">
 			<h5><%= position.title %></h5>

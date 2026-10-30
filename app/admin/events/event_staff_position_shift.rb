@@ -3,7 +3,7 @@ ActiveAdmin.register EventStaffPositionShift, as: 'shift' do
   menu false
   config.filters = false
 
-  permit_params :start_time, :end_time, :details
+  permit_params :start_time, :end_time, :details, :capacity
 
   controller do
     nested_belongs_to :event, :staff_position
@@ -32,6 +32,7 @@ ActiveAdmin.register EventStaffPositionShift, as: 'shift' do
     selectable_column
     column ('Times') {|shift| link_to shift.time_detail, admin_event_staff_position_shift_path(shift.position.event, shift.position, shift) }
     column ('Volunteers') {|shift| shift.staffs.size }
+    column :capacity
     actions
   end
 
@@ -48,6 +49,7 @@ ActiveAdmin.register EventStaffPositionShift, as: 'shift' do
        row :position
        row ("Time") {|shift| shift.time_detail }
        row (:details) {|shift| raw shift.details }
+       row :capacity
     end
     panel 'Volunteers' do
       form action: batch_action_admin_shifts_path, method: :post do
@@ -73,6 +75,7 @@ ActiveAdmin.register EventStaffPositionShift, as: 'shift' do
       f.input :start_time, as: :datetime_picker, input_html: {style: 'width: 60%'}
       f.input :end_time, as: :datetime_picker, input_html: {style: 'width: 60%'}
       f.input :details, input_html: {class: 'tinymce', rows: 4}
+      f.input :capacity, input_html: { style: 'width:10%;' }, hint: 'Maximum signups for this shift; leave blank for unlimited.'
     end
     f.actions
   end

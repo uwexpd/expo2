@@ -1,10 +1,10 @@
 
 <table>	
 <tr class="rowset-header">
-	<td colspan=2>My Online Applications (<%= @person_apps.size %>)</td>
+	<td colspan=2>My Online Applications (<%= @total_person_apps.size %>)</td>
 </tr>
 
-<% @person_apps.reverse.each do |app| %>
+<% @person_apps.each do |app| %>
 	<tr>
 		<td><%= link_to app.offering.title, apply_path(offering: app.offering) %></td>
 		<td><%= app.current_status.nil? ? "Not started" : app.current_status.public_title %></td>
@@ -18,3 +18,5 @@
 <% end -%>
 
 </table>
+
+<div class="table-header"><%= will_paginate @person_apps, renderer: MaterializePaginationRenderer if @page_number %></div>

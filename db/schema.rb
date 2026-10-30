@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_08_24_222914) do
+ActiveRecord::Schema.define(version: 2026_10_29_204244) do
 
   create_table "academic_departments", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
     t.string "name"
@@ -199,7 +199,7 @@ ActiveRecord::Schema.define(version: 2026_08_24_222914) do
     t.boolean "selection_committee_access_ok"
     t.boolean "mentor_access_ok"
     t.string "local_or_permanent_address"
-    t.string "project_title"
+    t.string "project_title", collation: "utf8mb4_unicode_ci"
     t.text "project_description"
     t.string "hours_per_week"
     t.integer "how_did_you_hear_id"
@@ -1312,6 +1312,7 @@ ActiveRecord::Schema.define(version: 2026_08_24_222914) do
     t.text "details"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "capacity"
   end
 
   create_table "event_staff_positions", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
@@ -1325,6 +1326,7 @@ ActiveRecord::Schema.define(version: 2026_08_24_222914) do
     t.boolean "require_all_shifts"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "ordering"
   end
 
   create_table "event_staffs", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|

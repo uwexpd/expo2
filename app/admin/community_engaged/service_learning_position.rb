@@ -38,24 +38,29 @@ ActiveAdmin.register ServiceLearningPosition do
         div sp.email
         div phone_number(sp.phone.to_i) rescue nil
       end
-      row ('location') do |position|
-        div position.location.title rescue "None"
-        div raw address_block(position.location)
-      end
-      if resource.location
-        location = resource.location
-        unless location.driving_directions.blank?
-          row ('driving notes') {|position| simple_format(position.location.driving_directions)}
-        end
-        unless location.bus_directions.blank?
-          row ('bus notes') {|position| simple_format(position.location.bus_directions)}
-        end
-        unless location.notes.blank?
-          row ('notes') {|position| simple_format(position.location.notes)}
+
+      location = resource.location
+      row('location') do
+        if location
+          div location.title
+          div raw(address_block(location))
+        else
+          div 'None'
         end
       end
-      unless resource.alternate_transportation.blank?
-        row ('alt. transportation') {|position| position.location.alternate_transportation}
+      if location
+        if location.driving_directions.present?
+          row('driving notes') { simple_format(location.driving_directions) }
+        end
+        if location.bus_directions.present?
+          row('bus notes') { simple_format(location.bus_directions) }
+        end
+        if location.notes.present?
+          row('notes') { simple_format(location.notes) }
+        end
+        if location.alternate_transportation.present?
+          row('alt. transportation') { location.alternate_transportation }
+        end
       end
       row ('Requirements') do |position|
         div "Must be #{position.age_requirement} #{'('+position.other_age_requirement+')' if position.has_other_age_requirement? && position.other_age_requirement} years old" unless position.age_requirement.blank?

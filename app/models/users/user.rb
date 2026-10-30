@@ -97,7 +97,7 @@ class User < ApplicationRecord
 
   def firstname
     person.fullname_unknown? ? login : person.firstname rescue login
-  end    
+  end
   
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil. Note that this method is
   # case-insensitive, so "Mike" and "mike" will both return the same user object.

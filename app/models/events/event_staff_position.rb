@@ -4,6 +4,7 @@ class EventStaffPosition < ApplicationRecord
   belongs_to :event
   belongs_to :training_session_event, :class_name => "Event", :foreign_key => "training_session_event_id"
   has_many :shifts, :class_name => "EventStaffPositionShift"
+  acts_as_list scope: :event, column: :ordering
   
   validates_presence_of :event_id, :title
   
@@ -16,10 +17,33 @@ class EventStaffPosition < ApplicationRecord
   
   # Signs up a person for this position. If there are multiple shifts, signs them up for all of them.
   def signup!(person)
-    new_shifts = shifts.collect{|shift| shift.signup!(person)}
-    new_shifts.each{|shift| shift.delete } if new_shifts.collect(&:valid?).include?(false)
-    new_shifts
-  end
+    # new_shifts = shifts.collect{|shift| shift.signup!(person)}
+    # new_shifts.each{|shift| shift.delete } if new_shifts.collect(&:valid?).include?(false)
+    # new_shifts
+    results = []
+    new_signups = []
+    completed = false
+
+    EventStaff.transaction do
+      # Consistent lock order reduces deadlocks when two people request all shifts.
+      shifts.order(:id).lock.each do |shift|
+        staff = shift.staffs.lock.find_by(person_id: person.id)
+        unless staff
+          staff = shift.signup!(person, false)
+          new_signups << staff if staff.persisted?
+        end
+        unless staff.persisted?
+          results = [staff] # Preserve the validation error for the controller.
+          raise ActiveRecord::Rollback
+        end
+        results << staff
+      end
+      completed = true
+    end
+
+    new_signups.each(&:send_staff_signup_email) if completed
+    results
+    end
 
   # Un-signs up a person for this position. If there are multiple shifts, un-signs them up for all of them.
   def unsignup!(person)

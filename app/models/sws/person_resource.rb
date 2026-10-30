@@ -79,6 +79,11 @@ class PersonResource < WebServiceResult
       [display_firstname, display_lastname].compact.join(' ').presence
   end
 
+  alias_method :firstname,  :display_firstname
+  alias_method :middlename, :display_middlename
+  alias_method :lastname,   :display_lastname
+  alias_method :fullname,   :display_name
+
   # Convenience accessor for the EmployeePersonAffiliation blob
   def employee_affiliation
     attrs.dig('PersonAffiliations', 'EmployeePersonAffiliation') || {}

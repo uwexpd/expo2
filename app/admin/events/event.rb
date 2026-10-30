@@ -58,7 +58,6 @@ ActiveAdmin.register Event do
          row ('Staff Url') {|event| link_to volunteer_event_url(event), volunteer_event_url(event) }
        end
        row (:description) {|event| raw(event.description)}
-       #row :capacity
        row :unit
        row :event_type
        row :offering
@@ -75,7 +74,6 @@ ActiveAdmin.register Event do
     f.inputs do
       f.input :title, required: true
       f.input :description, :input_html => { class: "tinymce", rows: 10 }
-      #f.input :capacity, :input_html => { :style => 'width:25%;' }
       f.input :unit, label: 'Sponsor', as: :select, include_blank: false, required: true
       f.input :event_type_id,
           as: :select,

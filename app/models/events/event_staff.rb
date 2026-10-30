@@ -8,6 +8,12 @@ class EventStaff < ApplicationRecord
   validates_uniqueness_of :person_id, :scope => :event_staff_position_shift_id
 
   validate :no_overlapping_times
+  validate :shift_has_capacity, on: :create
+
+  after_create_commit  -> { queue_unit_notification('signed up') }
+  after_destroy_commit -> { queue_unit_notification('canceled') }
+  
+
   # If the time for this shift overlaps with another shift for this event that this person is signed up for, then return an error.
   def no_overlapping_times
     return true unless shift.overlaps_other_shifts?
@@ -23,7 +29,6 @@ class EventStaff < ApplicationRecord
   PLACEHOLDER_ASSOCIATIONS = %w( person shift event position )
     
   # Sends a confirmation email to the volunteer using the +staff_signup_email_template+ as defined in the Event.
-  # Returns the TMail object if successful or nil otherwise.
   def send_staff_signup_email
     return nil unless event.staff_signup_email_template
     if person
@@ -33,6 +38,40 @@ class EventStaff < ApplicationRecord
     end
     nil
   end
-  
-  
-end
+
+  private
+
+  def shift_has_capacity
+    return unless shift&.full?
+
+    errors.add(:base, 'This shift is full. Please choose another shift.')
+  end
+
+  def notify_unit_of_signup
+    enqueue_unit_notification('signup')
+  end
+
+  def notify_unit_of_cancellation
+    enqueue_unit_notification('cancellation')
+  end
+
+  def queue_unit_notification(action)    
+    recipient = event.unit&.email
+    if recipient.blank?
+      Rails.logger.warn("Missing unit notification email for event #{event.id}")
+      return
+    end
+
+    info = {
+      action: action,
+      volunteer_name: person.fullname,
+      event_title: event.title,
+      position_title: position.title,
+      shift_time: shift.time_detail,
+      shift_id: shift.id
+    }
+
+    EventStaffNotificationJob.perform_now(info, recipient)
+  end
+
+end 
