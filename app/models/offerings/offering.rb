@@ -192,8 +192,8 @@ class Offering < ApplicationRecord
    end
    
   def title
-    title = "#{name}"
-    title << " #{quarter_offered.title}" if quarter_offered
+    title = "#{name}".strip
+    title << " #{quarter_offered.title}".strip if quarter_offered
     title
   end
 

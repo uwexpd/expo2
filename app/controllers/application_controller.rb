@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
       @role = role.to_s.titleize
       # return render :template => "exceptions/permission_denied", :status => :unauthorized
       flash[:alert] = "You are not authorized to view this page. You must be assigned the #{@role} role."
-      redirect_to root_path
+      redirect_to admin_path
     end
   end
 
@@ -115,7 +115,7 @@ class ApplicationController < ActionController::Base
       @unit = unit
       # return render :template => "exceptions/wrong_unit", :status => :unauthorized
       flash[:alert] = "You don't belong to the #{@unit.name} unit, so you can't view this item."
-      redirect_to root_path
+      redirect_to admin_path
     end
   end
 
