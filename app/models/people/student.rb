@@ -57,13 +57,18 @@ class Student < Person
    
    def reg_id
     if read_attribute(:reg_id).blank?
-      @reg_id ||= StudentResource.find_by_system_key(system_key, false)
-      update_attribute(:reg_id, @reg_id)
+      @reg_id ||= begin
+        StudentResource.find_by_system_key(system_key, false)
+      rescue StandardError        
+        nil
+      end
+      update_attribute(:reg_id, @reg_id) if @reg_id.present?
     else
       @reg_id ||= read_attribute(:reg_id)
     end
     @reg_id
-   end
+  end
+
 
    def firstname
      self.sdb_update(:name)
