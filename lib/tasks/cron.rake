@@ -98,6 +98,23 @@ namespace :cron do
 
       puts "[events:send_reminders] DONE  | Processed #{processed} event(s)"
     end
+
+    desc "Send reminders to users who RSVP for EventTimes seven days away"
+    task send_seven_day_reminders: :environment do
+      STDOUT.sync = true
+      puts "[events:send_seven_day_reminders] START | Sending seven-day RSVP reminders"
+
+      processed = 0
+      Event.send_reminders.joins(:times)
+           .where("event_times.start_time >= CURDATE() + INTERVAL 7 DAY AND event_times.start_time < CURDATE() + INTERVAL 8 DAY")
+           .distinct.find_each do |event|
+        event.send_seven_day_attendee_reminder!
+        processed += 1
+      end
+
+      puts "[events:send_seven_day_reminders] DONE  | Processed #{processed} event(s)"
+    end
+
   end
 
 end

@@ -10,6 +10,9 @@ class Event < ApplicationRecord
     def tomorrow_reminder
       where("event_times.start_time >= CURDATE() + INTERVAL 1 DAY AND event_times.start_time < CURDATE() + INTERVAL 2 DAY")
     end
+    def seven_day_reminder
+      where("event_times.start_time >= CURDATE() + INTERVAL 7 DAY AND event_times.start_time < CURDATE() + INTERVAL 8 DAY")
+    end
   end
   has_many :attended, -> { where("checkin_time IS NOT NULL") }, :class_name => "EventInvitee", :through => :times
    has_many :checked_in, -> { where.not(checkin_time: nil) },
@@ -121,6 +124,20 @@ class Event < ApplicationRecord
           nil, nil,
           attendee
         )
+    end
+  end
+
+  def send_seven_day_attendee_reminder!
+    template = EmailTemplate.find_by(id: reminder_email_template_id)
+    return false unless template
+
+    attendees.seven_day_reminder.each do |attendee|
+      EmailContact.log(
+        attendee.invitable_id,
+        template.create_email_to(attendee).deliver_now,
+        nil, nil,
+        attendee
+      )
     end
   end
 
