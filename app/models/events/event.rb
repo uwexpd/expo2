@@ -154,4 +154,14 @@ class Event < ApplicationRecord
     cal.to_ical
   end
   
+  def public_url
+    Rails.application.routes.url_helpers.rsvp_event_url(self)
+  end
+
+  def staff_url
+    return nil unless staff_positions.exists?
+
+    Rails.application.routes.url_helpers.volunteer_event_url(self)
+  end
+  
 end

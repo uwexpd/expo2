@@ -74,7 +74,7 @@ class EventInvitee < ApplicationRecord
   # Make custom filter
   def self.student_number_eq(student_no)
     student = Student.find_by_student_no(student_no)
-    logger.debug "Debug student : #{student.id}"
+    #logger.debug "Debug student : #{student.id}"
     self.includes(:person).where(person_id: student.id)
   end
   
