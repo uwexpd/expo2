@@ -53,33 +53,31 @@ task :givepulse_roster_sync => :environment do
         begin
 
           course_fields = {
-            crse_dept_desc: sdb_course.department&.name,
-            crse_coll_desc: sdb_course.course_college
-          }
+  crse_dept_desc: sdb_course.department&.name,
+  crse_coll_desc: sdb_course.course_college
+}
 
-          if course_fields.any? { |field, value| gp_course.public_send(field).to_s != value.to_s }
-            puts "Sync starting #{crn} (group id: #{gp_course.group_id}): department and college"
-            Timeout.timeout(120, GivepulseSyncTimeout) do
-              unless gp_course.update(course_fields)
-                puts "ERROR: failed syncing department and college for #{crn} (group id: #{gp_course.group_id}); continuing with roster."
-              end
-            end
+if course_fields.any? { |field, value| gp_course.public_send(field).to_s != value.to_s }
+  puts "Sync starting #{crn} (group id: #{gp_course.group_id}): department and college"
+  Timeout.timeout(120, GivepulseSyncTimeout) do
+    unless gp_course.update(course_fields)
+      puts "ERROR: failed syncing department and college for #{crn} (group id: #{gp_course.group_id}); continuing with roster."
+    end
+  end
+end
+          puts "Sync starting #{crn} (group id: #{gp_course.group_id}): students"
+          Timeout.timeout(120, GivepulseSyncTimeout) do
+            gp_course.sync_course_students
           end
-          
-          # puts "Sync starting #{crn} (group id: #{gp_course.group_id}): students"
-          # Timeout.timeout(120, GivepulseSyncTimeout) do
-          #   gp_course.sync_course_students
-          # end
 
-          # puts "Sync finished #{crn} (group id: #{gp_course.group_id}): students; starting instructors"
-          # Timeout.timeout(120, GivepulseSyncTimeout) do
-          #   gp_course.sync_course_instructors
-          # end
+          puts "Sync finished #{crn} (group id: #{gp_course.group_id}): students; starting instructors"
+          Timeout.timeout(120, GivepulseSyncTimeout) do
+            gp_course.sync_course_instructors
+          end
 
-          # student_count = gp_course.course_students.count
-          # instructors = gp_course.instructors.flatten.filter_map(&:fullname).uniq
-          # puts "Successfully synced #{crn}: #{student_count} students, instructors: #{instructors}"
-          #puts "Successfully synced #{crn}: students and instructors"
+          student_count = gp_course.course_students.count
+          instructors = gp_course.instructors.flatten.filter_map(&:fullname).uniq
+          puts "Successfully synced #{crn}: #{student_count} students, instructors: #{instructors}"          
         rescue GivepulseSyncTimeout => e
           Rails.logger.error("GivePulse sync timed out for #{crn} (group id: #{gp_course.group_id}): #{e.message}")
           puts "ERROR: timed out syncing #{crn} (group id: #{gp_course.group_id}); continuing."
