@@ -16,7 +16,7 @@
 			<td colspan=8>No appointments.</td>
 		</tr>
 	<% else %>
-		<% @student.appointments.each do |appointment| %>
+		<% @student.appointments.reverse.each do |appointment| %>
 		
 			<% if appointment.start_time.to_date != current_date %>
 			<tr class="rowset-header">

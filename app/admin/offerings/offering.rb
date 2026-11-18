@@ -263,7 +263,7 @@ ActiveAdmin.register Offering do
         tab 'Interviews' do
           f.inputs 'Interviews' do
             hr
-            f.input :interview_committee_id, as: :select, collection: Committee.all, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}
+            f.input :interview_committee_id, as: :select, collection: Committee.all, include_blank: 'None', input_html: { class: 'select2', style: 'width: 70%'}, hint: "Leave this field blank if you would like reviewers to be prompted automatically for their interview availability. Reviewers who agree will be added automatically as interviewers. <br><br>Before using this option, configure the reviewe committee setup by <a href='/admin/committees/2/edit' target= '_blank'>selecting current application offering in the 'interview offering' field.</a>".html_safe
             div 'Interview time', class: 'label'
             f.input :interview_time_for_applicants, label: 'For applicants:', as: :select, collection: 30.times.collect{|i| i*5+5}
             f.input :interview_time_for_interviewers, label: 'For interviewers:', as: :select, collection: 30.times.collect{|i| i*5+5}
