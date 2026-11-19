@@ -13,7 +13,7 @@
 	<div class="autosave center" id="scores_autosave"></div>
 	<br>
 	
-	<%= form_for @application_reviewer, :url => { :action => 'update', :id => @app }, id: 'score_form'  do |f| %>
+	<%= form_for @application_reviewer, url: { action: 'update', id: @app }, html: { id: 'score_form' } do |f| %>
 
 		<table class="highlightless borderless paddingless scoring" style="font-size: 105%">
 			<%= render 	:partial => "reviewer/score", 
@@ -79,3 +79,25 @@
 	<% end -%>
 	
 </div>
+
+<% unless @application_reviewer.finalized? %>
+  <script>
+    (function ($) {
+      function updateTotalScore() {
+        var total = 0;
+
+        $('#score_form .score').each(function () {
+          var value = this.value === '' ? 0 : Number(this.value);
+          if (Number.isFinite(value)) total += value;
+        });
+
+        $('#total_score').text(total);
+      }
+
+      $(function () {
+        updateTotalScore();
+        $(document).on('input.scoreTotal change.scoreTotal', '#score_form .score', updateTotalScore);
+      });
+    })(jQuery);
+  </script>
+<% end %>

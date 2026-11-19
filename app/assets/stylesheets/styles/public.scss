@@ -1168,3 +1168,15 @@ tr.total td {
 	text-transform: uppercase; 
 	letter-spacing: .12em; 
 }
+
+/* Chrome, Safari, Edge */
+.score::-webkit-outer-spin-button,
+.score::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.score {
+  -moz-appearance: textfield;
+}

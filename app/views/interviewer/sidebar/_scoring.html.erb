@@ -6,7 +6,7 @@
 	<div class="autosave center" id="scores_autosave"></div>
 	<br>
 	
-	<%= form_for @offering_interview_interviewer, :url => { :action => 'update', :id => @offering_interview_interviewer }, id: 'score_form'  do |f| %>
+	<%= form_for @offering_interview_interviewer, :url => { :action => 'update', :id => @offering_interview_interviewer }, html: { id: 'score_form' }  do |f| %>
 
 		<% @application_reviewer = @offering_interview_interviewer %>
 
@@ -74,3 +74,31 @@
 	<% end -%>
 	
 </div>
+
+<% unless @offering_interview_interviewer.finalized? %>
+  <script>
+    (function ($) {
+      function updateTotalScore() {
+        var total = 0;
+
+        $('#score_form .score').each(function () {
+          var value = this.value === '' ? 0 : Number(this.value);
+          if (isFinite(value)) total += value;
+        });
+
+        $('#total_score').text(total);
+      }
+
+      function bindScoreTotal() {
+        $(document)
+          .off('input.scoreTotal change.scoreTotal', '#score_form .score')
+          .on('input.scoreTotal change.scoreTotal', '#score_form .score', updateTotalScore);
+
+        updateTotalScore();
+      }
+
+      $(bindScoreTotal);
+      $(document).on('turbolinks:load', bindScoreTotal);
+    })(jQuery);
+  </script>
+<% end %>
